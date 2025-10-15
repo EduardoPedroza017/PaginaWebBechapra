@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
-  /* config options here */
+reactStrictMode: true,
+experimental: { optimizePackageImports: ["framer-motion", "@react-three/drei"] },
 };
-
 export default nextConfig;
