@@ -1,14 +1,12 @@
 import Link from "next/link";
-import NeonButton from "../components/NeonButton";
-import HeroParticles from "../components/HeroParticles";
 
 export default function Home() {
   return (
     <>
-      {/* HERO con texto + partículas ligero */}
-      <section className="relative grid items-center gap-10 md:grid-cols-2 brand-bubbles futuristic-bg">
+      {/* HERO con texto + 3D (placeholder) */}
+      <section className="relative grid items-center gap-10 md:grid-cols-2 brand-bubbles">
         <div>
-          <h1 className="text-balance text-4xl font-semibold leading-tight md:text-6xl glow-heading">
+          <h1 className="text-balance text-4xl font-semibold leading-tight md:text-6xl">
             Soluciones que impulsan tu talento y operación
           </h1>
           <p className="mt-4 max-w-xl text-pretty text-white/75">
@@ -16,27 +14,13 @@ export default function Home() {
             integrados bajo una misma marca.
           </p>
           <div className="mt-6 flex gap-3">
-            <NeonButton href="/servicios">Ver servicios</NeonButton>
-            <NeonButton href="#final" className="">Más info</NeonButton>
+            <Link href="/servicios" className="nav-pill nav-pill--active">Ver servicios</Link>
+            <a href="#final" className="nav-pill">Más info</a>
           </div>
         </div>
 
-        {/* Marco con canvas de partículas y glass-card */}
-        <div className="hero-frame aspect-[4/3] w-full md:aspect-[5/4]">
-          <div className="glass-card h-full w-full relative" style={{ borderRadius: '24px', overflow: 'hidden' }}>
-            <HeroParticles />
-            {/* Decorative SVG: subtle animated lines (CSS animation) */}
-            <svg width="100%" height="100%" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ position: 'relative', zIndex: 1 }}>
-              <defs>
-                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stopColor="rgba(255,255,255,0.04)" />
-                  <stop offset="100%" stopColor="rgba(255,255,255,0.01)" />
-                </linearGradient>
-              </defs>
-              <rect x="0" y="0" width="100%" height="100%" fill="url(#g1)" />
-            </svg>
-          </div>
-        </div>
+        {/* Marco 3D simple al estilo Bechapra */}
+        <div className="hero-frame aspect-[4/3] w-full md:aspect-[5/4]" />
       </section>
 
       {/* SERVICIOS */}
