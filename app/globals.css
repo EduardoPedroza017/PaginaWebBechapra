@@ -99,6 +99,30 @@
   --text-6xl: 3.75rem;     /* 60px */
 }
 
+/* Safety: cap SVG sizes inside main to avoid accidental huge decorative SVGs */
+/* Use !important to override inline classes/utility sizes when necessary */
+main svg {
+  max-width: 120px !important;
+  max-height: 120px !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Target some common large decorative containers and limit their svg children */
+main .rounded-3xl svg,
+main .glass-card svg,
+main section svg,
+#servicios svg {
+  max-width: 120px !important;
+  max-height: 120px !important;
+}
+
+/* If you need specific large SVGs, give them a utility class like .svg-large to opt-in */
+.svg-large {
+  max-width: none !important;
+  max-height: none !important;
+}
+
 /* ==========================================================================
    RESET Y BASE
    ========================================================================== */
@@ -148,7 +172,8 @@ body::after {
   height: 800px;
   border-radius: 50%;
   background: radial-gradient(circle at center, rgba(0, 87, 217, 0.03) 0%, transparent 70%);
-  z-index: -1;
+  /* put decorative circle further behind page content to avoid accidental overlap */
+  z-index: -2;
   pointer-events: none;
   animation: float 20s ease-in-out infinite;
 }
@@ -304,6 +329,94 @@ strong, b {
 .btn-small {
   padding: 10px 20px;
   font-size: var(--text-sm);
+}
+
+/* Uiverse-style CTA (custom) */
+
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* reserve space for the left circle */
+  padding: 12px 20px 12px 64px;
+  border-radius: 9999px;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: none;
+  overflow: visible;
+  transition: all 0.25s ease;
+  z-index: 50;
+}
+
+.cta::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  display: block;
+  border-radius: 50px;
+  /* light tint initially so text remains readable */
+  background: rgba(37,99,235,0.12);
+  width: 44px;
+  height: 44px;
+  transition: all 0.35s ease;
+  z-index: 0;
+}
+
+.cta > * { /* scope children to sit above the pseudo element */
+  position: relative;
+  z-index: 1;
+}
+
+.cta span {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2563eb;
+  transition: color 0.25s ease;
+}
+
+
+.cta svg {
+  width: 20px;
+  height: 13px;
+  margin-left: 8px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: #2563eb;
+  stroke-width: 2;
+  transform: translateX(-6px);
+  transition: transform 0.25s ease, stroke 0.25s ease;
+}
+
+/* Force CTA SVG to remain small (override global main svg caps) */
+.cta svg {
+  max-width: 20px !important;
+  max-height: 13px !important;
+  width: 20px !important;
+  height: 13px !important;
+}
+
+.cta:hover::before {
+  width: 100%;
+  left: 0;
+  background: #2563eb;
+}
+
+.cta:hover span,
+.cta:hover svg {
+  color: #ffffff;
+  stroke: #ffffff;
+}
+
+.cta:active {
+  transform: scale(0.98);
 }
 
 /* ==========================================================================
@@ -496,6 +609,39 @@ textarea {
   font-weight: 800;
   color: var(--brand-primary);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* Logo image sizing: keep aspect ratio (width:auto) and increase visible size */
+.nav-logo img,
+.nav-logo-img,
+.nav-logo-img img {
+  height: 88px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .nav-logo img,
+  .nav-logo-img,
+  .nav-logo-img img {
+    height: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-logo img,
+  .nav-logo-img,
+  .nav-logo-img img {
+    height: 56px;
+  }
+}
+
+/* increase navbar vertical padding to accommodate larger logo */
+.nav {
+  padding: 1.5rem 0;
 }
 
 .nav-menu {
@@ -652,6 +798,39 @@ section {
 .circle-decoration-small {
   width: 200px;
   height: 200px;
+}
+
+/* Make decorative circles less intrusive on small screens */
+@media (max-width: 900px) {
+  body::after {
+    /* reduce size and opacity on narrow screens so it doesn't overlap sections */
+    width: 320px;
+    height: 320px;
+    top: -20%;
+    right: -10%;
+    background: radial-gradient(circle at center, rgba(0, 87, 217, 0.025) 0%, transparent 70%);
+    animation-duration: 30s;
+  }
+
+  .brand-bubbles::before {
+    width: 220px;
+    height: 220px;
+    top: -60px;
+    right: -60px;
+    opacity: 0.45;
+  }
+
+  .brand-bubbles::after {
+    width: 160px;
+    height: 160px;
+    bottom: -30px;
+    left: -30px;
+    opacity: 0.35;
+  }
+
+  .circle-decoration-large { width: 360px; height: 360px; }
+  .circle-decoration-medium { width: 240px; height: 240px; }
+  .circle-decoration-small { width: 120px; height: 120px; }
 }
 
 /* ==========================================================================

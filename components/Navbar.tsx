@@ -1,16 +1,38 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [showLogoImg, setShowLogoImg] = useState(false);
+
+  // Only swap to the image on the client to avoid SSR/CSR hydration mismatch
+  useEffect(() => {
+    setShowLogoImg(true);
+  }, []);
   
   return (
     <nav className="nav">
       <div className="nav-container">
         <Link href="/" className="nav-logo">
-          Bechapra
+          {showLogoImg ? (
+            // Client-only Image replacement using the PNG placed under public/imagen/
+            <Image
+              src="/imagen/bechapra-logo.png"
+              alt="Bechapra"
+              // intrinsic size updated to match larger displayed height (maintain aspect ratio)
+              width={336}
+              height={88}
+              priority
+              className="nav-logo-img"
+              style={{ height: 88, width: "auto" }}
+            />
+          ) : (
+            // Server-rendered fallback to avoid hydration mismatch
+            <span>Bechapra</span>
+          )}
         </Link>
 
         {/* Desktop Menu */}

@@ -11,11 +11,11 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
     "@react-three/drei": "^10.7.6",
-    "@react-three/fiber": "^9.3.0",
+    "@react-three/fiber": "^9.4.0",
     "@react-three/postprocessing": "^3.0.4",
     "@studio-freight/lenis": "^1.0.42",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.23.22",
+    "framer-motion": "^12.23.24",
     "gsap": "^3.13.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.545.0",
@@ -23,7 +23,10 @@
     "postprocessing": "^6.37.8",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-intersection-observer": "^10.0.0",
     "three": "^0.180.0",
+    "three-stdlib": "^2.36.0",
+    "update": "^0.4.2",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
