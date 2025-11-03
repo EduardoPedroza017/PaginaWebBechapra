@@ -125,61 +125,237 @@ export default function Home() {
         </section>
 
         {/* CTA + REDES */}
-        <section className="mb-32">
+        <section className="mb-32 px-4 md:px-0">
           <AnimatedSection>
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-3xl p-10 md:p-14 shadow-2xl relative overflow-hidden">
+            <div className="relative rounded-3xl overflow-hidden max-w-7xl mx-auto shadow-2xl">
+              {/* Fondo claro con gradiente suave */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-slate-50" />
+              
+              {/* Patrón de puntos decorativo */}
+              <div className="absolute inset-0 opacity-[0.3]" style={{
+                backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(59, 130, 246) 1px, transparent 0)',
+                backgroundSize: '40px 40px'
+              }} />
+              
+              {/* Animación decorativa múltiple */}
               <motion.div
                 animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.5, 0.3],
+                  scale: [1, 1.2, 1],
+                  opacity: [0.08, 0.12, 0.08],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 8,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
-                className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"
+                className="absolute -top-20 -right-20 w-96 h-96 bg-blue-200 rounded-full blur-3xl"
               />
-              
-              <div className="relative z-10 text-center md:text-left">
-                <div className="md:flex justify-between items-center">
-                  <div className="md:max-w-xl mb-8 md:mb-0">
-                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                      ¿Listo para comenzar?
-                    </h3>
-                    <p className="text-blue-100 text-lg">
-                      Agenda una llamada o contáctanos por redes sociales. Estamos aquí para impulsar tu negocio.
-                    </p>
-                  </div>
-                  
-                  <div className="flex flex-col gap-4 items-center md:items-end">
-                    <a
-                      href="#contacto"
-                      className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full shadow-lg font-semibold hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300"
+              <motion.div
+                animate={{
+                  scale: [1, 1.15, 1],
+                  opacity: [0.06, 0.1, 0.06],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+                className="absolute -bottom-16 -left-16 w-80 h-80 bg-slate-200 rounded-full blur-3xl"
+              />
+
+              {/* Contenido principal */}
+              <div className="relative z-10 p-8 md:p-16">
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-12">
+                    {/* Badge superior */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.5 }}
+                      className="inline-flex items-center gap-2 bg-green-50 backdrop-blur-sm px-5 py-2.5 rounded-full mb-6 border-2 border-green-200 shadow-md"
                     >
-                      ¡Agenda ahora!
-                    </a>
-                    
-                    <div className="flex gap-3">
-                      {[
-                        { name: "LinkedIn", icon: "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" },
-                        { name: "Facebook", icon: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385h-3.047v-3.47h3.047v-2.642c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.513c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385c5.738-.9 10.125-5.864 10.125-11.854z" },
-                        { name: "Instagram", icon: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" },
-                        { name: "YouTube", icon: "M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.897-.266 11.626-.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" }
-                      ].map((network) => (
-                        <motion.a
-                          key={network.name}
-                          href="#"
-                          whileHover={{ scale: 1.1, y: -2 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20 transition-colors"
-                          aria-label={network.name}
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50" />
+                      <span className="text-green-700 font-semibold">Disponibles para nuevos proyectos</span>
+                    </motion.div>
+
+                    {/* Título principal */}
+                    <motion.h3
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.6 }}
+                      className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 leading-tight"
+                    >
+                      ¿Listo para transformar <br className="hidden md:block" />
+                      <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                        tu negocio?
+                      </span>
+                    </motion.h3>
+
+                    {/* Subtítulo */}
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.6 }}
+                      className="text-slate-700 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium"
+                    >
+                      Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos impulsar tu organización con soluciones personalizadas y resultados medibles.
+                    </motion.p>
+
+                    {/* Botones de acción */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                      className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-12"
+                    >
+                      <motion.a
+                        href="#contacto"
+                        whileHover={{ scale: 1.08, y: -4 }}
+                        whileTap={{ scale: 0.96 }}
+                        className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white px-12 py-5 rounded-full font-bold text-lg shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 w-full sm:w-auto justify-center overflow-hidden border-2 border-blue-400/20"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-xl" />
+                        <svg 
+                          width="24" 
+                          height="24" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          className="relative z-10 group-hover:scale-110 transition-transform duration-300"
                         >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24">
-                            <path fill="currentColor" d={network.icon} />
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <line x1="3" y1="10" x2="21" y2="10" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span className="relative z-10 tracking-wide">Agendar consultoría</span>
+                        <svg 
+                          width="22" 
+                          height="22" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="3" 
+                          className="group-hover:translate-x-2 transition-transform duration-300 relative z-10"
+                        >
+                          <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </motion.a>
+                      
+                      <motion.a
+                        href="tel:+525512345678"
+                        whileHover={{ scale: 1.08, y: -4 }}
+                        whileTap={{ scale: 0.96 }}
+                        className="group relative inline-flex items-center gap-3 bg-white text-blue-700 px-12 py-5 rounded-full font-bold text-lg border-3 border-blue-600 hover:border-blue-700 transition-all duration-300 w-full sm:w-auto justify-center shadow-xl hover:shadow-2xl overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 relative z-10 group-hover:stroke-white">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span className="relative z-10 tracking-wide group-hover:text-white transition-colors duration-300">Llamar ahora</span>
+                      </motion.a>
+                    </motion.div>
+
+                    {/* Separador */}
+                    <div className="flex items-center gap-4 max-w-md mx-auto mb-16">
+                      <div className="flex-1 h-[2px] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                      <span className="text-slate-600 font-semibold text-sm tracking-wider uppercase">Síguenos en</span>
+                      <div className="flex-1 h-[2px] bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                    </div>
+
+                    {/* Redes sociales - Diseño limpio y profesional */}
+                    <div className="bg-gradient-to-br from-white to-slate-50/50 backdrop-blur-md rounded-3xl py-20 px-16 shadow-2xl border-2 border-white/60">
+                      <motion.h4
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                        className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-12"
+                      >
+                        Encuéntranos en
+                      </motion.h4>
+                      <div className="flex flex-row items-center justify-center gap-12 flex-wrap">
+                        {/* LinkedIn */}
+                        <motion.a
+                          href="https://www.linkedin.com/company/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.7, duration: 0.4 }}
+                          whileHover={{ scale: 1.1, y: -4 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="transition-all duration-300"
+                          aria-label="Visitar LinkedIn de Bechapra"
+                        >
+                          <svg style={{ width: '4rem', height: '4rem' }} viewBox="0 0 24 24" fill="#0A66C2">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                           </svg>
                         </motion.a>
-                      ))}
+
+                        {/* Facebook */}
+                        <motion.a
+                          href="https://www.facebook.com/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.8, duration: 0.4 }}
+                          whileHover={{ scale: 1.1, y: -4 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="transition-all duration-300"
+                          aria-label="Visitar Facebook de Bechapra"
+                        >
+                          <svg style={{ width: '4rem', height: '4rem' }} viewBox="0 0 24 24" fill="#1877F2">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          </svg>
+                        </motion.a>
+
+                        {/* Instagram */}
+                        <motion.a
+                          href="https://www.instagram.com/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.9, duration: 0.4 }}
+                          whileHover={{ scale: 1.1, y: -4 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="transition-all duration-300"
+                          aria-label="Visitar Instagram de Bechapra"
+                        >
+                          <svg style={{ width: '4rem', height: '4rem' }} viewBox="0 0 24 24">
+                            <defs>
+                              <linearGradient id="instagram-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#833AB4" />
+                                <stop offset="50%" stopColor="#FD1D1D" />
+                                <stop offset="100%" stopColor="#FCAF45" />
+                              </linearGradient>
+                            </defs>
+                            <path fill="url(#instagram-gradient)" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                          </svg>
+                        </motion.a>
+
+                        {/* YouTube */}
+                        <motion.a
+                          href="https://www.youtube.com/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 1.0, duration: 0.4 }}
+                          whileHover={{ scale: 1.1, y: -4 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="transition-all duration-300"
+                          aria-label="Visitar YouTube de Bechapra"
+                        >
+                          <svg style={{ width: '4rem', height: '4rem' }} viewBox="0 0 24 24" fill="#FF0000">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                          </svg>
+                        </motion.a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -401,23 +577,25 @@ function ContactForm() {
 
   return (
     <>
-      <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 md:p-10 border border-slate-200 max-w-3xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="max-w-md mx-auto px-8 py-6 bg-gray-100 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contáctanos</h2>
+        <form onSubmit={handleSubmit}>
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
+            className="mb-4"
           >
-            <label htmlFor="nombre" className="block text-slate-700 font-medium mb-2">Nombre completo *</label>
+            <label htmlFor="nombre" className="block text-gray-800 mb-1">Tu Nombre</label>
             <input
               id="nombre"
               type="text"
-              placeholder="Tu nombre"
+              placeholder="Ingresa tu nombre"
               value={formData.nombre}
               onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
               required
-              className="w-full px-6 py-4 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-300 bg-white"
+              className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
             />
           </motion.div>
 
@@ -426,16 +604,17 @@ function ContactForm() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
+            className="mb-4"
           >
-            <label htmlFor="email" className="block text-slate-700 font-medium mb-2">Email *</label>
+            <label htmlFor="email" className="block text-gray-800 mb-1">Tu Email</label>
             <input
               id="email"
               type="email"
-              placeholder="tu@empresa.com"
+              placeholder="Ingresa tu email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              className="w-full px-6 py-4 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-300 bg-white"
+              className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
             />
           </motion.div>
 
@@ -444,16 +623,17 @@ function ContactForm() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
+            className="mb-4"
           >
-            <label htmlFor="mensaje" className="block text-slate-700 font-medium mb-2">Mensaje *</label>
+            <label htmlFor="mensaje" className="block text-gray-800 mb-1">Tu Mensaje</label>
             <textarea
               id="mensaje"
-              placeholder="Cuéntanos sobre tus necesidades..."
-              rows={5}
+              placeholder="Ingresa tu mensaje"
+              rows={4}
               value={formData.mensaje}
               onChange={(e) => setFormData({ ...formData, mensaje: e.target.value })}
               required
-              className="w-full px-6 py-4 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-300 resize-none bg-white"
+              className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 resize-none"
             />
           </motion.div>
 
@@ -466,11 +646,11 @@ function ContactForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${
+              className={`w-full py-2 px-4 rounded-lg font-semibold transition duration-300 ${
                 isSubmitting 
-                  ? "bg-slate-400 cursor-not-allowed" 
-                  : "bg-blue-600 hover:bg-blue-700 hover:scale-105 active:scale-95"
-              } text-white`}
+                  ? "bg-gray-400 cursor-not-allowed text-gray-700" 
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
@@ -480,7 +660,7 @@ function ContactForm() {
                   </svg>
                   Enviando...
                 </span>
-              ) : "Enviar mensaje"}
+              ) : "Enviar Mensaje"}
             </button>
           </motion.div>
         </form>

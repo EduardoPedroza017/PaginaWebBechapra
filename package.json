@@ -26,7 +26,7 @@
     "react-intersection-observer": "^10.0.0",
     "three": "^0.180.0",
     "three-stdlib": "^2.36.0",
-    "update": "^0.4.2",
+    "update": "^0.7.4",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
