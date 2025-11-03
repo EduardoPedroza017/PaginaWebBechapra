@@ -918,11 +918,11 @@ img {
   padding: 4rem 0 2rem;
   margin-top: 6rem;
 }
-
 /* ==========================================================================
-   SOCIAL ICONS: colored by default, subtle float animation and hover
+   CTA HERO + SOCIAL ICONS (versión corregida y mejorada)
    ========================================================================== */
 
+/* --- SOCIAL ICONS --- */
 .social-icon {
   width: 40px;
   height: 40px;
@@ -935,7 +935,6 @@ img {
   transform: translateZ(0);
   transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, filter 220ms ease;
   will-change: transform;
-  /* gentle idle float to make icons feel alive */
   animation: social-float 4.5s ease-in-out infinite;
 }
 
@@ -956,40 +955,51 @@ img {
   .social-icon { width: 36px; height: 36px; }
 }
 
-/* utility to add subtle outline for accessibility if needed */
-.social-icon:focus {
-  outline: 3px solid rgba(255,255,255,0.12);
+/* focus visible for keyboard navigation */
+.social-icon:focus-visible {
+  outline: 3px solid #0097f5;
   outline-offset: 3px;
 }
 
-/* CTA hero refinements */
+/* --- CTA HERO --- */
 .cta-hero {
   border: 1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(6px) saturate(1.05);
+  overflow: hidden;
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem;
 }
 
-.cta-button {
-  min-width: 180px;
-}
-
-.social-label {
-  font-weight: 600;
-  color: rgba(255,255,255,0.9);
-}
-
-/* subtle translucent container around icons to lift them visually */
-
-
-/* make CTA copy slightly more readable on very small screens */
+/* responsive padding fix */
 @media (max-width: 420px) {
   .cta-hero { padding: 2.25rem; }
   .cta-button { min-width: 140px; }
 }
 
-/* white pill that contains the social icons to ensure contrast over gradient */
+/* CTA BUTTON */
+.cta-button {
+  min-width: 180px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(2,6,23,0.16);
+}
+
+.cta-button:focus-visible {
+  outline: 3px solid #0097f5;
+  outline-offset: 4px;
+}
+
+/* --- ICON PILL --- */
 .icon-pill {
   background: rgba(255,255,255,0.95);
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 9999px;
   box-shadow: 0 8px 30px rgba(2,6,23,0.08);
   display: inline-flex;
@@ -997,17 +1007,20 @@ img {
   align-items: center;
 }
 
-.icon-pill .social-icon { box-shadow: none; }
-
-/* refine CTA button hover to feel modern */
-.cta-button:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 18px 40px rgba(2,6,23,0.16);
+.icon-pill .social-icon {
+  box-shadow: none;
 }
 
-/* stronger overlay contrast reduction for better readability */
+/* "Síguenos" label */
+.social-label {
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.3px;
+}
+
+/* Decorative blur circle behind content */
 .cta-hero > .absolute {
-  opacity: 0.6;
+  opacity: 0.55 !important;
 }
 
 .footer-content {
