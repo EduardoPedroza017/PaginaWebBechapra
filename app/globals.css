@@ -1,804 +1,94 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ==========================================================================
-   VARIABLES DE DISEÑO - BECHAPRA 2025
-   Basado en branding oficial con colores azules y diseño moderno
-   ========================================================================== */
+/* Trimmed global CSS: kept only essentials used by the app (fonts, variables, reset, layout and navbar/button helpers).
+   Many utility styles are driven by Tailwind classes; heavy/unused decorative rules were removed to keep the file minimal.
+*/
 
+/* Design variables (kept minimal but available for components that reference them) */
 :root {
-  /* Colores principales del branding */
-  --brand-primary: #0057D9;        /* Azul principal brillante */
-  --brand-secondary: #004AB7;      /* Azul secundario profundo */
-  --brand-light: #F0F4FC;          /* Azul muy claro/fondo */
-  --brand-dark: #0A1933;           /* Azul oscuro/negro */
-  --brand-accent: #0047AB;         /* Azul acento */
-  
-  /* Paleta extendida */
-  --blue-50: #F0F4FC;
-  --blue-100: #E0E9F8;
-  --blue-200: #C1D3F1;
-  --blue-300: #93B2E8;
-  --blue-400: #5A8ADB;
-  --blue-500: #0057D9;
-  --blue-600: #004AB7;
-  --blue-700: #003D95;
-  --blue-800: #003073;
-  --blue-900: #0A1933;
-  
-  /* Grises */
-  --gray-50: #F8F9FA;
-  --gray-100: #F1F3F5;
-  --gray-200: #E9ECEF;
-  --gray-300: #DEE2E6;
-  --gray-400: #CED4DA;
-  --gray-500: #ADB5BD;
-  --gray-600: #6C757D;
-  --gray-700: #495057;
-  --gray-800: #343A40;
-  --gray-900: #212529;
-  
-  /* Colores semánticos */
-  --success: #28A745;
-  --warning: #FFC107;
-  --danger: #DC3545;
-  --info: #17A2B8;
-  
-  /* Fondos y superficies */
-  --background: #FFFFFF;
-  --background-secondary: var(--blue-50);
-  --surface: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  
-  /* Texto */
+  --brand-primary: #0057D9;
+  --brand-secondary: #004AB7;
+  --brand-dark: #0A1933;
+  --background: #ffffff;
+  --surface: #ffffff;
+  --border-color: rgba(0,0,0,0.08);
   --text-primary: var(--brand-dark);
   --text-secondary: #495057;
-  --text-muted: #6C757D;
-  --text-on-primary: #FFFFFF;
-  
-  /* Bordes */
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-color-strong: rgba(0, 0, 0, 0.12);
-  
-  /* Sombras */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 87, 217, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 87, 217, 0.12);
-  --shadow-xl: 0 12px 30px rgba(0, 87, 217, 0.15);
-  --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.08);
-  
-  /* Espaciado base */
-  --spacing-unit: 8px;
-  
-  /* Bordes redondeados */
-  --radius-sm: 8px;
-  --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
-  
-  /* Transiciones */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Tipografía */
-  --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-secondary: 'Mundial', 'Montserrat', sans-serif;
-  
-  /* Tamaños de fuente */
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.875rem;     /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
-  --text-4xl: 2.25rem;     /* 36px */
-  --text-5xl: 3rem;        /* 48px */
-  --text-6xl: 3.75rem;     /* 60px */
+  --transition-fast: 150ms ease;
 }
 
-/* Safety: cap SVG sizes inside main to avoid accidental huge decorative SVGs */
-/* Use !important to override inline classes/utility sizes when necessary */
-main svg {
-  max-width: 120px !important;
-  max-height: 120px !important;
-  width: auto !important;
-  height: auto !important;
-}
-
-/* Target some common large decorative containers and limit their svg children */
-main .rounded-3xl svg,
-main .glass-card svg,
-main section svg,
-#servicios svg {
-  max-width: 120px !important;
-  max-height: 120px !important;
-}
-
-/* If you need specific large SVGs, give them a utility class like .svg-large to opt-in */
-.svg-large {
-  max-width: none !important;
-  max-height: none !important;
-}
-
-/* ==========================================================================
-   RESET Y BASE
-   ========================================================================== */
-
+/* Basic reset */
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-primary);
-  font-size: var(--text-base);
+  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--text-primary);
   background: var(--background);
   overflow-x: hidden;
 }
 
-/* Fondo con gradiente sutil y formas decorativas */
+/* small decorative background retained (very light and performant) */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: -2;
-  background: 
-    linear-gradient(180deg, #FFFFFF 0%, var(--blue-50) 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, rgba(240,244,252,1) 100%);
   pointer-events: none;
 }
 
-/* Círculos decorativos de fondo (como en las imágenes) */
-body::after {
-  content: '';
-  position: fixed;
-  top: -10%;
-  right: -5%;
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(0, 87, 217, 0.03) 0%, transparent 70%);
-  /* put decorative circle further behind page content to avoid accidental overlap */
-  z-index: -2;
-  pointer-events: none;
-  animation: float 20s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-30px, -30px) scale(1.05); }
-}
-
-/* ==========================================================================
-   TIPOGRAFÍA
-   ========================================================================== */
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-primary);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--brand-dark);
-  margin-bottom: 1rem;
-}
-
-h1 {
-  font-size: var(--text-5xl);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-h2 {
-  font-size: var(--text-4xl);
-  font-weight: 700;
-}
-
-h3 {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-}
-
-h4 {
-  font-size: var(--text-2xl);
-  font-weight: 600;
-}
-
-h5 {
-  font-size: var(--text-xl);
-  font-weight: 600;
-}
-
-h6 {
-  font-size: var(--text-lg);
-  font-weight: 600;
-}
-
-p {
-  margin-bottom: 1rem;
-  color: var(--text-secondary);
-}
-
-a {
-  color: var(--brand-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--brand-secondary);
-}
-
-strong, b {
-  font-weight: 600;
-  color: var(--brand-dark);
-}
-
-/* ==========================================================================
-   CONTENEDOR PRINCIPAL
-   ========================================================================== */
-
+/* Container used by RootLayout */
 .container {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 0 1.5rem;
-  }
+@media (min-width: 768px) {
+  .container { padding: 0 2rem; }
 }
 
-/* ==========================================================================
-   BOTONES
-   ========================================================================== */
+/* Minimal typography helpers (headings use Tailwind utilities in most places, keep sensible defaults) */
+h1,h2,h3,h4,h5,h6 { font-weight: 700; color: var(--brand-dark); margin: 0 0 1rem 0; }
+p { margin: 0 0 1rem 0; color: var(--text-secondary); }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 14px 28px;
-  border-radius: var(--radius-lg);
-  font-family: var(--font-primary);
-  font-size: var(--text-base);
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: var(--brand-primary);
-  color: var(--text-on-primary);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-  background: var(--brand-secondary);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-  color: var(--text-on-primary);
-}
-
-.btn-secondary {
-  background: var(--surface);
-  color: var(--brand-primary);
-  border: 2px solid var(--brand-primary);
-}
-
-.btn-secondary:hover {
-  background: var(--brand-primary);
-  color: var(--text-on-primary);
-  transform: translateY(-2px);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--brand-primary);
-  border: 2px solid var(--brand-primary);
-}
-
-.btn-outline:hover {
-  background: var(--brand-primary);
-  color: var(--text-on-primary);
-}
-
-.btn-large {
-  padding: 18px 36px;
-  font-size: var(--text-lg);
-}
-
-.btn-small {
-  padding: 10px 20px;
-  font-size: var(--text-sm);
-}
-
-/* Uiverse-style CTA (custom) */
-
-.cta {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  /* reserve space for the left circle */
-  padding: 12px 20px 12px 64px;
-  border-radius: 9999px;
-  background: transparent;
-  color: #2563eb;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  border: none;
-  overflow: visible;
-  transition: all 0.25s ease;
-  z-index: 50;
-}
-
-.cta::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
-  display: block;
-  border-radius: 50px;
-  /* light tint initially so text remains readable */
-  background: rgba(37,99,235,0.12);
-  width: 44px;
-  height: 44px;
-  transition: all 0.35s ease;
-  z-index: 0;
-}
-
-.cta > * { /* scope children to sit above the pseudo element */
-  position: relative;
-  z-index: 1;
-}
-
-.cta span {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  font-weight: 700;
-  color: #2563eb;
-  transition: color 0.25s ease;
-}
-
-
-.cta svg {
-  width: 20px;
-  height: 13px;
-  margin-left: 8px;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke: #2563eb;
-  stroke-width: 2;
-  transform: translateX(-6px);
-  transition: transform 0.25s ease, stroke 0.25s ease;
-}
-
-/* Force CTA SVG to remain small (override global main svg caps) */
-.cta svg {
-  max-width: 20px !important;
-  max-height: 13px !important;
-  width: 20px !important;
-  height: 13px !important;
-}
-
-.cta:hover::before {
-  width: 100%;
-  left: 0;
-  background: #2563eb;
-}
-
-.cta:hover span,
-.cta:hover svg {
-  color: #ffffff;
-  stroke: #ffffff;
-}
-
-.cta:active {
-  transform: scale(0.98);
-}
-
-/* ==========================================================================
-   TARJETAS Y SUPERFICIES
-   ========================================================================== */
-
-.card {
-  background: var(--surface);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
-}
-
-.card-blue {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-  color: var(--text-on-primary);
-  border: none;
-}
-
-.card-blue h1, .card-blue h2, .card-blue h3, .card-blue h4, .card-blue h5, .card-blue h6 {
-  color: var(--text-on-primary);
-}
-
-.card-blue p {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.card-light {
-  background: var(--blue-50);
-  border: 1px solid rgba(0, 87, 217, 0.1);
-}
-
-.card-elevated {
-  box-shadow: var(--shadow-xl);
-}
-
-/* Tarjeta de servicio (como en la imagen 2) */
-.service-card {
-  background: var(--surface);
-  border-radius: var(--radius-2xl);
-  padding: 2.5rem;
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-slow);
-  position: relative;
-  overflow: hidden;
-}
-
-.service-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-base);
-}
-
-.service-card:hover::before {
-  transform: scaleX(1);
-}
-
-.service-card:hover {
-  box-shadow: var(--shadow-xl);
-  transform: translateY(-6px);
-  border-color: var(--brand-primary);
-}
-
-/* ==========================================================================
-   BADGES Y PILLS
-   ========================================================================== */
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.badge-primary {
-  background: rgba(0, 87, 217, 0.1);
-  color: var(--brand-primary);
-  border: 1px solid rgba(0, 87, 217, 0.2);
-}
-
-.badge-secondary {
-  background: var(--gray-100);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-.badge-blue {
-  background: var(--brand-primary);
-  color: var(--text-on-primary);
-}
-
-/* ==========================================================================
-   FORMULARIOS E INPUTS
-   ========================================================================== */
+/* NAVBAR helpers (Navbar relies on these class names) */
+.nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
+.nav-container { display:flex; align-items:center; justify-content:space-between; max-width:1280px; margin:0 auto; padding: 0 1rem; }
+.nav-logo { font-weight:800; color:var(--brand-primary); text-decoration:none; display:inline-flex; align-items:center; }
+.nav-logo-img img, .nav-logo-img { height:56px; width:auto; display:block; }
+.nav-menu { display:flex; gap:1.5rem; list-style:none; align-items:center; }
+.nav-link { color:var(--text-primary); text-decoration:none; position:relative; padding:0.25rem 0; }
+.nav-link::after { content:''; position:absolute; left:0; bottom:-4px; height:2px; width:0; background:var(--brand-primary); transition: width var(--transition-fast); }
+.nav-link:hover { color:var(--brand-primary); }
+.nav-link:hover::after { width:100%; }
+.nav-pill { display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:9999px; background:transparent; }
 
-.input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="tel"],
-input[type="number"],
-input[type="url"],
-textarea,
-select {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-family: var(--font-primary);
-  font-size: var(--text-base);
-  color: var(--text-primary);
-  background: var(--surface);
-  transition: all var(--transition-fast);
-  outline: none;
-}
-
-.input:focus,
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(0, 87, 217, 0.1);
-}
-
-.input::placeholder,
-input::placeholder,
-textarea::placeholder {
-  color: var(--text-muted);
-}
-
-textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.input-error {
-  border-color: var(--danger);
-}
-
-.input-error:focus {
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-}
-
-/* ==========================================================================
-   NAVEGACIÓN
-   ========================================================================== */
-
-.nav {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.nav-logo {
-  font-size: var(--text-2xl);
-  font-weight: 800;
-  color: var(--brand-primary);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-}
-
-/* Logo image sizing: keep aspect ratio (width:auto) and increase visible size */
-.nav-logo img,
-.nav-logo-img,
-.nav-logo-img img {
-  height: 88px;
-  width: auto;
-  display: block;
-}
-
-@media (max-width: 1024px) {
-  .nav-logo img,
-  .nav-logo-img,
-  .nav-logo-img img {
-    height: 72px;
-  }
-}
-
-@media (max-width: 768px) {
-  .nav-logo img,
-  .nav-logo-img,
-  .nav-logo-img img {
-    height: 56px;
-  }
-}
-
-/* increase navbar vertical padding to accommodate larger logo */
-.nav {
-  padding: 1.5rem 0;
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  list-style: none;
-}
-
-.nav-link {
-  font-size: var(--text-base);
-  font-weight: 500;
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-  position: relative;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--brand-primary);
-  transition: width var(--transition-base);
-}
-
-.nav-link:hover {
-  color: var(--brand-primary);
-}
-
-.nav-link:hover::after {
-  width: 100%;
-}
-
-.nav-link.active {
-  color: var(--brand-primary);
-}
-
-/* ==========================================================================
-   SECCIONES Y ESPACIADO
-   ========================================================================== */
-
-section {
-  padding: 5rem 0;
-}
-
-.section-title {
-  font-size: var(--text-4xl);
-  font-weight: 800;
-  color: var(--brand-dark);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.section-subtitle {
-  font-size: var(--text-xl);
-  color: var(--text-secondary);
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 3rem;
-}
-
-/* ==========================================================================
-   GRID Y LAYOUTS
-   ========================================================================== */
-
-.grid {
-  display: grid;
-  gap: 2rem;
-}
-
-.grid-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.grid-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-@media (max-width: 1024px) {
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .grid-2,
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ==========================================================================
-   FORMAS DECORATIVAS (COMO EN LAS IMÁGENES)
-   ========================================================================== */
-
-.brand-bubbles {
-  position: relative;
-}
-
-.brand-bubbles::before,
-.brand-bubbles::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.brand-bubbles::before {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-  background: radial-gradient(circle, rgba(0, 87, 217, 0.08) 0%, transparent 70%);
-}
-
-.brand-bubbles::after {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  left: -50px;
-  background: radial-gradient(circle, rgba(0, 74, 183, 0.06) 0%, transparent 70%);
-  animation: float 15s ease-in-out infinite reverse;
-}
+/* Buttons used in Navbar */
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:var(--radius-lg); font-weight:600; border:none; cursor:pointer; }
+.btn-primary { background:var(--brand-primary); color:#fff; }
+.btn-primary:hover { background:var(--brand-secondary); }
+.btn-small { padding:0.375rem 0.75rem; font-size:0.9rem; }
 
-/* Elemento decorativo circular */
-.circle-decoration {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 87, 217, 0.15);
-  pointer-events: none;
-}
+/* Keep input simple fallback for non-Tailwind environments used by some components */
+input, textarea, select { font-family: inherit; }
 
-.circle-decoration-large {
-  width: 600px;
-  height: 600px;
-}
+/* Keep a small set of utility classes that components expect (non-Tailwind fallbacks) */
+.card { background: var(--surface); border-radius: 12px; padding:1rem; }
 
-.circle-decoration-medium {
-  width: 400px;
-  height: 400px;
-}
+/* End of trimmed globals.css */
 
-.circle-decoration-small {
-  width: 200px;
-  height: 200px;
-}
 
 /* Make decorative circles less intrusive on small screens */
 @media (max-width: 900px) {

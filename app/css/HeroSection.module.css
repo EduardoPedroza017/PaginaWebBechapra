@@ -1,0 +1,28 @@
+.heroImage {
+  /* ensure next/image fill covers and keeps the intended contrast */
+  filter: saturate(1.02) contrast(1.02);
+}
+
+.overlayCard {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+
+.overlayInitial {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* small responsive tweak for the hero card height */
+@media (min-width: 1280px) {
+  .heroImageContainer {
+    height: 340px;
+  }
+}
