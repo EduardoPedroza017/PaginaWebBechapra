@@ -30,25 +30,36 @@ export default function HeroSection() {
               Capital Humano, Desarrollo Organizacional y Management Services integrados bajo una misma marca para acompañarte en cada etapa de crecimiento.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 mt-6">
-              <a
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="flex items-center gap-12 mt-6 flex-nowrap"
+            >
+              <motion.a
                 href="#servicios"
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:from-blue-700 transition-colors duration-200"
                 aria-label="Explorar servicios"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className={`${styles.exploreBtn} relative inline-flex items-center gap-3 text-white rounded-full font-bold text-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
               >
-                <span>Explorar servicios</span>
-                <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+                <span className="tracking-wide relative z-10">Explorar servicios</span>
+                <svg className="w-5 h-5 transition-transform duration-300 relative z-10" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.5" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5 10h10M10 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </a>
+              </motion.a>
 
-              <a
+              <motion.a
                 href="#contacto"
                 className="text-blue-700 underline underline-offset-4 font-medium"
+                whileHover={{ x: 6 }}
+                transition={{ duration: 0.22 }}
               >
                 Solicitar información
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -58,7 +69,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8 }}
             className="hidden lg:flex justify-center"
           >
-            <div className="w-full max-w-xl h-80 rounded-2xl bg-gradient-to-br from-blue-50 to-white shadow-2xl overflow-hidden relative">
+            <div className="w-full max-w-xl h-80 rounded-2xl bg-gradient-to-br from-blue-50 to-white shadow-2xl overflow-visible relative">
               {/* Main illustrative image - replace src with your provided asset in public/imagen when ready */}
                 <div className={`absolute inset-0 ${styles.heroImage}`}>
                   <Image

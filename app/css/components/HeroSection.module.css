@@ -20,6 +20,44 @@
   font-weight: 700;
 }
 
+/* Local override for hero CTA to avoid global conflicts and clipping */
+.exploreBtn {
+  background: linear-gradient(90deg, #1e63d6 0%, #0b52b3 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 36px rgba(3,102,214,0.14);
+  min-width: 160px;
+  padding: 0.7rem 1.6rem;
+  border-radius: 9999px;
+  z-index: 60;
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(59,130,246,0.10);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, filter 220ms ease;
+}
+
+.exploreBtn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 48px rgba(3,102,214,0.18);
+}
+
+.exploreBtn:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.exploreBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+}
+
+.exploreBtn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 220ms ease;
+}
+
 /* small responsive tweak for the hero card height */
 @media (min-width: 1280px) {
   .heroImageContainer {
