@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ServicesShowcase from "./ServicesShowcase";
 
 
 const groups = [
@@ -51,6 +52,9 @@ return (
 </div>
 </section>
 
+
+				{/* Nuestros servicios - overlapping card showcase (client component) */}
+				<ServicesShowcase />
 
 {/* 3 columnas con subservicios */}
 <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">

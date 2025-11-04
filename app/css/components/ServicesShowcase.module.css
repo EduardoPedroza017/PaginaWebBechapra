@@ -1,0 +1,27 @@
+.cardImage {
+  /* keep images crisp and slightly desaturated to match site tone */
+  filter: saturate(0.98) contrast(1.02);
+}
+
+.cardHighlight {
+  /* subtle inner glow for the highlighted card */
+  box-shadow: 0 18px 48px rgba(11,99,214,0.18);
+}
+
+.cardIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+}
+
+.cardImageRounded {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+/* small responsive tweak */
+@media (min-width: 1024px) {
+  .cardImage {
+    transform-origin: center;
+  }
+}

@@ -1,0 +1,43 @@
+.servicesShowcase {
+  /* allow overflow for the overlapping effect */
+  overflow: visible;
+}
+
+.stackRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem; /* 20px */
+  overflow: visible;
+}
+
+.cardBase {
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+  overflow: visible;
+}
+
+.cardHighlight {
+  border-radius: 1.25rem;
+  box-shadow: 0 22px 60px rgba(11,99,214,0.18);
+}
+
+.cardImageCrop {
+  height: 7rem;
+  overflow: hidden;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.cardIconWrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 0.75rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+}
+
+@media (min-width: 768px) {
+  .stackRow { gap: 2rem; }
+  .cardImageCrop { height: 8.5rem; }
+}
