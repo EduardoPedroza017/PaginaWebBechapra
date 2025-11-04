@@ -1,0 +1,66 @@
+.carouselContainer {
+  overflow: visible;
+}
+
+.carouselRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.card {
+  width: 16rem; /* 256px */
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 30rem; /* increased height to avoid cropping */
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+  background: white;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .card { width: 18rem; height: 34rem; }
+}
+
+.cardImage {
+  height: 8.5rem;
+  overflow: hidden;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.cardContent {
+  padding: 1.25rem 1.25rem 1.75rem; /* extra bottom padding so button isn't clipped */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+
+.itemsBox {
+  margin-top: 0.5rem;
+}
+
+.highlight {
+  transform: none; /* preserved via inline styles for positioning, but ensure full height */
+  box-shadow: 0 26px 60px rgba(11,99,214,0.16);
+}
+
+.btnPrimary {
+  background: #ffffff;
+  color: #1E40AF;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+}
+
+/* Ensure image covers area */
+.cardImage img,
+.cardImage :global(img) {
+  object-fit: cover;
+}

@@ -6,7 +6,8 @@
 .stackRow {
   display: flex;
   align-items: flex-end;
-  gap: 1.25rem; /* 20px */
+  gap: 56px; /* fixed pixel gap requested */
+  justify-content: center;
   overflow: visible;
 }
 
@@ -38,6 +39,6 @@
 }
 
 @media (min-width: 768px) {
-  .stackRow { gap: 2rem; }
+  .stackRow { gap: 56px; }
   .cardImageCrop { height: 8.5rem; }
 }
