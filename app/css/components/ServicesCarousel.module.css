@@ -27,7 +27,7 @@
 }
 
 .cardImage {
-  height: 8.5rem;
+  height: 12rem; /* consistent image band height across all cards */
   overflow: hidden;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -50,6 +50,14 @@
   box-shadow: 0 26px 60px rgba(11,99,214,0.16);
 }
 
+/* Larger image area for highlighted card */
+.highlight .cardImage {
+  /* keep same image height for perfect alignment with other cards */
+  height: 12rem;
+  border-top-left-radius: 1.25rem; /* allow slightly larger radius visually for highlighted card */
+  border-top-right-radius: 1.25rem;
+}
+
 .btnPrimary {
   background: #ffffff;
   color: #1E40AF;
@@ -63,4 +71,28 @@
 .cardImage img,
 .cardImage :global(img) {
   object-fit: cover;
+  object-position: center top; /* align important content at top */
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .cardImage { height: 14rem; }
+  .highlight .cardImage { height: 14rem; }
+}
+
+/* Compensate for Tailwind translate utilities applied on the card wrappers so
+   the image bands stay level at the top. These target the utility classes
+   added in the JSX (.-translate-y-6 and .-translate-y-3). */
+:global(.-translate-y-6) .cardImage {
+  margin-top: 1.5rem; /* equal to the 24px upward shift from -translate-y-6 */
+}
+:global(.-translate-y-3) .cardImage {
+  margin-top: 0.75rem; /* equal to the 12px upward shift from -translate-y-3 */
+}
+
+/* Ensure highlighted card image doesn't get extra offset */
+:global(.rounded-3xl) .cardImage {
+  margin-top: 0;
 }

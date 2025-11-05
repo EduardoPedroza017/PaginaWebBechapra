@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Award, Users, TrendingUp, Briefcase } from "lucide-react";
+import { Users, TrendingUp, Briefcase } from "lucide-react";
 import React from "react";
 
 type ServiceCardProps = {

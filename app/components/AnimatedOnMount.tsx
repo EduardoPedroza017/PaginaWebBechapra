@@ -6,8 +6,8 @@ export default function AnimatedOnMount({ children, className = "" }: { children
   const [mounted, setMounted] = useState(false);
   useEffect(()=>{
     // Respect reduced motion preference
-    let reduced = false;
-    try{ reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ reduced = false }
+  let reduced = false;
+  try{ reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch{ reduced = false }
     const t = setTimeout(()=> setMounted(true), reduced ? 0 : 30);
     return ()=> clearTimeout(t);
   },[]);

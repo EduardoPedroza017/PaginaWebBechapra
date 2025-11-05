@@ -127,42 +127,47 @@
 /* Image Wrapper */
 .imageWrapper {
   position: relative;
-  width: 100%;
+  width: min(220px, 100%);
+  max-width: 220px;
   aspect-ratio: 1;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  background: linear-gradient(135deg, #0057D9 0%, #004AB7 100%);
-  box-shadow: 0 8px 24px rgba(0, 87, 217, 0.12);
-  margin-bottom: 1rem;
+  border-radius: 50%; /* circular */
+  overflow: visible; /* allow shadow to show outside */
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.12), transparent 25%), linear-gradient(135deg, #0057D9 0%, #004AB7 100%);
+  box-shadow: 0 18px 40px rgba(2, 46, 135, 0.18), 0 6px 18px rgba(2,46,135,0.08) inset;
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 420ms cubic-bezier(0.22, 0.8, 0.36, 1), box-shadow 420ms ease;
+  transform-style: preserve-3d;
 }
 
 .awardCard:hover .imageWrapper {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 40px rgba(0, 87, 217, 0.2);
+  transform: translateY(-12px) rotateX(6deg) rotateY(-6deg) scale(1.02);
+  box-shadow: 0 30px 60px rgba(2, 46, 135, 0.24), 0 10px 26px rgba(2,46,135,0.12) inset;
 }
 
 /* Award Image */
 .awardImage {
-  width: 100%;
-  height: 100%;
+  width: 60%;
+  height: auto;
   object-fit: contain;
-  padding: 1.5rem;
-  transition: transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 0.75rem;
+  transition: transform 520ms cubic-bezier(0.22, 0.8, 0.36, 1), filter 420ms ease;
+  transform-origin: center center;
+  z-index: 2; /* sit above overlay */
 }
 
 .awardCard:hover .awardImage {
-  transform: scale(1.1);
+  transform: translateZ(20px) scale(1.05);
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.12));
 }
 
 /* Image Overlay */
 .imageOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 87, 217, 0.08) 0%, rgba(10, 25, 51, 0.03) 100%);
+  background: radial-gradient(circle at 35% 20%, rgba(255,255,255,0.24), rgba(255,255,255,0.04) 18%, transparent 35%), linear-gradient(135deg, rgba(0, 87, 217, 0.06) 0%, rgba(10, 25, 51, 0.02) 100%);
   z-index: 1;
   pointer-events: none;
 }
@@ -181,8 +186,10 @@
   overflow-wrap: break-word;
 }
 
+/* Slight lift on title when hovering the card to match badge motion */
 .awardCard:hover .awardTitle {
   color: #0057D9;
+  transform: translateY(-6px);
 }
 
 @media (max-width: 768px) {

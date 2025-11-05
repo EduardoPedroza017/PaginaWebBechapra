@@ -1,0 +1,121 @@
+/* ContactForm.module.css - isolated styles for contact form */
+:root{
+  --primary: #0057D9;
+  --primary-dark: #004AB7;
+  --bg-light: #F0F4FC;
+  --text-dark: #0A1933;
+}
+
+.formWrapper{
+  width: 100%;
+}
+
+.formGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px){
+  .formGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+.field{
+  display: flex;
+  flex-direction: column;
+}
+
+.input,
+.textarea{
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(10,25,51,0.08);
+  background: white;
+  box-shadow: 0 6px 18px -10px rgba(9,25,51,0.08);
+  color: var(--text-dark);
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 220ms ease, transform 220ms ease, border-color 220ms ease;
+}
+
+.input:focus,
+.textarea:focus{
+  box-shadow: 0 12px 30px -12px rgba(0,87,217,0.18);
+  border-color: rgba(0,87,217,0.35);
+  transform: translateY(-2px);
+}
+
+.textarea{
+  min-height: 140px;
+  resize: vertical;
+}
+
+.labelHidden{
+  position: absolute !important;
+  height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+}
+
+.errorText{
+  margin-top: 0.5rem;
+  color: #e11d48; /* rose-600 */
+  font-size: 0.875rem;
+}
+
+.actions{
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.submitButton{
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 0.9rem 1.6rem;
+  border-radius: 1.25rem;
+  border: none;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  box-shadow: 0 18px 36px -12px rgba(0,87,217,0.35);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.submitButton:hover:enabled{
+  transform: translateY(-4px);
+  box-shadow: 0 28px 56px -18px rgba(0,87,217,0.35);
+}
+
+.submitButton:disabled{
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.statusArea{
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.successText{
+  color: #059669; /* green-600 */
+  font-weight: 600;
+}
+
+.errorStatus{
+  color: #e11d48;
+  font-weight: 600;
+}
+
+.smallNote{
+  font-size: 0.9rem;
+  color: rgba(10,25,51,0.7);
+}

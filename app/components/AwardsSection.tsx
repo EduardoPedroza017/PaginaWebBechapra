@@ -9,22 +9,22 @@ export default function AwardsSection() {
   const reconocimientos = [
     {
       id: "ccrh",
-      img: "/imagen/reconocimiento-ccrh.jpg",
+      img: "/imagen/reconocimiento-ccrh.svg",
       title: "Concilio de Recursos Humanos",
     },
     {
       id: "beh",
-      img: "/imagen/reconocimiento-beh.jpg",
+      img: "/imagen/reconocimiento-beh.svg",
       title: "Distintivo de Empresas Humanitarias",
     },
     {
       id: "trabajo",
-      img: "/imagen/reconocimiento-trabajo.jpg",
+      img: "/imagen/reconocimiento-trabajo.svg",
       title: "Certificación de Trabajo Digno",
     },
     {
       id: "repse",
-      img: "/imagen/reconocimiento-repse.jpg",
+      img: "/imagen/reconocimiento-repse.svg",
       title: "Registro de Especialistas Profesionales",
     },
   ];

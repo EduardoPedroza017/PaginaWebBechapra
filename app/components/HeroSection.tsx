@@ -35,7 +35,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex items-center gap-12 mt-6 flex-nowrap"
+              className="flex flex-col lg:flex-row items-center gap-6 mt-6 w-full"
             >
               <motion.a
                 href="#servicios"
@@ -51,9 +51,13 @@ export default function HeroSection() {
                 </svg>
               </motion.a>
 
+              {/* spacer pushes the secondary link to the far right of the action row */}
+              {/* spacer only on large screens to avoid squeezing on mobile */}
+              <div className="hidden lg:block flex-1" />
+
               <motion.a
                 href="#contacto"
-                className="text-blue-700 underline underline-offset-4 font-medium"
+                className={`${styles.secondaryBtn} relative z-50`}
                 whileHover={{ x: 6 }}
                 transition={{ duration: 0.22 }}
               >
@@ -69,7 +73,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8 }}
             className="hidden lg:flex justify-center"
           >
-            <div className="w-full max-w-xl h-80 rounded-2xl bg-gradient-to-br from-blue-50 to-white shadow-2xl overflow-visible relative">
+            <div className={`w-full max-w-xl h-80 rounded-2xl bg-gradient-to-br from-blue-50 to-white shadow-2xl overflow-visible relative ${styles.heroImageContainer}`}>
               {/* Main illustrative image - replace src with your provided asset in public/imagen when ready */}
                 <div className={`absolute inset-0 ${styles.heroImage}`}>
                   <Image

@@ -24,7 +24,7 @@ export default function AnimatedOnScroll({ children, className = "", rootMargin 
     try{
       prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       isSmallScreen = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
-    }catch(e){
+    }catch{
       prefersReduced = false;
       isSmallScreen = false;
     }

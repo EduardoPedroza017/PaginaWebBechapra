@@ -1,55 +1,58 @@
-import Link from "next/link";
-import { User, Clock, Target, CheckCircle, TrendingUp, Award } from "lucide-react";
+"use client";
 
-export const metadata = {
-  title: "Atracción de Talento | Bechapra",
-  description:
-    "Reclutamiento ágil y efectivo: perfiles operativos, administrativos y especializados con indicadores claros y un proceso transparente.",
-};
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, Handshake, Phone } from "lucide-react";
+import styles from "./styles.module.css";
 
 export default function Page() {
+  const variants = {
+    fadeUp: { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } },
+    float: { hidden: { opacity: 0, y: 6, scale: 0.995 }, show: { opacity: 1, y: 0, scale: 1 } }
+  };
+  
   const steps = [
     {
       n: "01",
       title: "Brief & perfil",
       desc:
         "Definimos objetivos, perfil ideal, tiempos y KPI. Acordamos el canal de comunicación y responsables.",
-      icon: "📋",
+  icon: <User className="w-8 h-8 text-[#0057da]" />,
     },
     {
       n: "02",
       title: "Sourcing & hunting",
       desc:
         "Research activo, base de candidatos, job boards y hunting directo. Priorizamos velocidad y calidad.",
-      icon: "🔍",
+  icon: <Target className="w-8 h-8 text-[#0057da]" />,
     },
     {
       n: "03",
       title: "Entrevistas & filtros",
       desc:
         "Entrevista por competencias, validación de motivadores, salary match y cultura. Reporte corto por candidato.",
-      icon: "💬",
+  icon: <User className="w-8 h-8 text-[#0057da]" />,
     },
     {
       n: "04",
       title: "Shortlist & agenda",
       desc:
         "Envío de terna con comparativo. Coordinamos entrevistas con líderes y damos seguimiento.",
-      icon: "📊",
+  icon: <TrendingUp className="w-8 h-8 text-[#0057da]" />,
     },
     {
       n: "05",
       title: "Validaciones",
       desc:
         "Socioeconómico / referencias (si aplica). Cierre de oferta y fecha de ingreso con candidato.",
-      icon: "✓",
+  icon: <CheckCircle className="w-8 h-8 text-[#0057da]" />,
     },
     {
       n: "06",
       title: "Garantía",
       desc:
         "Periodo de sustitución sin costo según acuerdo. Retro continua y cierre del proceso.",
-      icon: "🛡️",
+  icon: <Award className="w-8 h-8 text-[#0057da]" />,
     },
   ];
 
@@ -81,14 +84,22 @@ export default function Page() {
   ];
 
   const positions = [
-    "Administrativo", 
-    "Backoffice", 
-    "Ventas", 
-    "Operativo",
-    "TI / Soporte", 
-    "Finanzas", 
-    "Bilingüe", 
-    "Atención a clientes",
+    "Contabilidad",
+    "Facturación",
+    "Cobranza",
+    "Vinculación",
+    "Administración",
+    "TI",
+    "Automatizaciones",
+    "Comercial",
+    "Atención a Clientes",
+    "Tesorería",
+    "Nómina",
+    "Atracción de Talento",
+    "Dirección General",
+    "Asuntos Corporativos",
+    "Seguridad",
+    "Jurídico",
   ];
 
   const modalities = [
@@ -96,7 +107,7 @@ export default function Page() {
       title: "Headhunting puntual",
       desc:
         "Búsqueda especializada por vacante. Pago por éxito con garantía de sustitución.",
-      icon: "🎯",
+  icon: <Target className="w-8 h-8 text-[#0057da]" />,
       features: [
         "Búsqueda especializada",
         "Pago por éxito",
@@ -107,7 +118,7 @@ export default function Page() {
       title: "Reclutamiento masivo",
       desc:
         "Perfiles operativos/volumen. Procesos paralelos y filtros rápidos para cubrir picos.",
-      icon: "👥",
+  icon: <Users className="w-8 h-8 text-[#0057da]" />,
       features: [
         "Alto volumen",
         "Procesos paralelos",
@@ -118,7 +129,7 @@ export default function Page() {
       title: "RPO / célula dedicada",
       desc:
         "Equipo Bechapra integrado a tu operación para cubrir múltiples vacantes mes a mes.",
-      icon: "🤝",
+  icon: <Handshake className="w-8 h-8 text-[#0057da]" />,
       features: [
         "Equipo dedicado",
         "Integración completa",
@@ -147,50 +158,44 @@ export default function Page() {
 
   return (
     <>
-      {/* ===== HERO SECCIÓN ===== */}
-      <section className="relative overflow-hidden">
-        <div className="relative grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr]">
-          <div className="relative z-10">
-            <span className="nav-pill mb-4 inline-flex items-center gap-2">
-              <span className="text-2xl">👔</span>
-              <span>Capital Humano</span>
-            </span>
-            <h1 className="text-balance text-5xl font-bold leading-tight md:text-6xl">
-              Atracción de Talento
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-white/80 leading-relaxed">
-              Reclutamos perfiles operativos, administrativos y especializados con un
-              proceso claro, reportes útiles y tiempos comprometidos.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a href="#proceso" className="cta-primary px-8 py-3">
-                Ver proceso completo
-              </a>
-              <a href="#kpis" className="nav-pill">
-                📊 Indicadores
-              </a>
-              <Link href="/servicios/servicios-especializados" className="nav-pill">
-                ⚡ Servicios especializados
-              </Link>
-            </div>
+      {/* ===== HERO SECCIÓN (modernizada, local styles) ===== */}
+      <section className={`${styles.hero} relative`}>
+        <div className={styles.container}>
+          {/* Columna izquierda: Descripción */}
+          <div className={styles.heroLeft}>
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} transition={{ staggerChildren: 0.06 }}>
+              <motion.div variants={variants.fadeUp}>
+                <span className={styles.pillNav}>
+                  <User className="w-5 h-5" />
+                  <span>Capital Humano</span>
+                </span>
+              </motion.div>
+
+              <motion.h1 className={styles.heroTitle} variants={variants.fadeUp}>
+                Atracción de Talento
+              </motion.h1>
+
+              <motion.p className={`${styles.heroLead} text-[#0f172a]`} variants={variants.fadeUp}>
+                Reclutamos perfiles operativos, administrativos y especializados con un proceso claro, reportes útiles y tiempos comprometidos.
+              </motion.p>
+
+              <motion.div className="mt-6 flex flex-wrap gap-4" variants={variants.fadeUp}>
+                <Link href="#proceso" aria-label="Ver proceso completo">
+                  <span className="px-5 py-3 rounded-lg bg-gradient-to-r from-[#0057da] to-[#004ab7] text-white font-semibold">Ver proceso completo</span>
+                </Link>
+                <a href="#kpis" className="nav-pill">
+                  <Clock className="w-4 h-4 mr-2 inline-block text-[#0057da]" /> Indicadores
+                </a>
+                <Link href="/servicios/servicios-especializados" className="nav-pill">
+                  <Target className="w-4 h-4 mr-2 inline-block text-[#0057da]" /> Servicios especializados
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
-          
-          {/* Espacio para imagen destacada */}
-          <div className="relative">
-            <div 
-              className="rounded-2xl aspect-[4/5] w-full relative overflow-hidden border border-white/10"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0,87,218,0.15), rgba(0,74,183,0.1))'
-              }}
-            >
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-6">
-                  <div className="text-6xl mb-4">🎯</div>
-                  <p className="text-white/60 text-sm">Espacio para imagen destacada</p>
-                  <p className="text-white/40 text-xs mt-2">Recomendado: 800x1000px</p>
-                </div>
-              </div>
-            </div>
+
+          {/* Columna derecha: Imagen */}
+          <div className={styles.heroRight}>
+            <img src="/imagen/talento/atracciontalento.jpg" alt="Hero visual" className={styles.heroImage} />
           </div>
         </div>
       </section>
@@ -204,8 +209,12 @@ export default function Page() {
         
         <div className="grid gap-6 md:grid-cols-3">
           {benefits.map((benefit, i) => (
-            <div 
+            <motion.div
               key={benefit.title}
+              initial={{ opacity: 0, y: 6 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              viewport={{ once: true }}
               className={`relative rounded-2xl p-8 transition-all duration-200 hover:-translate-y-1 ${
                 i === 0 
                   ? "surface-blue" 
@@ -232,7 +241,7 @@ export default function Page() {
               }`}>
                 {benefit.desc}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -243,16 +252,13 @@ export default function Page() {
           <h2 className="text-3xl font-bold md:text-4xl">Perfiles que cubrimos</h2>
           <p className="mt-3 text-white/70">Especialistas en múltiples áreas y niveles</p>
         </div>
-        
-        <div className="flex flex-wrap gap-3 justify-center">
-          {positions.map((p) => (
-            <span 
-              key={p} 
-              className="nav-pill px-6 py-3"
-            >
-              {p}
-            </span>
-          ))}
+
+        <div className={styles.positionsWrap}>
+          <div className={styles.positionsScroll} aria-label="Perfiles que cubrimos">
+            {positions.map((p) => (
+              <div key={p} className={styles.positionPill}>{p}</div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -265,15 +271,19 @@ export default function Page() {
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div 
-              key={s.n} 
+            <motion.div
+              key={s.n}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              viewport={{ once: true }}
               className="card-service p-8 transition-all duration-200 hover:-translate-y-1 relative"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-[#0057da] flex items-center justify-center text-white font-bold text-sm">
                   {s.n}
                 </div>
-                <div className="text-4xl">{s.icon}</div>
+                <div className="text-4xl text-[#0057da]">{s.icon}</div>
               </div>
               
               <h3 className="text-xl font-semibold mb-3">{s.title}</h3>
@@ -285,7 +295,7 @@ export default function Page() {
                   style={{ width: `${((i + 1) / steps.length) * 100}%` }}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -298,11 +308,8 @@ export default function Page() {
         </div>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {kpis.map((k) => (
-            <div 
-              key={k.label} 
-              className="surface-light p-8 text-center hover:-translate-y-1 transition-all duration-200 relative"
-            >
+          {kpis.map((k, i) => (
+            <motion.div key={k.label} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} viewport={{ once: true }} className="surface-light p-8 text-center hover:-translate-y-1 transition-all duration-200 relative">
               <div className="mb-4 flex justify-center text-[#0057da]">
                 {k.icon}
               </div>
@@ -318,7 +325,7 @@ export default function Page() {
               <div className="text-sm text-[color:rgba(15,23,42,.55)]">
                 {k.note}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -332,17 +339,15 @@ export default function Page() {
         
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {modalities.map((m, i) => (
-            <div
-              key={m.title}
+            <motion.div key={m.title} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} viewport={{ once: true }}
               className={`relative rounded-2xl p-8 transition-all duration-200 hover:-translate-y-1 ${
                 i === 0 
                   ? "surface-blue" 
                   : i === 1 
                   ? "surface-light" 
                   : "card-service"
-              }`}
-            >
-              <div className="text-5xl mb-6">{m.icon}</div>
+              }`}>
+              <div className="text-5xl mb-6 text-[#0057da]">{m.icon}</div>
               
               <h3 className={`text-2xl font-bold mb-4 ${
                 i === 1 ? "text-[#0f172a]" : "text-white"
@@ -373,7 +378,7 @@ export default function Page() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -383,7 +388,7 @@ export default function Page() {
         <div className="relative overflow-hidden rounded-3xl card-service p-10 md:p-16">
           <div className="relative z-10 grid items-center gap-8 md:grid-cols-[1fr_auto]">
             <div>
-              <div className="text-5xl mb-6">🚀</div>
+              <div className="text-5xl mb-6"><Phone className="inline-block text-white" size={40} /></div>
               <h3 className="text-3xl font-bold mb-4">¿Listos para iniciar una búsqueda?</h3>
               <p className="text-white/75 text-lg max-w-2xl">
                 Agenda una llamada y armamos juntos el perfil ideal y los tiempos de
@@ -396,7 +401,7 @@ export default function Page() {
                 href="#final" 
                 className="cta-primary text-center px-8 py-3"
               >
-                📞 Agendar llamada
+                Agendar llamada
               </a>
               <Link 
                 href="/servicios/payroll" 

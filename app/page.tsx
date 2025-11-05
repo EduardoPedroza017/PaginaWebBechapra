@@ -1,7 +1,6 @@
 "use client";
 
 import ContactForm from "./components/ContactForm";
-import ServiceCard from "./components/ServiceCard";
 import AnimatedSection from "./components/AnimatedSection";
 import CtaRedes from "./components/CtaRedes";
 import ServicesSection from "./components/ServicesSection";

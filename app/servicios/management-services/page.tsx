@@ -44,9 +44,9 @@ export default function ManagementServicesPage() {
         >
           <h3 className="text-2xl font-bold mb-4">Optimiza la gestión de tu negocio</h3>
           <p className="mb-6">Descubre cómo nuestros servicios pueden ayudarte</p>
-          <a href="/#contacto" className="inline-block bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
+          <Link href="/#contacto" className="inline-block bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
             Más información
-          </a>
+          </Link>
         </motion.div>
       </div>
     </main>

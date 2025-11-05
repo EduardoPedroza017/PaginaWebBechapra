@@ -39,13 +39,7 @@ export default function DivisionsSection() {
     }
   }
 
-  function goPrev() {
-    setActive((s) => (s - 1 + divisions.length) % divisions.length);
-  }
 
-  function goNext() {
-    setActive((s) => (s + 1) % divisions.length);
-  }
 
   return (
     <section id="divisiones" className="mb-32">
