@@ -147,11 +147,31 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  /* For horizontal scroller behaviour on small screens */
+  min-width: 260px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 .doCard:hover {
   transform: translateY(-12px) scale(1.045) rotate(-1deg);
   box-shadow: 0 18px 40px 0 rgba(0,87,217,0.13);
   background: rgba(240,244,252,0.85);
+}
+
+/* decorative gradient overlay on cards */
+.doCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(79,143,255,0.03));
+  pointer-events: none;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+  transform: translateY(6px) scale(1.02);
+  opacity: 0.95;
+}
+.doCard:hover::before {
+  transform: translateY(-6px) scale(1.03);
+  opacity: 1;
 }
 .iconCircle {
   display: flex;
@@ -261,17 +281,21 @@
 }
 
 .doCTA {
-  background: linear-gradient(270deg, #4F8FFF 0%, var(--do-blue-dark) 60%, var(--do-blue) 100%);
+  background: linear-gradient(90deg, rgba(79,143,255,0.95) 0%, rgba(0,87,217,0.95) 60%, rgba(79,143,255,0.95) 100%);
   color: #fff;
-  border-radius: 2rem;
-  padding: 2.5rem 1.5rem;
+  border-radius: 1.6rem;
+  padding: 2.6rem 2rem;
   text-align: center;
-  box-shadow: 0 8px 32px 0 rgba(0,87,217,0.13);
-  margin: 0 auto 2.5rem auto;
-  max-width: 700px;
+  box-shadow: 0 18px 48px -8px rgba(0,87,217,0.22), inset 0 -6px 24px rgba(0,0,0,0.06);
+  margin: 2.25rem auto;
+  max-width: 920px;
   position: relative;
   overflow: hidden;
-  animation: ctaGradientMove 7s ease-in-out infinite alternate;
+  animation: ctaGradientMove 8s ease-in-out infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
 }
 @keyframes ctaGradientMove {
   0% { background-position: 0% 50%; }
@@ -279,15 +303,57 @@
 }
 .ctaSparkle {
   position: absolute;
-  top: 1.2rem;
-  right: 2.2rem;
-  color: #fffbe7;
-  filter: drop-shadow(0 2px 8px #fffbe7cc);
+  top: 0.9rem;
+  right: 1.2rem;
+  color: rgba(255,255,255,0.95);
+  filter: drop-shadow(0 4px 16px rgba(255,255,255,0.12));
   animation: sparklePulse 2.5s infinite alternate;
 }
 @keyframes sparklePulse {
   0% { opacity: 0.7; transform: scale(1); }
   100% { opacity: 1; transform: scale(1.18) rotate(8deg); }
+}
+
+/* CTA text/button specifics */
+.ctaTitle {
+  font-size: 2.1rem;
+  line-height: 1.02;
+  margin: 0;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 6px 28px rgba(0,87,217,0.12);
+}
+.ctaText {
+  margin: 0;
+  color: rgba(255,255,255,0.92);
+  max-width: 720px;
+  font-size: 1.05rem;
+}
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1.6rem;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 30px rgba(2,82,180,0.15);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.ctaButton:hover {
+  background: #fff;
+  color: var(--do-blue);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 48px rgba(79,143,255,0.18);
+}
+
+@media (max-width: 640px) {
+  .doCTA { padding: 2rem 1rem; border-radius: 1.1rem; }
+  .ctaTitle { font-size: 1.6rem; }
+  .ctaText { font-size: 0.98rem; }
 }
 .animatedSeparator {
   width: 100%;
@@ -308,3 +374,89 @@
   0% { filter: brightness(1.1); }
   100% { filter: brightness(1.5); box-shadow: 0 0 32px 6px #4F8FFF99; }
 }
+
+/* Scrollable cards container: horizontal on small screens, grid on larger */
+.doCardsScroller {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding: 1rem 1.25rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+/* Hide scrollbar in modern browsers */
+.doCardsScroller::-webkit-scrollbar { height: 8px; }
+.doCardsScroller::-webkit-scrollbar-thumb { background: rgba(79,143,255,0.28); border-radius: 999px; }
+.doCardsScroller { scrollbar-width: thin; scrollbar-color: rgba(79,143,255,0.28) transparent; }
+
+@media (min-width: 860px) {
+  .doCardsScroller {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.8rem;
+    overflow: visible;
+    padding: 0;
+  }
+  .doCard { min-width: auto; }
+}
+
+/* wrapper to position controls */
+.doCardsWrapper {
+  position: relative;
+}
+
+.scrollerControls {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.6rem;
+  z-index: 4;
+}
+.scrollerBtnPrev, .scrollerBtnNext {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: none;
+  background: rgba(255,255,255,0.92);
+  color: var(--do-blue);
+  display: inline-grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(2,82,180,0.08);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.scrollerBtnPrev:hover, .scrollerBtnNext:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(2,82,180,0.12); }
+.scrollerBtnPrev:focus, .scrollerBtnNext:focus { outline: 3px solid rgba(79,143,255,0.18); }
+
+/* Dots */
+.scrollerDots {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -18px;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 4;
+}
+.scrollerDot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 0;
+  cursor: pointer;
+}
+.activeDot {
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(79,143,255,0.18);
+}
+
+/* Accessibility and reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .doCard, .doCTA, .doCardsScroller, .doCardsWrapper { transition: none !important; animation: none !important; }
+}
+
+.ctaButton:focus { outline: 3px solid rgba(255,255,255,0.18); }

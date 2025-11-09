@@ -1,12 +1,13 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import styles from "./Navbar.module.css";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
   const [showLogoImg, setShowLogoImg] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Only swap to the image on the client to avoid SSR/CSR hydration mismatch
   useEffect(() => {
@@ -14,111 +15,101 @@ export default function Navbar() {
   }, []);
   
   return (
-    <nav className="nav">
-      <div className="nav-container">
-        <Link href="/" className="nav-logo">
+    <header className={styles.header}>
+      <div className={styles.container}>
+        <Link href="/" className={styles.logo}>
           {showLogoImg ? (
-            // Client-only Image replacement using the PNG placed under public/imagen/
             <Image
               src="/imagen/bechapra-logo.png"
               alt="Bechapra"
-              // intrinsic size updated to match larger displayed height (maintain aspect ratio)
-              width={336}
-              height={88}
+              width={140}
+              height={37}
               priority
-              className="nav-logo-img"
-              style={{ height: 88, width: "auto" }}
+              className={styles.logoImage}
             />
           ) : (
-            // Server-rendered fallback to avoid hydration mismatch
-            <span>Bechapra</span>
+            <span className={styles.logoText}>Bechapra</span>
           )}
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="nav-menu">
-          <li><Link href="/" className="nav-link">Pag. Principal</Link></li>
-          <li><Link href="/servicios" className="nav-link">Servicios</Link></li>
-          <li><Link href="/acerca-de" className="nav-link">Acerca de</Link></li>
-          <li>
-            <a 
-              href="https://bechapra.com.mx" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="btn btn-primary btn-small"
-            >
-              ¿Eres colaborador?
-            </a>
-          </li>
-        </ul>
+        <nav className={styles.menu}>
+          <Link href="/" className={styles.navLink}>
+            Pag. Principal
+          </Link>
+          <Link href="/servicios" className={styles.navLink}>
+            Servicios
+          </Link>
+          <Link href="/acerca-de" className={styles.navLink}>
+            Acerca de
+          </Link>
+          <a 
+            href="https://bechapra.com.mx" 
+            target="_blank" 
+            rel="noreferrer" 
+            className={styles.ctaButton}
+          >
+            ¿Eres colaborador?
+          </a>
+        </nav>
 
         {/* Mobile Menu Button */}
         <button 
-          onClick={() => setOpen(v => !v)} 
-          className="nav-link md:hidden"
+          className={styles.mobileMenuButton}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {mobileMenuOpen ? (
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          ) : (
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          )}
         </button>
       </div>
 
       {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden" style={{ 
-          background: 'var(--surface)',
-          borderTop: '1px solid var(--border-color)',
-          padding: '1rem'
-        }}>
-          <ul style={{ 
-            listStyle: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem'
-          }}>
-            <li>
-              <Link 
-                href="/" 
-                onClick={() => setOpen(false)} 
-                className="nav-link"
-                style={{ display: 'block', padding: '0.5rem' }}
-              >
-                Pag. Principal
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/servicios" 
-                onClick={() => setOpen(false)} 
-                className="nav-link"
-                style={{ display: 'block', padding: '0.5rem' }}
-              >
-                Servicios
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/acerca-de" 
-                onClick={() => setOpen(false)} 
-                className="nav-link"
-                style={{ display: 'block', padding: '0.5rem' }}
-              >
-                Acerca de
-              </Link>
-            </li>
-            <li>
-              <a 
-                href="https://bechapra.com.mx" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="btn btn-primary btn-small"
-                style={{ display: 'inline-block', marginTop: '0.5rem' }}
-              >
-                ¿Eres colaborador?
-              </a>
-            </li>
-          </ul>
+      {mobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <nav className={styles.mobileMenuNav}>
+            <Link 
+              href="/" 
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pag. Principal
+            </Link>
+            <Link 
+              href="/servicios" 
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Servicios
+            </Link>
+            <Link 
+              href="/acerca-de" 
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Acerca de
+            </Link>
+            <a 
+              href="https://bechapra.com.mx" 
+              target="_blank" 
+              rel="noreferrer" 
+              className={styles.mobileCtaButton}
+            >
+              ¿Eres colaborador?
+            </a>
+          </nav>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

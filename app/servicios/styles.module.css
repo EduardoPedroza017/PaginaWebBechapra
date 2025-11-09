@@ -1,9 +1,110 @@
+.heroSection {
+  background: linear-gradient(180deg, rgba(11,99,228,0.06), rgba(11,99,228,0.02));
+  padding: 48px 0;
+}
+.heroInner {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  justify-content: space-between;
+}
+.glassCard {
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(246,251,255,0.95));
+  border: 1px solid rgba(11,99,228,0.06);
+  box-shadow: 0 24px 60px rgba(3,48,88,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+  border-radius: 22px;
+  padding: 18px;
+}
+.glassCard:hover { transform: translateY(-6px); transition: transform .36s cubic-bezier(.2,.8,.2,1) }
+
+.glassCard .glass-inset { border-radius: 18px }
+
+.glassCard .size-36 { width: 144px; height: 144px; border-radius: 50%; box-shadow: 0 18px 40px rgba(11,99,228,0.06) }
+
+.glassCard:focus { outline: 3px solid rgba(11,99,228,0.12); outline-offset: 6px }
+
+.glassCard .cardAccent { display:none }
+.cardAccent { position:absolute; left:12px; top:12px; width:8px; height:8px; background:linear-gradient(90deg,#0b63e4,#2b7cf0); border-radius:4px }
+
+.cardIconWrap { width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#eaf6ff,#e1f0ff); box-shadow: inset 0 -6px 20px rgba(11,99,228,0.03) }
+.cardIcon { border-radius:8px }
+.cardTitle { font-weight:700; margin:0 0 6px 0; color:#02355f }
+.cardDesc { margin:0; color:#285b8f }
+.count { color:#0b63e4; font-weight:700 }
+
+.itemLink { color:#0b63e4; text-decoration:none }
+.itemLink:hover { text-decoration:underline }
+.exploreText { color:#0b63e4; font-weight:600 }
+
+.groupCard { position:relative }
+
+.grid { display:grid; gap:16px }
+
+/* Strong, persistent visual style to override competing utilities when needed */
+.glassCardForce {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,250,255,0.95));
+  box-shadow: 0 36px 80px rgba(3,48,88,0.09), inset 0 1px 0 rgba(255,255,255,0.7) !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(11,99,228,0.06) !important;
+}
+
+/* small animations */
+@keyframes float-subtle {
+  0% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+
+
+.glassCard { transition: box-shadow .36s cubic-bezier(.2,.8,.2,1), transform .36s cubic-bezier(.2,.8,.2,1); position:relative; overflow:hidden }
+.glassCard .glass-inset { transition: transform .6s cubic-bezier(.2,.8,.2,1) }
+
+/* make the small accent visible and decorative */
+.cardAccent { display:block; position:absolute; left:18px; top:18px; width:10px; height:40px; border-radius:6px; background:linear-gradient(180deg,#0b63e4,#2b7cf0); box-shadow: 0 6px 18px rgba(11,99,228,0.12); opacity:0.95 }
+
+:global(.heroTitle) { color:#022f57; font-size:48px; line-height:1.02; margin:0 0 6px 0; font-weight:800; letter-spacing:-0.02em }
+:global(.heroLead) { color: rgba(2,48,88,0.85); font-size:1.05rem; margin-bottom:14px }
+
+/* style the Más info button used in the hero (global class) */
+:global(.glass-btn-secondary) { display:inline-block; padding:12px 18px; border-radius:999px; border:1px solid rgba(11,99,228,0.12); background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(246,251,255,0.8)); color:#0b63e4; font-weight:700; box-shadow: 0 12px 28px rgba(11,99,228,0.06); transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease }
+:global(.glass-btn-secondary:hover) { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(11,99,228,0.12) }
+
+/* emphasize the icon area and make cards more 'panel-like' */
+.cardIconWrap { width:72px; height:72px; border-radius:16px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#eef8ff,#e6f3ff); box-shadow: inset 0 -8px 22px rgba(11,99,228,0.03), 0 8px 30px rgba(3,48,88,0.03) }
+.cardIcon img, .cardIcon { border-radius:10px }
+
+.cardTitle { font-size:1.15rem }
+.cardDesc { font-size:0.98rem }
+.count { color:#0b63e4; font-weight:800; margin-left:8px }
+
+/* explore link styled as subtle CTA */
+.exploreText { color:#0b63e4; font-weight:700; padding:8px 0; display:inline-flex; gap:8px; align-items:center }
+
+/* add a soft radial background to each card's right side for depth */
+.glassCard::after { content: ''; position: absolute; right: -10%; top: -10%; width:60%; height:140%; background: radial-gradient(circle at 30% 30%, rgba(11,99,228,0.06), rgba(11,99,228,0.01) 40%, transparent 55%); transform: translateZ(0); pointer-events: none }
+
+/* stronger hover for the whole card */
+.glassCard:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 40px 90px rgba(3,48,88,0.08), 0 10px 30px rgba(11,99,228,0.06) }
+
+/* make grid spacing a bit larger for a more airy UI */
+.grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:22px }
+
+/* responsive */
+@media (max-width: 880px) {
+  .heroInner { flex-direction: column; align-items: flex-start; gap: 18px }
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :global(*) { transition: none !important }
+  .glassCard { animation: none !important; transform: none !important }
+}
 /* Styles for /servicios index - isolated and futuristic but clean */
 .heroSection {
   position: relative;
   padding: 3.5rem 1rem;
   border-radius: 14px;
-  overflow: visible;
+  overflow: hidden; /* clip hero visuals so image doesn't overlap next section */
   background: linear-gradient(180deg, rgba(14,54,114,0.06) 0%, rgba(10,25,51,0.02) 100%);
 }
 
@@ -16,8 +117,13 @@
   align-items: center;
 }
 
-.heroTitle { color: #FFFFFF; }
-.heroLead { color: rgba(255,255,255,0.85); }
+/* Module-scoped hero titling (use via styles.heroTitle / styles.heroLead) */
+.heroTitle { color: #FFFFFF; font-size: 2.5rem; line-height:1.02; margin:0; font-weight:800; letter-spacing:-0.01em }
+.heroLead { color: rgba(255,255,255,0.9); font-size:1.05rem; margin-top:0.6rem }
+
+/* decorative animated blob in hero visual */
+.heroBlob { position:absolute; right: -12%; bottom: -12%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle at 25% 30%, rgba(11,99,228,0.20), rgba(11,99,228,0.06) 40%, transparent 60%); filter: blur(18px); transform: translateZ(0); opacity:0.95; animation: blobFloat 6s ease-in-out infinite }
+@keyframes blobFloat { 0% { transform: translateY(0) scale(1) } 50% { transform: translateY(-10px) scale(1.02) } 100% { transform: translateY(0) scale(1) } }
 
 /* showcase wrapper creates an overflow visual with floating cards */
 .showcaseWrap {
@@ -26,6 +132,37 @@
   padding: 2rem 1rem;
   overflow: visible;
 }
+
+/* Hero image wrapper (placed inside heroVisual) */
+.heroImageWrap {
+  width: 420px;
+  height: 220px; /* fixed height to keep hero layout stable */
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 22px 48px rgba(2,46,135,0.08), inset 0 6px 18px rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 880px) {
+  .heroImageWrap { width: 100%; height: 200px; max-height: 200px }
+}
+
+/* Positioning for the hero visual column so the image sits neatly to the right */
+.heroVisual {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-left: 0.5rem;
+}
+
+/* reduce overflow of the glass inset so the image appears clipped within the hero card */
+.glass-inset { overflow: hidden; border-radius: 18px }
 
 .floatingCard {
   position: absolute;
@@ -113,6 +250,39 @@
 .itemLink:hover, .itemLink:focus { text-decoration: underline; }
 .count { color: rgba(10,25,51,0.65); }
 .exploreText { color: rgba(10,25,51,0.6); }
+
+/* Featured/attention style for specific group cards (Capital Humano, Desarrollo Organizacional, Management Services) */
+.featuredCard {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,250,255,0.98));
+  box-shadow: 0 40px 110px rgba(3,48,88,0.10), 0 8px 30px rgba(11,99,228,0.04);
+  border: 1px solid rgba(11,99,228,0.08);
+  transform-origin: center;
+}
+.featuredCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg,#0b63e4,#2b7cf0);
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+  box-shadow: 0 6px 20px rgba(11,99,228,0.12);
+}
+.featuredCard .cardIconWrap {
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(11,99,228,0.06) inset, 0 10px 30px rgba(3,48,88,0.04);
+}
+.featuredCard .cardTitle { font-size: 1.22rem; }
+.featuredCard .cardDesc { color: rgba(10,25,51,0.8); }
+.featuredCard .visualRings { opacity: 0.9; transform: scale(1.06); filter: blur(0.6px); }
+
+@media (max-width: 880px) {
+  .featuredCard .cardIconWrap { width: 64px; height: 64px }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .glassCard { transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s ease; }

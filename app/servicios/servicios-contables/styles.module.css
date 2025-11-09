@@ -1,0 +1,72 @@
+/* Estilos para Servicios Contables - paleta azul/blanco */
+:root{
+  --ac-blue: var(--brand-primary, #0057D9);
+  --ac-dark: #07203a;
+  --ac-light: #f6fbff;
+}
+
+.acHero{ margin: 1.2rem auto; max-width:1100px; background: linear-gradient(180deg, rgba(245,252,255,0.98), rgba(240,248,255,0.9)); border-radius:14px; padding:1.2rem; box-shadow:0 18px 40px rgba(43,124,240,0.04); border:1px solid rgba(43,124,240,0.06) }
+.acHeroInner{ display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap }
+.acHeroLeft{ flex:1 1 560px; min-width:260px }
+.acHeroTitle{ margin:0; font-size:1.5rem; font-weight:900; color:var(--ac-dark) }
+.acLead{ margin:0.6rem 0 0 0; color:#12334a }
+.acStats{ display:flex; gap:0.8rem; margin-top:0.8rem }
+.acStat{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.5rem 0.8rem; border-radius:10px; box-shadow:0 8px 22px rgba(2,82,180,0.04); min-width:110px; text-align:left }
+.acStat strong{ display:block; color:var(--ac-blue); font-weight:900 }
+
+.acHeroRight{ flex:0 0 260px; display:flex; align-items:center; justify-content:center }
+.acHeroCard{ background: linear-gradient(180deg,#fff,#f7fbff); padding:1rem; border-radius:12px; box-shadow:0 12px 36px rgba(43,124,240,0.04); text-align:center }
+
+.acContainer{ padding:2rem 1rem 3.2rem 1rem; max-width:1100px; margin:0 auto }
+.sectionTitle{ margin:1.2rem 0 0.6rem 0; font-size:1.15rem; color:var(--ac-dark); font-weight:900 }
+.acGrid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-top:1rem }
+.acCard{ background: linear-gradient(180deg,#fff,#f7fbff); padding:1rem; border-radius:12px; box-shadow:0 10px 30px rgba(43,124,240,0.04) }
+.acIcon{ width:44px; height:44px; display:grid; place-items:center; border-radius:10px; background: linear-gradient(135deg, rgba(79,143,255,0.08), rgba(43,124,240,0.04)); color:var(--ac-blue); margin-bottom:0.6rem }
+.acTitle{ margin:0 0 0.35rem 0; font-weight:800; color:var(--ac-dark) }
+.acDesc{ margin:0; color:#274a66 }
+
+.acBenefits{ display:flex; gap:1rem; margin-top:1.2rem; flex-wrap:wrap }
+.acBenefit{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.9rem 1rem; border-radius:10px; flex:1 1 200px; box-shadow:0 8px 26px rgba(43,124,240,0.04) }
+.acBenefit h4{ margin:0 }
+.acBenefit p{ margin:0.45rem 0 0 0 }
+
+.acCTA{ margin-top:1.6rem }
+.acCTABox{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.9rem; border-radius:12px; background: linear-gradient(180deg,#f8fcff,#f2f9ff); border:1px solid rgba(43,124,240,0.04); box-shadow:0 12px 36px rgba(43,124,240,0.04) }
+.acPrimary{ background: linear-gradient(90deg,#2b7cf0,#6fb3ff); color:#fff; padding:0.6rem 1rem; border-radius:999px; font-weight:800; text-decoration:none }
+
+.muted{ color:#4b6b84 }
+
+/* focus styles */
+.acPrimary:focus, .acCTAButton:focus { outline: 3px solid rgba(43,124,240,0.12); outline-offset:3px }
+
+@media (prefers-reduced-motion: reduce) { .acHero, .acCard, .acCTABox { transition:none !important; animation:none !important } }
+
+/* New: packages, timeline, faq and testimonial styles */
+.acSmallBtn{ background:transparent; border:1px solid rgba(43,124,240,0.08); padding:6px 10px; border-radius:8px; font-weight:700; color:var(--ac-blue); cursor:pointer }
+.acServiceDetail{ margin-top:8px; padding:8px; background:rgba(245,250,255,0.6); border-left:3px solid rgba(43,124,240,0.08); border-radius:8px }
+.acPackages{ margin-top:1.2rem }
+.packageGrid{ display:flex; gap:12px; flex-wrap:wrap; margin-top:8px }
+.packageCard{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.9rem; border-radius:12px; box-shadow:0 10px 30px rgba(43,124,240,0.04); min-width:200px; flex:1 }
+.packageName{ display:block; font-weight:900 }
+.packagePrice{ margin-top:6px; color:var(--ac-blue); font-weight:900 }
+.packageList{ margin:8px 0 0 1rem }
+
+.acTimeline{ display:flex; gap:12px; margin-top:1rem; flex-wrap:wrap }
+.acTimelineItem{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.7rem; border-radius:10px; box-shadow:0 8px 22px rgba(43,124,240,0.04); display:flex; gap:10px; align-items:flex-start; min-width:220px }
+.acTimelineStep{ width:44px; height:44px; border-radius:8px; background: linear-gradient(90deg,#6fb3ff,#2b7cf0); color:white; display:grid; place-items:center; font-weight:900 }
+.acTimelineDesc{ font-size:0.92rem; color:#234a66 }
+
+.acFaqsWrap{ display:flex; gap:12px; margin-top:1rem; flex-wrap:wrap }
+.acFAQ{ flex:1 1 480px }
+.faqItem{ margin-bottom:8px }
+.faqQuestion{ width:100%; text-align:left; background:linear-gradient(180deg,#fff,#f7fbff); padding:0.6rem; border-radius:8px; border:1px solid rgba(43,124,240,0.04); cursor:pointer }
+.faqAnswer{ padding:0.6rem; background:rgba(245,250,255,0.6); border-radius:8px; margin-top:6px }
+
+.acTestimonial{ flex:0 0 300px; background: linear-gradient(180deg,#fff,#f7fbff); padding:0.9rem; border-radius:12px; box-shadow:0 10px 30px rgba(43,124,240,0.04) }
+.acTestimonial blockquote{ margin:0; font-style:italic; color:#12334a }
+.acTestimonial cite{ display:block; margin-top:0.5rem; font-weight:700 }
+.resourceBox{ margin-top:0.8rem; display:flex; justify-content:space-between; align-items:center; gap:0.6rem; padding:0.6rem; border-radius:10px; background:linear-gradient(180deg,#f8fcff,#f2f9ff); border:1px solid rgba(43,124,240,0.03) }
+.resourceLeft{ display:flex; gap:0.6rem; align-items:center }
+.secondaryButton{ background:transparent; color:var(--ac-blue); padding:0.45rem 0.8rem; border-radius:999px; border:1px solid rgba(43,124,240,0.12); text-decoration:none; font-weight:800 }
+
+.acSmallBtn:focus, .faqQuestion:focus, .secondaryButton:focus { outline: 3px solid rgba(43,124,240,0.12); outline-offset:3px }
