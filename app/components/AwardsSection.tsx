@@ -80,50 +80,40 @@ export default function AwardsSection() {
           />
         </motion.div>
 
-        {/* Grid de reconocimientos - Layout horizontal */}
-        <motion.div 
-          className={styles.awardsGrid}
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {reconocimientos.map((rec) => (
-            <motion.div
-              key={rec.id}
-              variants={itemVariants}
-              className={styles.awardCard}
-              whileHover={{ 
-                y: -12,
-                transition: { type: "spring", stiffness: 300, damping: 10 }
-              }}
-            >
-              {/* Contenedor de imagen con overlay */}
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={rec.img}
-                  alt={rec.title}
-                  width={280}
-                  height={280}
-                  className={styles.awardImage}
-                  priority
-                />
-                <div className={styles.imageOverlay} />
-              </div>
-
-              {/* Título debajo con animación */}
-              <motion.p 
-                className={styles.awardTitle}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
-                {rec.title}
-              </motion.p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Compact centered logo strip (desktop & mobile-friendly).
+            Shows logos in a centered row with subtle side fades like the provided reference image. */}
+        <div className={styles.stripContainer}>
+          <div className={styles.sideFade} aria-hidden />
+          <motion.div
+            className={styles.stripWrapper}
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <div className={styles.strip}>
+              {reconocimientos.map((rec) => (
+                <motion.figure
+                  key={rec.id}
+                  className={styles.logoItem}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <Image
+                    src={rec.img}
+                    alt={rec.title}
+                    width={140}
+                    height={80}
+                    className={styles.logoImage}
+                    priority
+                  />
+                  <figcaption className={styles.srOnly}>{rec.title}</figcaption>
+                </motion.figure>
+              ))}
+            </div>
+          </motion.div>
+          <div className={styles.sideFade} aria-hidden />
+        </div>
       </AnimatedSection>
     </section>
   );

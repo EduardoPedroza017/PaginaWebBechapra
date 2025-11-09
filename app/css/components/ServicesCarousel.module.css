@@ -11,34 +11,70 @@
 }
 
 .card {
-  width: 16rem; /* 256px */
+  width: 100%;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  height: 30rem; /* increased height to avoid cropping */
+  height: auto;
+  min-height: 28rem;
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(2,6,23,0.06);
   background: white;
   overflow: visible;
 }
 
+@media (min-width: 640px) {
+  .card {
+    width: 16rem;
+    height: 30rem;
+    min-height: auto;
+  }
+}
+
 @media (min-width: 768px) {
-  .card { width: 18rem; height: 34rem; }
+  .card { 
+    width: 18rem; 
+    height: 34rem; 
+  }
 }
 
 .cardImage {
-  height: 12rem; /* consistent image band height across all cards */
+  height: 10rem;
   overflow: hidden;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 }
 
+@media (min-width: 640px) {
+  .cardImage {
+    height: 12rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardImage { 
+    height: 14rem; 
+  }
+}
+
 .cardContent {
-  padding: 1.25rem 1.25rem 1.75rem; /* extra bottom padding so button isn't clipped */
+  padding: 1rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex: 1 1 auto;
+}
+
+@media (min-width: 640px) {
+  .cardContent {
+    padding: 1.15rem 1.15rem 1.65rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardContent {
+    padding: 1.25rem 1.25rem 1.75rem;
+  }
 }
 
 .itemsBox {
@@ -52,35 +88,51 @@
 
 /* Larger image area for highlighted card */
 .highlight .cardImage {
-  /* keep same image height for perfect alignment with other cards */
-  height: 12rem;
-  border-top-left-radius: 1.25rem; /* allow slightly larger radius visually for highlighted card */
+  height: 10rem;
+  border-top-left-radius: 1.25rem;
   border-top-right-radius: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .highlight .cardImage {
+    height: 12rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .highlight .cardImage {
+    height: 14rem;
+  }
 }
 
 .btnPrimary {
   background: #ffffff;
   color: #1E40AF;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.9rem;
   border-radius: 0.5rem;
   font-weight: 600;
   box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  font-size: 0.9rem;
+}
+
+@media (min-width: 640px) {
+  .btnPrimary {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
 }
 
 /* Ensure image covers area */
 .cardImage img,
 .cardImage :global(img) {
   object-fit: cover;
-  object-position: center top; /* align important content at top */
+  object-position: center top;
   width: 100%;
   height: 100%;
   display: block;
 }
 
-@media (min-width: 768px) {
-  .cardImage { height: 14rem; }
-  .highlight .cardImage { height: 14rem; }
-}
+/* Removed duplicate media query */
 
 /* Compensate for Tailwind translate utilities applied on the card wrappers so
    the image bands stay level at the top. These target the utility classes

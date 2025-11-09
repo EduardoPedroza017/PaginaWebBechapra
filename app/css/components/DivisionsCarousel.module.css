@@ -1,50 +1,112 @@
+/* wrapper provides breathing room and subtle background */
+.carouselWrapper {
+  padding: 2rem 0.75rem;
+  display: flex;
+  justify-content: center;
+  background: radial-gradient(1200px 420px at 50% 20%, rgba(3,102,214,0.06), transparent 30%), linear-gradient(180deg, rgba(240,244,252,0.8), rgba(255,255,255,0.98));
+  border-radius: 28px;
+}
+
 .stackRow {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0;
   position: relative;
-  padding: 0 12px;
-  height: 450px;
+  padding: 0.5rem;
+  min-height: 260px;
+  height: auto;
   perspective: 1200px;
-  background: radial-gradient(ellipse at center, rgba(245, 247, 250, 0.8) 0%, rgba(230, 240, 255, 0.4) 100%);
-  border-radius: 24px;
+}
+
+@media (min-width: 640px) {
+  .stackRow {
+    min-height: 350px;
+  }
+}
+
+@media (min-width: 768px) {
+  .stackRow {
+    min-height: 400px;
+    padding: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stackRow {
+    min-height: 450px;
+    padding: 0 12px;
+  }
 }
 
 /* tarjeta base */
 .card {
-  width: 420px;
-  height: 340px;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  min-height: 220px;
   border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 87, 217, 0.2);
-  transition: all 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+  box-shadow: 0 14px 40px rgba(3,102,214,0.08), 0 6px 18px rgba(0,0,0,0.06);
+  transition: all 700ms cubic-bezier(0.16, 1, 0.3, 1);
   background: linear-gradient(135deg, #0057D9 0%, #004AB7 100%);
   color: white;
-  position: absolute;
-  transform-style: preserve-3d;
+  position: relative;
+  transform: none;
+  transform-origin: center center;
   will-change: transform, box-shadow, filter;
+  margin: 0 auto 1.25rem; /* stack nicely on mobile */
+}
+
+@media (min-width: 640px) {
+  .card {
+    max-width: 380px;
+    height: 300px;
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    max-width: 400px;
+    height: 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    max-width: 420px;
+    height: 340px;
+  }
 }
 
 /* posiciones */
-.left {
-  transform: translateX(-180px) translateZ(-150px) scale(0.75) rotateY(25deg) rotateX(5deg);
-  opacity: 0.65;
-  z-index: 5;
-  filter: blur(1px) brightness(0.9);
-  box-shadow: -25px 35px 70px rgba(0, 0, 0, 0.35),
-              -15px 20px 40px rgba(0, 0, 0, 0.2),
-              inset 0 0 30px rgba(0, 0, 0, 0.15);
+.left,
+.right {
+  /* keep left/right transforms disabled by default on small screens; set at larger breakpoints */
+  transform: none;
+  opacity: 0.9;
+  z-index: 6;
+  filter: none;
+  box-shadow: 0 10px 30px rgba(3,102,214,0.06);
 }
 
-.right {
-  transform: translateX(180px) translateZ(-150px) scale(0.75) rotateY(-25deg) rotateX(5deg);
-  opacity: 0.65;
-  z-index: 5;
-  filter: blur(1px) brightness(0.9);
-  box-shadow: 25px 35px 70px rgba(0, 0, 0, 0.35),
-              15px 20px 40px rgba(0, 0, 0, 0.2),
-              inset 0 0 30px rgba(0, 0, 0, 0.15);
+@media (min-width: 768px) {
+  .left {
+    transform: translateX(-150px) translateZ(-130px) scale(0.73) rotateY(23deg) rotateX(5deg);
+    opacity: 0.6;
+    box-shadow: -15px 30px 60px rgba(0,0,0,0.22);
+  }
+
+  .right {
+    transform: translateX(150px) translateZ(-130px) scale(0.73) rotateY(-23deg) rotateX(5deg);
+    opacity: 0.6;
+    box-shadow: 15px 30px 60px rgba(0,0,0,0.22);
+  }
+
+  .card {
+    position: absolute;
+    margin: 0;
+  }
 }
 
 .highlight {
@@ -99,12 +161,32 @@
 
 /* texto / contenido izquierdo */
 .cardText {
-  width: 60%;
-  padding: 28px;
+  width: 100%;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   animation: fadeInUp 1000ms ease-out;
+}
+
+@media (min-width: 640px) {
+  .cardText {
+    width: 65%;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardText {
+    width: 60%;
+    padding: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardText {
+    padding: 28px;
+  }
 }
 
 @keyframes fadeInUp {
@@ -120,16 +202,42 @@
 
 /* caja de imagen recortada a la derecha */
 .cardImageCrop {
-  width: 40%;
+  width: 0%;
+  display: none;
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
-  box-shadow: inset -8px 0 16px rgba(0,0,0,0.2);
+  box-shadow: inset -8px 0 16px rgba(0,0,0,0.12);
+}
+
+@media (min-width: 640px) {
+  .cardImageCrop {
+    width: 35%;
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardImageCrop {
+    width: 40%;
+  }
 }
 
 /* caja para botones / mini-items */
 .itemsBox {
-  margin-top: 18px;
+  margin-top: 12px;
+}
+
+@media (min-width: 640px) {
+  .itemsBox {
+    margin-top: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  .itemsBox {
+    margin-top: 18px;
+  }
 }
 
 /* botones */
@@ -137,14 +245,28 @@
   background: transparent;
   border: 2px solid rgba(255, 255, 255, 1);
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .btnPrimary {
+    padding: 9px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .btnPrimary {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 
 .btnPrimary::before {
@@ -172,15 +294,29 @@
 .btnPrimaryActive {
   background: white;
   color: #0057D9;
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
   transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   border: 2px solid white;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .btnPrimaryActive {
+    padding: 9px 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .btnPrimaryActive {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 
 .btnPrimaryActive:hover {
@@ -189,15 +325,7 @@
   box-shadow: 0 12px 24px rgba(0, 87, 217, 0.25);
 }
 
-/* Small adjustments responsive */
-@media (max-width: 1024px) {
-  .card {
-    width: 360px;
-    height: 300px;
-  }
-  .cardText { padding: 20px; }
-  .stackRow { gap: 36px; }
-}
+/* Small adjustments responsive - removed since we have comprehensive breakpoints above */
 
 @media (max-width: 640px) {
   .stackRow { flex-direction: column; align-items: center; gap: 20px; }

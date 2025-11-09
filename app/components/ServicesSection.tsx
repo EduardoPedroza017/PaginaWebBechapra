@@ -7,12 +7,12 @@ import carouselStyles from "../css/components/ServicesCarousel.module.css";
 
 export default function ServicesSection() {
   return (
-    <section id="servicios" className="mb-32">
+    <section id="servicios" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Nuestros Servicios</h2>
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Nuestros Servicios</h2>
           <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-lg text-slate-600">
+          <p className="text-base sm:text-lg text-slate-600">
             Soluciones integrales diseñadas para optimizar cada aspecto de tu organización
           </p>
         </div>

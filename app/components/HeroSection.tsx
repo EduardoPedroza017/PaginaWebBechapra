@@ -6,17 +6,17 @@ import styles from "../css/components/HeroSection.module.css";
 
 export default function HeroSection() {
   return (
-    <section className="mb-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section className="mb-16 sm:mb-24 md:mb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
                 Impulsamos
               </span>
@@ -26,7 +26,7 @@ export default function HeroSection() {
               </span>
             </h1>
 
-            <p className="text-lg text-slate-600 max-w-2xl leading-relaxed" >
+            <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed" >
               Capital Humano, Desarrollo Organizacional y Management Services integrados bajo una misma marca para acompañarte en cada etapa de crecimiento.
             </p>
 
@@ -35,7 +35,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex flex-col lg:flex-row items-center gap-6 mt-6 w-full"
+              className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center gap-4 sm:gap-6 mt-6 w-full"
             >
               <motion.a
                 href="#servicios"
@@ -43,7 +43,7 @@ export default function HeroSection() {
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                className={`${styles.exploreBtn} relative inline-flex items-center gap-3 text-white rounded-full font-bold text-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                className={`${styles.exploreBtn} w-full sm:w-auto relative inline-flex items-center justify-center gap-3 text-white rounded-full font-bold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
               >
                 <span className="tracking-wide relative z-10">Explorar servicios</span>
                 <svg className="w-5 h-5 transition-transform duration-300 relative z-10" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.5" xmlns="http://www.w3.org/2000/svg">
@@ -51,13 +51,9 @@ export default function HeroSection() {
                 </svg>
               </motion.a>
 
-              {/* spacer pushes the secondary link to the far right of the action row */}
-              {/* spacer only on large screens to avoid squeezing on mobile */}
-              <div className="hidden lg:block flex-1" />
-
               <motion.a
                 href="#contacto"
-                className={`${styles.secondaryBtn} relative z-50`}
+                className={`${styles.secondaryBtn} w-full sm:w-auto relative z-50 text-center`}
                 whileHover={{ x: 6 }}
                 transition={{ duration: 0.22 }}
               >

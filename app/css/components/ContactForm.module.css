@@ -8,17 +8,36 @@
 
 .formWrapper{
   width: 100%;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .formWrapper {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .formWrapper {
+    padding: 0;
+  }
 }
 
 .formGrid{
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
 }
 
-@media (max-width: 768px){
+@media (min-width: 640px) {
+  .formGrid {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
   .formGrid{
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -30,15 +49,30 @@
 .input,
 .textarea{
   width: 100%;
-  padding: 1rem 1.1rem;
+  padding: 0.85rem 1rem;
   border-radius: 0.9rem;
   border: 1px solid rgba(10,25,51,0.08);
   background: white;
   box-shadow: 0 6px 18px -10px rgba(9,25,51,0.08);
   color: var(--text-dark);
-  font-size: 1rem;
+  font-size: 0.95rem;
   outline: none;
   transition: box-shadow 220ms ease, transform 220ms ease, border-color 220ms ease;
+}
+
+@media (min-width: 640px) {
+  .input,
+  .textarea {
+    padding: 0.95rem 1.05rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .input,
+  .textarea {
+    padding: 1rem 1.1rem;
+  }
 }
 
 .input:focus,
@@ -49,8 +83,14 @@
 }
 
 .textarea{
-  min-height: 140px;
+  min-height: 120px;
   resize: vertical;
+}
+
+@media (min-width: 640px) {
+  .textarea {
+    min-height: 140px;
+  }
 }
 
 .labelHidden{
@@ -67,15 +107,24 @@
 .actions{
   grid-column: 1 / -1;
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.875rem;
   justify-content: flex-start;
+}
+
+@media (min-width: 640px) {
+  .actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
 }
 
 .submitButton{
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
-  padding: 0.9rem 1.6rem;
+  padding: 0.85rem 1.4rem;
   border-radius: 1.25rem;
   border: none;
   font-weight: 800;
@@ -83,6 +132,16 @@
   box-shadow: 0 18px 36px -12px rgba(0,87,217,0.35);
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 640px) {
+  .submitButton {
+    width: auto;
+    padding: 0.9rem 1.6rem;
+    font-size: 1rem;
+  }
 }
 
 .submitButton:hover:enabled{

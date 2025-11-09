@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "@/app/css/components/ContactForm.module.css";
 
 export default function ContactForm(){

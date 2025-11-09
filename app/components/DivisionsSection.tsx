@@ -42,25 +42,27 @@ export default function DivisionsSection() {
 
 
   return (
-    <section id="divisiones" className="mb-32">
+    <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Divisiones de Bechapra</h2>
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Divisiones de Bechapra</h2>
           <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-lg text-slate-600">
+          <p className="text-base sm:text-lg text-slate-600">
             Especializadas en diferentes áreas para ofrecerte soluciones a medida
           </p>
         </div>
       </AnimatedSection>
 
       {/* Visual showcase (overlapping cards) */}
-      <div className="max-w-5xl mx-auto">
-        <div
-          ref={containerRef}
-          className={carouselStyles.stackRow}
-          onMouseEnter={stopAutoplay}
-          onMouseLeave={startAutoplay}
-        >
+      <div className="max-w-5xl mx-auto px-4">
+        {/* wrapper gives breathing room, background and top/bottom padding */}
+        <div className={carouselStyles.carouselWrapper}>
+          <div
+            ref={containerRef}
+            className={carouselStyles.stackRow}
+            onMouseEnter={stopAutoplay}
+            onMouseLeave={startAutoplay}
+          >
           {divisions.map((d, i) => {
             const isActive = i === active;
             const isRight = i === (active + 1) % divisions.length;
@@ -78,10 +80,10 @@ export default function DivisionsSection() {
               >
                 <div className={carouselStyles.cardInner}>
                   <div className={carouselStyles.cardText}>
-                    <h3 className={isActive ? "text-4xl font-extrabold text-white" : "text-2xl font-semibold text-white"}>
+                    <h3 className={isActive ? "text-2xl sm:text-3xl md:text-4xl font-extrabold text-white" : "text-xl sm:text-2xl font-semibold text-white"}>
                       {d.label}
                     </h3>
-                    <p className="text-white/90 mt-4" style={{ color: '#ffffff' }}>{d.description}</p>
+                    <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4" style={{ color: '#ffffff' }}>{d.description}</p>
 
                     <div className={carouselStyles.itemsBox}>
                       <button className={isActive ? carouselStyles.btnPrimaryActive : carouselStyles.btnPrimary}>
@@ -99,6 +101,7 @@ export default function DivisionsSection() {
               </div>
             );
           })}
+          </div>
         </div>
       </div>
 

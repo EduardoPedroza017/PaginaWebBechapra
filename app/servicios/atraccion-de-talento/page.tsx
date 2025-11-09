@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, Handshake, Phone, ArrowRight, Sparkles } from "lucide-react";
+import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, Handshake, Phone, ArrowRight } from "lucide-react";
 import styles from "./styles.module.css";
 
 export default function Page() {
@@ -163,11 +164,13 @@ export default function Page() {
             <div className={styles.heroImageWrapper}>
               <div className={styles.heroImageGlow} />
               <div className={styles.heroImageCard}>
-                <img
+                <Image
                   src="/imagen/talento/atracciontalento.jpg"
                   alt="Atracción de Talento"
                   className={styles.heroImage}
-                  loading="lazy"
+                  width={900}
+                  height={560}
+                  priority
                 />
               </div>
             </div>

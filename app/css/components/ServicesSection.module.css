@@ -5,16 +5,46 @@
 
 .stackRow {
   display: flex;
-  align-items: flex-end;
-  gap: 56px; /* fixed pixel gap requested */
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
   justify-content: center;
   overflow: visible;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .stackRow {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stackRow {
+    gap: 3.5rem;
+  }
 }
 
 .cardBase {
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(2,6,23,0.08);
   overflow: visible;
+  width: 100%;
+  max-width: 380px;
+}
+
+@media (min-width: 768px) {
+  .cardBase {
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardBase {
+    max-width: 360px;
+  }
 }
 
 .cardHighlight {
@@ -23,15 +53,27 @@
 }
 
 .cardImageCrop {
-  height: 7rem;
+  height: 6rem;
   overflow: hidden;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 }
 
+@media (min-width: 640px) {
+  .cardImageCrop {
+    height: 7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardImageCrop {
+    height: 8.5rem;
+  }
+}
+
 .cardIconWrap {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 0.75rem;
   display: grid;
   place-items: center;
@@ -39,6 +81,8 @@
 }
 
 @media (min-width: 768px) {
-  .stackRow { gap: 56px; }
-  .cardImageCrop { height: 8.5rem; }
+  .cardIconWrap {
+    width: 72px;
+    height: 72px;
+  }
 }

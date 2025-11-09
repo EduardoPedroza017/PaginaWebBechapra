@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import styles from "./styles.module.css";
@@ -63,10 +64,12 @@ export default function ServiciosEspecializadosPage() {
 								</div>
 					<motion.div className={styles.specialHeroImgCol} initial={{opacity:0, x:40}} animate={{opacity:1, x:0}} transition={{delay:0.3, duration:0.7}}>
 						<div className={styles.specialHeroImgCard}>
-							<img
+							<Image
 								src="/imagen/talento/atracciontalento.jpg"
 								alt="Servicios Especializados Bechapra"
 								className={styles.specialHeroImg}
+								width={420}
+								height={220}
 								loading="lazy"
 							/>
 						</div>

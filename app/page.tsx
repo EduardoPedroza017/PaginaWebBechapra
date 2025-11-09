@@ -11,7 +11,7 @@ import HeroSection from "./components/HeroSection";
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         {/* HERO */}
         <HeroSection />
 
@@ -30,12 +30,12 @@ export default function Home() {
         <AwardsSection />
 
         {/* FORMULARIO */}
-        <section id="contacto" className="mb-16">
+        <section id="contacto" className="mb-8 sm:mb-12 md:mb-16">
           <AnimatedSection>
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Contáctanos</h2>
+            <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Contáctanos</h2>
               <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-              <p className="text-lg text-slate-600">
+              <p className="text-base sm:text-lg text-slate-600">
                 ¿Tienes alguna pregunta o proyecto en mente? Déjanos tu mensaje.
               </p>
             </div>

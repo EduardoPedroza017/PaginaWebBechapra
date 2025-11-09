@@ -45,20 +45,31 @@
 .exploreBtn {
   background: linear-gradient(90deg, #1e63d6 0%, #0b52b3 100%);
   color: #ffffff;
-  /* slightly reduced shadow so it doesn't visually touch nearby link */
   box-shadow: 0 10px 28px rgba(3,102,214,0.12);
-  z-index: 40; /* sit below the secondary link */
-  min-width: 160px;
-  padding: 0.7rem 1.6rem;
+  z-index: 40;
+  width: 100%;
+  min-width: auto;
+  padding: 0.8rem 1.4rem;
   border-radius: 9999px;
   z-index: 60;
   position: relative;
   overflow: visible;
   border: 1px solid rgba(59,130,246,0.10);
   display: inline-flex;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
   transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, filter 220ms ease;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 640px) {
+  .exploreBtn {
+    width: auto;
+    min-width: 160px;
+    padding: 0.7rem 1.6rem;
+    font-size: 1rem;
+  }
 }
 
 .exploreBtn:hover {
@@ -96,15 +107,27 @@
 /* Secondary button: transparent pill with dark text to pair with primary CTA */
 .secondaryBtn {
   background: transparent;
-  color: #0e54cb; /* dark/black text */
-  min-width: 140px;
-  padding: 0.55rem 1.2rem;
+  color: #0e54cb;
+  width: 100%;
+  min-width: auto;
+  padding: 0.65rem 1.1rem;
   border-radius: 9999px;
   display: inline-flex;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
   border: 1px solid rgba(245, 243, 243, 0.99);
   transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, background 180ms ease;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 640px) {
+  .secondaryBtn {
+    width: auto;
+    min-width: 140px;
+    padding: 0.55rem 1.2rem;
+    font-size: 1rem;
+  }
 }
 
 .secondaryBtn:hover {
