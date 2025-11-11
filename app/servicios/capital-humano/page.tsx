@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   DollarSign, 
   Users, 
@@ -78,49 +79,99 @@ const cardVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
 };
 
+const iconVariants = {
+	hidden: { opacity: 0, scale: 0.85 },
+	show: { opacity: 1, scale: 1, transition: { duration: 0.45 } },
+};
+
 export default function Page() {
+	const heroRef = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const backEl = document.getElementById('backLink');
+		function onScroll() {
+			if (!heroRef.current || !backEl) return;
+			const heroRect = heroRef.current.getBoundingClientRect();
+			const heroBottom = heroRect.bottom + window.scrollY;
+			if (window.scrollY > heroBottom - 48) {
+				backEl.classList.add('scrolled');
+			} else {
+				backEl.classList.remove('scrolled');
+			}
+		}
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', onScroll);
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+			window.removeEventListener('resize', onScroll);
+		};
+	}, []);
+
 	return (
 		<main className={styles.main}>
-			<Link href="/servicios" className={styles.backLink}>
-				← Volver a Servicios
-			</Link>
 
 			{/* HERO SECTION */}
-			<section className={styles.hero}>
-				<div className={styles.heroParticles} aria-hidden="true">
-					<span className={styles.particle1}></span>
-					<span className={styles.particle2}></span>
-					<span className={styles.particle3}></span>
-				</div>
-				
-				<div className={styles.heroContent}>
-					<motion.div 
-						className={styles.kicker}
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6 }}
-					>
-						Servicios
-					</motion.div>
-					
-					<motion.h1 
-						className={styles.title}
-						initial={{ opacity: 0, y: -30 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, delay: 0.1 }}
-					>
-						Capital Humano
-					</motion.h1>
-					
-					<motion.p 
-						className={styles.lead}
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.7, delay: 0.2 }}
-					>
-						Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento,
-						nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.
-					</motion.p>
+			<section className={styles.hero} ref={heroRef}>
+
+				<div className={styles.heroInner}>
+					{/* Back link sits over the hero; will become fixed when scrolling */}
+					<Link href="/servicios" id="backLink" className={styles.backLink} aria-label="Volver a Servicios">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+						</svg>
+						<span>Volver a Servicios</span>
+					</Link>
+					<div className={styles.heroContent}>
+						<motion.div 
+							className={styles.kicker}
+							initial={{ opacity: 0, y: -20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6 }}
+						>
+							Servicios
+						</motion.div>
+
+						<motion.h1 
+							className={styles.title}
+							initial={{ opacity: 0, y: -30 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.7, delay: 0.1 }}
+						>
+							Capital Humano
+						</motion.h1>
+
+						<motion.p 
+							className={styles.lead}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.7, delay: 0.2 }}
+						>
+							Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento,
+							nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.
+						</motion.p>
+
+						<div style={{ marginTop: '1.75rem' }}>
+							<Link href="#contacto" className={styles.heroButton}>
+								Contactar a Bechapra
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+								</svg>
+							</Link>
+						</div>
+					</div>
+
+					<div className={styles.heroVisual} aria-hidden="true">
+						<div className={styles.heroImageWrap}>
+							<Image
+								src="/imagen/servicos/capital-humano.webp"
+								alt="Persona trabajando con laptop y documentos"
+								fill
+								className={styles.heroImage}
+								style={{ objectFit: 'cover' }}
+							/>
+						</div>
+					</div>
 				</div>
 			</section>
 
@@ -144,7 +195,7 @@ export default function Page() {
 
 					<motion.div 
 						className={styles.servicesGrid}
-						variants={containerVariants}
+						variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.14 } } }}
 						initial="hidden"
 						whileInView="show"
 						viewport={{ once: true }}
@@ -154,12 +205,22 @@ export default function Page() {
 								key={index} 
 								className={styles.serviceCard}
 								variants={cardVariants}
+								style={{ animationDelay: `${index * 0.08}s` }}
 							>
 								<div className={styles.serviceIcon}>
 									{service.icon}
 								</div>
 								<h3 className={styles.serviceTitle}>{service.title}</h3>
 								<p className={styles.serviceDesc}>{service.desc}</p>
+
+								<div className={styles.cardFooter}>
+									<Link href="#" className={styles.exploreButton} onClick={(e) => e.preventDefault()}>
+										Ver más
+										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+											<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+										</svg>
+									</Link>
+								</div>
 							</motion.article>
 						))}
 					</motion.div>
@@ -171,7 +232,7 @@ export default function Page() {
 				<div className={styles.container}>
 					<motion.div 
 						className={styles.featuresGrid}
-						variants={containerVariants}
+						variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.12 } } }}
 						initial="hidden"
 						whileInView="show"
 						viewport={{ once: true }}
@@ -181,10 +242,11 @@ export default function Page() {
 								key={index} 
 								className={styles.featureCard}
 								variants={cardVariants}
+								whileHover={{ y: -8 }}
 							>
-								<div className={styles.featureIcon}>
+								<motion.div className={styles.featureIcon} variants={iconVariants}>
 									{feature.icon}
-								</div>
+								</motion.div>
 								<h4 className={styles.featureTitle}>{feature.title}</h4>
 								<p className={styles.featureDesc}>{feature.desc}</p>
 							</motion.div>
