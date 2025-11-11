@@ -1,15 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FiCpu, FiMonitor, FiBriefcase } from "react-icons/fi";
 import AnimatedSection from "./AnimatedSection";
 import DivisionButton from "./DivisionButton";
 import carouselStyles from "../css/components/DivisionsCarousel.module.css";
 
 export default function DivisionsSection() {
   const divisions = [
-    { label: "BTC", description: "Soluciones tecnológicas y transformación digital", image: "/imagen/division-btc.jpg" },
-    { label: "Bechapra Studio", description: "Diseño y desarrollo de experiencias digitales", image: "/imagen/division-studio.jpg" },
-    { label: "Bechapra Consultores", description: "Asesoría estratégica y consultoría empresarial", image: "/imagen/division-consultores.jpg" }
+    {
+      label: "BTC",
+      description: "Soluciones tecnológicas y transformación digital",
+      image: "/imagen/division-btc.jpg",
+      icon: <FiCpu size={44} color="#fff" />
+    },
+    {
+      label: "Bechapra Studio",
+      description: "Diseño y desarrollo de experiencias digitales",
+      image: "/imagen/division-studio.jpg",
+      icon: <FiMonitor size={44} color="#fff" />
+    },
+    {
+      label: "Bechapra Consultores",
+      description: "Asesoría estratégica y consultoría empresarial",
+      image: "/imagen/division-consultores.jpg",
+      icon: <FiBriefcase size={44} color="#fff" />
+    }
   ];
 
   const [active, setActive] = useState(0);
@@ -39,8 +55,6 @@ export default function DivisionsSection() {
     }
   }
 
-
-
   return (
     <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
@@ -53,10 +67,20 @@ export default function DivisionsSection() {
         </div>
       </AnimatedSection>
 
-      {/* Visual showcase (overlapping cards) */}
-      <div className="max-w-5xl mx-auto px-4">
-        {/* wrapper gives breathing room, background and top/bottom padding */}
-        <div className={carouselStyles.carouselWrapper}>
+      {/* Visual showcase (overlapping cards) + fondo animado */}
+      <div className="relative max-w-5xl mx-auto px-4">
+        {/* Fondo animado mejorado con CSS */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          borderRadius: '28px',
+          overflow: 'hidden',
+          background: 'radial-gradient(ellipse 70% 40% at 50% 20%, #2563eb22 0%, #fff0 100%)',
+          animation: 'fadeWaveBg 8s ease-in-out infinite alternate',
+        }} />
+        <div className={carouselStyles.carouselWrapper} style={{ position: 'relative', zIndex: 1 }}>
           <div
             ref={containerRef}
             className={carouselStyles.stackRow}
@@ -80,14 +104,19 @@ export default function DivisionsSection() {
               >
                 <div className={carouselStyles.cardInner}>
                   <div className={carouselStyles.cardText}>
-                    <h3 className={isActive ? "text-2xl sm:text-3xl md:text-4xl font-extrabold text-white" : "text-xl sm:text-2xl font-semibold text-white"}>
-                      {d.label}
-                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                      <span style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '1rem', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {d.icon}
+                      </span>
+                      <h3 className={isActive ? "text-2xl sm:text-3xl md:text-4xl font-extrabold text-white" : "text-xl sm:text-2xl font-semibold text-white"}>
+                        {d.label}
+                      </h3>
+                    </div>
                     <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4" style={{ color: '#ffffff' }}>{d.description}</p>
 
                     <div className={carouselStyles.itemsBox}>
                       <button className={isActive ? carouselStyles.btnPrimaryActive : carouselStyles.btnPrimary}>
-                        Ver división
+                        Conoce la división
                       </button>
                     </div>
                   </div>

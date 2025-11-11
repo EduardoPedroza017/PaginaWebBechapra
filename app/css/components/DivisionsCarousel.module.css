@@ -1,3 +1,13 @@
+@keyframes fadeWaveBg {
+  0% {
+    background-position: 50% 20%;
+    opacity: 1;
+  }
+  100% {
+    background-position: 48% 24%;
+    opacity: 0.95;
+  }
+}
 /* wrapper provides breathing room and subtle background */
 .carouselWrapper {
   padding: 2rem 0.75rem;

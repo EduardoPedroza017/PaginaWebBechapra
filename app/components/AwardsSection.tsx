@@ -9,22 +9,22 @@ export default function AwardsSection() {
   const reconocimientos = [
     {
       id: "ccrh",
-      img: "/imagen/reconocimiento-ccrh.svg",
+      img: "",
       title: "Concilio de Recursos Humanos",
     },
     {
       id: "beh",
-      img: "/imagen/reconocimiento-beh.svg",
+      img: "",
       title: "Distintivo de Empresas Humanitarias",
     },
     {
       id: "trabajo",
-      img: "/imagen/reconocimiento-trabajo.svg",
+      img: "",
       title: "Certificación de Trabajo Digno",
     },
     {
       id: "repse",
-      img: "/imagen/reconocimiento-repse.svg",
+      img: "",
       title: "Registro de Especialistas Profesionales",
     },
   ];
@@ -83,7 +83,6 @@ export default function AwardsSection() {
         {/* Compact centered logo strip (desktop & mobile-friendly).
             Shows logos in a centered row with subtle side fades like the provided reference image. */}
         <div className={styles.stripContainer}>
-          <div className={styles.sideFade} aria-hidden />
           <motion.div
             className={styles.stripWrapper}
             variants={containerVariants}
@@ -97,22 +96,30 @@ export default function AwardsSection() {
                   key={rec.id}
                   className={styles.logoItem}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.05, y: -8 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Image
-                    src={rec.img}
-                    alt={rec.title}
-                    width={140}
-                    height={80}
-                    className={styles.logoImage}
-                    priority
-                  />
+                  <div className={styles.logoCard}>
+                    {rec.img ? (
+                      <Image
+                        src={rec.img}
+                        alt={rec.title}
+                        width={200}
+                        height={140}
+                        className={styles.logoImage}
+                        priority
+                      />
+                    ) : (
+                      <div className={styles.logoPlaceholder}>
+                        <span className={styles.placeholderText}>Logo</span>
+                      </div>
+                    )}
+                  </div>
                   <figcaption className={styles.srOnly}>{rec.title}</figcaption>
                 </motion.figure>
               ))}
             </div>
           </motion.div>
-          <div className={styles.sideFade} aria-hidden />
         </div>
       </AnimatedSection>
     </section>

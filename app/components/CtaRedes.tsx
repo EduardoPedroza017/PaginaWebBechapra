@@ -89,36 +89,35 @@ export default function CtaRedes() {
           {/* Fondo claro con gradiente suave */}
           <div className={styles.backgroundGradient} />
           
-          {/* Contenido principal - Layout con imagen y contenido lado a lado */}
-          <div className={styles.contentGrid}>
-            
-            {/* Lado izquierdo - Imagen */}
-            <motion.div
-              className={styles.imageContainer}
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-            >
-              <Image
-                src="/imagen/agenda/ahenda.avif"
-                alt="Bechapra Business Services - Soluciones profesionales"
-                fill
-                priority
-                className={styles.image}
-              />
-              <div className={styles.imageOverlay} />
-            </motion.div>
+          {/* FILA 1: Imagen arriba */}
+          <motion.div
+            className={styles.imageContainer}
+            initial={{ opacity: 0, y: -30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+          >
+            <Image
+              src="/imagen/agenda/ahenda.avif"
+              alt="Bechapra Business Services - Soluciones profesionales"
+              fill
+              priority
+              className={styles.image}
+            />
+            <div className={styles.imageOverlay} />
+          </motion.div>
 
-            {/* Lado derecho - Contenido */}
+          {/* FILA 2: Dos columnas - Contenido (izquierda) y Redes sociales (derecha) */}
+          <div className={styles.bottomRow}>
+            
+            {/* Columna izquierda - Contenido */}
             <motion.div 
-              className={styles.contentRight}
+              className={styles.contentColumn}
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
             >
-              
               {/* Título */}
               <motion.h3
                 variants={itemVariants}
@@ -165,64 +164,62 @@ export default function CtaRedes() {
                 </motion.a>
               </motion.div>
             </motion.div>
-          </div>
 
-          {/* Separador */}
-          <div className={styles.divider} />
-
-          {/* Sección de redes sociales */}
-          <motion.div 
-            className={styles.socialSection}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            <motion.h4
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              className={styles.socialTitle}
-            >
-              ¡VISÍTANOS!
-            </motion.h4>
-
+            {/* Columna derecha - Redes sociales */}
             <motion.div 
-              className={styles.socialGrid}
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
+              className={styles.socialColumn}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
             >
-              {socialLinks.map((link) => (
-                <motion.a
-                  key={link.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialItem}
-                  variants={itemVariants}
-                  onMouseEnter={() => setHoveredIcon(link.id)}
-                  onMouseLeave={() => setHoveredIcon(null)}
-                  aria-label={`Visitar ${link.name} de Bechapra`}
-                  whileHover={{ y: -8 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                  <motion.div 
-                    className={styles.socialIconBox}
-                    animate={{
-                      scale: hoveredIcon === link.id ? 1.1 : 1,
-                    }}
+              <motion.h4
+                initial={{ opacity: 0, y: -20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className={styles.socialTitle}
+              >
+                ¡VISÍTANOS!
+              </motion.h4>
+
+              <motion.div 
+                className={styles.socialGrid}
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+              >
+                {socialLinks.map((link) => (
+                  <motion.a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialItem}
+                    variants={itemVariants}
+                    onMouseEnter={() => setHoveredIcon(link.id)}
+                    onMouseLeave={() => setHoveredIcon(null)}
+                    aria-label={`Visitar ${link.name} de Bechapra`}
+                    whileHover={{ y: -8 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    {link.icon}
-                  </motion.div>
-                  <span className={styles.socialLabel}>{link.label}</span>
-                </motion.a>
-              ))}
+                    <motion.div 
+                      className={styles.socialIconBox}
+                      animate={{
+                        scale: hoveredIcon === link.id ? 1.1 : 1,
+                      }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                      {link.icon}
+                    </motion.div>
+                    <span className={styles.socialLabel}>{link.label}</span>
+                  </motion.a>
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
+
+          </div>
         </motion.div>
       </AnimatedSection>
     </section>

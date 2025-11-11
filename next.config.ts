@@ -5,7 +5,7 @@ reactStrictMode: true,
 // Add additional origins here if you access the dev server from other hostnames.
 allowedDevOrigins: ["192.168.1.89"],
 	images: {
-		domains: ["images.unsplash.com"],
+		domains: ["images.unsplash.com", "bechapra.com", "www.bechapra.com"],
 	},
 experimental: { optimizePackageImports: ["framer-motion", "@react-three/drei"] },
 };

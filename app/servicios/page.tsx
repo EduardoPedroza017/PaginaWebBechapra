@@ -11,10 +11,10 @@ const groups = [
 		href: "/servicios/capital-humano",
 		icon: "/imagen/icons/icon-attraction.svg",
 		description: "Gestionamos talento, nómina y soluciones humanas que permiten a tu empresa crecer.",
-			items: [
-				{ title: "Servicios especializados", href: "/servicios/servicios-especializados" },
-				{ title: "Payrolling", href: "/servicios/payroll" },
-				{ title: "Atracción de Talento", href: "/servicios/atraccion-de-talento" },
+		items: [
+			{ title: "Servicios especializados", href: "/servicios/servicios-especializados" },
+			{ title: "Payrolling", href: "/servicios/payroll" },
+			{ title: "Atracción de Talento", href: "/servicios/atraccion-de-talento" },
 		],
 	},
 	{
@@ -22,22 +22,22 @@ const groups = [
 		href: "/servicios/desarrollo-organizacional",
 		icon: "/imagen/icons/icon-training.svg",
 		description: "Mejoramos procesos, cultura y capacidades para que la organización sea más ágil y productiva.",
-			items: [
-				{ title: "Desarrollo organizacional", href: "/servicios/desarrollo-organizacional" },
-				{ title: "Capacitación Empresarial", href: "/servicios/capacitacion-empresarial" },
-				{ title: "NOM 035", href: "/servicios/nom-035" },
-			],
+		items: [
+			{ title: "Desarrollo organizacional", href: "/servicios/desarrollo-organizacional" },
+			{ title: "Capacitación Empresarial", href: "/servicios/capacitacion-empresarial" },
+			{ title: "NOM 035", href: "/servicios/nom-035" },
+		],
 	},
 	{
 		title: "Management Services",
 		href: "/servicios/management-services",
 		icon: "/imagen/icons/icon-outsourcing.svg",
 		description: "Servicios contables, legales y administrativos bajo un solo proveedor confiable.",
-			items: [
-				{ title: "Servicios Contables", href: "/servicios/servicios-contables" },
-				{ title: "Servicios Legales", href: "/servicios/servicios-legales" },
-				{ title: "Servicios PYME", href: "/servicios/servicios-pyme" },
-			],
+		items: [
+			{ title: "Servicios Contables", href: "/servicios/servicios-contables" },
+			{ title: "Servicios Legales", href: "/servicios/servicios-legales" },
+			{ title: "Servicios PYME", href: "/servicios/servicios-pyme" },
+		],
 	},
 ] as const;
 
@@ -45,47 +45,57 @@ const groups = [
 export default function ServiciosIndex() {
 	return (
 		<>
-		{/* Encabezado con 3D simple a un lado */}
+			{/* Encabezado con 3D simple a un lado */}
 			<section className={`${styles.heroSection}`}>
 				<div className={`${styles.heroInner} max-w-7xl mx-auto px-6`}>
-						<div>
-							<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl heroTitle">Servicios</h1>
-							<p className="mt-3 max-w-xl text-white/75 heroLead">Explora nuestras tres líneas principales y entra a cada subservicio.</p>
-							<Link href="#fin-servicios" className="glass-btn-secondary mt-4 inline-flex">Más info</Link>
+					<div className={styles.heroContent}>
+						<h1 className={styles.heroTitle}>Nuestros Servicios</h1>
+						<p className={styles.heroLead}>Descubre soluciones integrales en Capital Humano, Desarrollo Organizacional y Management Services diseñadas para impulsar el crecimiento de tu empresa.</p>
+						<Link href="#servicios-grid" className={styles.heroButton}>
+							Explorar Servicios
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+							</svg>
+						</Link>
+					</div>
+
+					<div className={`${styles.heroVisual} relative`} aria-hidden="true">
+						<div className={styles.heroImageWrap}>
+							<Image 
+								src="/imagen/servicos/service.png" 
+								alt="Persona trabajando con laptop y documentos" 
+								fill
+								className={styles.heroImage}
+								style={{ objectFit: 'cover' }}
+							/>
 						</div>
-
-						<div className={`${styles.heroVisual} relative`} aria-hidden="true">
-							<div className="absolute inset-0 rounded-3xl border p-0 backdrop-blur-xl" style={{ borderColor:'rgba(255,255,255,0.10)', background:'var(--brand-secondary-15)' }}>
-								<div className="glass-inset h-full w-full rounded-[22px] grid place-items-center">
-									<div className={styles.heroImageWrap}>
-										<Image src="/imagen/servicos/service.png" alt="Persona trabajando con laptop y documentos" width={420} height={220} className={styles.heroImage} />
-									</div>
-								</div>
-							</div>
-						</div>
+					</div>
 				</div>
-		</section>
+			</section>
 
-		{/* 3 columnas con subservicios (tarjetas clicables) */}
-		<section className="mt-10">
-			<div className="max-w-7xl mx-auto px-6">
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-					{groups.map((g) => (
-						<GroupCard key={g.title} group={g} />
-					))}
+			{/* 3 columnas con subservicios (tarjetas clicables) */}
+			<section id="servicios-grid" className={styles.servicesGrid}>
+				<div className="max-w-7xl mx-auto px-6">
+					<div className={styles.gridHeader}>
+						<h2 className={styles.gridTitle}>Explora Nuestras Líneas de Servicio</h2>
+						<p className={styles.gridSubtitle}>Soluciones especializadas para cada necesidad de tu negocio</p>
+					</div>
+					<div className={styles.cardsGrid}>
+						{groups.map((g, idx) => (
+							<GroupCard key={g.title} group={g} index={idx} />
+						))}
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
 
-
-		{/* Más info → final de página */}
-		<div id="fin-servicios" className="mt-16" />
+			{/* Más info → final de página */}
+			<div id="fin-servicios" className="mt-16" />
 		</>
 	);
 }
 
 // Small inner component so we can handle clicks and keep inner Links working
-function GroupCard({ group }: { group: (typeof groups)[number] }) {
+function GroupCard({ group, index }: { group: (typeof groups)[number]; index: number }) {
 	const router = useRouter();
 
 	function handleClick() {
@@ -106,45 +116,45 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 			onClick={handleClick}
 			onKeyDown={handleKey}
 			aria-label={`${group.title} — ver subservicios`}
-			className={`${styles.glassCard} ${styles.glassCardForce} ${(group.title === 'Capital Humano' || group.title === 'Desarrollo Organizacional' || group.title === 'Management Services') ? styles.featuredCard : ''} group block p-6 transition-transform hover:shadow-2xl transform-gpu hover:-translate-y-2 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[rgba(0,87,217,0.12)] cursor-pointer`}
+			className={`${styles.serviceCard} ${styles.featuredCard}`}
+			style={{ animationDelay: `${index * 0.15}s` }}
 		>
 			<span className={styles.cardAccent} aria-hidden="true" />
-			<div className={styles.cardInner}>
-				<div className={styles.cardContent}>
-					<div className="flex items-center gap-4">
-						<div className={styles.cardIconWrap} aria-hidden>
-							<Image src={group.icon} alt="" width={56} height={56} className={styles.cardIcon} />
-						</div>
-						<div>
-							<h2 className={styles.cardTitle}>{group.title}</h2>
-							<p className={styles.cardDesc}>{group.description}</p>
-						</div>
-					</div>
+			
+			<div className={styles.cardHeader}>
+				<div className={styles.cardIconLarge}>
+					<Image src={group.icon} alt="" width={64} height={64} className={styles.cardIcon} />
+				</div>
+				<h2 className={styles.cardTitleLarge}>{group.title}</h2>
+				<p className={styles.cardDescLarge}>{group.description}</p>
+			</div>
 
-					<ul className="mt-4 space-y-2 text-sm">
+			<div className={styles.cardDivider} />
+
+			<div className={styles.cardBody}>
+				<h3 className={styles.serviceListTitle}>Servicios incluidos:</h3>
+				<ul className={styles.serviceList}>
 					{group.items.map((it) => (
-						<li key={it.title} className="flex items-center gap-3">
-							<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="flex-shrink-0">
-								<circle cx="4" cy="4" r="4" fill="rgba(0,87,217,0.12)" />
+						<li key={it.title} className={styles.serviceItem}>
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.checkIcon}>
+								<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 							</svg>
-							<Link href={it.href} onClick={(e) => e.stopPropagation()} className={styles.itemLink}>{it.title}</Link>
+							<Link href={it.href} onClick={(e) => e.stopPropagation()} className={styles.itemLinkEnhanced}>
+								{it.title}
+							</Link>
 						</li>
 					))}
-					</ul>
-
-					<div className="mt-5 flex items-center text-sm">
-						<span className={styles.exploreText}>Explorar</span>
-						<svg className="ml-auto" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-							<path d="M8 5l8 7-8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-						</svg>
-					</div>
-				</div>
-
-				<div className={styles.cardVisual} aria-hidden>
-					{/* Decorative visual area: subtle gradient + concentric rings */}
-					<div className={styles.visualRings} />
-				</div>
+				</ul>
 			</div>
+
+			<div className={styles.cardFooter}>
+				<span className={styles.exploreButton}>
+					Ver más detalles
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+					</svg>
+				</span>
 			</div>
-		);
+		</div>
+	);
 }

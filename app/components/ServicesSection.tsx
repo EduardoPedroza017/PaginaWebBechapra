@@ -2,8 +2,8 @@
 
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
+import { FiUsers, FiSettings, FiFileText } from "react-icons/fi";
 import styles from "../css/components/ServicesSection.module.css";
-import carouselStyles from "../css/components/ServicesCarousel.module.css";
 
 export default function ServicesSection() {
   return (
@@ -18,104 +18,86 @@ export default function ServicesSection() {
         </div>
       </AnimatedSection>
 
-      {/* Overlapping showcase (visual) */}
-      <div className={`${styles.servicesShowcase} max-w-7xl mx-auto px-6 lg:px-8`}>
-        <div className={`${styles.stackRow} mt-6 md:mt-8 relative`}>
-
-          {/* Left card */}
-          <a href="/servicios/capital-humano" className="block">
-            <div className={`${styles.cardBase} ${carouselStyles.card} -translate-y-6`}>
-              <div className={carouselStyles.cardImage}>
-                <Image src="/imagen/servicos/capital-humano.webp" alt="Capital humano" width={600} height={200} className="object-cover w-full h-full" />
+      <div className={styles.servicesShowcase + " max-w-7xl mx-auto px-6 lg:px-8"}>
+        <div className={styles.overlapRow}>
+          {/* Card 1: Capital humano */}
+          <a href="/servicios/capital-humano" className={styles.cardLink}>
+            <div className={styles.cardOverlap}>
+              <div className={styles.cardImageCrop}>
+                <Image 
+                  src="/imagen/servicos/capital-humano.webp" 
+                  alt="Capital humano" 
+                  width={600} 
+                  height={200} 
+                  className={styles.cardImg} 
+                />
               </div>
-              <div className={carouselStyles.cardContent}>
-                <div>
-                  {/* icon badge removed per design: cleaner card header */}
-                  <h3 className="mt-4 font-semibold text-lg">Capital humano</h3>
-                  <p className="mt-2 text-sm text-slate-600">Aumenta la eficiencia de tus procesos y talento mediante selección, retención y optimización del equipo humano.</p>
-
-                  {/* Items list */}
-                  <div className={carouselStyles.itemsBox}>
-                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 flex flex-col gap-2">
-                      {["Servicios especializados", "Payrolling", "Atracción de Talento"].map((it, i) => (
-                        <div key={i} className="bg-white border border-slate-200/80 rounded-md px-3 py-2 shadow-sm flex items-center gap-3">
-                          <span aria-hidden="true" className="inline-block w-2 h-2 rounded-full bg-blue-600" />
-                          <span className="text-sm text-slate-800 font-medium">{it}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              <div className={styles.infoBox}>
+                <div className={styles.iconBox}>
+                  <FiUsers size={48} color="#2563eb" />
                 </div>
-
-                <div className="mt-4 flex justify-center">
-                  <span className={carouselStyles.btnPrimary}>Ver servicios</span>
+                <div>
+                  <h3 className={styles.infoTitle}>Capital humano</h3>
+                  <p className={styles.infoDesc}>Aumenta la eficiencia y resultados de tu negocio.</p>
+                  <a href="/servicios/capital-humano" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                    Conoce más
+                  </a>
                 </div>
               </div>
             </div>
           </a>
-
-          {/* Middle card */}
-          <a href="/servicios/desarrollo-organizacional" className="block">
-            <div className={`${styles.cardBase} ${carouselStyles.card} -translate-y-3`}>
-              <div className={carouselStyles.cardImage}>
-                <Image src="/imagen/servicos/servicios-especializados.jpg" alt="Servicios especializados" width={600} height={200} className="object-cover w-full h-full" />
+          {/* Card 2: Servicios especializados */}
+          <a href="/servicios/desarrollo-organizacional" className={styles.cardLink}>
+            <div className={styles.cardOverlap}>
+              <div className={styles.cardImageCrop}>
+                <Image 
+                  src="/imagen/servicos/servicios-especializados.jpg" 
+                  alt="Servicios especializados" 
+                  width={600} 
+                  height={200} 
+                  className={styles.cardImg} 
+                />
               </div>
-              <div className={carouselStyles.cardContent}>
-                <div>
-                  {/* icon badge removed per design: cleaner card header */}
-                  <h3 className="mt-4 font-semibold text-lg">Servicios especializados</h3>
-                  <p className="mt-2 text-sm text-slate-600">Mejoramos procesos y capacidades organizacionales a través de diagnóstico, intervención y capacitación.</p>
-
-                  <div className={carouselStyles.itemsBox}>
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 flex flex-col gap-2">
-                      {["Desarrollo organizacional", "Capacitación Empresarial", "NOM 035"].map((it, i) => (
-                        <div key={i} className="bg-white border border-slate-200/80 rounded-md px-3 py-2 shadow-sm flex items-center gap-3">
-                          <span aria-hidden="true" className="inline-block w-2 h-2 rounded-full bg-slate-600" />
-                          <span className="text-sm text-slate-800 font-medium">{it}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              <div className={styles.infoBox}>
+                <div className={styles.iconBox}>
+                  <FiSettings size={48} color="#2563eb" />
                 </div>
-
-                <div className="mt-4 flex justify-center">
-                  <span className={carouselStyles.btnPrimary}>Ver servicios</span>
+                <div>
+                  <h3 className={styles.infoTitle}>Servicios especializados</h3>
+                  <p className={styles.infoDesc}>Aumenta la eficiencia y resultados de tu negocio.</p>
+                  <a href="/servicios/desarrollo-organizacional" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                    Conoce más
+                  </a>
                 </div>
               </div>
             </div>
           </a>
-
-          {/* Right highlighted card */}
-          <a href="/servicios/management-services" className="block">
-            <div className={`${styles.cardBase} ${carouselStyles.card} ${carouselStyles.highlight} rounded-3xl text-white bg-blue-600`}> 
-              <div className={`${carouselStyles.cardImage} rounded-t-3xl overflow-hidden`}>
-                <Image src="/imagen/servicos/servicios-impuestos.jpg" alt="Servicios de Impuestos" width={800} height={260} className="object-cover w-full h-full" />
+          {/* Card 3: Servicios de Impuestos (destacada) */}
+          <a href="/servicios/management-services" className={styles.cardLink}>
+            <div className={styles.cardOverlap}>
+              <div className={styles.cardImageCrop}>
+                <Image 
+                  src="/imagen/servicos/servicios-impuestos.jpg" 
+                  alt="Servicios de Impuestos" 
+                  width={600} 
+                  height={200} 
+                  className={styles.cardImg} 
+                />
               </div>
-              <div className={`${carouselStyles.cardContent} rounded-b-3xl bg-blue-600 text-white`}> 
+              <div className={styles.infoBox}>
+                <div className={styles.iconBox}>
+                  <FiFileText size={48} color="#2563eb" />
+                </div>
                 <div>
-                  {/* icon badge removed per design: cleaner card header */}
-                  <h3 className="mt-4 font-semibold text-lg text-black">Servicios de Impuestos</h3>
-                  <p className="mt-2 text-sm text-white/90">Soluciones integrales para el cumplimiento fiscal de tu empresa, desde declaración hasta cumplimiento y consultoría.</p>
-
-                  <div className={carouselStyles.itemsBox}>
-                    <div className="bg-indigo-50/10 border border-white/10 rounded-lg p-2 flex flex-col gap-2">
-                      {["Servicios Contables", "Servicios Legales", "Servicios PYME"].map((it, i) => (
-                        <div key={i} className="bg-white border border-white/10 rounded-md px-3 py-2 shadow-sm flex items-center gap-3">
-                          <span aria-hidden="true" className="inline-block w-2 h-2 rounded-full bg-white" />
-                          <span className="text-sm font-medium" style={{ color: '#1E40AF' }}>{it}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex justify-center">
-                    <span className="bg-white px-4 py-2 rounded-lg text-sm font-semibold shadow" style={{ color: '#1E40AF' }}>Ver servicios</span>
-                  </div>
+                  <h3 className={styles.infoTitle}>Servicios de Impuestos</h3>
+                  <p className={styles.infoDesc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam</p>
+                  <a href="/servicios/management-services" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                    Conoce más
+                  </a>
                 </div>
               </div>
             </div>
           </a>
-
         </div>
       </div>
       

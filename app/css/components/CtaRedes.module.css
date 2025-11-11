@@ -21,49 +21,49 @@
   background: linear-gradient(135deg, #F0F4FC 0%, #FFFFFF 50%, #F0F4FC 100%);
 }
 
-.contentGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  position: relative;
-  z-index: 10;
-  min-height: auto;
-}
-
-@media (min-width: 768px) {
-  .contentGrid {
-    grid-template-columns: 1fr 1fr;
-    min-height: 500px;
-  }
-}
-
-/* Lado izquierdo - Imagen */
+/* FILA 1: Imagen arriba */
 .imageContainer {
   position: relative;
-  height: 100%;
-  min-height: 250px;
+  width: 100%;
+  min-height: 200px;
   background: linear-gradient(135deg, #0057D9 0%, #004AB7 100%);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 @media (min-width: 640px) {
   .imageContainer {
-    min-height: 300px;
+    min-height: 240px;
   }
 }
 
 @media (min-width: 768px) {
   .imageContainer {
-    min-height: 350px;
+    min-height: 280px;
   }
 }
 
 @media (min-width: 1024px) {
   .imageContainer {
-    min-height: 400px;
+    min-height: 320px;
+  }
+}
+
+/* FILA 2: Dos columnas */
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .bottomRow {
+    grid-template-columns: 1.5fr 1fr;
   }
 }
 
@@ -85,8 +85,8 @@
   transform: scale(1.12) rotate(0.5deg);
 }
 
-/* Lado derecho - Contenido */
-.contentRight {
+/* Columna izquierda - Contenido */
+.contentColumn {
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -95,20 +95,42 @@
 }
 
 @media (min-width: 640px) {
-  .contentRight {
+  .contentColumn {
     padding: 2.5rem 2rem;
   }
 }
 
 @media (min-width: 768px) {
-  .contentRight {
+  .contentColumn {
     padding: 3rem;
+    border-right: 1px solid rgba(0, 87, 217, 0.1);
   }
 }
 
 @media (min-width: 1024px) {
-  .contentRight {
+  .contentColumn {
     padding: 3.5rem;
+  }
+}
+
+/* Columna derecha - Redes sociales */
+.socialColumn {
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(0, 87, 217, 0.05) 0%, rgba(240, 244, 252, 0.8) 100%);
+}
+
+@media (min-width: 640px) {
+  .socialColumn {
+    padding: 2.5rem 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .socialColumn {
+    padding: 3rem 2.5rem;
   }
 }
 
@@ -218,7 +240,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #004AB7 0%, #0057D9 100%);
+  background: linear-gradient(135deg, #003d8f 0%, #002f6e 100%);
   border-radius: 50px;
   opacity: 0;
   transition: opacity 400ms ease;
@@ -229,6 +251,11 @@
   transform: translateY(-4px);
   box-shadow: 0 30px 60px -10px rgba(0, 87, 217, 0.5);
   border-color: rgba(0, 87, 217, 0.6);
+}
+
+.ctaButton:active {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 35px -10px rgba(0, 87, 217, 0.4);
 }
 
 .ctaButton:hover::before {
@@ -251,38 +278,19 @@
   transform: translateX(4px);
 }
 
-/* Separador */
-.divider {
-  position: relative;
-  z-index: 10;
-  border-top: 2px solid rgba(0, 87, 217, 0.1);
-}
+/* Separador - eliminado ya que no se usa */
 
-/* Sección de Redes */
-.socialSection {
-  position: relative;
-  z-index: 10;
-  background: linear-gradient(135deg, rgba(0, 87, 217, 0.05) 0%, rgba(240, 244, 252, 0.8) 100%);
-  padding: 3rem;
-  border-top: 1px solid rgba(0, 87, 217, 0.1);
-}
-
-@media (max-width: 768px) {
-  .socialSection {
-    padding: 2rem;
-  }
-}
-
+/* Título de redes sociales */
 .socialTitle {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #0A1933;
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   letter-spacing: -0.3px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .socialTitle {
     font-size: 1.75rem;
     margin-bottom: 2rem;
@@ -291,15 +299,14 @@
 
 .socialGrid {
   display: flex;
-  /* use vertical list by default so mobile matches laptop layout */
   flex-direction: column;
   align-items: stretch;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .socialGrid {
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 }
 
@@ -427,7 +434,11 @@
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
-  .contentRight {
+  .contentColumn {
+    padding: 1.5rem;
+  }
+
+  .socialColumn {
     padding: 1.5rem;
   }
 
@@ -447,19 +458,17 @@
     font-size: 1rem;
   }
 
-  .socialSection {
-    padding: 1.5rem;
-  }
-
   .socialGrid {
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .socialIconBox {
-    padding: 0.75rem;
+    width: 48px;
+    height: 48px;
+    padding: 0.65rem;
   }
 
   .socialLabel {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }

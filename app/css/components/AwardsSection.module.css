@@ -345,16 +345,65 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0;
   background: transparent;
-  border-radius: 8px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.logoCard {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 87, 217, 0.08), 0 2px 8px rgba(0, 87, 217, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  min-height: 160px;
+}
+
+.logoItem:hover .logoCard {
+  box-shadow: 0 16px 48px rgba(0, 87, 217, 0.12), 0 4px 16px rgba(0, 87, 217, 0.08);
+  transform: translateY(-4px);
 }
 
 .logoImage {
   width: auto;
-  height: 64px;
+  height: 100px;
+  max-width: 180px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.06));
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.04));
+  transition: transform 0.3s ease;
+}
+
+.logoItem:hover .logoImage {
+  transform: scale(1.05);
+}
+
+.logoPlaceholder {
+  width: 180px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f4fc 0%, #e8eef8 100%);
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.logoItem:hover .logoPlaceholder {
+  background: linear-gradient(135deg, #e8eef8 0%, #dfe6f3 100%);
+  border-color: #0057D9;
+}
+
+.placeholderText {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Subtle left/right fades to emulate the reference styling */
@@ -387,15 +436,21 @@
 
 /* Responsive tweaks: smaller logos on narrow screens, allow scroll if necessary */
 @media (max-width: 900px) {
-  .logoImage { height: 56px; }
-  .strip { gap: 1.5rem; padding: 0 1rem; }
+  .logoImage { height: 80px; max-width: 160px; }
+  .logoCard { padding: 1.5rem 2rem; min-height: 140px; }
+  .strip { gap: 2rem; padding: 0 1rem; }
   .stripContainer { padding: 1.5rem 0.5rem; }
 }
 
 @media (max-width: 640px) {
-  .logoImage { height: 48px; }
-  .strip { gap: 1rem; padding: 0 0.5rem; }
-  .strip { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .sideFade { display: none; }
+  .logoImage { height: 70px; max-width: 140px; }
+  .logoCard { padding: 1.25rem 1.5rem; min-height: 120px; }
+  .strip { 
+    gap: 1.5rem; 
+    padding: 0 0.5rem; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+  }
 }
 
