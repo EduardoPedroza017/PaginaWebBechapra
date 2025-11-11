@@ -1,131 +1,808 @@
 "use client";
 
-import SubpageHero from "../../../components/SubpageHero";
-import styles from './styles.module.css';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Clock, Book, Users } from 'lucide-react';
-import Link from 'next/link';
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { ShieldCheck, Clock, Book, Users } from 'lucide-react';
 
 export default function Page() {
-	const timeline = [
-		{ icon: <Clock size={18} />, title: 'Diagnóstico', desc: 'Encuestas y entrevistas para mapear riesgos.' },
-		{ icon: <Book size={18} />, title: 'Diseño', desc: 'Políticas, protocolos y plan de intervención.' },
-		{ icon: <Users size={18} />, title: 'Implementación', desc: 'Capacitaciones y acompañamiento en sitio.' },
-	];
-
-	const faqs = [
-		{ q: '¿Qué es la NOM-035 y por qué es importante?', a: 'La NOM-035 protege el bienestar laboral identificando factores de riesgo psicosocial. Su cumplimiento reduce ausentismo, rotación y mejora clima.' },
-		{ q: '¿Cuánto tiempo tarda una implementación típica?', a: 'Depende del tamaño de la organización; un diagnóstico inicial toma 2-4 semanas y la implementación del plan suele desarrollarse en 3-6 meses.' },
-		{ q: '¿Proveen evidencia documental para auditorías?', a: 'Sí, entregamos reportes, actas y matrices de cierre que facilitan verificaciones y auditorías internas.' },
-	];
-
 	const [openFaq, setOpenFaq] = React.useState<number | null>(0);
 
 	return (
 		<main>
-			<SubpageHero title="NOM 035" subtitle="Implementación y cumplimiento normativo." />
+			{/* HERO Mejorado - Full width con gradiente */}
+			<section style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+				padding: '6rem 1.5rem 5rem',
+				position: 'relative',
+				overflow: 'hidden'
+			}}>
+				{/* Decorative elements */}
+				<div style={{
+					position: 'absolute',
+					top: -100,
+					right: -100,
+					width: '300px',
+					height: '300px',
+					background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+					borderRadius: '50%',
+					pointerEvents: 'none'
+				}} />
+				<div style={{
+					position: 'absolute',
+					bottom: -50,
+					left: -50,
+					width: '250px',
+					height: '250px',
+					background: 'radial-gradient(circle, rgba(0,172,183,0.15) 0%, transparent 70%)',
+					borderRadius: '50%',
+					pointerEvents: 'none'
+				}} />
 
-			<motion.section className={styles.nomHero} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-				<div className={styles.nomInner}>
-					<div className={styles.nomLeft}>
-						<h2 className={styles.nomTitle}>Cumple la NOM-035 y protege el bienestar organizacional</h2>
-						<p className={styles.nomLead}>Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramienta de medición.</p>
-						<ul className={styles.nomBullets}>
-							<li>Diagnóstico inicial y encuesta estandarizada.</li>
-							<li>Plan de intervención y políticas internas.</li>
-							<li>Capacitación a mandos y seguimiento de impacto.</li>
-						</ul>
-						<div style={{ marginTop: 14 }}>
-							<Link href="/#contacto" className={styles.nomPrimary}>Solicitar asesoría</Link>
+				<div style={{
+					maxWidth: '1280px',
+					margin: '0 auto',
+					display: 'grid',
+					gridTemplateColumns: '1.2fr 1fr',
+					gap: '3rem',
+					alignItems: 'center',
+					position: 'relative',
+					zIndex: 2
+				}}>
+					<motion.div initial={{opacity: 0, y: 30}} animate={{opacity: 1, y: 0}} transition={{duration: 0.7}}>
+						{/* Back button */}
+						<Link 
+							href="/servicios" 
+							style={{
+								display: 'inline-flex',
+								alignItems: 'center',
+								gap: '0.75rem',
+								padding: '0.6rem 1.5rem',
+								fontSize: '0.95rem',
+								fontWeight: 700,
+								color: '#003d8f',
+								textDecoration: 'none',
+								transition: 'all 0.3s ease',
+								cursor: 'pointer',
+								background: 'white',
+								borderRadius: '50px',
+								boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+								border: 'none',
+								marginBottom: '1.5rem'
+							}}
+						>
+							<span style={{fontSize: '1.1rem'}}>‹</span>
+							Volver a Servicios
+						</Link>
+						<h1 style={{
+							fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+							fontWeight: 900,
+							color: 'white',
+							marginBottom: '1.5rem',
+							lineHeight: 1.1,
+							letterSpacing: '-0.02em'
+						}}>
+							NOM <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>035</span>
+						</h1>
+						<p style={{
+							fontSize: '1.15rem',
+							color: 'rgba(255,255,255,0.95)',
+							lineHeight: 1.8,
+							marginBottom: '2rem',
+							maxWidth: '500px'
+						}}>
+							Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramientas de medición.
+						</p>
+						<Link href="/#contacto" style={{
+							display: 'inline-flex',
+							alignItems: 'center',
+							gap: '0.75rem',
+							padding: '1rem 2rem',
+							borderRadius: '12px',
+							background: 'white',
+							color: '#003d8f',
+							fontWeight: 700,
+							fontSize: '1rem',
+							textDecoration: 'none',
+							transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+							cursor: 'pointer',
+							boxShadow: '0 10px 30px rgba(255,255,255,0.2)'
+						}}>
+							Solicitar asesoría
+							<span>→</span>
+						</Link>
+					</motion.div>
+
+					<motion.div 
+						initial={{opacity: 0, scale: 0.9, rotate: -5}} 
+						animate={{opacity: 1, scale: 1, rotate: 0}} 
+						transition={{duration: 0.8, delay: 0.2}}
+						style={{
+							position: 'relative'
+						}}
+					>
+						<div style={{
+							width: '100%',
+							height: '380px',
+							background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,172,183,0.1) 100%)',
+							borderRadius: '20px',
+							border: '2px solid rgba(255,255,255,0.2)',
+							backdropFilter: 'blur(10px)',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							color: 'white',
+							fontSize: '1.2rem',
+							fontWeight: '600',
+							textAlign: 'center',
+							padding: '2rem'
+						}}>
+							Imagen NOM-035
 						</div>
-					</div>
-					<div className={styles.nomRight} aria-hidden>
-						<div className={styles.nomBadge}><ShieldCheck size={28} color="#2b7cf0" /></div>
-						<div className={styles.nomStats}>
-							<div className={styles.nomStat}><strong>+120</strong><span>Organizaciones asistidas</span></div>
-							<div className={styles.nomStat}><strong>95%</strong><span>Acciones implementadas</span></div>
-						</div>
-					</div>
+					</motion.div>
 				</div>
-			</motion.section>
+			</section>
 
-			<section className={styles.nomContainer}>
-				<h3 className={styles.sectionTitle}>Nuestro enfoque</h3>
-				<div className={styles.nomSteps}>
-					<article className={styles.nomCard}>
-						<div className={styles.nomStepNum}>1</div>
-						<h4>Evaluación</h4>
-						<p>Aplicamos encuestas y entrevistas para mapear factores de riesgo y condiciones organizacionales.</p>
-					</article>
-					<article className={styles.nomCard}>
-						<div className={styles.nomStepNum}>2</div>
-						<h4>Plan de intervención</h4>
-						<p>Diseñamos políticas, protocolos y acciones correctivas alineadas a la NOM-035.</p>
-					</article>
-					<article className={styles.nomCard}>
-						<div className={styles.nomStepNum}>3</div>
-						<h4>Capacitación</h4>
-						<p>Formación para mandos y colaboradores para reducir riesgos y mejorar resiliencia.</p>
-					</article>
-				</div>
-
-				{/* Extras: timeline, FAQ, testimonial & resources */}
-				<div className={styles.nomExtras}>
-					<div className={styles.nomTimeline} aria-hidden>
-						{timeline.map((t, idx) => (
-							<div key={idx} className={styles.nomTimelineItem}>
-								<div className={styles.nomTimelineIcon}>{t.icon}</div>
-								<div>
-									<strong>{t.title}</strong>
-									<div className={styles.nomTimelineDesc}>{t.desc}</div>
+			{/* Stats section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+						gap: '2.5rem'
+					}}
+				>
+					{[
+						{label: 'Organizaciones asistidas', value: '+120', icon: ShieldCheck, color: '#003d8f'},
+						{label: 'Acciones implementadas', value: '95%', icon: Users, color: '#004AB7'}
+					].map((stat, i) => {
+						const Icon = stat.icon;
+						return (
+							<motion.div
+								key={i}
+								initial={{opacity:0, y:20}}
+								whileInView={{opacity:1, y:0}}
+								viewport={{once:true}}
+								transition={{duration:0.5, delay:i*0.1}}
+								whileHover={{scale:1.05, y:-8}}
+								style={{
+									padding: '2.5rem 2rem',
+									borderRadius: '16px',
+									background: `linear-gradient(135deg, ${stat.color} 0%, ${stat.color}dd 100%)`,
+									border: '1px solid rgba(255,255,255,0.2)',
+									textAlign: 'center',
+									color: 'white',
+									boxShadow: `0 15px 40px ${stat.color}33, inset 0 1px 0 rgba(255,255,255,0.1)`,
+									cursor: 'pointer',
+									position: 'relative',
+									overflow: 'hidden'
+								}}
+							>
+								{/* Fondo animado */}
+								<motion.div
+									animate={{scale: [1, 1.1, 1]}}
+									transition={{duration:3, repeat:Infinity}}
+									style={{
+										position: 'absolute',
+										top: 0,
+										right: 0,
+										width: '100px',
+										height: '100px',
+										background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+										borderRadius: '50%',
+										pointerEvents: 'none'
+									}}
+								/>
+								<div style={{position: 'relative', zIndex: 2}}>
+									<Icon size={40} style={{margin: '0 auto 1rem', color: '#FFD700'}} />
+									<div style={{fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em'}}>{stat.value}</div>
+									<div style={{fontSize: '0.95rem', opacity: 0.95, fontWeight: 600}}>{stat.label}</div>
 								</div>
-							</div>
-						))}
-					</div>
+							</motion.div>
+						);
+					})}
+				</motion.div>
+			</section>
 
-					<div className={styles.nomFaqWrap}>
-						<h4>Preguntas frecuentes</h4>
-						<div className={styles.nomFAQ}>
-							{faqs.map((f, i) => (
-								<div key={i} className={styles.nomFaqItem}>
-									<button className={styles.faqQuestion} onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i} aria-controls={`faq-${i}`}>
-										{f.q}
-										<span className={styles.faqChevron}>{openFaq === i ? '−' : '+'}</span>
-									</button>
-									<AnimatePresence initial={false}>
-										{openFaq === i && (
-											<motion.div id={`faq-${i}`} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.28 }} className={styles.faqAnswer}>
-												<p style={{ margin: 0 }}>{f.a}</p>
-											</motion.div>
-										)}
-									</AnimatePresence>
+			{/* Nuestro enfoque section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2 
+					initial={{opacity: 0, y: 20}} 
+					whileInView={{opacity: 1, y: 0}} 
+					viewport={{once: true}} 
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 3rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						textAlign: 'center',
+						letterSpacing: '-0.02em'
+					}}
+				>
+					Nuestro enfoque
+				</motion.h2>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gap: '2.5rem',
+						marginBottom: '4rem'
+					}}
+				>
+					{[
+						{
+							num: '1',
+							title: 'Evaluación',
+							desc: 'Aplicamos encuestas y entrevistas para mapear factores de riesgo y condiciones organizacionales.',
+							icon: Clock
+						},
+						{
+							num: '2',
+							title: 'Plan de intervención',
+							desc: 'Diseñamos políticas, protocolos y acciones correctivas alineadas a la NOM-035.',
+							icon: Book
+						},
+						{
+							num: '3',
+							title: 'Capacitación',
+							desc: 'Formación para mandos y colaboradores para reducir riesgos y mejorar resiliencia.',
+							icon: Users
+						}
+					].map((step, i) => {
+						const Icon = step.icon;
+						return (
+							<motion.div
+								key={i}
+								initial={{opacity: 0, y: 30}}
+								whileInView={{opacity: 1, y: 0}}
+								viewport={{once: true}}
+								transition={{duration: 0.5, delay: i * 0.1}}
+								whileHover={{scale: 1.05, y: -12}}
+								style={{
+									padding: '2.5rem 2rem',
+									borderRadius: '16px',
+									background: i % 2 === 0 
+										? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
+										: 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
+									border: '2px solid rgba(0,61,143,0.12)',
+									transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+									boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
+									position: 'relative',
+									overflow: 'hidden',
+									cursor: 'pointer'
+								}}
+							>
+								{/* Número grande de fondo */}
+								<div style={{
+									position: 'absolute',
+									top: -20,
+									right: -20,
+									fontSize: '120px',
+									fontWeight: 900,
+									color: 'rgba(0,61,143,0.08)',
+									lineHeight: 1
+								}}>
+									{step.num}
 								</div>
-							))}
-						</div>
+
+								{/* Borde superior decorativo */}
+								<motion.div
+									animate={{opacity: [0.6, 1, 0.6]}}
+									transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+									style={{
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										right: 0,
+										height: '4px',
+										background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
+									}}
+								/>
+
+								{/* Icono */}
+								<div style={{
+									width: '65px',
+									height: '65px',
+									background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+									borderRadius: '14px',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									marginBottom: '1.5rem',
+									border: '1.5px solid rgba(0,61,143,0.15)',
+									color: '#003d8f',
+									fontSize: '2rem',
+									position: 'relative',
+									zIndex: 2
+								}}>
+									<Icon size={32} />
+								</div>
+
+								<div style={{position: 'relative', zIndex: 2}}>
+									<h3 style={{
+										fontSize: '1.25rem',
+										fontWeight: 800,
+										color: '#003d8f',
+										marginBottom: '0.75rem'
+									}}>
+										{step.title}
+									</h3>
+
+									<p style={{
+										fontSize: '0.95rem',
+										color: '#666',
+										lineHeight: 1.6,
+										margin: 0
+									}}>
+										{step.desc}
+									</p>
+								</div>
+
+								{/* Efecto brillo */}
+								<motion.div
+									whileHover={{opacity: 1}}
+									initial={{opacity: 0}}
+									style={{
+										position: 'absolute',
+										inset: 0,
+										background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)',
+										borderRadius: '16px',
+										pointerEvents: 'none'
+									}}
+								/>
+							</motion.div>
+						);
+					})}
+				</motion.div>
+			</section>
+
+			{/* FAQ Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2 
+					initial={{opacity: 0, y: 20}} 
+					whileInView={{opacity: 1, y: 0}} 
+					viewport={{once: true}} 
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>
+					Preguntas frecuentes
+				</motion.h2>
+
+				<div style={{
+					display: 'grid',
+					gridTemplateColumns: '1fr 1fr',
+					gap: '4rem',
+					alignItems: 'start'
+				}}>
+					{/* FAQs - Left side */}
+					<div>
+						<h3 style={{
+							fontSize: '1.3rem',
+							fontWeight: 700,
+							color: '#003d8f',
+							marginBottom: '1.5rem',
+							margin: '0 0 1.5rem 0'
+						}}>
+							Dudas comunes
+						</h3>
+					{[
+						{ q: '¿Qué es la NOM-035 y por qué es importante?', a: 'La NOM-035 protege el bienestar laboral identificando factores de riesgo psicosocial. Su cumplimiento reduce ausentismo, rotación y mejora clima.' },
+						{ q: '¿Cuánto tiempo tarda una implementación típica?', a: 'Depende del tamaño de la organización; un diagnóstico inicial toma 2-4 semanas y la implementación del plan suele desarrollarse en 3-6 meses.' },
+						{ q: '¿Proveen evidencia documental para auditorías?', a: 'Sí, entregamos reportes, actas y matrices de cierre que facilitan verificaciones y auditorías internas.' }
+					].map((faq, i) => (
+						<motion.div
+							key={i}
+							initial={{opacity: 0, y: 20}}
+							whileInView={{opacity: 1, y: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.5, delay: i * 0.1}}
+							style={{
+								marginBottom: '1rem',
+								borderRadius: '12px',
+								border: '2px solid rgba(0,61,143,0.12)',
+								background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+								overflow: 'hidden'
+							}}
+						>
+							<button
+								onClick={() => setOpenFaq(openFaq === i ? null : i)}
+								style={{
+									width: '100%',
+									padding: '1.5rem',
+									border: 'none',
+									background: 'none',
+									textAlign: 'left',
+									cursor: 'pointer',
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									transition: 'all 0.3s ease'
+								}}
+							>
+								<span style={{
+									fontSize: '1rem',
+									fontWeight: 700,
+									color: '#003d8f'
+								}}>
+									{faq.q}
+								</span>
+								<motion.span
+									animate={{rotate: openFaq === i ? 180 : 0}}
+									transition={{duration: 0.3}}
+									style={{
+										fontSize: '1.5rem',
+										color: '#004AB7',
+										flexShrink: 0,
+										marginLeft: '1rem'
+									}}
+								>
+									+
+								</motion.span>
+							</button>
+							<AnimatePresence initial={false}>
+								{openFaq === i && (
+									<motion.div
+										initial={{opacity: 0, height: 0}}
+										animate={{opacity: 1, height: 'auto'}}
+										exit={{opacity: 0, height: 0}}
+										transition={{duration: 0.3}}
+										style={{
+											padding: '0 1.5rem 1.5rem',
+											borderTop: '1px solid rgba(0,61,143,0.1)'
+										}}
+									>
+										<p style={{
+											margin: 0,
+											color: '#666',
+											lineHeight: 1.6,
+											fontSize: '0.95rem'
+										}}>
+											{faq.a}
+										</p>
+									</motion.div>
+								)}
+							</AnimatePresence>
+						</motion.div>
+					))}
 					</div>
 
-					<aside className={styles.testimonial}>
-						<div className={styles.testAvatar}>CB</div>
-						<blockquote>
-							<p>La implementación fue clara, práctica y con resultados visibles en 3 meses. El acompañamiento facilitó la aceptación interna.</p>
-							<cite>— C. Bautista, RRHH</cite>
-						</blockquote>
-					</aside>
-				</div>
+					{/* Benefits - Right side */}
+					<div>
+						<h3 style={{
+							fontSize: '1.3rem',
+							fontWeight: 700,
+							color: '#003d8f',
+							marginBottom: '1.5rem',
+							margin: '0 0 1.5rem 0'
+						}}>
+							Beneficios clave
+						</h3>
 
-				<div className={styles.nomCTA}>
-					<div className={styles.nomCTABox}>
-						<div>
-							<h4>¿Listo para comenzar?</h4>
-							<p className={styles.muted}>Solicita un diagnóstico inicial y recibe una hoja de ruta práctica.</p>
-						</div>
-						<div style={{ display: 'flex', gap: 10 }}>
-							<Link href="/#contacto" className={styles.nomButton}>Contáctanos</Link>
-							<Link href="/#contacto" className={styles.secondaryButton}>Solicitar presupuesto</Link>
-						</div>
+						{[
+							{
+								icon: Users,
+								title: 'Reducción de conflictos',
+								desc: 'Mejora el clima laboral y reduce conflictos interpersonales.'
+							},
+							{
+								icon: Clock,
+								title: 'Mayor productividad',
+								desc: 'Colaboradores más enfocados y motivados generan mejores resultados.'
+							},
+							{
+								icon: ShieldCheck,
+								title: 'Protección legal',
+								desc: 'Cumplimiento normativo que te protege de sanciones y demandas.'
+							}
+						].map((benefit, i) => {
+							const Icon = benefit.icon;
+							return (
+								<motion.div
+									key={i}
+									initial={{opacity: 0, x: 30}}
+									whileInView={{opacity: 1, x: 0}}
+									viewport={{once: true}}
+									transition={{duration: 0.5, delay: i * 0.15}}
+									whileHover={{x: 12}}
+									style={{
+										padding: '1.75rem',
+										borderRadius: '12px',
+										background: 'linear-gradient(135deg, #E8F4FF 0%, #F0F9FF 100%)',
+										border: '2px solid rgba(0,61,143,0.15)',
+										marginBottom: '1.5rem',
+										cursor: 'pointer',
+										transition: 'all 0.3s ease',
+										display: 'flex',
+										flexDirection: 'column',
+										minHeight: '160px'
+									}}
+								>
+									<div style={{
+										display: 'flex',
+										gap: '1rem',
+										alignItems: 'flex-start',
+										flex: 1
+									}}>
+										<div style={{
+											width: '50px',
+											height: '50px',
+											background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
+											borderRadius: '10px',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											color: 'white',
+											flexShrink: 0,
+											boxShadow: '0 8px 16px rgba(0,61,143,0.2)'
+										}}>
+											<Icon size={24} />
+										</div>
+
+										<div style={{flex: 1}}>
+											<h4 style={{
+												fontSize: '1rem',
+												fontWeight: 700,
+												color: '#003d8f',
+												marginBottom: '0.5rem',
+												margin: '0 0 0.5rem 0'
+											}}>
+												{benefit.title}
+											</h4>
+											<p style={{
+												fontSize: '0.9rem',
+												color: '#666',
+												lineHeight: 1.5,
+												margin: 0
+											}}>
+												{benefit.desc}
+											</p>
+										</div>
+									</div>
+
+									<motion.div
+										animate={{scale: [1, 1.05, 1]}}
+										transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+										style={{
+											position: 'absolute',
+											inset: 0,
+											background: 'radial-gradient(circle at 100% 0%, rgba(0,172,183,0.1) 0%, transparent 70%)',
+											borderRadius: '12px',
+											pointerEvents: 'none'
+										}}
+									/>
+								</motion.div>
+							);
+						})}
 					</div>
 				</div>
+			</section>
+
+			{/* Testimonial section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						padding: '3rem 2.5rem',
+						borderRadius: '16px',
+						background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+						border: '2px solid rgba(0,61,143,0.12)',
+						boxShadow: '0 12px 35px rgba(0,61,143,0.08)',
+						position: 'relative',
+						overflow: 'hidden'
+					}}
+				>
+					<motion.div
+						animate={{opacity: [0.6, 1, 0.6]}}
+						transition={{duration: 3, repeat: Infinity}}
+						style={{
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							right: 0,
+							height: '4px',
+							background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)'
+						}}
+					/>
+
+					<div style={{
+						position: 'relative',
+						zIndex: 2
+					}}>
+						<div style={{
+							width: '60px',
+							height: '60px',
+							background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
+							borderRadius: '12px',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							color: 'white',
+							fontWeight: 900,
+							fontSize: '1.5rem',
+							marginBottom: '1.5rem',
+							boxShadow: '0 8px 20px rgba(0,61,143,0.2)'
+						}}>
+							CB
+						</div>
+						<p style={{
+							fontSize: '1.1rem',
+							fontStyle: 'italic',
+							color: '#333',
+							marginBottom: '1rem',
+							lineHeight: 1.7
+						}}>
+							"La implementación fue clara, práctica y con resultados visibles en 3 meses. El acompañamiento facilitó la aceptación interna."
+						</p>
+						<p style={{
+							fontSize: '0.95rem',
+							color: '#666',
+							fontWeight: 600,
+							margin: 0
+						}}>
+							— C. Bautista, RRHH
+						</p>
+					</div>
+				</motion.div>
+			</section>
+
+			{/* CTA final section */}
+			<section style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				padding: '6rem 1.5rem',
+				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+				position: 'relative',
+				overflow: 'hidden'
+			}}>
+				{/* Decorative elements */}
+				<motion.div
+					animate={{scale: [1, 1.2, 1]}}
+					transition={{duration: 5, repeat: Infinity}}
+					style={{
+						position: 'absolute',
+						width: '500px',
+						height: '500px',
+						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						top: '-200px',
+						right: '-200px',
+						pointerEvents: 'none'
+					}}
+				/>
+
+				<motion.div
+					animate={{scale: [1, 1.1, 1]}}
+					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
+					style={{
+						position: 'absolute',
+						width: '400px',
+						height: '400px',
+						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						bottom: '-150px',
+						left: '-150px',
+						pointerEvents: 'none'
+					}}
+				/>
+
+				<motion.div
+					initial={{opacity: 0, y: 30}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.7}}
+					style={{
+						maxWidth: '1280px',
+						margin: '0 auto',
+						textAlign: 'center',
+						position: 'relative',
+						zIndex: 2
+					}}
+				>
+					<h2 style={{
+						fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+						fontWeight: 900,
+						color: 'white',
+						marginBottom: '1rem',
+						letterSpacing: '-0.02em'
+					}}>
+						¿Listo para comenzar?
+					</h2>
+
+					<p style={{
+						fontSize: '1.15rem',
+						color: 'rgba(255,255,255,0.9)',
+						marginBottom: '2.5rem',
+						lineHeight: 1.6
+					}}>
+						Solicita un diagnóstico inicial y recibe una hoja de ruta práctica para implementar NOM-035.
+					</p>
+
+					<div style={{
+						display: 'flex',
+						gap: '1rem',
+						justifyContent: 'center',
+						flexWrap: 'wrap'
+					}}>
+						<motion.div
+							whileHover={{scale: 1.05}}
+							whileTap={{scale: 0.95}}
+						>
+							<Link href="/#contacto" style={{
+								display: 'inline-block',
+								padding: '1rem 2rem',
+								background: 'white',
+								color: '#003d8f',
+								borderRadius: '12px',
+								fontWeight: 700,
+								fontSize: '1rem',
+								textDecoration: 'none',
+								transition: 'all 0.3s ease',
+								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
+							}}>
+								Contáctanos
+							</Link>
+						</motion.div>
+
+						<motion.div
+							whileHover={{scale: 1.05}}
+							whileTap={{scale: 0.95}}
+						>
+							<Link href="/#contacto" style={{
+								display: 'inline-block',
+								padding: '1rem 2rem',
+								background: 'rgba(255,255,255,0.2)',
+								color: 'white',
+								borderRadius: '12px',
+								fontWeight: 700,
+								fontSize: '1rem',
+								textDecoration: 'none',
+								border: '2px solid rgba(255,255,255,0.3)',
+								backdropFilter: 'blur(10px)',
+								transition: 'all 0.3s ease'
+							}}>
+								Solicitar presupuesto
+							</Link>
+						</motion.div>
+					</div>
+				</motion.div>
 			</section>
 		</main>
 	);

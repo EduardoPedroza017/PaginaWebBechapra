@@ -1,173 +1,723 @@
 "use client";
 
 import React from 'react';
-import SubpageHero from "../../../components/SubpageHero";
-import styles from './styles.module.css';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Layers, Users, DollarSign } from 'lucide-react';
-import Link from 'next/link';
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Briefcase, Layers, Users, DollarSign, ChevronLeft } from 'lucide-react';
 
 const services = [
-	{ icon: <Briefcase size={18} />, title: 'Constitución y contratos', desc: 'Acompañamiento para constituir tu empresa y contratos comerciales básicos.' },
-	{ icon: <Layers size={18} />, title: 'Contabilidad simplificada', desc: 'Procesos simples y reportes claros pensados para PYMEs.' },
-	{ icon: <Users size={18} />, title: 'Recursos humanos', desc: 'Contratos, políticas y gestión de personal en formatos accesibles.' },
-	{ icon: <DollarSign size={18} />, title: 'Optimización de costos', desc: 'Revisión de gastos y recomendaciones para mejorar flujo de efectivo.' },
-];
-
-const packages = [
-	{ name: 'Starter', price: 'MXN 2,500 / mes', items: ['Registro básico', 'Reporte mensual', 'Consultas por email'] },
-	{ name: 'Growth', price: 'MXN 6,000 / mes', items: ['Todo Starter', 'Reportes KPI', 'Soporte telefónico'] },
-	{ name: 'Scale', price: 'MXN 12,000 / mes', items: ['Todo Growth', 'Cierre anual', 'Consultoría estratégica'] },
-];
-
-const faqs = [
-	{ q: '¿Puedo cambiar de paquete después?', a: 'Sí, puedes escalar o bajar de paquete con 30 días de aviso y ajustamos la facturación.' },
-	{ q: '¿Ofrecen facturación y nómina?', a: 'Sí, ofrecemos soluciones de facturación y coordinación con proveedores de nómina según la necesidad.' },
+	{icon: Briefcase, title: 'Constitución y contratos', desc: 'Acompañamiento para constituir tu empresa y contratos comerciales básicos.'},
+	{icon: Layers, title: 'Contabilidad simplificada', desc: 'Procesos simples y reportes claros pensados para PYMEs.'},
+	{icon: Users, title: 'Recursos humanos', desc: 'Contratos, políticas y gestión de personal en formatos accesibles.'},
+	{icon: DollarSign, title: 'Optimización de costos', desc: 'Revisión de gastos y recomendaciones para mejorar flujo de efectivo.'},
 ];
 
 export default function Page() {
-	const [openService, setOpenService] = React.useState<number | null>(null);
-	const [openFaq, setOpenFaq] = React.useState<number | null>(null);
-	const scrollerRef = React.useRef<HTMLDivElement | null>(null);
-	const pausedRef = React.useRef(false);
-
-	// autoplay horizontal scroller for use cases
-	React.useEffect(() => {
-		const el = scrollerRef.current;
-		if (!el) return;
-		let raf = 0;
-		const speed = 0.28; // pixels per ms
-		let last = performance.now();
-
-		const loop = (now: number) => {
-			const dt = Math.min(60, now - last);
-			last = now;
-			if (!pausedRef.current) {
-				el.scrollLeft += speed * dt;
-				// wrap-around
-				if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
-					el.scrollLeft = 0;
-				}
-			}
-			raf = requestAnimationFrame(loop);
-		};
-
-		raf = requestAnimationFrame(loop);
-		return () => cancelAnimationFrame(raf);
-	}, []);
-
 	return (
 		<main>
-			<SubpageHero title="Servicios PYME" subtitle="Paquetes y acompañamiento para pequeñas y medianas empresas." />
+			{/* Hero Section */}
+			<section style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				padding: '5rem 1.5rem 6rem',
+				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+				position: 'relative',
+				overflow: 'hidden'
+			}}>
+				{/* Decorative circles */}
+				<motion.div
+					animate={{scale: [1, 1.2, 1]}}
+					transition={{duration: 5, repeat: Infinity}}
+					style={{
+						position: 'absolute',
+						width: '500px',
+						height: '500px',
+						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						top: '-200px',
+						right: '-200px',
+						pointerEvents: 'none'
+					}}
+				/>
+				<motion.div
+					animate={{scale: [1, 1.1, 1]}}
+					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
+					style={{
+						position: 'absolute',
+						width: '400px',
+						height: '400px',
+						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						bottom: '-150px',
+						left: '-150px',
+						pointerEvents: 'none'
+					}}
+				/>
 
-			<motion.section className={styles.hero} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
-				<div className={styles.heroInner}>
-					<div className={styles.heroLeft}>
-						<h2 className={styles.title}>Soluciones prácticas para PYMEs</h2>
-						<p className={styles.lead}>Paquetes pensados para empresas pequeñas: menos complejidad, más foco en crecimiento.</p>
-						<div className={styles.actions}>
-							<Link href="/#contacto" className={styles.primary}>Quiero una propuesta</Link>
-							<Link href="/servicios/servicios-pyme#paquetes" className={styles.secondary}>Ver paquetes</Link>
-						</div>
-					</div>
-					<div className={styles.heroRight} aria-hidden>
-						<div className={styles.visualCard}>
-							<Briefcase size={34} color="#0b63e4" />
-							<h4>Soporte ágil</h4>
-							<p>Procesos simplificados para dedicar menos tiempo a la administración.</p>
-						</div>
-					</div>
-				</div>
-			</motion.section>
+				<div style={{
+					maxWidth: '1280px',
+					margin: '0 auto',
+					position: 'relative',
+					zIndex: 2
+				}}>
+					<Link href="/servicios" style={{
+						display: 'inline-flex',
+						alignItems: 'center',
+						gap: '0.5rem',
+						padding: '0.65rem 1.25rem',
+						background: 'white',
+						color: '#003d8f',
+						borderRadius: '50px',
+						fontSize: '0.95rem',
+						fontWeight: 600,
+						textDecoration: 'none',
+						marginBottom: '2rem',
+						transition: 'all 0.3s ease',
+						boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
+					}}>
+						<ChevronLeft size={18} /> Volver
+					</Link>
 
-			<section className={styles.container}>
-				<motion.h3 className={styles.sectionTitle} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.36 }}>Qué incluimos</motion.h3>
+					<div style={{
+						display: 'grid',
+						gridTemplateColumns: '1.2fr 1fr',
+						gap: '3rem',
+						alignItems: 'center'
+					}}>
+						<motion.div
+							initial={{opacity: 0, y: 30}}
+							animate={{opacity: 1, y: 0}}
+							transition={{duration: 0.6}}
+						>
+							<h1 style={{
+								fontSize: 'clamp(2.2rem, 5vw, 3.2rem)',
+								fontWeight: 900,
+								color: 'white',
+								marginBottom: '1rem',
+								letterSpacing: '-0.02em',
+								lineHeight: 1.2
+							}}>
+								Servicios <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>PYME</span>
+							</h1>
 
-				<div className={styles.grid}>
-					{services.map((s, i) => (
-						<motion.article key={i} className={styles.card} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: i * 0.06 }}>
-							<div className={styles.icon}>{s.icon}</div>
-							<h4 className={styles.cardTitle}>{s.title}</h4>
-							<p className={styles.cardDesc}>{s.desc}</p>
-							<div style={{ marginTop: 10 }}>
-								<button className={styles.linkBtn} onClick={() => setOpenService(openService === i ? null : i)} aria-expanded={openService === i} aria-controls={`svc-pyme-${i}`}>{openService === i ? 'Cerrar' : 'Ver más'}</button>
-							</div>
-							<AnimatePresence>
-								{openService === i && (
-									<motion.div id={`svc-pyme-${i}`} className={styles.detail} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.24 }}>
-										<p style={{ margin: 0 }}>Ofrecemos documentación, plantillas y acompañamiento operativo para implementar cada servicio de forma rápida. Además apoyamos en la selección de herramientas digitales y procesos internos.</p>
-									</motion.div>
-								)}
-							</AnimatePresence>
-						</motion.article>
-					))}
-				</div>
+							<p style={{
+								fontSize: '1.1rem',
+								color: 'rgba(255,255,255,0.9)',
+								lineHeight: 1.7,
+								marginBottom: '2.5rem'
+							}}>
+								Paquetes pensados para empresas pequeñas: menos complejidad, más foco en crecimiento y escalabilidad.
+							</p>
 
-				{/* Use-cases scroller */}
-				<motion.div className={styles.useCasesSection} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.36 }}>
-					<h4>Casos de uso</h4>
-					<div className={styles.useCasesScroller} ref={scrollerRef} onMouseEnter={() => (pausedRef.current = true)} onMouseLeave={() => (pausedRef.current = false)} onTouchStart={() => (pausedRef.current = true)} onTouchEnd={() => (pausedRef.current = false)} role="list">
-						<div className={styles.useCaseCard} role="listitem">
-							<h5>Venta en línea</h5>
-							<p>Optimización de procesos contables y facturación para tiendas online que crecen.</p>
-						</div>
-						<div className={styles.useCaseCard} role="listitem">
-							<h5>Servicios profesionales</h5>
-							<p>Paquetes con contratos, políticas y gestión de clientes recurrentes.</p>
-						</div>
-						<div className={styles.useCaseCard} role="listitem">
-							<h5>Restaurantes y retail</h5>
-							<p>Control de inventarios, costos y recomendaciones para mejorar margen.</p>
-						</div>
-						<div className={styles.useCaseCard} role="listitem">
-							<h5>Escalamiento</h5>
-							<p>Procesos para preparar la empresa para inversión o crecimiento estructurado.</p>
-						</div>
-					</div>
-				</motion.div>
-
-				<motion.div id="paquetes" className={styles.packages} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.36 }}>
-					<h4>Paquetes</h4>
-					<div className={styles.packageGrid}>
-						{packages.map((p, idx) => (
-							<motion.div key={idx} className={styles.packageCard} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.28, delay: idx * 0.04 }}>
-								<strong>{p.name}</strong>
-								<div className={styles.price}>{p.price}</div>
-								<ul>
-									{p.items.map((it, j) => <li key={j}>{it}</li>)}
-								</ul>
-								<Link href="/#contacto" className={styles.choose}>Elegir</Link>
+							<motion.div
+								whileHover={{scale: 1.05}}
+								whileTap={{scale: 0.95}}
+							>
+								<Link href="/#contacto" style={{
+									display: 'inline-flex',
+									alignItems: 'center',
+									gap: '0.5rem',
+									padding: '1rem 2rem',
+									background: 'white',
+									color: '#003d8f',
+									borderRadius: '12px',
+									fontWeight: 700,
+									fontSize: '1rem',
+									textDecoration: 'none',
+									transition: 'all 0.3s ease',
+									boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
+								}}>
+									Quiero una propuesta →
+								</Link>
 							</motion.div>
-						))}
-					</div>
-				</motion.div>
+						</motion.div>
 
-				<motion.div className={styles.faqs} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3 }}>
-					<h4>Preguntas frecuentes</h4>
-					{faqs.map((f, idx) => (
-						<div key={idx} className={styles.faqItem}>
-							<button className={styles.faqQ} onClick={() => setOpenFaq(openFaq === idx ? null : idx)} aria-expanded={openFaq === idx} aria-controls={`faq-pyme-${idx}`}>{f.q}</button>
-							<AnimatePresence>
-								{openFaq === idx && (
-									<motion.div id={`faq-pyme-${idx}`} className={styles.faqA} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }}>
-										<p style={{ margin: 0 }}>{f.a}</p>
-									</motion.div>
-								)}
-							</AnimatePresence>
-						</div>
+						<motion.div
+							initial={{opacity: 0, y: 40}}
+							animate={{opacity: 1, y: 0}}
+							transition={{duration: 0.7, delay: 0.2}}
+							style={{
+								height: '380px',
+								background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+								borderRadius: '20px',
+								backdropFilter: 'blur(10px)',
+								border: '1px solid rgba(255,255,255,0.2)',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								fontSize: '5rem',
+								color: 'rgba(255,255,255,0.3)'
+							}}
+						>
+							💼
+						</motion.div>
+					</div>
+				</div>
+			</section>
+
+			{/* Qué incluimos Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>
+					Qué incluimos
+				</motion.h2>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gap: '2.5rem',
+						marginBottom: '5rem'
+					}}
+				>
+					{services.map((service, i) => {
+						const Icon = service.icon;
+						return (
+							<motion.div
+								key={i}
+								initial={{opacity: 0, y: 30}}
+								whileInView={{opacity: 1, y: 0}}
+								viewport={{once: true}}
+								transition={{duration: 0.5, delay: i * 0.1}}
+								whileHover={{scale: 1.05, y: -12}}
+								style={{
+									padding: '2.5rem 2rem',
+									borderRadius: '16px',
+									background: i % 2 === 0
+										? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
+										: 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
+									border: '2px solid rgba(0,61,143,0.12)',
+									transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+									boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
+									position: 'relative',
+									overflow: 'hidden',
+									cursor: 'pointer'
+								}}
+							>
+								{/* Borde superior decorativo */}
+								<motion.div
+									animate={{opacity: [0.6, 1, 0.6]}}
+									transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+									style={{
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										right: 0,
+										height: '4px',
+										background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
+									}}
+								/>
+
+								{/* Icono */}
+								<div style={{
+									width: '65px',
+									height: '65px',
+									background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+									borderRadius: '14px',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									marginBottom: '1.5rem',
+									border: '1.5px solid rgba(0,61,143,0.15)',
+									color: '#003d8f',
+									fontSize: '2rem',
+									position: 'relative',
+									zIndex: 2
+								}}>
+									<Icon size={32} />
+								</div>
+
+								<div style={{position: 'relative', zIndex: 2}}>
+									<h3 style={{
+										fontSize: '1.25rem',
+										fontWeight: 800,
+										color: '#003d8f',
+										marginBottom: '0.75rem'
+									}}>
+										{service.title}
+									</h3>
+
+									<p style={{
+										fontSize: '0.95rem',
+										color: '#666',
+										lineHeight: 1.6,
+										margin: 0
+									}}>
+										{service.desc}
+									</p>
+								</div>
+
+								{/* Efecto brillo */}
+								<motion.div
+									whileHover={{opacity: 1}}
+									initial={{opacity: 0}}
+									style={{
+										position: 'absolute',
+										inset: 0,
+										background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)',
+										borderRadius: '16px',
+										pointerEvents: 'none'
+									}}
+								/>
+							</motion.div>
+						);
+					})}
+				</motion.div>
+			</section>
+
+			{/* Casos de uso Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>
+					Casos de uso
+				</motion.h2>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gap: '2.5rem'
+					}}
+				>
+					{[
+						{title: 'Venta en línea', desc: 'Optimización de procesos contables y facturación para tiendas online que crecen.'},
+						{title: 'Servicios profesionales', desc: 'Paquetes con contratos, políticas y gestión de clientes recurrentes.'},
+						{title: 'Restaurantes y retail', desc: 'Control de inventarios, costos y recomendaciones para mejorar margen.'},
+						{title: 'Escalamiento', desc: 'Procesos para preparar la empresa para inversión o crecimiento estructurado.'}
+					].map((useCase, i) => (
+						<motion.div
+							key={i}
+							initial={{opacity: 0, y: 30}}
+							whileInView={{opacity: 1, y: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.5, delay: i * 0.1}}
+							whileHover={{scale: 1.05, y: -8}}
+							style={{
+								padding: '2rem',
+								borderRadius: '14px',
+								background: 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
+								border: '2px solid rgba(0,61,143,0.1)',
+								transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+								cursor: 'pointer'
+							}}
+						>
+							<h3 style={{
+								fontSize: '1.15rem',
+								fontWeight: 800,
+								color: '#003d8f',
+								marginBottom: '0.75rem'
+							}}>
+								{useCase.title}
+							</h3>
+							<p style={{
+								fontSize: '0.95rem',
+								color: '#666',
+								lineHeight: 1.6,
+								margin: 0
+							}}>
+								{useCase.desc}
+							</p>
+						</motion.div>
 					))}
 				</motion.div>
+			</section>
 
-				<motion.div className={styles.finalCTA} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.34 }}>
-					<div className={styles.finalInner}>
-						<div>
-							<h4>¿Listo para arrancar?</h4>
-							<p className={styles.muted}>Solicita una propuesta adaptada a tu operación.</p>
-						</div>
-						<Link href="/#contacto" className={styles.primary}>Contactar</Link>
+			{/* Paquetes Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>
+					Paquetes
+				</motion.h2>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gap: '2.5rem'
+					}}
+				>
+					{[
+						{name: 'Starter', price: 'MXN 2,500 / mes', items: ['Registro básico', 'Reporte mensual', 'Consultas por email']},
+						{name: 'Growth', price: 'MXN 6,000 / mes', items: ['Todo Starter', 'Reportes KPI', 'Soporte telefónico']},
+						{name: 'Scale', price: 'MXN 12,000 / mes', items: ['Todo Growth', 'Cierre anual', 'Consultoría estratégica']}
+					].map((pkg, i) => (
+						<motion.div
+							key={i}
+							initial={{opacity: 0, y: 30}}
+							whileInView={{opacity: 1, y: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.5, delay: i * 0.1}}
+							style={{
+								padding: '2.5rem 2rem',
+								borderRadius: '16px',
+								background: i === 1
+									? 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)'
+									: 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
+								border: i === 1 ? 'none' : '2px solid rgba(0,61,143,0.12)',
+								transition: 'all 0.3s ease',
+								boxShadow: i === 1 ? '0 12px 35px rgba(0,61,143,0.2)' : 'none'
+							}}
+						>
+							<h3 style={{
+								fontSize: '1.1rem',
+								fontWeight: 800,
+								color: i === 1 ? 'white' : '#003d8f',
+								marginBottom: '0.5rem'
+							}}>
+								{pkg.name}
+							</h3>
+							<div style={{
+								fontSize: '1.4rem',
+								fontWeight: 900,
+								color: i === 1 ? '#FFD700' : '#0056d4',
+								marginBottom: '1.5rem'
+							}}>
+								{pkg.price}
+							</div>
+							<ul style={{
+								listStyle: 'none',
+								padding: 0,
+								margin: '1.5rem 0',
+								display: 'flex',
+								flexDirection: 'column',
+								gap: '0.75rem'
+							}}>
+								{pkg.items.map((item, j) => (
+									<li key={j} style={{
+										fontSize: '0.95rem',
+										color: i === 1 ? 'rgba(255,255,255,0.9)' : '#666',
+										display: 'flex',
+										alignItems: 'center',
+										gap: '0.5rem'
+									}}>
+										<span style={{
+											display: 'inline-block',
+											width: '6px',
+											height: '6px',
+											borderRadius: '50%',
+											background: i === 1 ? '#FFD700' : '#003d8f',
+											flexShrink: 0
+										}} />
+										{item}
+									</li>
+								))}
+							</ul>
+							<motion.div
+								whileHover={{scale: 1.05}}
+								whileTap={{scale: 0.95}}
+							>
+								<Link href="/#contacto" style={{
+									display: 'inline-block',
+									width: '100%',
+									padding: '0.85rem 1.5rem',
+									background: i === 1 ? 'white' : '#003d8f',
+									color: i === 1 ? '#003d8f' : 'white',
+									borderRadius: '8px',
+									fontWeight: 700,
+									fontSize: '0.95rem',
+									textDecoration: 'none',
+									transition: 'all 0.3s ease',
+									textAlign: 'center',
+									border: 'none'
+								}}>
+									Elegir paquete
+								</Link>
+							</motion.div>
+						</motion.div>
+					))}
+				</motion.div>
+			</section>
+
+			{/* FAQ Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.h2
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '4rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>
+					Preguntas frecuentes
+				</motion.h2>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						maxWidth: '700px',
+						margin: '0 auto'
+					}}
+				>
+					{[
+						{q: '¿Puedo cambiar de paquete después?', a: 'Sí, puedes escalar o bajar de paquete con 30 días de aviso y ajustamos la facturación.'},
+						{q: '¿Ofrecen facturación y nómina?', a: 'Sí, ofrecemos soluciones de facturación y coordinación con proveedores de nómina según la necesidad.'},
+						{q: '¿Cuál es el tiempo de implementación?', a: 'Generalmente entre 1-2 semanas para tener el sistema operando con documentación básica y capacitación inicial.'}
+					].map((faq, i) => (
+						<FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
+					))}
+				</motion.div>
+			</section>
+
+			{/* CTA Final Section */}
+			<section style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				padding: '6rem 1.5rem',
+				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+				position: 'relative',
+				overflow: 'hidden'
+			}}>
+				{/* Decorative elements */}
+				<motion.div
+					animate={{scale: [1, 1.2, 1]}}
+					transition={{duration: 5, repeat: Infinity}}
+					style={{
+						position: 'absolute',
+						width: '500px',
+						height: '500px',
+						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						top: '-200px',
+						right: '-200px',
+						pointerEvents: 'none'
+					}}
+				/>
+
+				<motion.div
+					animate={{scale: [1, 1.1, 1]}}
+					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
+					style={{
+						position: 'absolute',
+						width: '400px',
+						height: '400px',
+						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
+						borderRadius: '50%',
+						bottom: '-150px',
+						left: '-150px',
+						pointerEvents: 'none'
+					}}
+				/>
+
+				<motion.div
+					initial={{opacity: 0, y: 30}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.7}}
+					style={{
+						maxWidth: '1280px',
+						margin: '0 auto',
+						textAlign: 'center',
+						position: 'relative',
+						zIndex: 2
+					}}
+				>
+					<h2 style={{
+						fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+						fontWeight: 900,
+						color: 'white',
+						marginBottom: '1rem',
+						letterSpacing: '-0.02em'
+					}}>
+						¿Listo para arrancar?
+					</h2>
+
+					<p style={{
+						fontSize: '1.15rem',
+						color: 'rgba(255,255,255,0.9)',
+						marginBottom: '2.5rem',
+						lineHeight: 1.6
+					}}>
+						Solicita una propuesta adaptada a tu operación y tamaño de empresa.
+					</p>
+
+					<div style={{
+						display: 'flex',
+						gap: '1rem',
+						justifyContent: 'center',
+						flexWrap: 'wrap'
+					}}>
+						<motion.div
+							whileHover={{scale: 1.05}}
+							whileTap={{scale: 0.95}}
+						>
+							<Link href="/#contacto" style={{
+								display: 'inline-block',
+								padding: '1rem 2rem',
+								background: 'white',
+								color: '#003d8f',
+								borderRadius: '12px',
+								fontWeight: 700,
+								fontSize: '1rem',
+								textDecoration: 'none',
+								transition: 'all 0.3s ease',
+								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
+							}}>
+								Contactar
+							</Link>
+						</motion.div>
+
+						<motion.div
+							whileHover={{scale: 1.05}}
+							whileTap={{scale: 0.95}}
+						>
+							<Link href="/#contacto" style={{
+								display: 'inline-block',
+								padding: '1rem 2rem',
+								background: 'rgba(255,255,255,0.2)',
+								color: 'white',
+								borderRadius: '12px',
+								fontWeight: 700,
+								fontSize: '1rem',
+								textDecoration: 'none',
+								border: '2px solid rgba(255,255,255,0.3)',
+								backdropFilter: 'blur(10px)',
+								transition: 'all 0.3s ease'
+							}}>
+								Ver paquetes
+							</Link>
+						</motion.div>
 					</div>
 				</motion.div>
 			</section>
 		</main>
+	);
+}
+
+function FAQItem({question, answer, index}: {question: string; answer: string; index: number}) {
+	const [open, setOpen] = React.useState(false);
+
+	return (
+		<motion.div
+			initial={{opacity: 0, y: 20}}
+			whileInView={{opacity: 1, y: 0}}
+			viewport={{once: true}}
+			transition={{duration: 0.5, delay: index * 0.1}}
+			style={{
+				borderBottom: '1px solid rgba(0,61,143,0.15)',
+				paddingBottom: '1.5rem',
+				marginBottom: '1.5rem'
+			}}
+		>
+			<button
+				onClick={() => setOpen(!open)}
+				style={{
+					width: '100%',
+					padding: '1.25rem 0',
+					background: 'none',
+					border: 'none',
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					cursor: 'pointer',
+					fontSize: '1.05rem',
+					fontWeight: 700,
+					color: '#003d8f',
+					transition: 'all 0.3s ease'
+				}}
+			>
+				{question}
+				<motion.span
+					animate={{rotate: open ? 180 : 0}}
+					transition={{duration: 0.3}}
+					style={{fontSize: '1.3rem'}}
+				>
+					▼
+				</motion.span>
+			</button>
+
+			{open && (
+				<motion.div
+					initial={{opacity: 0, height: 0}}
+					animate={{opacity: 1, height: 'auto'}}
+					exit={{opacity: 0, height: 0}}
+					transition={{duration: 0.3}}
+					style={{
+						color: '#666'
+					}}
+				>
+					<p style={{
+						fontSize: '0.95rem',
+						lineHeight: 1.6,
+						margin: 0,
+						color: '#555'
+					}}>
+						{answer}
+					</p>
+				</motion.div>
+			)}
+		</motion.div>
 	);
 }
