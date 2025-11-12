@@ -5,37 +5,29 @@ import { FileText, Calendar, Banknote, Users, Shield, TrendingUp, CheckCircle, B
 import { motion } from "framer-motion";
 import Link from "next/link";
 import styles from "./styles.module.css";
+import Footer from '@/components/Footer';
+import ContactForm from '@/app/components/ContactForm';
 
 const benefits = [
     {
         icon: <Shield className={styles.payrollCardIcon} />, 
-        title: "Seguridad y cumplimiento",
-        desc: "Asegura el pago correcto y puntual de la nómina, cumpliendo con todas las obligaciones fiscales y laborales."
+        title: "Precisión y Fiabilidad",
+        desc: "Contamos con un equipo de expertos en nómina que garantizan la exactitud en cada pago de empleado."
     },
     {
         icon: <Calendar className={styles.payrollCardIcon} />,
-        title: "Ahorro de tiempo",
-        desc: "Externaliza procesos administrativos y enfoca tus recursos en el crecimiento de tu empresa."
+        title: "Cumplimiento Normativo",
+        desc: "Nuestra gestión de nómina está diseñada para cumplir con todas las regulaciones fiscales y laborales vigentes."
     },
     {
         icon: <Banknote className={styles.payrollCardIcon} />,
-        title: "Optimización de costos",
-        desc: "Reduce errores, evita multas y mejora la eficiencia operativa con expertos en nómina."
+        title: "Seguridad de los Datos",
+        desc: "Implementamos medidas robustas de seguridad para proteger la información confidencial de tu empresa."
     },
     {
         icon: <Users className={styles.payrollCardIcon} />,
-        title: "Soporte especializado",
-        desc: "Accede a asesoría y atención personalizada para tu empresa y tus colaboradores."
-    },
-    {
-        icon: <TrendingUp className={styles.payrollCardIcon} />,
-        title: "Escalabilidad",
-        desc: "Adapta el servicio a las necesidades de tu empresa, sin importar el tamaño o sector."
-    },
-    {
-        icon: <CheckCircle className={styles.payrollCardIcon} />,
-        title: "Transparencia total",
-        desc: "Reportes claros y acceso a información en tiempo real para la toma de decisiones."
+        title: "Costo-Efectividad",
+        desc: "Ofrecemos soluciones de nómina de alta calidad a precios competitivos."
     },
 ];
 
@@ -58,6 +50,10 @@ const processSteps = [
 ];
 
 export default function PayrollPage() {
+    const textStyle: React.CSSProperties = {
+        textAlign: 'justify',
+    };
+
     return (
         <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>
             {/* HERO SECTION - Pantalla completa */}
@@ -112,7 +108,7 @@ export default function PayrollPage() {
                             marginBottom: '1.5rem'
                         }}>
                             <ChevronLeft size={18} />
-                            Volver a Servicios
+                            Volver
                         </Link>
                         <h1 style={{
                             fontSize: '3rem',
@@ -129,7 +125,8 @@ export default function PayrollPage() {
                             lineHeight: 1.6,
                             color: 'rgba(255,255,255,0.85)',
                             margin: '0 0 2rem 0',
-                            maxWidth: '540px'
+                            maxWidth: '540px',
+                            textAlign: 'justify'
                         }}>
                             Gestiona tu nómina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tú te enfoques en hacer crecer tu empresa. Payroll Bechapra es tranquilidad y eficiencia para tu negocio y tus colaboradores.
                         </p>
@@ -240,7 +237,8 @@ export default function PayrollPage() {
                                 <p style={{
                                     fontSize: '0.95rem',
                                     color: '#555',
-                                    lineHeight: 1.6
+                                    lineHeight: 1.6,
+                                    textAlign: 'justify'
                                 }}>
                                     {item.desc}
                                 </p>
@@ -253,7 +251,8 @@ export default function PayrollPage() {
                         lineHeight: 1.8,
                         marginTop: '3rem',
                         maxWidth: '800px',
-                        margin: '3rem auto 0'
+                        margin: '3rem auto 0',
+                        textAlign: 'justify'
                     }}>
                         <strong style={{color: '#003d8f'}}>Ideal para empresas</strong> que buscan eficiencia, seguridad y <strong style={{color: '#003d8f'}}>cumplimiento normativo</strong> en su gestión de recursos humanos y nómina.
                     </p>
@@ -340,7 +339,8 @@ export default function PayrollPage() {
                                     fontSize: '0.95rem',
                                     color: '#666',
                                     lineHeight: 1.7,
-                                    margin: 0
+                                    margin: 0,
+                                    textAlign: 'justify'
                                 }}>
                                     {b.desc}
                                 </p>
@@ -456,7 +456,8 @@ export default function PayrollPage() {
                                         fontSize: '0.95rem',
                                         color: '#555',
                                         lineHeight: 1.7,
-                                        margin: 0
+                                        margin: 0,
+                                        textAlign: 'justify'
                                     }}>
                                         {step.desc}
                                     </p>
@@ -497,12 +498,133 @@ export default function PayrollPage() {
                         margin: 0,
                         lineHeight: 1.6
                     }}>
-                        <strong>💡 Consejo:</strong> Todo el proceso es transparente y te mantenemos informado en cada etapa. Nuestro equipo está disponible para aclarar dudas en cualquier momento.
+                        <strong>Consejo:</strong> Todo el proceso es transparente y te mantenemos informado en cada etapa. Nuestro equipo está disponible para aclarar dudas en cualquier momento.
                     </p>
                 </motion.div>
             </section>
 
-            {/* FINAL CTA - Estilo Hero */}
+            {/* ¿QUÉ INCLUYE NUESTRO SERVICIO? */}
+            <section style={{
+                maxWidth: '1280px',
+                margin: '0 auto',
+                padding: '4rem 1.5rem',
+                textAlign: 'justify', // Justificación añadida
+            }}>
+                <motion.h2 style={{
+                    fontSize: 'clamp(2rem, 4vw, 3rem)',
+                    fontWeight: 900,
+                    color: '#003d8f',
+                    marginBottom: '3rem',
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1.1,
+                    textAlign: 'center'
+                }} initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.6}}>
+                    ¿Qué incluye nuestro servicio de nómina?
+                </motion.h2>
+                <motion.div initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:0.1, duration:0.6}}>
+                    <p style={textStyle}>
+                        Nuestro alcance en nómina incluye IMSS, RCV, INFONAVIT e impuestos estatales. Captura de incidencias, cálculos y reportes detallados.
+                    </p>
+                </motion.div>
+            </section>
+
+            {/* PAYROLL SCOPE SECTION */}
+            <section style={{
+                maxWidth: '1280px',
+                margin: '0 auto',
+                padding: '4rem 1.5rem',
+                textAlign: 'justify',
+            }}>
+                <h2 style={{
+                    fontSize: 'clamp(2rem, 4vw, 3rem)',
+                    fontWeight: 900,
+                    color: '#003d8f',
+                    marginBottom: '2rem',
+                    textAlign: 'center',
+                }}>
+                    Nuestro alcance en nómina, IMSS, RCV, INFONAVIT e Impuestos Estatales
+                </h2>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                    gap: '1.5rem',
+                }}>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Captura de incidencias de cada proceso de nómina.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Altas, bajas y modificaciones salariales de empleados.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Envío de recibos de pago a colaboradores por frecuencia de pago.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Cálculo y envío de pre-nómina y nómina definitiva vía electrónica.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Mantenimiento a tablas de ISR y cualquier información que afecta el cálculo de la nómina.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Cálculo de fondo de ahorro y envío del layout correspondiente.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Emisión bimestral de liquidación de retiro, Infonavit vía WEB.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Cálculo y presentación de variables bimestrales de salario diario integrado.
+                    </div>
+                    <div style={{
+                        border: '1px solid #003d8f',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        background: '#FAFBFC',
+                    }}>
+                        Ingreso de incapacidades y ausentismos en SUA.
+                    </div>
+                </div>
+            </section>
+
+             {/* FINAL CTA - Estilo Hero */}
             <section style={{
                 position: 'relative',
                 padding: '5rem 0',
@@ -547,7 +669,8 @@ export default function PayrollPage() {
                         marginBottom: '2.5rem',
                         maxWidth: '700px',
                         margin: '0 auto 2.5rem',
-                        lineHeight: 1.6
+                        lineHeight: 1.6,
+                        textAlign: 'justify'
                     }}>
                         Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.
                     </p>
@@ -571,6 +694,16 @@ export default function PayrollPage() {
                     </Link>
                 </div>
             </section>
+
+            {/* Contact Form Section */}
+            <section style={{
+                padding: '5rem 1.5rem',
+                background: '#f8f9fa'
+            }}>
+                <ContactForm />
+            </section>
+
+            <Footer />
         </div>
     );
 }

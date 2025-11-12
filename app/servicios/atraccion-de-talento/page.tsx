@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, Handshake, Phone, ArrowRight, ChevronLeft, ChevronRight, Briefcase, Zap } from "lucide-react";
 import Link from "next/link";
 import styles from "./styles.module.css";
+import Footer from '@/components/Footer';
+import ContactForm from '@/app/components/ContactForm';
 
 export default function Page() {
   const [activeBenefit, setActiveBenefit] = useState(0);
@@ -83,42 +85,36 @@ export default function Page() {
     "Dirección General", "Asuntos Corporativos", "Seguridad", "Jurídico",
   ];
 
-  const modalities = [
-    {
-      title: "Headhunting puntual",
-      desc: "Búsqueda especializada por vacante. Pago por éxito con garantía de sustitución.",
-      icon: <Target className="w-8 h-8" />,
-    },
-    {
-      title: "Reclutamiento masivo",
-      desc: "Perfiles operativos/volumen. Procesos paralelos y filtros rápidos para cubrir picos.",
-      icon: <Users className="w-8 h-8" />,
-    },
-    {
-      title: "RPO / célula dedicada",
-      desc: "Equipo Bechapra integrado a tu operación para cubrir múltiples vacantes mes a mes.",
-      icon: <Handshake className="w-8 h-8" />,
-    },
-  ];
-
   const benefits = [
     {
-      title: "Enfoque en el negocio",
-      subtitle: "Liberamos la operación de reclutamiento",
-      desc: "Te liberamos de la operación de reclutamiento para que tus líderes se concentren en resultados.",
-      icon: <Target className="w-10 h-10" />,
-    },
-    {
-      title: "Comunicación y visibilidad",
-      subtitle: "Reporte y seguimiento semanal",
-      desc: "Seguimiento semanal, tablero simple de estatus y retro por candidato.",
+      title: "Selección Personalizada",
+      subtitle: "Encuentra candidatos que se adapten a tu cultura",
+      desc: "Encontrar candidatos que no solo cumplan con los criterios técnicos, sino que también se adapten a la cultura y valores de tu empresa.",
       icon: <User className="w-10 h-10" />,
     },
     {
-      title: "Calidad + velocidad",
-      subtitle: "Primeros CVs en 24–48h",
-      desc: "Primeros CVs en 24–48h y shortlist accionable. Evaluación por competencias y cultura.",
-      icon: <TrendingUp className="w-10 h-10" />,
+      title: "Garantía de Calidad",
+      subtitle: "Confianza en cada candidato",
+      desc: "Puedes confiar en que cada candidato que te presentamos ha sido previamente entrevistado y evaluado para cumplir con tus estándares de calidad.",
+      icon: <CheckCircle className="w-10 h-10" />,
+    },
+  ];
+
+  const modalities = [
+    {
+      title: "Masivo y Operativo",
+      desc: "Nos especializamos en encontrar perfiles operativos de centros de trabajo como call centers, despachos de cobranza o trabajadores de línea de producción.",
+      icon: <Users className="w-8 h-8" />,
+    },
+    {
+      title: "Administrativo y Especializado",
+      desc: "Perfiles administrativos y especializados para áreas clave como finanzas, legal y tecnología.",
+      icon: <Briefcase className="w-8 h-8" />,
+    },
+    {
+      title: "Headhunter y Executive Search",
+      desc: "Búsqueda de talento ejecutivo y especializado para posiciones estratégicas en tu organización.",
+      icon: <Target className="w-8 h-8" />,
     },
   ];
 
@@ -179,7 +175,7 @@ export default function Page() {
               marginBottom: '1.5rem'
             }}>
               <ChevronLeft size={18} />
-              Volver a Servicios
+              Volver
             </Link>
             <h1 style={{
               fontSize: '3rem',
@@ -631,7 +627,7 @@ export default function Page() {
                   left: 0,
                   right: 0,
                   height: '5px',
-                  background: `linear-gradient(90deg, ${['#003d8f', '#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff'][i]} 0%, ${['#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff', '#4040ff'][i]} 50%, ${['#0056d4', '#0066ff', '#0076ff', '#5060ff', '#4040ff', '#3030ff'][i]} 100%)`,
+                  background: `linear-gradient(90deg, ${['#003d8f', '#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff'][i]} 0%, ${['#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff', '#4040ff'][i]} 50%, ${['#0056d4', '#0066ff', '#0076d4', '#5060ff', '#4040ff', '#3030ff'][i]} 100%)`,
                   transformOrigin: 'left',
                   zIndex: 3
                 }}
@@ -1081,7 +1077,15 @@ export default function Page() {
         </div>
       </section>
 
-      <div id="final" />
+      {/* === CONTACT FORM === */}
+      <section style={{
+        padding: '5rem 1.5rem',
+        background: '#f8f9fa'
+      }}>
+        <ContactForm />
+      </section>
+
+      <Footer />
     </div>
   );
 }

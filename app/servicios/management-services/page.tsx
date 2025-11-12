@@ -3,13 +3,15 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Briefcase, Settings, Users, PieChart } from 'lucide-react';
+import Image from 'next/image';
+import { Briefcase, Settings, Users } from 'lucide-react';
+import Footer from '@/components/Footer';
+import ContactForm from '@/app/components/ContactForm';
 
 const SERVICES = [
-  { icon: Briefcase, title: 'Operaciones & Procesos', desc: 'Mapeo, optimización y documentación de procesos clave para mejorar eficiencia.' },
-  { icon: Settings, title: 'Transformación Digital', desc: 'Automatización, selección de herramientas y migración de procesos a plataformas modernas.' },
-  { icon: Users, title: 'Talento & Organización', desc: 'Estructura organizacional, roles y acompañamiento para equipos en crecimiento.' },
-  { icon: PieChart, title: 'Análisis & KPI', desc: 'Diseño de dashboards y métricas para tomar decisiones oportunas.' },
+  { icon: Briefcase, title: 'Servicios Contables', desc: 'Ten una visión clara del presente y futuro contable-fiscal de tu empresa' },
+  { icon: Settings, title: 'Servicios Legales', desc: 'Desde la redacción de contratos sólidos hasta la protección ante cualquier desafío legal' },
+  { icon: Users, title: 'Servicios PyME', desc: 'Confía en nosotros para brindarte el apoyo y la orientación que necesitas para hacer crecer tu pyme de manera segura y exitosa' },
 ];
 
 export default function ManagementServicesPage() {
@@ -87,12 +89,12 @@ export default function ManagementServicesPage() {
 							marginBottom: '1.5rem',
 							letterSpacing: '-0.02em'
 						}}>
-							Management <span style={{
+							Soluciones integrales para gestionar y hacer crecer tu <span style={{
 								background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
 								WebkitBackgroundClip: 'text',
 								WebkitTextFillColor: 'transparent',
 								backgroundClip: 'text'
-							}}>Services</span>
+							}}>negocio</span>
 						</h1>
 
 						<p style={{
@@ -101,7 +103,7 @@ export default function ManagementServicesPage() {
 							lineHeight: 1.6,
 							marginBottom: '2rem'
 						}}>
-							Servicios especializados para la gestión efectiva y profesional de tu negocio — diseño, automatización y talento.
+							¡Desde el manejo de tus finanzas hasta la protección legal de tu empresa!
 						</p>
 
 						<motion.div
@@ -172,7 +174,7 @@ export default function ManagementServicesPage() {
 						letterSpacing: '-0.02em'
 					}}
 				>
-					Nuestros servicios
+					Servicios Management Services
 				</motion.h2>
 
 				<motion.div
@@ -299,7 +301,7 @@ export default function ManagementServicesPage() {
 						textAlign: 'center'
 					}}
 				>
-					Metodología y beneficios
+					Beneficios Management Services
 				</motion.h2>
 
 				<motion.div
@@ -309,25 +311,20 @@ export default function ManagementServicesPage() {
 					transition={{duration: 0.6}}
 					style={{
 						display: 'grid',
-						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
 						gap: '2.5rem'
 					}}
 				>
 					{[
 						{
 							icon: Briefcase,
-							title: 'Consultoría a la medida',
-							desc: 'Diseñamos un plan de trabajo por fases para alcanzar resultados medibles en 90 días.'
-						},
-						{
-							icon: Settings,
-							title: 'Implementación tecnológica',
-							desc: 'Integración de herramientas: ERPs ligeros, automatizaciones y dashboards.'
+							title: 'Acceso Exclusivo BTC',
+							desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.'
 						},
 						{
 							icon: Users,
-							title: 'Acompañamiento continuo',
-							desc: 'Capacitación de equipos y seguimiento post-implementación para asegurar adopción.'
+							title: 'Asesoramiento Personalizado',
+							desc: 'Sesiones de asesoramiento personalizado con expertos en contabilidad, legal y/o PyME'
 						}
 					].map((benefit, i) => {
 						const Icon = benefit.icon;
@@ -424,127 +421,157 @@ export default function ManagementServicesPage() {
 				</motion.div>
 			</section>
 
-			{/* CTA final section */}
+			{/* CTA Section - Dark Theme */}
 			<section style={{
 				width: '100vw',
 				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 1.5rem',
-				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+				padding: '5rem 1.5rem',
+				background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 50%, #1a1a2e 100%)',
 				position: 'relative',
 				overflow: 'hidden'
 			}}>
-				{/* Decorative elements */}
-				<motion.div
-					animate={{scale: [1, 1.2, 1]}}
-					transition={{duration: 5, repeat: Infinity}}
-					style={{
-						position: 'absolute',
-						width: '500px',
-						height: '500px',
-						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						top: '-200px',
-						right: '-200px',
-						pointerEvents: 'none'
-					}}
-				/>
-
-				<motion.div
-					animate={{scale: [1, 1.1, 1]}}
-					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
-					style={{
-						position: 'absolute',
-						width: '400px',
-						height: '400px',
-						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						bottom: '-150px',
-						left: '-150px',
-						pointerEvents: 'none'
-					}}
-				/>
-
-				<motion.div
-					initial={{opacity: 0, y: 30}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-					style={{
-						maxWidth: '1280px',
-						margin: '0 auto',
-						textAlign: 'center',
-						position: 'relative',
-						zIndex: 2
-					}}
-				>
-					<h2 style={{
-						fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-						fontWeight: 900,
-						color: 'white',
-						marginBottom: '1rem',
-						letterSpacing: '-0.02em'
-					}}>
-						¿Listo para transformar tu gestión?
-					</h2>
-
-					<p style={{
-						fontSize: '1.15rem',
-						color: 'rgba(255,255,255,0.9)',
-						marginBottom: '2.5rem',
-						lineHeight: 1.6
-					}}>
-						Solicita una evaluación gratuita y recibe un roadmap con prioridades personalizadas.
-					</p>
-
+				<div style={{
+					maxWidth: '1280px',
+					margin: '0 auto',
+					position: 'relative',
+					zIndex: 2,
+					padding: '0 2rem'
+				}}>
 					<div style={{
-						display: 'flex',
-						gap: '1rem',
-						justifyContent: 'center',
-						flexWrap: 'wrap'
+						display: 'grid',
+						gridTemplateColumns: '1fr 520px',
+						gap: '3rem',
+						alignItems: 'center',
+						padding: '0'
 					}}>
+						{/* Left Content */}
 						<motion.div
-							whileHover={{scale: 1.05}}
-							whileTap={{scale: 0.95}}
+							initial={{opacity: 0, x: -30}}
+							whileInView={{opacity: 1, x: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.7}}
 						>
-							<Link href="/#contacto" style={{
-								display: 'inline-block',
-								padding: '1rem 2rem',
-								background: 'white',
-								color: '#003d8f',
-								borderRadius: '12px',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								transition: 'all 0.3s ease',
-								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
+							<h2 style={{
+								fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+								fontWeight: 900,
+								color: 'white',
+								marginBottom: '1.25rem',
+								lineHeight: 1.2,
+								letterSpacing: '-0.02em'
 							}}>
-								Solicitar evaluación
-							</Link>
+								Todos los servicios en un solo lugar
+							</h2>
+
+							<p style={{
+								fontSize: '1.1rem',
+								color: 'rgba(255, 255, 255, 0.85)',
+								marginBottom: '2.5rem',
+								lineHeight: 1.65
+							}}>
+								Solicita una reunión para más información
+							</p>
+
+							<div style={{
+								display: 'flex',
+								gap: '1rem',
+								flexWrap: 'wrap'
+							}}>
+								<motion.div
+									whileHover={{scale: 1.05}}
+									whileTap={{scale: 0.95}}
+								>
+									<Link href="/#contacto" style={{
+										display: 'inline-block',
+										padding: '1rem 2.5rem',
+										background: '#0B62FF',
+										color: 'white',
+										borderRadius: '12px',
+										fontWeight: 700,
+										fontSize: '1rem',
+										textDecoration: 'none',
+										transition: 'all 0.3s ease',
+										boxShadow: '0 8px 25px rgba(11, 98, 255, 0.3)',
+										minWidth: '220px',
+										textAlign: 'center'
+									}}>
+										Solicitar reunión
+									</Link>
+								</motion.div>
+
+								<motion.div
+									whileHover={{scale: 1.05}}
+									whileTap={{scale: 0.95}}
+								>
+									<Link href="/servicios" style={{
+										display: 'inline-block',
+										padding: '1rem 2.5rem',
+										background: 'transparent',
+										color: 'white',
+										borderRadius: '12px',
+										fontWeight: 700,
+										fontSize: '1rem',
+										textDecoration: 'none',
+										border: '2px solid rgba(255, 255, 255, 0.3)',
+										transition: 'all 0.3s ease',
+										minWidth: '220px',
+										textAlign: 'center'
+									}}>
+										Ver servicios
+									</Link>
+								</motion.div>
+							</div>
 						</motion.div>
 
+						{/* Right Image */}
 						<motion.div
-							whileHover={{scale: 1.05}}
-							whileTap={{scale: 0.95}}
+							initial={{opacity: 0, x: 30}}
+							whileInView={{opacity: 1, x: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.7, delay: 0.2}}
+							style={{
+								display: 'flex',
+								justifyContent: 'flex-end',
+								alignItems: 'center'
+							}}
 						>
-							<Link href="/#contacto" style={{
-								display: 'inline-block',
-								padding: '1rem 2rem',
-								background: 'rgba(255,255,255,0.2)',
-								color: 'white',
-								borderRadius: '12px',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								border: '2px solid rgba(255,255,255,0.3)',
-								backdropFilter: 'blur(10px)',
-								transition: 'all 0.3s ease'
+							<div style={{
+								width: '100%',
+								maxWidth: '520px',
+								height: '300px',
+								borderRadius: '18px',
+								overflow: 'hidden',
+								boxShadow: '0 28px 60px rgba(0, 0, 0, 0.4)',
+								position: 'relative'
 							}}>
-								Agendar reunión
-							</Link>
+								<Image
+									src="/imagen/contacto/contacto-men.avif"
+									alt="Management Services"
+									width={520}
+									height={300}
+									quality={95}
+									priority
+									style={{
+										width: '100%',
+										height: '100%',
+										objectFit: 'cover',
+										display: 'block'
+									}}
+								/>
+							</div>
 						</motion.div>
 					</div>
-				</motion.div>
+				</div>
 			</section>
+
+			{/* Contact Form Section */}
+			<section style={{
+				padding: '5rem 1.5rem',
+				background: '#f8f9fa'
+			}}>
+				<ContactForm />
+			</section>
+
+			<Footer />
 		</main>
 	);
 }

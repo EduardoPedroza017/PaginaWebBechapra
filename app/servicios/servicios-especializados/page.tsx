@@ -112,7 +112,7 @@ export default function ServiciosEspecializadosPage() {
 							marginBottom: '1.5rem'
 						}}>
 							<ChevronLeft size={18} />
-							Volver a Servicios
+							Volver
 						</a>
 						<h1 style={{
 							fontSize: '3rem',

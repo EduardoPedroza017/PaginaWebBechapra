@@ -168,6 +168,8 @@
   line-height: 1.6;
   max-width: 560px;
   margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .heroButton {
@@ -345,6 +347,8 @@
   color: rgba(10, 25, 51, 0.65);
   font-size: 1.05rem;
   line-height: 1.6;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .featuresSection {
@@ -416,14 +420,16 @@
   color: rgba(10, 25, 51, 0.65);
   font-size: 1rem;
   line-height: 1.6;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .ctaSection {
   padding: 5.5rem 0;
   position: relative;
   overflow: hidden;
-  /* stronger sky gradient for more contrast */
-  background: linear-gradient(180deg, #E6F3FF 0%, #EAF6FF 30%, #F6FBFF 60%);
+  /* dark background to match reference */
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 50%, #1a1a2e 100%);
 }
 
 .ctaSection::before {
@@ -436,7 +442,7 @@
     radial-gradient(closest-side at 75% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 24%, transparent 46%),
     radial-gradient(closest-side at 50% 70%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 20%, transparent 48%);
   filter: blur(30px);
-  opacity: 0.92;
+  opacity: 0;
   z-index: 0;
   pointer-events: none;
 }
@@ -455,48 +461,89 @@
 .ctaContent {
   position: relative;
   z-index: 2;
-  text-align: center;
-  max-width: 900px;
+  text-align: left;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1.5rem 2rem;
+  padding: 2rem 2rem;
+}
+
+/* New: CTA inner grid to place text and image side-by-side */
+.ctaInner {
+  display: grid;
+  grid-template-columns: 0.7fr 1.5fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 0;
+}
+
+.ctaTextWrap {
+  text-align: left;
+  max-width: 640px;
+}
+
+.ctaImageWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ctaImageBox {
+  width: 100%;
+  max-width: 100%;
+  height: 340px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.ctaImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  position: relative;
 }
 
 .ctaTitle {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #0A1933;
+  color: #FFFFFF;
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 }
 
 .ctaText {
   font-size: 1.25rem;
-  color: rgba(10, 25, 51, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 2.5rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .ctaButtons {
   display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  gap: 1.25rem;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .primaryBtn {
-  background: linear-gradient(135deg, #0066EE 0%, #004AB7 70%);
+  background: #0B62FF;
   color: white;
-  padding: 1.25rem 2.75rem;
+  padding: 1.25rem 2.5rem;
   border-radius: 9999px;
   border: none;
-  box-shadow: 0 18px 46px rgba(0, 87, 217, 0.30);
+  box-shadow: 0 28px 60px rgba(11, 98, 255, 0.18);
   font-weight: 800;
-  font-size: 1.08rem;
+  font-size: 1.05rem;
   transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.18s ease;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 420px; /* occupy more horizontal space */
+  width: 320px;
+  max-width: 100%;
 }
 
 .primaryBtn:hover {
@@ -541,12 +588,12 @@
 
 .ghostBtn {
   background: transparent;
-  color: #004AB7;
-  padding: 1.125rem 2.25rem;
+  color: #0B62FF;
+  padding: 0.9rem 2rem;
   border-radius: 9999px;
-  border: 2px solid rgba(0, 74, 183, 0.18);
+  border: 2px solid rgba(11, 98, 255, 0.4);
   font-weight: 700;
-  font-size: 1.02rem;
+  font-size: 1rem;
   transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
   text-decoration: none;
   display: inline-flex;
@@ -571,7 +618,16 @@
     width: 100%;
     justify-content: center;
   }
-  .ctaButtons { flex-direction: column; gap: 1rem; }
+  .ctaButtons { flex-direction: column; gap: 1rem; align-items: stretch; }
+}
+
+@media (max-width: 900px) {
+  .ctaInner { grid-template-columns: 1fr; }
+  .ctaTextWrap { text-align: center; }
+  .ctaImageBox { max-width: 100%; height: 300px; }
+  .ctaImage { height: 100%; object-fit: cover; }
+  .ctaButtons { align-items: center; }
+  .ctaTitle { font-size: 2rem; }
 }
 
 .contactSection {

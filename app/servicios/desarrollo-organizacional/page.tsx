@@ -3,51 +3,44 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Users, Award, BookOpen, ShieldCheck, Smile, BarChart3 } from 'lucide-react';
+import Footer from '@/components/Footer';
+import ContactForm from '@/app/components/ContactForm';
 
 const servicios = [
   {
-    icon: <Users size={28} />,
-    title: 'Desarrollo Organizacional',
-    desc: 'Estrategias para fortalecer la cultura, el clima laboral y la alineación de equipos.'
-  },
-  {
     icon: <BookOpen size={28} />,
     title: 'Capacitación Empresarial',
-    desc: 'Programas de formación y talleres para potenciar competencias y liderazgo.'
+    desc: 'Desde habilidades técnicas hasta desarrollo de liderazgo, formamos parte de las capacitadoras del CCPM'
+  },
+  {
+    icon: <BarChart3 size={28} />,
+    title: 'Consultoría Organizacional',
+    desc: 'Soluciones para resolver problemas, identificar oportunidades, fomentar el aprendizaje y facilitar la implementación de cambios.'
   },
   {
     icon: <ShieldCheck size={28} />,
-    title: 'NOM 035',
-    desc: 'Diagnóstico, cumplimiento y acompañamiento en factores de riesgo psicosocial.'
-  },
-  {
-    icon: <Smile size={28} />,
-    title: 'Clima y bienestar',
-    desc: 'Encuestas, planes de acción y programas de bienestar para colaboradores.'
-  },
-  {
-    icon: <Award size={28} />,
-    title: 'Gestión del talento',
-    desc: 'Planes de carrera, evaluación de desempeño y retención de talento clave.'
+    title: 'NOM-035',
+    desc: 'Detectamos problemas y oportunidades internas para fomentar un ambiente laboral saludable y colaborativo.'
   },
 ];
 
 const beneficios = [
   {
+    icon: <Award size={32} />,
+    title: 'Acceso Exclusivo BTC',
+    desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.'
+  },
+  {
+    icon: <Users size={32} />,
+    title: 'Asesoramiento Personalizado',
+    desc: 'Sesiones de asesoramiento personalizado con expertos en NOM-035.'
+  },
+  {
     icon: <BarChart3 size={32} />,
-    title: 'Resultados medibles',
-    desc: 'Mejora de clima, productividad y satisfacción laboral comprobada.'
-  },
-  {
-    icon: <ShieldCheck size={32} />,
-    title: 'Cumplimiento normativo',
-    desc: 'Alineación con NOM 035 y mejores prácticas legales y de bienestar.'
-  },
-  {
-    icon: <Smile size={32} />,
-    title: 'Ambiente positivo',
-    desc: 'Reducción de rotación y mayor compromiso del equipo.'
+    title: 'Planificación Estratégica',
+    desc: 'Desarrollamos estrategias a largo plazo que impulsen el crecimiento y el éxito de tu empresa en el mercado actual.'
   },
 ];
 
@@ -120,7 +113,7 @@ export default function DesarrolloOrganizacionalPage() {
                 }}
               >
                 <span style={{fontSize: '1.1rem'}}>‹</span>
-                Volver a Servicios
+                Volver
               </Link>
               <h1 style={{
                 fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
@@ -130,7 +123,7 @@ export default function DesarrolloOrganizacionalPage() {
                 lineHeight: 1.1,
                 letterSpacing: '-0.02em'
               }}>
-                Desarrollo <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Organizacional</span>
+                Creando una cultura de éxito empresarial
               </h1>
               <p style={{
                 fontSize: '1.15rem',
@@ -139,7 +132,7 @@ export default function DesarrolloOrganizacionalPage() {
                 marginBottom: '2rem',
                 maxWidth: '500px'
               }}>
-                Fortalece la cultura, el clima y el talento de tu empresa con soluciones integrales de capacitación, bienestar y cumplimiento normativo.
+                ¡Potencia el crecimiento y la eficacia de tu empresa a través de nuestros servicios de Desarrollo Organizacional!
               </p>
               <Link href="/#contacto" style={{
                 display: 'inline-flex',
@@ -520,130 +513,170 @@ export default function DesarrolloOrganizacionalPage() {
           style={{
             width: '100vw',
             marginLeft: 'calc(-50vw + 50%)',
-            background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-            padding: '5rem 1.5rem',
+            background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 50%, #1a1a2e 100%)',
+            padding: '3rem 2rem',
             marginTop: '4rem',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
-          {/* Decorative elements */}
-          <div style={{
-            position: 'absolute',
-            top: -100,
-            right: -100,
-            width: '300px',
-            height: '300px',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            borderRadius: '50%',
-            pointerEvents: 'none'
-          }} />
-          <div style={{
-            position: 'absolute',
-            bottom: -50,
-            left: -50,
-            width: '250px',
-            height: '250px',
-            background: 'radial-gradient(circle, rgba(0,172,183,0.15) 0%, transparent 70%)',
-            borderRadius: '50%',
-            pointerEvents: 'none'
-          }} />
-
           <div style={{
             maxWidth: '1280px',
             margin: '0 auto',
-            textAlign: 'center',
             position: 'relative',
-            zIndex: 2
+            zIndex: 2,
+            padding: '0 2rem'
           }}>
-            <motion.h3
-              initial={{opacity: 0, scale: 0.9}}
-              whileInView={{opacity: 1, scale: 1}}
-              transition={{duration: 0.6}}
-              style={{
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                fontWeight: 900,
-                color: 'white',
-                marginBottom: '1.5rem',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              Transforma tu organización hoy
-            </motion.h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 520px',
+              gap: '3rem',
+              alignItems: 'center',
+              padding: '0'
+            }}>
+              <div style={{
+                textAlign: 'left',
+                maxWidth: '640px'
+              }}>
+                <motion.h3
+                  initial={{opacity: 0, scale: 0.9}}
+                  whileInView={{opacity: 1, scale: 1}}
+                  transition={{duration: 0.6}}
+                  style={{
+                    fontSize: 'clamp(2rem, 4vw, 3rem)',
+                    fontWeight: 900,
+                    color: 'white',
+                    marginBottom: '1.5rem',
+                    letterSpacing: '-0.02em'
+                  }}
+                >
+                  Transforma tu organización hoy
+                </motion.h3>
 
-            <motion.p
-              initial={{opacity: 0, y: 20}}
-              whileInView={{opacity: 1, y: 0}}
-              transition={{delay: 0.2, duration: 0.6}}
-              style={{
-                fontSize: '1.15rem',
-                color: 'rgba(255,255,255,0.95)',
-                marginBottom: '2rem',
-                maxWidth: '600px',
-                margin: '0 auto 2rem',
-                lineHeight: 1.8
-              }}
-            >
-              Agenda una consulta y conoce nuestras soluciones personalizadas para cultura, clima y talento.
-            </motion.p>
+                <motion.p
+                  initial={{opacity: 0, y: 20}}
+                  whileInView={{opacity: 1, y: 0}}
+                  transition={{delay: 0.2, duration: 0.6}}
+                  style={{
+                    fontSize: '1.15rem',
+                    color: 'rgba(255,255,255,0.8)',
+                    marginBottom: '2.5rem',
+                    lineHeight: 1.8,
+                    textAlign: 'justify',
+                    textJustify: 'inter-word'
+                  }}
+                >
+                  Agenda una consulta y conoce nuestras soluciones personalizadas para cultura, clima y talento.
+                </motion.p>
 
-            <motion.div
-              initial={{opacity: 0, y: 20}}
-              whileInView={{opacity: 1, y: 0}}
-              transition={{delay: 0.3, duration: 0.6}}
-              style={{
+                <motion.div
+                  initial={{opacity: 0, y: 20}}
+                  whileInView={{opacity: 1, y: 0}}
+                  transition={{delay: 0.3, duration: 0.6}}
+                  style={{
+                    display: 'flex',
+                    gap: '1.25rem',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start'
+                  }}
+                >
+                  <Link 
+                    href="/#contacto" 
+                    style={{
+                      padding: '1.25rem 2.5rem',
+                      borderRadius: '9999px',
+                      background: '#0B62FF',
+                      color: 'white',
+                      fontWeight: 800,
+                      fontSize: '1.05rem',
+                      textDecoration: 'none',
+                      transition: 'all 0.22s ease',
+                      cursor: 'pointer',
+                      boxShadow: '0 28px 60px rgba(11, 98, 255, 0.18)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '320px',
+                      maxWidth: '100%'
+                    }}
+                  >
+                    Contactar ahora
+                  </Link>
+                  <motion.a
+                    whileHover={{scale: 1.05}}
+                    href="#"
+                    style={{
+                      padding: '0.9rem 2rem',
+                      borderRadius: '9999px',
+                      background: 'transparent',
+                      color: '#0B62FF',
+                      fontWeight: 700,
+                      fontSize: '1rem',
+                      textDecoration: 'none',
+                      transition: 'all 0.22s ease',
+                      cursor: 'pointer',
+                      border: '2px solid rgba(11, 98, 255, 0.4)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.75rem'
+                    }}
+                  >
+                    Conocer más
+                  </motion.a>
+                </motion.div>
+              </div>
+
+              <div style={{
                 display: 'flex',
-                gap: '1rem',
-                justifyContent: 'center',
-                flexWrap: 'wrap'
-              }}
-            >
-              <Link 
-                href="/#contacto" 
-                style={{
-                  padding: '1.1rem 2.5rem',
-                  borderRadius: '12px',
-                  background: 'white',
-                  color: '#003d8f',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  cursor: 'pointer',
-                  boxShadow: '0 10px 30px rgba(255,255,255,0.2)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.75rem'
-                }}
-              >
-                Contactar ahora
-                <span>→</span>
-              </Link>
-              <motion.a
-                whileHover={{scale: 1.05}}
-                href="#"
-                style={{
-                  padding: '1.1rem 2.5rem',
-                  borderRadius: '12px',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: 'white',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  backdropFilter: 'blur(10px)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.75rem'
-                }}
-              >
-                Conocer más
-              </motion.a>
-            </motion.div>
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              }}>
+                <div style={{
+                  width: '100%',
+                  maxWidth: '520px',
+                  height: '300px',
+                  borderRadius: '18px',
+                  overflow: 'hidden',
+                  boxShadow: '0 28px 60px rgba(0, 0, 0, 0.4)',
+                  position: 'relative'
+                }}>
+                  <Image
+                    src="/imagen/contacto/contacto-men.avif"
+                    alt="Desarrollo Organizacional"
+                    width={520}
+                    height={300}
+                    quality={95}
+                    priority
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </motion.section>
+
+        {/* CONTACT SECTION */}
+        <section style={{
+          padding: '5rem 0',
+          background: 'white',
+          borderTop: '1px solid rgba(0, 74, 183, 0.08)'
+        }}>
+          <div style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: '0 1.5rem'
+          }}>
+            <ContactForm />
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <Footer />
       </div>
     </main>
   );

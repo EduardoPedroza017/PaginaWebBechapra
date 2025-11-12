@@ -7,6 +7,7 @@ import ServicesSection from "./components/ServicesSection";
 import AwardsSection from "./components/AwardsSection";
 import DivisionsSection from "./components/DivisionsSection";
 import HeroSection from "./components/HeroSection";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -46,6 +47,9 @@ export default function Home() {
           </AnimatedSection>
         </section>
       </div>
+
+      {/* FOOTER */}
+      <Footer />
     </main>
   );
 }

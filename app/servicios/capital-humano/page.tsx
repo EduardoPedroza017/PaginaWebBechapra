@@ -17,55 +17,41 @@ import {
 } from 'lucide-react';
 import styles from "./styles.module.css";
 import ContactForm from "@/app/components/ContactForm";
+import Footer from "@/components/Footer";
 
 const services = [
 	{
-		icon: <DollarSign />,
-		title: "Payroll & Compensación",
-		desc: "Gestión integral de nómina, cumplimiento fiscal y reporting para el sector financiero.",
-	},
-	{
 		icon: <Users />,
-		title: "Atracción y Retención",
-		desc: "Estrategias de selección, employer branding y planes de retención de talento crítico.",
+		title: "Servicios Especializados",
+		desc: "Avalados por la STPS y registrados en el REPSE, garantizando transparencia y cumplimiento legal.",
 	},
 	{
-		icon: <ShieldCheck />,
-		title: "Cumplimiento y NOM",
-		desc: "Políticas internas, compliance laboral y alineamiento a normativas sectoriales.",
-	},
-	{
-		icon: <BarChart3 />,
-		title: "Evaluación de desempeño",
-		desc: "Diseño de KPIs, medición por competencias y programas de desarrollo para mandos.",
-	},
-	{
-		icon: <GraduationCap />,
-		title: "Capacitación financiera",
-		desc: "Programas especializados para equipos financieros y de control interno.",
+		icon: <DollarSign />,
+		title: "Payrolling",
+		desc: "Desde el alta hasta la desvinculación, incluyendo pagos de cuotas patronales, IMSS, Infonavit, e impuestos.",
 	},
 	{
 		icon: <UserCheck />,
-		title: "Outsourcing parcial",
-		desc: "Soporte experto en picos de trabajo y proyectos temporales con gobernanza clara.",
+		title: "Atracción de Talento",
+		desc: "Utilizamos estrategias selectivas y entrevistas exhaustivas para presentarte a los candidatos correctos.",
 	}
 ];
 
 const features = [
 	{
 		icon: <Lock />,
-		title: "Seguridad y confidencialidad",
-		desc: "Procesos alineados a mejores prácticas de seguridad para manejo de información salarial y personal."
+		title: "Acceso Exclusivo BTC",
+		desc: "Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX."
 	},
 	{
 		icon: <Zap />,
-		title: "Integración con sistemas",
-		desc: "Conectamos con ERPs y payroll providers para reducir trabajo manual y errores."
+		title: "Reducción De Costos",
+		desc: "Optimiza los procesos de reclutamiento, selección y gestión de nómina."
 	},
 	{
 		icon: <HeadphonesIcon />,
-		title: "Soporte 24/7*",
-		desc: "Planes de soporte para ventanas críticas y cierres contables (SLAs adaptables)."
+		title: "Asesoramiento Personalizado",
+		desc: "Sesiones de asesoramiento personalizado con expertos en Capital Humano."
 	}
 ];
 
@@ -120,18 +106,9 @@ export default function Page() {
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 							<path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 						</svg>
-						<span>Volver a Servicios</span>
+						<span>Volver</span>
 					</Link>
 					<div className={styles.heroContent}>
-						<motion.div 
-							className={styles.kicker}
-							initial={{ opacity: 0, y: -20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6 }}
-						>
-							Servicios
-						</motion.div>
-
 						<motion.h1 
 							className={styles.title}
 							initial={{ opacity: 0, y: -30 }}
@@ -147,8 +124,8 @@ export default function Page() {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.7, delay: 0.2 }}
 						>
-							Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento,
-							nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.
+							Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano.
+							¡Transforma tu empresa con nuestro enfoque estratégico!
 						</motion.p>
 
 						<div style={{ marginTop: '1.75rem' }}>
@@ -183,17 +160,15 @@ export default function Page() {
 			{/* SERVICES SECTION */}
 			<section className={styles.servicesSection}>
 				<div className={styles.container}>
-					<motion.h2 
-						className={styles.sectionTitle}
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						transition={{ duration: 0.6 }}
-					>
-						Nuestras soluciones
-					</motion.h2>
-
-					<motion.div 
+				<motion.h2 
+					className={styles.sectionTitle}
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.6 }}
+				>
+					Servicios Capital Humano
+				</motion.h2>					<motion.div 
 						className={styles.servicesGrid}
 						variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.14 } } }}
 						initial="hidden"
@@ -265,11 +240,26 @@ export default function Page() {
 			>
 				<div className={styles.container}>
 					<div className={styles.ctaContent}>
-						<h3 className={styles.ctaTitle}>¿Listo para optimizar tu Capital Humano?</h3>
-						<p className={styles.ctaText}>Agenda una consulta y descubre cómo podemos ayudarte</p>
-						<div className={styles.ctaButtons}>
-							<a href="#contacto" className={styles.primaryBtn}>Contactar a Bechapra</a>
-							<a href="#" className={styles.ghostBtn}>Ver casos de éxito</a>
+						<div className={styles.ctaInner}>
+							<div className={styles.ctaTextWrap}>
+								<h3 className={styles.ctaTitle}>Todos los servicios en un solo lugar</h3>
+								<p className={styles.ctaText}>Solicita una reunión para más información</p>
+								<div className={styles.ctaButtons}>
+									<a href="#contacto" className={styles.primaryBtn}>Agenda una cita</a>
+									<a href="#" className={styles.ghostBtn}>Ver casos de éxito</a>
+								</div>
+							</div>
+							<div className={styles.ctaImageWrap} aria-hidden="true">
+								<div className={styles.ctaImageBox}>
+									<Image
+										src="/imagen/contacto/contacto-men.avif"
+										alt="Contacto Bechapra"
+										width={420}
+										height={300}
+										className={styles.ctaImage}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -281,6 +271,9 @@ export default function Page() {
 					<ContactForm />
 				</div>
 			</section>
+
+			{/* FOOTER */}
+			<Footer />
 		</main>
 	);
 }
