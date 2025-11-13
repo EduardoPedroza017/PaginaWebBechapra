@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3, TrendingUp, Award, Clock, ChevronRight, ChevronLeft } from "lucide-react";
+import Footer from '@/components/Footer';
+
 
 const servicios = [
 	{

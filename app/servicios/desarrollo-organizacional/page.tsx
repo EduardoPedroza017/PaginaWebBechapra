@@ -12,17 +12,20 @@ const servicios = [
   {
     icon: <BookOpen size={28} />,
     title: 'Capacitación Empresarial',
-    desc: 'Desde habilidades técnicas hasta desarrollo de liderazgo, formamos parte de las capacitadoras del CCPM'
+    desc: 'Desde habilidades técnicas hasta desarrollo de liderazgo, formamos parte de las capacitadoras del CCPM',
+    href: '/servicios/capacitacion-empresarial'
   },
   {
     icon: <BarChart3 size={28} />,
     title: 'Consultoría Organizacional',
     desc: 'Soluciones para resolver problemas, identificar oportunidades, fomentar el aprendizaje y facilitar la implementación de cambios.'
+    // Sin ruta
   },
   {
     icon: <ShieldCheck size={28} />,
     title: 'NOM-035',
-    desc: 'Detectamos problemas y oportunidades internas para fomentar un ambiente laboral saludable y colaborativo.'
+    desc: 'Detectamos problemas y oportunidades internas para fomentar un ambiente laboral saludable y colaborativo.',
+    href: '/servicios/nom-035'
   },
 ];
 
@@ -54,7 +57,7 @@ export default function DesarrolloOrganizacionalPage() {
           width: '100vw',
           marginLeft: 'calc(-50vw + 50%)',
           background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-          padding: '6rem 1.5rem 5rem',
+          padding: '4.5rem 1.5rem 4rem', // Menos padding arriba y abajo
           position: 'relative',
           overflow: 'hidden'
         }}>
@@ -85,10 +88,11 @@ export default function DesarrolloOrganizacionalPage() {
             margin: '0 auto',
             display: 'grid',
             gridTemplateColumns: '1.2fr 1fr',
-            gap: '3rem',
+            gap: '2.2rem', // Menos espacio entre columnas
             alignItems: 'center',
             position: 'relative',
-            zIndex: 2
+            zIndex: 2,
+            minHeight: '380px' // Asegura altura mínima para centrar
           }}>
             <motion.div initial={{opacity: 0, y: 30}} animate={{opacity: 1, y: 0}} transition={{duration: 0.7}}>
               {/* Back button */}
@@ -119,7 +123,7 @@ export default function DesarrolloOrganizacionalPage() {
                 fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
                 fontWeight: 900,
                 color: 'white',
-                marginBottom: '1.5rem',
+                marginBottom: '1.1rem',
                 lineHeight: 1.1,
                 letterSpacing: '-0.02em'
               }}>
@@ -128,8 +132,8 @@ export default function DesarrolloOrganizacionalPage() {
               <p style={{
                 fontSize: '1.15rem',
                 color: 'rgba(255,255,255,0.95)',
-                lineHeight: 1.8,
-                marginBottom: '2rem',
+                lineHeight: 1.7,
+                marginBottom: '1.5rem',
                 maxWidth: '500px'
               }}>
                 ¡Potencia el crecimiento y la eficacia de tu empresa a través de nuestros servicios de Desarrollo Organizacional!
@@ -208,156 +212,131 @@ export default function DesarrolloOrganizacionalPage() {
             Soluciones para tu organización
           </motion.h2>
 
-          {/* Carrusel de servicios - Infinito */}
+          {/* Grid de cards de servicios */}
           <div style={{
-            overflow: 'hidden',
-            position: 'relative',
-            marginBottom: '3rem',
-            background: 'linear-gradient(135deg, rgba(0,61,143,0.03) 0%, rgba(0,172,183,0.02) 100%)',
-            borderRadius: '20px',
-            padding: '2.5rem 0',
-            border: '1.5px solid rgba(0,61,143,0.08)'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2.5rem',
+            justifyContent: 'center',
+            alignItems: 'stretch',
           }}>
-            <motion.div
-              initial={{x: 0}}
-              animate={{x: `-${servicios.length * (240 + 24)}px`}}
-              transition={{
-                duration: 60,
-                repeat: Infinity,
-                ease: "linear",
-                repeatType: "loop"
-              }}
-              style={{
-                display: 'flex',
-                gap: '1.5rem',
-                width: 'fit-content',
-                willChange: 'transform',
-                padding: '0 1.5rem'
-              }}
-            >
-              {/* Renderizar 3 veces para garantizar flujo infinito suave */}
-              {[...servicios, ...servicios, ...servicios].map((s, i) => (
+            {servicios.map((s, i) => (
+              <motion.div
+                key={i}
+                whileHover={{
+                  scale: 1.08,
+                  y: -8,
+                  transition: {duration: 0.3, type: "spring", bounce: 0.4}
+                }}
+                style={{
+                  minHeight: '220px',
+                  padding: '2rem',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 50%, #F0F9FF 100%)',
+                  border: '2px solid rgba(0,61,143,0.12)',
+                  textAlign: 'center',
+                  transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.8)',
+                  backdropFilter: 'blur(12px)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                {/* Borde superior animado */}
                 <motion.div
-                  key={i}
-                  whileHover={{
-                    scale: 1.08,
-                    y: -8,
-                    transition: {duration: 0.3, type: "spring", bounce: 0.4}
-                  }}
+                  animate={{opacity: [0.6, 1, 0.6]}}
+                  transition={{duration: 3, repeat: Infinity}}
                   style={{
-                    flexShrink: 0,
-                    width: '240px',
-                    minHeight: '220px',
-                    padding: '2rem',
-                    borderRadius: '16px',
-                    background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 50%, #F0F9FF 100%)',
-                    border: '2px solid rgba(0,61,143,0.12)',
-                    textAlign: 'center',
-                    transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.8)',
-                    backdropFilter: 'blur(12px)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer'
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '3px',
+                    background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #0056d4 65%, #004AB7 100%)',
+                    borderRadius: '16px 16px 0 0'
                   }}
-                >
-                  {/* Borde superior animado */}
-                  <motion.div
-                    animate={{opacity: [0.6, 1, 0.6]}}
-                    transition={{duration: 3, repeat: Infinity}}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '3px',
-                      background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #0056d4 65%, #004AB7 100%)',
-                      borderRadius: '16px 16px 0 0'
-                    }}
-                  />
+                />
 
-                  {/* Icono mejorado */}
-                  <div style={{
-                    width: '70px',
-                    height: '70px',
-                    background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-                    borderRadius: '14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '1rem',
-                    position: 'relative',
-                    zIndex: 2,
-                    border: '1.5px solid rgba(0,61,143,0.15)',
+                {/* Icono mejorado */}
+                <div style={{
+                  width: '70px',
+                  height: '70px',
+                  background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+                  borderRadius: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  position: 'relative',
+                  zIndex: 2,
+                  border: '1.5px solid rgba(0,61,143,0.15)',
+                  color: '#003d8f',
+                  fontSize: '2rem'
+                }}>
+                  {s.icon}
+                </div>
+
+                {/* Contenido */}
+                <div style={{position: 'relative', zIndex: 2}}>
+                  <h3 style={{
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
                     color: '#003d8f',
-                    fontSize: '2rem'
+                    marginBottom: '0.8rem',
+                    textAlign: 'center'
                   }}>
-                    {s.icon}
-                  </div>
+                    {s.title}
+                  </h3>
+                  <p style={{
+                    fontSize: '0.95rem',
+                    color: '#666',
+                    lineHeight: 1.5,
+                    margin: 0,
+                    textAlign: 'justify',
+                    textJustify: 'inter-word'
+                  }}>
+                    {s.desc}
+                  </p>
+                </div>
 
-                  {/* Contenido */}
-                  <div style={{position: 'relative', zIndex: 2}}>
-                    <h3 style={{
-                      fontSize: '1.1rem',
-                      fontWeight: 800,
-                      color: '#003d8f',
-                      marginBottom: '0.8rem'
-                    }}>
-                      {s.title}
-                    </h3>
-                    <p style={{
-                      fontSize: '0.95rem',
-                      color: '#666',
-                      lineHeight: 1.5,
-                      margin: 0
-                    }}>
-                      {s.desc}
-                    </p>
-                  </div>
+                {/* Botón de acción si hay ruta */}
+                {s.href && (
+                  <Link href={s.href} style={{
+                    marginTop: '1.2rem',
+                    display: 'inline-block',
+                    padding: '0.7rem 1.5rem',
+                    borderRadius: '10px',
+                    background: '#004AB7',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    textDecoration: 'none',
+                    boxShadow: '0 4px 16px rgba(0,74,183,0.10)',
+                    transition: 'background 0.2s, color 0.2s',
+                  }}>
+                    Ver más
+                  </Link>
+                )}
 
-                  {/* Efecto de brillo */}
-                  <motion.div
-                    whileHover={{opacity: 1}}
-                    initial={{opacity: 0}}
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 50%, rgba(0,172,183,0.1) 100%)',
-                      borderRadius: '16px',
-                      pointerEvents: 'none'
-                    }}
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Gradients laterales */}
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: '120px',
-              background: 'linear-gradient(90deg, #FFFFFF 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)',
-              pointerEvents: 'none',
-              zIndex: 10,
-              borderRadius: '20px 0 0 20px'
-            }} />
-            <div style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: '120px',
-              background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, #FFFFFF 100%)',
-              pointerEvents: 'none',
-              zIndex: 10,
-              borderRadius: '0 20px 20px 0'
-            }} />
+                {/* Efecto de brillo */}
+                <motion.div
+                  whileHover={{opacity: 1}}
+                  initial={{opacity: 0}}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 50%, rgba(0,172,183,0.1) 100%)',
+                    borderRadius: '16px',
+                    pointerEvents: 'none'
+                  }}
+                />
+              </motion.div>
+            ))}
           </div>
         </section>
 
@@ -365,143 +344,130 @@ export default function DesarrolloOrganizacionalPage() {
         <section style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '5rem 1.5rem'
+          padding: '5rem 1.5rem',
+          display: 'grid',
+          gridTemplateColumns: '1.1fr 0.9fr',
+          gap: '3rem',
+          alignItems: 'center'
         }}>
-          <motion.h2 
-            initial={{opacity: 0, y: 20}} 
-            whileInView={{opacity: 1, y: 0}} 
-            viewport={{once: true}} 
-            transition={{duration: 0.6}}
-            style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: 900,
-              color: '#003d8f',
-              marginBottom: '4rem',
-              textAlign: 'center',
-              letterSpacing: '-0.02em'
-            }}
-          >
-            Beneficios para tu empresa
-          </motion.h2>
+          <div>
+            <motion.h2 
+              initial={{opacity: 0, y: 20}} 
+              whileInView={{opacity: 1, y: 0}} 
+              viewport={{once: true}} 
+              transition={{duration: 0.6}}
+              style={{
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: 900,
+                color: '#003d8f',
+                marginBottom: '4rem',
+                textAlign: 'left',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Beneficios Centro de Capacitación
+            </motion.h2>
 
-          <motion.div
-            initial={{opacity: 0, y: 40}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
-            transition={{duration: 0.6}}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '2.5rem'
-            }}
-          >
-            {beneficios.map((b, i) => (
-              <motion.div
-                key={i}
-                initial={{opacity: 0, y: 30}}
-                whileInView={{opacity: 1, y: 0}}
-                viewport={{once: true}}
-                transition={{duration: 0.5, delay: i * 0.1}}
-                whileHover={{scale: 1.05, y: -12}}
-                style={{
-                  padding: '2.5rem 2rem',
-                  borderRadius: '16px',
-                  background: i % 2 === 0 
-                    ? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
-                    : 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
-                  border: '2px solid rgba(0,61,143,0.12)',
-                  transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  cursor: 'pointer'
-                }}
-              >
-                {/* Borde superior decorativo */}
+            {/* Cards en escalera con hover azul y texto blanco */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2.5rem',
+              marginTop: '1rem'
+            }}>
+              {beneficios.map((b, i) => (
                 <motion.div
-                  animate={{opacity: [0.6, 1, 0.6]}}
-                  transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
+                  key={i}
+                  initial={{opacity: 0, y: 30}}
+                  whileInView={{opacity: 1, y: 0}}
+                  viewport={{once: true}}
+                  transition={{duration: 0.18, delay: 0}}
+                  whileHover={{
+                    scale: 1.05,
+                    y: -12,
+                    backgroundColor: '#0057D9',
+                    color: '#fff',
+                    transition: { duration: 0.18 }
                   }}
-                />
-
-                {/* Decorativo radial */}
-                <motion.div
-                  initial={{opacity: 0, scale: 0}}
-                  whileInView={{opacity: 0.8, scale: 1}}
-                  transition={{duration: 0.8}}
                   style={{
-                    position: 'absolute',
-                    top: -30,
-                    right: -30,
-                    width: '150px',
-                    height: '150px',
-                    background: 'radial-gradient(circle, rgba(0,172,183,0.15) 0%, transparent 70%)',
-                    borderRadius: '50%',
-                    pointerEvents: 'none'
-                  }}
-                />
-
-                <div style={{position: 'relative', zIndex: 2}}>
-                  {/* Icono */}
-                  <div style={{
-                    width: '65px',
-                    height: '65px',
-                    background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-                    borderRadius: '14px',
+                    padding: '2.5rem 2rem',
+                    borderRadius: '16px',
+                    background: '#fff',
+                    color: '#222',
+                    border: '2px solid rgba(0,61,143,0.12)',
+                    transition: 'background 0.18s, color 0.18s',
+                    boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    marginLeft: `${i * 2.5}rem`,
+                    textAlign: 'justify',
+                    textJustify: 'inter-word',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '1.5rem',
-                    border: '1.5px solid rgba(0,61,143,0.15)',
-                    color: '#003d8f',
-                    fontSize: '2rem'
-                  }}>
-                    {b.icon}
+                    flexDirection: 'column',
+                    gap: '1rem'
+                  }}
+                >
+                  <div style={{display: 'flex', alignItems: 'center', gap: '1.1rem'}}>
+                    <span
+                      style={{
+                        color: 'inherit',
+                        background: 'rgba(0,61,143,0.07)',
+                        borderRadius: '10px',
+                        padding: '0.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'color 0.2s',
+                      }}
+                    >
+                      {b.icon}
+                    </span>
+                    <h3
+                      style={{
+                        fontSize: '1.25rem',
+                        fontWeight: 800,
+                        marginBottom: '0.75rem',
+                        color: 'inherit',
+                        textAlign: 'left',
+                        transition: 'color 0.2s',
+                      }}
+                    >
+                      {b.title}
+                    </h3>
                   </div>
-
-                  {/* Título */}
-                  <h3 style={{
-                    fontSize: '1.25rem',
-                    fontWeight: 800,
-                    color: '#003d8f',
-                    marginBottom: '0.75rem'
-                  }}>
-                    {b.title}
-                  </h3>
-
-                  {/* Descripción */}
-                  <p style={{
-                    fontSize: '0.95rem',
-                    color: '#666',
-                    lineHeight: 1.6,
-                    margin: 0
-                  }}>
+                  <p
+                    style={{
+                      fontSize: '0.95rem',
+                      color: 'inherit',
+                      lineHeight: 1.6,
+                      margin: 0,
+                      textAlign: 'justify',
+                      textJustify: 'inter-word',
+                      transition: 'color 0.2s',
+                    }}
+                  >
                     {b.desc}
                   </p>
-                </div>
-
-                {/* Efecto brillo */}
-                <motion.div
-                  whileHover={{opacity: 1}}
-                  initial={{opacity: 0}}
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)',
-                    borderRadius: '16px',
-                    pointerEvents: 'none'
-                  }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              src="/imagen/prueba/tranning.webp"
+              alt="Beneficio visual"
+              width={220}
+              height={320}
+              style={{
+                borderRadius: '18px',
+                boxShadow: '0 12px 35px rgba(0,61,143,0.12)',
+                objectFit: 'cover',
+                width: '220px',
+                height: '320px',
+                display: 'block'
+              }}
+            />
+          </div>
         </section>
 
         {/* CTA FINAL Mejorado */}
@@ -580,49 +546,58 @@ export default function DesarrolloOrganizacionalPage() {
                     alignItems: 'flex-start'
                   }}
                 >
-                  <Link 
-                    href="/#contacto" 
-                    style={{
-                      padding: '1.25rem 2.5rem',
-                      borderRadius: '9999px',
-                      background: '#0B62FF',
-                      color: 'white',
-                      fontWeight: 800,
-                      fontSize: '1.05rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.22s ease',
-                      cursor: 'pointer',
-                      boxShadow: '0 28px 60px rgba(11, 98, 255, 0.18)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '320px',
-                      maxWidth: '100%'
-                    }}
-                  >
-                    Contactar ahora
-                  </Link>
-                  <motion.a
-                    whileHover={{scale: 1.05}}
-                    href="#"
-                    style={{
-                      padding: '0.9rem 2rem',
-                      borderRadius: '9999px',
-                      background: 'transparent',
-                      color: '#0B62FF',
-                      fontWeight: 700,
-                      fontSize: '1rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.22s ease',
-                      cursor: 'pointer',
-                      border: '2px solid rgba(11, 98, 255, 0.4)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.75rem'
-                    }}
-                  >
-                    Conocer más
-                  </motion.a>
+                  <div style={{display: 'flex', gap: '2rem', flexDirection: 'row'}}>
+                    <Link 
+                      href="/#contacto" 
+                      style={{
+                        padding: '1.1rem 2.5rem',
+                        borderRadius: '20px',
+                        background: '#0B4ED9',
+                        color: '#fff',
+                        fontWeight: 800,
+                        fontSize: '1.25rem',
+                        textDecoration: 'none',
+                        transition: 'background 0.18s, color 0.18s',
+                        cursor: 'pointer',
+                        boxShadow: '0 8px 24px rgba(11, 78, 217, 0.12)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: '320px',
+                        minHeight: '64px',
+                        textAlign: 'center',
+                        border: 'none',
+                        letterSpacing: '-0.01em'
+                      }}
+                    >
+                      Agenda una cita
+                    </Link>
+                    <Link 
+                      href="#casos-exito" 
+                      style={{
+                        padding: '1.1rem 2.5rem',
+                        borderRadius: '20px',
+                        background: 'transparent',
+                        color: '#fff',
+                        fontWeight: 800,
+                        fontSize: '1.25rem',
+                        textDecoration: 'none',
+                        transition: 'background 0.18s, color 0.18s',
+                        cursor: 'pointer',
+                        boxShadow: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: '320px',
+                        minHeight: '64px',
+                        textAlign: 'center',
+                        border: '2px solid #0B4ED9',
+                        letterSpacing: '-0.01em'
+                      }}
+                    >
+                      Ver casos de éxito
+                    </Link>
+                  </div>
                 </motion.div>
               </div>
 
@@ -671,6 +646,19 @@ export default function DesarrolloOrganizacionalPage() {
             margin: '0 auto',
             padding: '0 1.5rem'
           }}>
+            <h2
+              style={{
+                color: '#003d8f',
+                fontWeight: 900,
+                fontSize: 'clamp(2.2rem, 4vw, 2.8rem)',
+                textAlign: 'center',
+                marginBottom: '2.5rem',
+                letterSpacing: '-0.01em',
+                textShadow: '0 2px 12px rgba(0,61,143,0.08)'
+              }}
+            >
+              Contáctanos
+            </h2>
             <ContactForm />
           </div>
         </section>

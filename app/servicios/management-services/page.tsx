@@ -9,9 +9,24 @@ import Footer from '@/components/Footer';
 import ContactForm from '@/app/components/ContactForm';
 
 const SERVICES = [
-  { icon: Briefcase, title: 'Servicios Contables', desc: 'Ten una visión clara del presente y futuro contable-fiscal de tu empresa' },
-  { icon: Settings, title: 'Servicios Legales', desc: 'Desde la redacción de contratos sólidos hasta la protección ante cualquier desafío legal' },
-  { icon: Users, title: 'Servicios PyME', desc: 'Confía en nosotros para brindarte el apoyo y la orientación que necesitas para hacer crecer tu pyme de manera segura y exitosa' },
+  { 
+    icon: Briefcase, 
+    title: 'Servicios Contables', 
+    desc: 'Ten una visión clara del presente y futuro contable-fiscal de tu empresa',
+    href: '/servicios/servicios-contables'
+  },
+  { 
+    icon: Settings, 
+    title: 'Servicios Legales', 
+    desc: 'Desde la redacción de contratos sólidos hasta la protección ante cualquier desafío legal',
+    href: '/servicios/servicios-legales'
+  },
+  { 
+    icon: Users, 
+    title: 'Servicios PyME', 
+    desc: 'Confía en nosotros para brindarte el apoyo y la orientación que necesitas para hacer crecer tu pyme de manera segura y exitosa',
+    href: '/servicios/servicios-pyme'
+  },
 ];
 
 export default function ManagementServicesPage() {
@@ -184,7 +199,7 @@ export default function ManagementServicesPage() {
 					transition={{duration: 0.6}}
 					style={{
 						display: 'grid',
-						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
 						gap: '2.5rem'
 					}}
 				>
@@ -197,57 +212,44 @@ export default function ManagementServicesPage() {
 								whileInView={{opacity: 1, y: 0}}
 								viewport={{once: true}}
 								transition={{duration: 0.5, delay: i * 0.1}}
-								whileHover={{scale: 1.05, y: -12}}
+								whileHover={{scale: 1.03, y: -8}}
 								style={{
 									padding: '2.5rem 2rem',
-									borderRadius: '16px',
-									background: 'linear-gradient(135deg, #E8F4FF 0%, #F0F9FF 100%)',
-									border: '2px solid rgba(0,61,143,0.12)',
-									transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-									boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
+									borderRadius: '12px',
+									background: '#fff',
+									border: '1px solid rgba(0,61,143,0.1)',
+									borderLeft: '4px solid #0056d4',
+									transition: 'all 0.3s ease',
+									boxShadow: '0 4px 20px rgba(0,61,143,0.08)',
 									position: 'relative',
 									overflow: 'hidden',
-									cursor: 'pointer'
+									cursor: 'pointer',
+									display: 'flex',
+									flexDirection: 'column',
+									minHeight: '280px'
 								}}
 							>
-								{/* Borde superior decorativo */}
-								<motion.div
-									animate={{opacity: [0.6, 1, 0.6]}}
-									transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
-									style={{
-										position: 'absolute',
-										top: 0,
-										left: 0,
-										right: 0,
-										height: '4px',
-										background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
-									}}
-								/>
-
 								{/* Icono */}
 								<div style={{
 									width: '65px',
 									height: '65px',
-									background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-									borderRadius: '14px',
+									background: '#E8F4FF',
+									borderRadius: '12px',
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
 									marginBottom: '1.5rem',
-									border: '1.5px solid rgba(0,61,143,0.15)',
 									color: '#003d8f',
-									fontSize: '2rem',
-									position: 'relative',
-									zIndex: 2
+									fontSize: '2rem'
 								}}>
 									<Icon size={32} />
 								</div>
 
-								<div style={{position: 'relative', zIndex: 2}}>
+								<div style={{flex: 1}}>
 									<h3 style={{
 										fontSize: '1.25rem',
 										fontWeight: 800,
-										color: '#003d8f',
+										color: '#1a1a1a',
 										marginBottom: '0.75rem'
 									}}>
 										{service.title}
@@ -257,24 +259,32 @@ export default function ManagementServicesPage() {
 										fontSize: '0.95rem',
 										color: '#666',
 										lineHeight: 1.6,
-										margin: 0
+										margin: 0,
+										marginBottom: '1.5rem',
+										textAlign: 'justify',
+										textJustify: 'inter-word'
 									}}>
 										{service.desc}
 									</p>
 								</div>
 
-								{/* Efecto brillo */}
-								<motion.div
-									whileHover={{opacity: 1}}
-									initial={{opacity: 0}}
+								{/* Botón Ver más */}
+								<Link 
+									href={service.href}
 									style={{
-										position: 'absolute',
-										inset: 0,
-										background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)',
-										borderRadius: '16px',
-										pointerEvents: 'none'
+										display: 'inline-flex',
+										alignItems: 'center',
+										gap: '0.5rem',
+										color: '#0056d4',
+										fontWeight: 700,
+										fontSize: '0.95rem',
+										textDecoration: 'none',
+										marginTop: 'auto',
+										transition: 'gap 0.2s ease'
 									}}
-								/>
+								>
+									Ver más →
+								</Link>
 							</motion.div>
 						);
 					})}

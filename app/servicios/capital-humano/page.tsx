@@ -6,10 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { 
   DollarSign, 
-  Users, 
-  ShieldCheck, 
-  BarChart3, 
-  GraduationCap, 
+  Users,  
   UserCheck,
   Lock,
   Zap,
@@ -34,24 +31,6 @@ const services = [
 		icon: <UserCheck />,
 		title: "Atracción de Talento",
 		desc: "Utilizamos estrategias selectivas y entrevistas exhaustivas para presentarte a los candidatos correctos.",
-	}
-];
-
-const features = [
-	{
-		icon: <Lock />,
-		title: "Acceso Exclusivo BTC",
-		desc: "Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX."
-	},
-	{
-		icon: <Zap />,
-		title: "Reducción De Costos",
-		desc: "Optimiza los procesos de reclutamiento, selección y gestión de nómina."
-	},
-	{
-		icon: <HeadphonesIcon />,
-		title: "Asesoramiento Personalizado",
-		desc: "Sesiones de asesoramiento personalizado con expertos en Capital Humano."
 	}
 ];
 
@@ -189,7 +168,14 @@ export default function Page() {
 								<p className={styles.serviceDesc}>{service.desc}</p>
 
 								<div className={styles.cardFooter}>
-									<Link href="#" className={styles.exploreButton} onClick={(e) => e.preventDefault()}>
+									<Link 
+										href={
+											service.title === "Atracción de Talento" ? "/servicios/atraccion-de-talento" :
+											service.title === "Payrolling" ? "/servicios/payroll" :
+											service.title === "Servicios Especializados" ? "/servicios/servicios-especializados" : "#"
+										}
+										className={styles.exploreButton}
+									>
 										Ver más
 										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 											<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -202,72 +188,91 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* FEATURES SECTION */}
-			<section className={styles.featuresSection}>
-				<div className={styles.container}>
-					<motion.div 
-						className={styles.featuresGrid}
-						variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.12 } } }}
-						initial="hidden"
-						whileInView="show"
-						viewport={{ once: true }}
-					>
-						{features.map((feature, index) => (
-							<motion.div 
-								key={index} 
-								className={styles.featureCard}
-								variants={cardVariants}
-								whileHover={{ y: -8 }}
-							>
-								<motion.div className={styles.featureIcon} variants={iconVariants}>
-									{feature.icon}
-								</motion.div>
-								<h4 className={styles.featureTitle}>{feature.title}</h4>
-								<p className={styles.featureDesc}>{feature.desc}</p>
-							</motion.div>
-						))}
-					</motion.div>
-				</div>
-			</section>
+			{/* BENEFICIOS HUMAN CAPITAL */}
+			<section className={styles.benefitsSection}>
+  <div className={styles.container}>
+    <div className={styles.benefitsGrid}>
+      <div className={styles.benefitsImageWrap}>
+        <Image
+          src="/imagen/capital-humano/cap-hum.webp"
+          alt="Equipo colaborando en oficina"
+          width={500}
+          height={400}
+          className={styles.benefitsImage}
+        />
+      </div>
 
-			{/* CTA SECTION */}
+	  
+      <div className={styles.benefitsContent}>
+		<motion.h2 
+			className={styles.benefitsTitle}
+			initial={{ opacity: 0, y: 20 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true }}
+			transition={{ duration: 0.6 }}
+		>
+			Beneficios de Capital Humano
+		</motion.h2>
+        <div className={styles.benefitsCards}>
+          <div className={styles.benefitCard}>
+            <h3 className={styles.benefitTitle}>Acceso Exclusivo BTC</h3>
+            <p className={styles.benefitDesc}>Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos de la Ciudad de México.</p>
+          </div>
+          <div className={styles.benefitCard}>
+            <h3 className={styles.benefitTitle}>Reducción de Costos</h3>
+            <p className={styles.benefitDesc}>Optimiza los procesos de reclutamiento, selección y gestión de nómina.</p>
+          </div>
+          <div className={styles.benefitCard}>
+            <h3 className={styles.benefitTitle}>Asesoramiento Personalizado</h3>
+            <p className={styles.benefitDesc}>Sesiones de asesoramiento personalizado con expertos en Capital Humano.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+			{/* CTA SECTION MEJORADA */}
 			<motion.section 
-				className={styles.ctaSection}
+				className={styles.ctaSectionModern}
 				initial={{ opacity: 0, y: 20 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				viewport={{ once: true }}
 				transition={{ duration: 0.8 }}
-			>
-				<div className={styles.container}>
-					<div className={styles.ctaContent}>
-						<div className={styles.ctaInner}>
-							<div className={styles.ctaTextWrap}>
-								<h3 className={styles.ctaTitle}>Todos los servicios en un solo lugar</h3>
-								<p className={styles.ctaText}>Solicita una reunión para más información</p>
-								<div className={styles.ctaButtons}>
-									<a href="#contacto" className={styles.primaryBtn}>Agenda una cita</a>
-									<a href="#" className={styles.ghostBtn}>Ver casos de éxito</a>
-								</div>
-							</div>
-							<div className={styles.ctaImageWrap} aria-hidden="true">
-								<div className={styles.ctaImageBox}>
-									<Image
-										src="/imagen/contacto/contacto-men.avif"
-										alt="Contacto Bechapra"
-										width={420}
-										height={300}
-										className={styles.ctaImage}
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</motion.section>
+				>
+  <div className={styles.ctaModernContainer}>
+    <div className={styles.ctaModernContent}>
+      <h2 className={styles.ctaModernTitle}>Todos los servicios en un solo lugar</h2>
+      <p className={styles.ctaModernSubtitle}>Solicita una reunión para más información</p>
+      <div className={styles.ctaModernButtons}>
+        <a href="#contacto" className={styles.ctaModernPrimaryBtn}>Agenda una cita</a>
+        <a href="#" className={styles.ctaModernSecondaryBtn}>Ver casos de éxito</a>
+      </div>
+    </div>
+    <div className={styles.ctaModernImageWrap}>
+      <Image
+        src="/imagen/contacto/contacto-men.avif"
+        alt="Reunión de negocios Bechapra"
+        width={520}
+        height={340}
+        className={styles.ctaModernImage}
+      />
+    </div>
+  </div>
+</motion.section>
 
 			{/* CONTACT SECTION */}
 			<section id="contacto" className={styles.contactSection}>
 				<div className={styles.container}>
+					<motion.h2 
+						className={styles.sectionTitle}
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ duration: 0.6 }}
+					>
+						Contáctanos
+					</motion.h2>
 					<ContactForm />
 				</div>
 			</section>

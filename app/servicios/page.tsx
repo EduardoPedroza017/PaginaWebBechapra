@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import styles from "./styles.module.css";
+import Footer from '@/components/Footer';
 
 const groups = [
 	{
@@ -154,6 +155,10 @@ function GroupCard({ group, index }: { group: (typeof groups)[number]; index: nu
 						<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 					</svg>
 				</span>
+			</div>
+
+			<div>
+				<Footer />
 			</div>
 		</div>
 	);
