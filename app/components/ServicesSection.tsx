@@ -34,7 +34,7 @@ export default function ServicesSection() {
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
                   <Image 
-                    src="/imagen/icon/CapitalHumano_IconLight_Azul@2x.png" 
+                    src="/imagen/icon/Capital Humano_Icon_Color@2x.png" 
                     alt="Capital humano icon" 
                     width={64} 
                     height={64}
@@ -66,10 +66,10 @@ export default function ServicesSection() {
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
                   <Image 
-                    src="/imagen/icon/ServicosEspecializados_IconLight_Azul@2x.png" 
+                    src="/imagen/icon/ServicosEspecializados_Icon_Color@2x.png" 
                     alt="Servicios especializados icon" 
-                    width={64} 
-                    height={64}
+                    width={75} 
+                    height={75}
                     style={{ objectFit: 'contain' }}
                   />
                 </div>
@@ -98,7 +98,7 @@ export default function ServicesSection() {
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
                   <Image 
-                    src="/imagen/icon/ServiciosdeImpuestos_IconLight_Azul@2x.png" 
+                    src="/imagen/icon/ServiciosdeImpuestos_Icon_Color@2x.png" 
                     alt="Servicios de Impuestos icon" 
                     width={64} 
                     height={64}
