@@ -24,7 +24,7 @@ export default function ServicesSection() {
             <div className={styles.cardOverlap}>
               <div className={styles.cardImageCrop}>
                 <Image 
-                  src="/imagen/servicos/capital-humano.webp" 
+                  src="/imagen/servicos/Capital_Humano_FInal.jpg" 
                   alt="Capital humano" 
                   width={600} 
                   height={200} 
