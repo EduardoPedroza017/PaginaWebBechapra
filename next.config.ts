@@ -6,6 +6,7 @@ reactStrictMode: true,
 allowedDevOrigins: ["192.168.1.89"],
 	images: {
 		domains: ["images.unsplash.com", "bechapra.com", "www.bechapra.com"],
+		qualities: [75, 90, 95, 100],
 	},
 experimental: { optimizePackageImports: ["framer-motion", "@react-three/drei"] },
 };

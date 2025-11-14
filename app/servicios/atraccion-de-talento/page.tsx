@@ -1,17 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import { motion } from "framer-motion";
-import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, Handshake, Phone, ArrowRight, ChevronLeft, ChevronRight, Briefcase, Zap } from "lucide-react";
+import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, ChevronLeft, ChevronRight, Briefcase } from "lucide-react";
 import Link from "next/link";
-import styles from "./styles.module.css";
 import Footer from '@/components/Footer';
 import ContactForm from '@/app/components/ContactForm';
 
 export default function Page() {
-  const [activeBenefit, setActiveBenefit] = useState(0);
-
   const steps = [
     {
       n: "01",
@@ -117,8 +113,6 @@ export default function Page() {
       icon: <Target className="w-8 h-8" />,
     },
   ];
-
-  const positionsTrack = [...positions, ...positions];
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>
@@ -229,18 +223,10 @@ export default function Page() {
               height: '340px',
               borderRadius: '20px',
               overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)'
+              boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)',
+              background: 'linear-gradient(135deg, rgba(0,61,143,0.1) 0%, rgba(0,172,183,0.1) 100%)'
             }}>
-              <img
-                src="/imagen/talento/atracciontalento.jpg"
-                alt="Atracción de Talento"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block'
-                }}
-              />
+              {/* Placeholder para imagen */}
             </div>
           </div>
         </div>

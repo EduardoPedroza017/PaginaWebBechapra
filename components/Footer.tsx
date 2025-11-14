@@ -13,6 +13,8 @@ export default function Footer() {
 		empresa: [
 			{label: 'Acerca de', href: '/acerca-de'},
 			{label: 'Servicios', href: '/servicios'},
+			{label: 'Noticias', href: '/noticias'},
+			{label: 'Prensa', href: '/prensa'},
 			{label: 'Contacto', href: '/#contacto'},
 		],
 		servicios: [

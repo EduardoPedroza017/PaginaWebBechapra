@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import { FileText, Calendar, Banknote, Users, Shield, TrendingUp, CheckCircle, Briefcase, ChevronLeft, ChevronRight, ClipboardList, Zap, BarChart3 } from "lucide-react";
+import { FileText, Calendar, Banknote, Users, Shield, CheckCircle, Briefcase, ChevronLeft, ChevronRight, ClipboardList, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import styles from "./styles.module.css";

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Users, Target, Zap, Award, TrendingUp, Heart, Shield, Briefcase } from 'lucide-react';
+import { Users, Target, Zap, Award, TrendingUp, Heart, Shield, Briefcase, Handshake } from 'lucide-react';
 
 export default function AcercaDePage() {
 	return (
@@ -396,6 +396,458 @@ export default function AcercaDePage() {
 							</p>
 						</motion.div>
 					))}
+				</motion.div>
+			</section>
+
+			{/* Alianzas Estratégicas Section */}
+			<section style={{
+				maxWidth: '1280px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.div
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						textAlign: 'center',
+						marginBottom: '4rem'
+					}}
+				>
+					<div style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						gap: '1rem',
+						marginBottom: '1rem'
+					}}>
+						<Handshake size={40} style={{color: '#003d8f'}} />
+						<h2 style={{
+							fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+							fontWeight: 900,
+							color: '#003d8f',
+							letterSpacing: '-0.02em',
+							margin: 0
+						}}>
+							Alianzas Estratégicas
+						</h2>
+					</div>
+					<p style={{
+						fontSize: '1.1rem',
+						color: '#666',
+						maxWidth: '700px',
+						margin: '0 auto'
+					}}>
+						Colaboramos con líderes de la industria para ofrecer soluciones de clase mundial
+					</p>
+				</motion.div>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+						gap: '2.5rem',
+						alignItems: 'center'
+					}}
+				>
+					{[1, 2, 3, 4, 5, 6].map((item, i) => (
+						<motion.div
+							key={i}
+							initial={{opacity: 0, scale: 0.9}}
+							whileInView={{opacity: 1, scale: 1}}
+							viewport={{once: true}}
+							transition={{duration: 0.4, delay: i * 0.1}}
+							whileHover={{scale: 1.05, y: -8}}
+							style={{
+								padding: '2.5rem 2rem',
+								borderRadius: '16px',
+								background: 'white',
+								border: '2px solid rgba(0,61,143,0.12)',
+								transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+								boxShadow: '0 12px 35px rgba(0,61,143,0.08)',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								minHeight: '150px',
+								cursor: 'pointer',
+								position: 'relative',
+								overflow: 'hidden'
+							}}
+						>
+							{/* Borde superior decorativo */}
+							<motion.div
+								animate={{opacity: [0.6, 1, 0.6]}}
+								transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+								style={{
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									right: 0,
+									height: '4px',
+									background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)'
+								}}
+							/>
+
+							{/* Placeholder para logo */}
+							<div style={{
+								width: '100%',
+								height: '80px',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								color: '#003d8f',
+								fontSize: '0.9rem',
+								fontWeight: 600,
+								textAlign: 'center',
+								opacity: 0.6
+							}}>
+								Logo Alianza {item}
+							</div>
+						</motion.div>
+					))}
+				</motion.div>
+			</section>
+
+			{/* Equipo Bechapra - Organigrama Section */}
+			<section style={{
+				maxWidth: '1400px',
+				margin: '0 auto',
+				padding: '5rem 1.5rem'
+			}}>
+				<motion.div
+					initial={{opacity: 0, y: 20}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						textAlign: 'center',
+						marginBottom: '4rem'
+					}}
+				>
+					<h2 style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '1rem',
+						letterSpacing: '-0.02em'
+					}}>
+						Estructura Organizacional
+					</h2>
+					<p style={{
+						fontSize: '1.1rem',
+						color: '#666',
+						maxWidth: '700px',
+						margin: '0 auto'
+					}}>
+						Nuestro equipo directivo comprometido con la excelencia
+					</p>
+				</motion.div>
+
+				<motion.div
+					initial={{opacity: 0, y: 40}}
+					whileInView={{opacity: 1, y: 0}}
+					viewport={{once: true}}
+					transition={{duration: 0.6}}
+					style={{
+						background: 'white',
+						borderRadius: '24px',
+						padding: '4rem 3rem',
+						border: '1px solid rgba(0,61,143,0.08)',
+						boxShadow: '0 4px 20px rgba(0,61,143,0.06)'
+					}}
+				>
+					{/* NIVEL 1: Dirección General */}
+					<motion.div
+						initial={{opacity: 0, y: 20}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							marginBottom: '2rem'
+						}}
+					>
+						<div style={{
+							background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
+							padding: '2rem 3.5rem',
+							borderRadius: '12px',
+							textAlign: 'center',
+							minWidth: '320px',
+							boxShadow: '0 8px 24px rgba(0,61,143,0.2)',
+							position: 'relative'
+						}}>
+							<div style={{
+								width: '70px',
+								height: '70px',
+								background: 'white',
+								borderRadius: '50%',
+								margin: '0 auto 1.25rem',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+							}}>
+								<Users size={36} style={{color: '#003d8f'}} />
+							</div>
+							<h3 style={{
+								fontSize: '1.25rem',
+								fontWeight: 800,
+								color: 'white',
+								marginBottom: '0.4rem',
+								letterSpacing: '-0.01em'
+							}}>
+								Dirección General
+							</h3>
+							<div style={{
+								width: '40px',
+								height: '2px',
+								background: 'rgba(255,255,255,0.4)',
+								margin: '0.75rem auto',
+								borderRadius: '2px'
+							}} />
+							<p style={{
+								fontSize: '0.9rem',
+								color: 'rgba(255,255,255,0.9)',
+								margin: 0,
+								fontWeight: 500
+							}}>
+								CEO
+							</p>
+						</div>
+					</motion.div>
+
+					{/* Conector vertical */}
+					<div style={{
+						width: '2px',
+						height: '50px',
+						background: 'linear-gradient(180deg, rgba(0,61,143,0.3) 0%, rgba(0,61,143,0.1) 100%)',
+						margin: '0 auto'
+					}} />
+
+					{/* NIVEL 2: Directores de División */}
+					<motion.div
+						initial={{opacity: 0, y: 20}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{delay: 0.2}}
+						style={{
+							position: 'relative',
+							marginBottom: '2rem'
+						}}
+					>
+						{/* Línea horizontal superior conectora */}
+						<div style={{
+							position: 'absolute',
+							top: '0',
+							left: '15%',
+							right: '15%',
+							height: '2px',
+							background: 'linear-gradient(90deg, transparent 0%, rgba(0,61,143,0.2) 20%, rgba(0,61,143,0.2) 80%, transparent 100%)',
+							zIndex: 0
+						}} />
+
+						<div style={{
+							display: 'grid',
+							gridTemplateColumns: 'repeat(3, 1fr)',
+							gap: '2.5rem',
+							paddingTop: '50px',
+							position: 'relative'
+						}}>
+							{/* Conectores verticales individuales */}
+							{[0, 1, 2].map((i) => (
+								<div key={i} style={{
+									position: 'absolute',
+									width: '2px',
+									height: '50px',
+									background: 'linear-gradient(180deg, rgba(0,61,143,0.2) 0%, rgba(0,61,143,0.1) 100%)',
+									top: '0',
+									left: `calc(${(i * 33.333) + 16.666}% - 1px)`,
+									zIndex: 0
+								}} />
+							))}
+
+							{[
+								{title: 'Capital Humano', areas: 3},
+								{title: 'Management Services', areas: 2},
+								{title: 'Servicios Especializados', areas: 1}
+							].map((director, i) => (
+								<motion.div
+									key={i}
+									initial={{opacity: 0, y: 20}}
+									whileInView={{opacity: 1, y: 0}}
+									viewport={{once: true}}
+									transition={{delay: 0.3 + i * 0.1}}
+									style={{
+										background: '#FAFBFC',
+										padding: '2rem 1.5rem',
+										borderRadius: '12px',
+										textAlign: 'center',
+										border: '1px solid rgba(0,61,143,0.1)',
+										boxShadow: '0 2px 12px rgba(0,61,143,0.06)',
+										position: 'relative',
+										zIndex: 1
+									}}
+								>
+									<div style={{
+										width: '56px',
+										height: '56px',
+										background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
+										borderRadius: '50%',
+										margin: '0 auto 1rem',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}>
+										<Briefcase size={26} style={{color: 'white'}} />
+									</div>
+									<h4 style={{
+										fontSize: '1.05rem',
+										fontWeight: 800,
+										color: '#003d8f',
+										marginBottom: '0.5rem',
+										lineHeight: 1.3
+									}}>
+										{director.title}
+									</h4>
+									<div style={{
+										width: '30px',
+										height: '2px',
+										background: 'rgba(0,61,143,0.2)',
+										margin: '0.5rem auto',
+										borderRadius: '2px'
+									}} />
+									<p style={{
+										fontSize: '0.8rem',
+										color: '#666',
+										margin: 0,
+										fontWeight: 600
+									}}>
+										Director de División
+									</p>
+									<p style={{
+										fontSize: '0.75rem',
+										color: '#999',
+										marginTop: '0.5rem',
+										margin: 0
+									}}>
+										{director.areas} {director.areas === 1 ? 'área' : 'áreas'}
+									</p>
+								</motion.div>
+							))}
+						</div>
+					</motion.div>
+
+					{/* Conector vertical */}
+					<div style={{
+						width: '2px',
+						height: '40px',
+						background: 'linear-gradient(180deg, rgba(0,61,143,0.1) 0%, rgba(0,61,143,0.05) 100%)',
+						margin: '0 auto'
+					}} />
+
+					{/* NIVEL 3: Líderes de Departamento */}
+					<motion.div
+						initial={{opacity: 0, y: 20}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{delay: 0.4}}
+					>
+						<div style={{
+							textAlign: 'center',
+							marginBottom: '2rem'
+						}}>
+							<h5 style={{
+								fontSize: '0.95rem',
+								fontWeight: 700,
+								color: '#003d8f',
+								textTransform: 'uppercase',
+								letterSpacing: '0.5px',
+								margin: 0
+							}}>
+								Líderes de Departamento
+							</h5>
+						</div>
+
+						<div style={{
+							display: 'grid',
+							gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+							gap: '1.25rem',
+							maxWidth: '1100px',
+							margin: '0 auto'
+						}}>
+							{[
+								'Reclutamiento',
+								'Nómina',
+								'Capacitación',
+								'Contabilidad',
+								'Legal',
+								'Desarrollo Organizacional'
+							].map((dept, i) => (
+								<motion.div
+									key={i}
+									initial={{opacity: 0, scale: 0.95}}
+									whileInView={{opacity: 1, scale: 1}}
+									viewport={{once: true}}
+									transition={{delay: 0.5 + i * 0.05}}
+									style={{
+										background: 'white',
+										padding: '1.25rem 1rem',
+										borderRadius: '8px',
+										textAlign: 'center',
+										border: '1px solid rgba(0,61,143,0.08)',
+										boxShadow: '0 1px 6px rgba(0,61,143,0.04)',
+										transition: 'all 0.2s ease'
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.transform = 'translateY(-4px)';
+										e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,61,143,0.12)';
+										e.currentTarget.style.borderColor = 'rgba(0,61,143,0.2)';
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.transform = 'translateY(0)';
+										e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,61,143,0.04)';
+										e.currentTarget.style.borderColor = 'rgba(0,61,143,0.08)';
+									}}
+								>
+									<div style={{
+										width: '36px',
+										height: '36px',
+										background: '#F0F9FF',
+										borderRadius: '50%',
+										margin: '0 auto 0.75rem',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										border: '1px solid rgba(0,61,143,0.12)'
+									}}>
+										<Users size={18} style={{color: '#003d8f'}} />
+									</div>
+									<h6 style={{
+										fontSize: '0.9rem',
+										fontWeight: 700,
+										color: '#003d8f',
+										marginBottom: '0.25rem',
+										lineHeight: 1.3
+									}}>
+										{dept}
+									</h6>
+									<p style={{
+										fontSize: '0.7rem',
+										color: '#999',
+										margin: 0,
+										fontWeight: 500
+									}}>
+										Líder
+									</p>
+								</motion.div>
+							))}
+						</div>
+					</motion.div>
 				</motion.div>
 			</section>
 

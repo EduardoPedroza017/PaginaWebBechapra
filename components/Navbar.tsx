@@ -55,6 +55,12 @@ export default function Navbar() {
           <Link href="/acerca-de" className={styles.navLink}>
             Acerca de
           </Link>
+          <Link href="/noticias" className={styles.navLink}>
+            Noticias
+          </Link>
+          <Link href="/prensa" className={styles.navLink}>
+            Prensa
+          </Link>
           <a 
             href="https://bechapra.com.mx" 
             target="_blank" 
@@ -139,6 +145,20 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Acerca de
+            </Link>
+            <Link 
+              href="/noticias" 
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Noticias
+            </Link>
+            <Link 
+              href="/prensa" 
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Prensa
             </Link>
             <a 
               href="https://bechapra.com.mx" 

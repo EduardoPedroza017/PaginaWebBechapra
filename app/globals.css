@@ -1,4 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+/* ==========================================================================
+   TIPOGRAFÍAS - BECHAPRA 2025
+   Montserrat: Texto general (Google Fonts)
+   Mundial: Títulos y subtítulos (Adobe Fonts)
+   ========================================================================== */
+
+/* Mundial se carga desde Adobe Fonts (Typekit) - Ver layout.tsx */
+/* Pesos disponibles: 400, 600, 700, 900 (normal e italic) */
 
 /* ==========================================================================
    VARIABLES DE DISEÑO - BECHAPRA 2025
@@ -84,7 +91,7 @@
   
   /* Tipografía */
   --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-secondary: 'Mundial', 'Montserrat', sans-serif;
+  --font-headings: 'Mundial', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
   /* Tamaños de fuente */
   --text-xs: 0.75rem;      /* 12px */
@@ -145,7 +152,8 @@ html {
 }
 
 body {
-  font-family: var(--font-primary);
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-primary);
@@ -193,8 +201,9 @@ body::after {
    ========================================================================== */
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-primary);
+  font-family: "mundial", sans-serif;
   font-weight: 700;
+  font-style: normal;
   line-height: 1.2;
   color: var(--brand-dark);
   margin-bottom: 1rem;

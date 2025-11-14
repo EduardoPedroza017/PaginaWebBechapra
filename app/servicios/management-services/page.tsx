@@ -30,6 +30,8 @@ const SERVICES = [
 ];
 
 export default function ManagementServicesPage() {
+	const [hoveredBenefit, setHoveredBenefit] = React.useState<number | null>(null);
+
 	return (
 		<main>
 			{/* HERO Mejorado - Full width con gradiente */}
@@ -291,7 +293,7 @@ export default function ManagementServicesPage() {
 				</motion.div>
 			</section>
 
-			{/* Beneficios Section */}
+			{/* Beneficios Section - Rediseñado con imagen */}
 			<section style={{
 				maxWidth: '1280px',
 				margin: '0 auto',
@@ -314,121 +316,183 @@ export default function ManagementServicesPage() {
 					Beneficios Management Services
 				</motion.h2>
 
-				<motion.div
-					initial={{opacity: 0, y: 40}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						display: 'grid',
-						gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-						gap: '2.5rem'
-					}}
-				>
-					{[
-						{
-							icon: Briefcase,
-							title: 'Acceso Exclusivo BTC',
-							desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.'
-						},
-						{
-							icon: Users,
-							title: 'Asesoramiento Personalizado',
-							desc: 'Sesiones de asesoramiento personalizado con expertos en contabilidad, legal y/o PyME'
-						}
-					].map((benefit, i) => {
-						const Icon = benefit.icon;
-						return (
-							<motion.div
-								key={i}
-								initial={{opacity: 0, y: 30}}
-								whileInView={{opacity: 1, y: 0}}
-								viewport={{once: true}}
-								transition={{duration: 0.5, delay: i * 0.1}}
-								whileHover={{scale: 1.05, y: -12}}
-								style={{
-									padding: '2.5rem 2rem',
-									borderRadius: '16px',
-									background: i % 2 === 0 
-										? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
-										: 'linear-gradient(135deg, #F0F9FF 0%, #E8F5FF 100%)',
-									border: '2px solid rgba(0,61,143,0.12)',
-									transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-									boxShadow: '0 12px 35px rgba(0,61,143,0.08), inset 0 1px 0 rgba(255,255,255,0.6)',
-									position: 'relative',
-									overflow: 'hidden',
-									cursor: 'pointer'
-								}}
-							>
-								{/* Borde superior decorativo */}
+				{/* Layout 2 columnas: Imagen + Beneficios */}
+				<div style={{
+					display: 'grid',
+					gridTemplateColumns: '1fr 1fr',
+					gap: '4rem',
+					alignItems: 'center'
+				}}>
+					{/* Columna izquierda - Imagen con sombra */}
+					<motion.div
+						initial={{opacity: 0, x: -40}}
+						whileInView={{opacity: 1, x: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{
+							position: 'relative',
+							height: '600px',
+							borderRadius: '24px',
+							overflow: 'hidden',
+							boxShadow: '0 25px 70px rgba(0,61,143,0.25), 0 10px 30px rgba(0,0,0,0.12)',
+							border: '1px solid rgba(0,61,143,0.1)'
+						}}
+					>
+						<Image
+							src="/imagen/prueba/management-services-benefits.jpg"
+							alt="Beneficios Management Services"
+							fill
+							style={{objectFit: 'cover'}}
+							priority
+						/>
+						{/* Overlay gradiente */}
+						<div style={{
+							position: 'absolute',
+							inset: 0,
+							background: 'linear-gradient(135deg, rgba(0,61,143,0.15) 0%, rgba(0,74,183,0.08) 100%)',
+							pointerEvents: 'none'
+						}} />
+					</motion.div>
+
+					{/* Columna derecha - Beneficios en escalera */}
+					<div style={{
+						display: 'flex',
+						flexDirection: 'column',
+						gap: '2rem',
+						position: 'relative'
+					}}>
+						{[
+							{
+								icon: Briefcase,
+								title: 'Acceso Exclusivo BTC',
+								desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.'
+							},
+							{
+								icon: Users,
+								title: 'Asesoramiento Personalizado',
+								desc: 'Sesiones de asesoramiento personalizado con expertos en contabilidad, legal y/o PyME'
+							}
+						].map((benefit, i) => {
+							const Icon = benefit.icon;
+							const isHovered = hoveredBenefit === i;
+							
+							return (
 								<motion.div
-									animate={{opacity: [0.6, 1, 0.6]}}
-									transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+									key={i}
+									initial={{opacity: 0, x: 40}}
+									whileInView={{opacity: 1, x: 0}}
+									viewport={{once: true}}
+									transition={{duration: 0.6, delay: i * 0.15}}
+									whileHover={{scale: 1.03, y: -8}}
+									onMouseEnter={() => setHoveredBenefit(i)}
+									onMouseLeave={() => setHoveredBenefit(null)}
 									style={{
+										padding: '2.5rem',
+										borderRadius: '20px',
+										background: isHovered 
+											? 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)' 
+											: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+										border: isHovered 
+											? '2px solid rgba(255,255,255,0.2)' 
+											: '2px solid rgba(0,61,143,0.12)',
+										boxShadow: isHovered 
+											? '0 20px 50px rgba(0,61,143,0.35)' 
+											: '0 12px 35px rgba(0,61,143,0.08)',
+										position: 'relative',
+										overflow: 'hidden',
+										cursor: 'pointer',
+										transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+										marginLeft: i === 1 ? '60px' : '0', // Efecto escalera
+										zIndex: isHovered ? 10 : 1
+									}}
+								>
+									{/* Borde izquierdo decorativo */}
+									<div style={{
 										position: 'absolute',
-										top: 0,
 										left: 0,
-										right: 0,
-										height: '4px',
-										background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
-									}}
-								/>
+										top: 0,
+										bottom: 0,
+										width: '6px',
+										background: isHovered 
+											? 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)'
+											: 'linear-gradient(180deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)',
+										borderTopLeftRadius: '20px',
+										borderBottomLeftRadius: '20px',
+										transition: 'all 0.4s ease'
+									}} />
 
-								{/* Icono */}
-								<div style={{
-									width: '65px',
-									height: '65px',
-									background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-									borderRadius: '14px',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									marginBottom: '1.5rem',
-									border: '1.5px solid rgba(0,61,143,0.15)',
-									color: '#003d8f',
-									fontSize: '2rem',
-									position: 'relative',
-									zIndex: 2
-								}}>
-									<Icon size={32} />
-								</div>
-
-								<div style={{position: 'relative', zIndex: 2}}>
-									<h3 style={{
-										fontSize: '1.25rem',
-										fontWeight: 800,
-										color: '#003d8f',
-										marginBottom: '0.75rem'
+									{/* Contenido */}
+									<div style={{
+										display: 'flex',
+										alignItems: 'flex-start',
+										gap: '1.5rem',
+										position: 'relative',
+										zIndex: 2
 									}}>
-										{benefit.title}
-									</h3>
+										{/* Icono */}
+										<div style={{
+											width: '70px',
+											height: '70px',
+											minWidth: '70px',
+											background: isHovered 
+												? 'rgba(255,255,255,0.2)' 
+												: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+											borderRadius: '16px',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											border: isHovered 
+												? '1.5px solid rgba(255,255,255,0.3)' 
+												: '1.5px solid rgba(0,61,143,0.15)',
+											color: isHovered ? '#FFFFFF' : '#003d8f',
+											transition: 'all 0.4s ease'
+										}}>
+											<Icon size={36} strokeWidth={2.5} />
+										</div>
 
-									<p style={{
-										fontSize: '0.95rem',
-										color: '#666',
-										lineHeight: 1.6,
-										margin: 0
-									}}>
-										{benefit.desc}
-									</p>
-								</div>
+										{/* Texto */}
+										<div style={{flex: 1}}>
+											<h3 style={{
+												fontSize: '1.35rem',
+												fontWeight: 800,
+												color: isHovered ? '#FFFFFF' : '#003d8f',
+												marginBottom: '0.75rem',
+												lineHeight: 1.3,
+												transition: 'color 0.4s ease'
+											}}>
+												{benefit.title}
+											</h3>
 
-								{/* Efecto brillo */}
-								<motion.div
-									whileHover={{opacity: 1}}
-									initial={{opacity: 0}}
-									style={{
-										position: 'absolute',
-										inset: 0,
-										background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, transparent 70%)',
-										borderRadius: '16px',
-										pointerEvents: 'none'
-									}}
-								/>
-							</motion.div>
-						);
-					})}
-				</motion.div>
+											<p style={{
+												fontSize: '1rem',
+												color: isHovered ? 'rgba(255,255,255,0.95)' : '#555',
+												lineHeight: 1.7,
+												margin: 0,
+												textAlign: 'justify',
+												transition: 'color 0.4s ease'
+											}}>
+												{benefit.desc}
+											</p>
+										</div>
+									</div>
+
+									{/* Efecto brillo al hover */}
+									<motion.div
+										animate={{opacity: isHovered ? 0.15 : 0}}
+										style={{
+											position: 'absolute',
+											inset: 0,
+											background: 'radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 60%)',
+											borderRadius: '20px',
+											pointerEvents: 'none',
+											transition: 'opacity 0.4s ease'
+										}}
+									/>
+								</motion.div>
+							);
+						})}
+					</div>
+				</div>
 			</section>
 
 			{/* CTA Section - Dark Theme */}
@@ -578,6 +642,22 @@ export default function ManagementServicesPage() {
 				padding: '5rem 1.5rem',
 				background: '#f8f9fa'
 			}}>
+				<motion.h2 
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.6 }}
+					style={{
+						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+						fontWeight: 900,
+						color: '#003d8f',
+						marginBottom: '3rem',
+						letterSpacing: '-0.02em',
+						textAlign: 'center'
+					}}
+				>		
+					Contáctanos
+				</motion.h2>
 				<ContactForm />
 			</section>
 

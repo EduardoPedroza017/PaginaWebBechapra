@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Users, Award, BookOpen, ShieldCheck, Smile, BarChart3 } from 'lucide-react';
+import { Users, Award, BookOpen, ShieldCheck, BarChart3 } from 'lucide-react';
 import Footer from '@/components/Footer';
 import ContactForm from '@/app/components/ContactForm';
 

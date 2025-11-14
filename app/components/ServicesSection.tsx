@@ -2,7 +2,6 @@
 
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
-import { FiUsers, FiSettings, FiFileText } from "react-icons/fi";
 import styles from "../css/components/ServicesSection.module.css";
 
 export default function ServicesSection() {
@@ -34,7 +33,13 @@ export default function ServicesSection() {
               </div>
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
-                  <FiUsers size={48} color="#2563eb" />
+                  <Image 
+                    src="/imagen/icon/CapitalHumano_IconLight_Azul@2x.png" 
+                    alt="Capital humano icon" 
+                    width={64} 
+                    height={64}
+                    style={{ objectFit: 'contain' }}
+                  />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Capital humano</h3>
@@ -60,7 +65,13 @@ export default function ServicesSection() {
               </div>
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
-                  <FiSettings size={48} color="#2563eb" />
+                  <Image 
+                    src="/imagen/icon/ServicosEspecializados_IconLight_Azul@2x.png" 
+                    alt="Servicios especializados icon" 
+                    width={64} 
+                    height={64}
+                    style={{ objectFit: 'contain' }}
+                  />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Servicios especializados</h3>
@@ -86,7 +97,13 @@ export default function ServicesSection() {
               </div>
               <div className={styles.infoBox}>
                 <div className={styles.iconBox}>
-                  <FiFileText size={48} color="#2563eb" />
+                  <Image 
+                    src="/imagen/icon/ServiciosdeImpuestos_IconLight_Azul@2x.png" 
+                    alt="Servicios de Impuestos icon" 
+                    width={64} 
+                    height={64}
+                    style={{ objectFit: 'contain' }}
+                  />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Servicios de Impuestos</h3>

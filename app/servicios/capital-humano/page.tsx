@@ -7,10 +7,7 @@ import Image from 'next/image';
 import { 
   DollarSign, 
   Users,  
-  UserCheck,
-  Lock,
-  Zap,
-  HeadphonesIcon
+  UserCheck
 } from 'lucide-react';
 import styles from "./styles.module.css";
 import ContactForm from "@/app/components/ContactForm";

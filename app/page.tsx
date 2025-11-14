@@ -5,8 +5,11 @@ import AnimatedSection from "./components/AnimatedSection";
 import CtaRedes from "./components/CtaRedes";
 import ServicesSection from "./components/ServicesSection";
 import AwardsSection from "./components/AwardsSection";
-import DivisionsSection from "./components/DivisionsSection";
+import TrainingCenterSection from "./components/TrainingCenterSection";
 import HeroSection from "./components/HeroSection";
+//import PressSection from "./components/PressSection";
+import NewsCards from "./components/NewsCards";
+import PressCards from "./components/PressCards";
 import Footer from "../components/Footer";
 
 export default function Home() {
@@ -19,9 +22,20 @@ export default function Home() {
         {/* SERVICIOS */}
         <ServicesSection />
 
-        {/* DIVISIONES */}
-        <DivisionsSection />
+        {/*Cards de Prensa*/}
+        <AnimatedSection delay={0.1}>
+          <PressCards />
+        </AnimatedSection>
 
+        {/* BECHAPRA TRAINING CENTER */}
+        <TrainingCenterSection />
+
+        {/*Cards de Noticias*/}
+        <AnimatedSection>
+          <NewsCards />
+        </AnimatedSection>
+        
+        
         {/* CTA + REDES */}
         <AnimatedSection delay={0.2}>
             <CtaRedes />
