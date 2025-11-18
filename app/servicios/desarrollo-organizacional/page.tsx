@@ -18,8 +18,9 @@ const servicios = [
   {
     icon: <BarChart3 size={28} />,
     title: 'Consultoría Organizacional',
-    desc: 'Soluciones para resolver problemas, identificar oportunidades, fomentar el aprendizaje y facilitar la implementación de cambios.'
-    // Sin ruta
+    desc: 'Soluciones para resolver problemas, identificar oportunidades, fomentar el aprendizaje y facilitar la implementación de cambios.',
+    href: '/servicios/consultoria-organizacional'
+
   },
   {
     icon: <ShieldCheck size={28} />,

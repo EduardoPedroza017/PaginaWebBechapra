@@ -3,17 +3,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { BookOpen, Users, Award, BarChart3, ChevronDown, ChevronUp, CheckCircle, Target, TrendingUp, UserPlus, Lightbulb, Rocket } from 'lucide-react';
-import ContactForm from '@/app/components/ContactForm';
+import { ChevronDown, CheckCircle, Target, TrendingUp, Lightbulb, Shield, BarChart3 } from 'lucide-react';
+import ContactForm from '../../components/ContactForm';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
-
-const programas = [
-	{ icon: <BookOpen size={26} />, title: 'Talleres de habilidades blandas', desc: 'Comunicación, liderazgo y trabajo en equipo, diseñados para mejorar la colaboración interna.', details: 'Sesiones prácticas con actividades en vivo, role-play y feedback dirigido. Duración típica: 8-16 horas por cohort.' },
-	{ icon: <Users size={26} />, title: 'Formación técnica especializada', desc: 'Capacitaciones en herramientas y procesos específicos para tu operación.', details: 'Cursos adaptados al stack y procesos internos, incluyen ejercicios reales y material para transferir aprendizaje.' },
-	{ icon: <Award size={26} />, title: 'Programas de liderazgo', desc: 'Mentoring y programas para mandos medios y directivos con seguimiento de impacto.', details: 'Planes de 6-12 meses con coaching, workshops y seguimiento de KPIs de liderazgo.' },
-	{ icon: <BarChart3 size={26} />, title: 'Medición y evaluación', desc: 'KPI y evaluación post-capacitación para medir ROI y efectividad.', details: 'Diseñamos encuestas, rúbricas y paneles de control para medir la transferencia y el impacto en los indicadores clave.' },
-];
 
 const AccordionSection = ({ title, isOpen, onClick, children }: any) => (
 	<motion.div
@@ -109,7 +102,7 @@ export default function Page() {
 
 	return (
 		<main>
-			{/* HERO Mejorado - Full width con gradiente */}
+			{/* HERO */}
 			<section style={{
 				width: '100vw',
 				marginLeft: 'calc(-50vw + 50%)',
@@ -183,7 +176,7 @@ export default function Page() {
 							lineHeight: 1.1,
 							letterSpacing: '-0.02em'
 						}}>
-							Capacitación <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Empresarial</span>
+							Consultoría <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Organizacional</span>
 						</h1>
 						<p style={{
 							fontSize: '1.15rem',
@@ -192,9 +185,9 @@ export default function Page() {
 							marginBottom: '2rem',
 							maxWidth: '500px'
 						}}>
-							Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento.
+							Consultoría experta para optimizar estructura y procesos. Desbloquea el potencial de tu organización.
 						</p>
-						<Link href="/#contacto" style={{
+						<Link href="#contacto" style={{
 							display: 'inline-flex',
 							alignItems: 'center',
 							gap: '0.75rem',
@@ -209,7 +202,7 @@ export default function Page() {
 							cursor: 'pointer',
 							boxShadow: '0 10px 30px rgba(255,255,255,0.2)'
 						}}>
-							Solicitar diagnóstico
+							Comienza ahora
 							<span>→</span>
 						</Link>
 					</motion.div>
@@ -238,13 +231,13 @@ export default function Page() {
 							textAlign: 'center',
 							padding: '2rem'
 						}}>
-							Imagen Capacitación Empresarial
+							Imagen Consultoría Organizacional
 						</div>
 					</motion.div>
 				</div>
 			</section>
 
-			{/* Sección de tarjetas: Integración y Team Building, Soft Skills, Desarrollo */}
+			{/* Sección de tarjetas de servicios */}
 			<section style={{
 				maxWidth: '1280px',
 				margin: '0 auto',
@@ -264,30 +257,42 @@ export default function Page() {
 						letterSpacing: '-0.02em'
 					}}
 				>
-					Nuestros Programas de Capacitación
+					Nuestros Servicios de Consultoría
 				</motion.h2>
 				<div style={{
 					display: 'grid',
-					gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-					gap: '2.5rem'
+					gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+					gap: '2rem'
 				}}>
 					{[
 						{
-							title: 'Integración y Team Building',
-							icon: UserPlus,
-							desc: 'Fortalece la cohesión de tu equipo a través de actividades vivenciales.',
+							title: 'Estrategia de Organización',
+							icon: Target,
 							color: '#003d8f'
 						},
 						{
-							title: 'Soft Skills',
-							icon: Lightbulb,
-							desc: 'Desarrolla habilidades interpersonales clave para el éxito profesional.',
+							title: 'Administrativa',
+							icon: BarChart3,
 							color: '#004AB7'
 						},
 						{
-							title: 'Competencias Técnicas',
-							icon: Rocket,
-							desc: 'Programas especializados para dominar herramientas y procesos.',
+							title: 'Prevención de Riesgos Laborales',
+							icon: Shield,
+							color: '#0056d4'
+						},
+						{
+							title: 'Financiera',
+							icon: TrendingUp,
+							color: '#003d8f'
+						},
+						{
+							title: 'Recursos Humanos',
+							icon: CheckCircle,
+							color: '#004AB7'
+						},
+						{
+							title: 'Especializada',
+							icon: Lightbulb,
 							color: '#0056d4'
 						}
 					].map((item, i) => {
@@ -298,7 +303,7 @@ export default function Page() {
 								initial={{opacity: 0, y: 30}}
 								whileInView={{opacity: 1, y: 0}}
 								viewport={{once: true}}
-								transition={{duration: 0.5, delay: i * 0.15}}
+								transition={{duration: 0.5, delay: i * 0.1}}
 								whileHover={{
 									y: -12,
 									scale: 1.03,
@@ -333,7 +338,7 @@ export default function Page() {
 									initial={{scale: 0}}
 									whileInView={{scale: 1}}
 									viewport={{once: true}}
-									transition={{duration: 0.5, delay: i * 0.15 + 0.2, type: 'spring'}}
+									transition={{duration: 0.5, delay: i * 0.1 + 0.2, type: 'spring'}}
 									style={{
 										width: '80px',
 										height: '80px',
@@ -350,23 +355,14 @@ export default function Page() {
 								</motion.div>
 
 								<h3 style={{
-									fontSize: '1.35rem',
+									fontSize: '1.2rem',
 									fontWeight: 800,
 									color: item.color,
-									margin: '0 0 1rem 0',
+									margin: 0,
 									lineHeight: 1.3
 								}}>
 									{item.title}
 								</h3>
-
-								<p style={{
-									fontSize: '0.95rem',
-									color: '#666',
-									lineHeight: 1.6,
-									margin: 0
-								}}>
-									{item.desc}
-								</p>
 
 								{/* Shine effect on hover */}
 								<motion.div
@@ -414,12 +410,7 @@ export default function Page() {
 						overflow: 'hidden',
 						border: '2px solid rgba(0,61,143,0.1)'
 					}}>
-						<Image
-							src="/imagen/servicos/servicios-especializados.jpg"
-							alt="Cómo Trabajamos"
-							fill
-							style={{objectFit: 'cover'}}
-						/>
+						<span style={{fontSize: '1.2rem', color: '#003d8f', fontWeight: 700}}>Imagen Cómo Trabajamos</span>
 					</div>
 				</motion.div>
 
@@ -444,7 +435,7 @@ export default function Page() {
 						lineHeight: 1.8,
 						marginBottom: '1.5rem'
 					}}>
-						Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.
+						En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:
 					</p>
 					<div style={{
 						display: 'flex',
@@ -452,8 +443,9 @@ export default function Page() {
 						gap: '0.75rem'
 					}}>
 						{[
-							'Adaptamos cada programa con necesidades específicas',
-							'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
+							'Diagnóstico y Análisis',
+							'Diseño de Soluciones Personalizadas',
+							'Implementación y Seguimiento'
 						].map((item, i) => (
 							<div key={i} style={{
 								display: 'flex',
@@ -468,53 +460,7 @@ export default function Page() {
 				</motion.div>
 			</section>
 
-			{/* Sección con 3 beneficios */}
-			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem'
-			}}>
-				<div style={{
-					display: 'grid',
-					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-					gap: '2.5rem'
-				}}>
-					{[
-						{title: 'Conjunto de habilidades técnicas y soft skills mejoradas', icon: Target},
-						{title: 'Mayor entendimiento y aprecio por la importancia del trabajo en equipo y colaboración', icon: Users},
-						{title: 'Mentalidad orientada hacia el crecimiento e innovación', icon: TrendingUp}
-					].map((benefit, i) => (
-						<motion.div
-							key={i}
-							initial={{opacity: 0, y: 30}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.5, delay: i * 0.1}}
-							style={{
-								padding: '2.5rem 2rem',
-								borderRadius: '16px',
-								background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-								border: '2px solid rgba(0,61,143,0.1)',
-								textAlign: 'center',
-								boxShadow: '0 8px 24px rgba(0,61,143,0.08)'
-							}}
-						>
-							<benefit.icon size={40} style={{color: '#003d8f', margin: '0 auto 1rem'}} />
-							<h3 style={{
-								fontSize: '1.15rem',
-								fontWeight: 700,
-								color: '#003d8f',
-								margin: 0,
-								lineHeight: 1.4
-							}}>
-								{benefit.title}
-							</h3>
-						</motion.div>
-					))}
-				</div>
-			</section>
-
-			{/* Mejora el rendimiento */}
+			{/* Potencia el crecimiento */}
 			<section style={{
 				maxWidth: '1280px',
 				margin: '0 auto',
@@ -537,29 +483,28 @@ export default function Page() {
 						marginBottom: '1.5rem',
 						letterSpacing: '-0.02em'
 					}}>
-						Mejora el rendimiento de tu equipo
+						Potencia el crecimiento y el éxito de tu empresa
 					</h2>
 					<p style={{
 						fontSize: '1.05rem',
 						color: '#666',
 						lineHeight: 1.8,
-						marginBottom: '2rem'
+						marginBottom: '1.5rem'
 					}}>
-						Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.
+						Desarrollamos estrategias estructurales y funcionales que impulsan el crecimiento y la eficiencia, permitiéndote superar el estancamiento y alcanzar nuevos horizontes de éxito.
 					</p>
 					<p style={{
-						fontSize: '1.15rem',
+						fontSize: '1.1rem',
 						color: '#003d8f',
 						fontWeight: 700,
-						fontStyle: 'italic'
+						marginBottom: '2rem'
 					}}>
-						¡Convierte a tu equipo en un motor de éxito!
+						Estamos aquí para entender tus desafíos y diseñar una solución personalizada para tu empresa.
 					</p>
 					<Link
 						href="#contacto"
 						style={{
 							display: 'inline-block',
-							marginTop: '2rem',
 							padding: '1rem 2.5rem',
 							borderRadius: '12px',
 							background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
@@ -593,92 +538,55 @@ export default function Page() {
 						overflow: 'hidden',
 						border: '2px solid rgba(0,61,143,0.1)'
 					}}>
-						<Image
-							src="/imagen/servicos/Capital_Humano_FInal.jpg"
-							alt="Mejora el rendimiento"
-							fill
-							style={{objectFit: 'cover'}}
-						/>
+						<span style={{fontSize: '1.2rem', color: '#003d8f', fontWeight: 700}}>Imagen Potencia</span>
 					</div>
 				</motion.div>
 			</section>
 
-			{/* Acordeones */}
+			{/* Sección con beneficios */}
 			<section style={{
-				maxWidth: '900px',
+				maxWidth: '1280px',
 				margin: '0 auto',
 				padding: '4rem 1.5rem'
 			}}>
-				<motion.h2
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '2.5rem',
-						textAlign: 'center',
-						letterSpacing: '-0.02em'
-					}}
-				>
-					Explora Nuestros Cursos
-				</motion.h2>
-
-				<AccordionSection
-					title="Competencias y habilidades técnicas"
-					isOpen={openAccordion === 'competencias'}
-					onClick={() => setOpenAccordion(openAccordion === 'competencias' ? null : 'competencias')}
-				>
-					<p style={{marginBottom: '1rem', fontSize: '1rem', color: '#555'}}>
-						Ofrecemos cursos, talleres y seminarios enfocados en desarrollar competencias especializadas en tu equipo:
-					</p>
-					<ul style={{paddingLeft: '1.5rem', lineHeight: 2, color: '#666'}}>
-						<li>Estrategia y dirección.</li>
-						<li>Ventas y negociación.</li>
-						<li>Design Thinking.</li>
-						<li>Gestión de proyectos.</li>
-						<li>Innovación y modelos de negocios.</li>
-						<li>Estrategias de Contabilidad y Finanzas.</li>
-						<li>Dirección en Recursos Humanos.</li>
-						<li>Análisis de riesgos.</li>
-						<li>Programación neurolingüística.</li>
-						<li>Coaching.</li>
-					</ul>
-				</AccordionSection>
-
-				<AccordionSection
-					title="Soft Skills"
-					isOpen={openAccordion === 'softskills'}
-					onClick={() => setOpenAccordion(openAccordion === 'softskills' ? null : 'softskills')}
-				>
-					<p style={{marginBottom: '1rem', fontSize: '1rem', color: '#555'}}>
-						Competencias que configuran el comportamiento individual de los profesionales:
-					</p>
-					<ul style={{paddingLeft: '1.5rem', lineHeight: 2, color: '#666'}}>
-						<li>Liderazgo.</li>
-						<li>Comunicación.</li>
-						<li>Creatividad.</li>
-						<li>Resolución de problemas.</li>
-						<li>Gestión de tiempo.</li>
-						<li>Manejo de estrés.</li>
-						<li>Productividad personal.</li>
-						<li>Pensamiento crítico.</li>
-						<li>Trabajo en equipo.</li>
-						<li>Inteligencia emocional.</li>
-					</ul>
-				</AccordionSection>
-
-				<AccordionSection
-					title="Integración y Team building"
-					isOpen={openAccordion === 'teambuilding'}
-					onClick={() => setOpenAccordion(openAccordion === 'teambuilding' ? null : 'teambuilding')}
-				>
-					<p style={{fontSize: '1rem', color: '#555', lineHeight: 1.8}}>
-						A través de ejercicios de aprendizaje vivencial desarrollados por especialistas, ayudamos a mejorar la comunicación interpersonal, la toma de decisiones y el conocimiento interior, para trabajar en equipo. Este servicio requiere de la participación activa de tu equipo y puedes elegir entre incluir actividad física fuerte, moderada o nula.
-					</p>
-				</AccordionSection>
+				<div style={{
+					display: 'grid',
+					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+					gap: '2.5rem'
+				}}>
+					{[
+						{title: 'Plan estratégico personalizado', icon: Target},
+						{title: 'Herramientas y procesos mejorados', icon: BarChart3},
+						{title: 'Protocolos de Seguridad y Prevención de Riesgos Laborales', icon: Shield}
+					].map((benefit, i) => (
+						<motion.div
+							key={i}
+							initial={{opacity: 0, y: 30}}
+							whileInView={{opacity: 1, y: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.5, delay: i * 0.1}}
+							style={{
+								padding: '2.5rem 2rem',
+								borderRadius: '16px',
+								background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+								border: '2px solid rgba(0,61,143,0.1)',
+								textAlign: 'center',
+								boxShadow: '0 8px 24px rgba(0,61,143,0.08)'
+							}}
+						>
+							<benefit.icon size={40} style={{color: '#003d8f', margin: '0 auto 1rem'}} />
+							<h3 style={{
+								fontSize: '1.15rem',
+								fontWeight: 700,
+								color: '#003d8f',
+								margin: 0,
+								lineHeight: 1.4
+							}}>
+								{benefit.title}
+							</h3>
+						</motion.div>
+					))}
+				</div>
 			</section>
 
 			{/* CTA FINAL */}
@@ -690,35 +598,13 @@ export default function Page() {
 				style={{
 					width: '100vw',
 					marginLeft: 'calc(-50vw + 50%)',
-					background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
+					background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
 					padding: '5rem 1.5rem',
 					marginTop: '4rem',
 					position: 'relative',
 					overflow: 'hidden'
 				}}
 			>
-				{/* Decorative elements */}
-				<div style={{
-					position: 'absolute',
-					top: -100,
-					right: -100,
-					width: '300px',
-					height: '300px',
-					background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none'
-				}} />
-				<div style={{
-					position: 'absolute',
-					bottom: -50,
-					left: -50,
-					width: '250px',
-					height: '250px',
-					background: 'radial-gradient(circle, rgba(0,172,183,0.15) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none'
-				}} />
-
 				<div style={{
 					maxWidth: '1280px',
 					margin: '0 auto',
@@ -738,7 +624,7 @@ export default function Page() {
 							letterSpacing: '-0.02em'
 						}}
 					>
-						Solicita tu diagnóstico formativo
+						No dejes que los problemas detengan tu progreso
 					</motion.h3>
 
 					<motion.p
@@ -754,64 +640,8 @@ export default function Page() {
 							lineHeight: 1.8
 						}}
 					>
-						Recibiras una propuesta con cronograma, metodología y ROI estimado.
+						¡Descubre cómo podemos ayudarte a superarlos!
 					</motion.p>
-
-					<motion.div
-						initial={{opacity: 0, y: 20}}
-						whileInView={{opacity: 1, y: 0}}
-						transition={{delay: 0.3, duration: 0.6}}
-						style={{
-							display: 'flex',
-							gap: '1rem',
-							justifyContent: 'center',
-							flexWrap: 'wrap'
-						}}
-					>
-						<Link 
-							href="/#contacto" 
-							style={{
-								padding: '1.1rem 2.5rem',
-								borderRadius: '12px',
-								background: 'white',
-								color: '#003d8f',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-								cursor: 'pointer',
-								boxShadow: '0 10px 30px rgba(255,255,255,0.2)',
-								display: 'inline-flex',
-								alignItems: 'center',
-								gap: '0.75rem'
-							}}
-						>
-							Solicitar propuesta
-							<span>→</span>
-						</Link>
-						<motion.a
-							whileHover={{scale: 1.05}}
-							href="#contacto"
-							style={{
-								padding: '1.1rem 2.5rem',
-								borderRadius: '12px',
-								background: 'rgba(255,255,255,0.15)',
-								color: 'white',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								transition: 'all 0.3s ease',
-								cursor: 'pointer',
-								border: '2px solid rgba(255,255,255,0.3)',
-								backdropFilter: 'blur(10px)',
-								display: 'inline-flex',
-								alignItems: 'center',
-								gap: '0.75rem'
-							}}
-						>
-							Contactar ahora
-						</motion.a>
-					</motion.div>
 				</div>
 			</motion.section>
 
@@ -839,7 +669,7 @@ export default function Page() {
 						marginBottom: '1rem',
 						letterSpacing: '-0.02em'
 					}}>
-						¿Interesado en nuestros servicios?
+						¿Interesado en alguno de nuestros servicios?
 					</h2>
 					<p style={{
 						fontSize: '1.1rem',
@@ -848,7 +678,7 @@ export default function Page() {
 						margin: '0 auto',
 						lineHeight: 1.7
 					}}>
-						Envíanos un mensaje con los detalles y estaremos encantados de ayudarte.
+						¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!
 					</p>
 				</motion.div>
 

@@ -47,19 +47,19 @@ export default function Navbar() {
         {/* Desktop Menu */}
         <nav className={styles.menu}>
           <Link href="/" className={styles.navLink}>
-            Pag. Principal
+            Inicio
           </Link>
           <Link href="/servicios" className={styles.navLink}>
             Servicios
-          </Link>
-          <Link href="/acerca-de" className={styles.navLink}>
-            Acerca de
           </Link>
           <Link href="/noticias" className={styles.navLink}>
             Noticias
           </Link>
           <Link href="/prensa" className={styles.navLink}>
             Prensa
+          </Link>
+           <Link href="/acerca-de" className={styles.navLink}>
+            Acerca de
           </Link>
           <a 
             href="https://bechapra.com.mx" 

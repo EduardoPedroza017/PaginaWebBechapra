@@ -9,15 +9,15 @@ export default function ServicesSection() {
     <section id="servicios" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Nuestros Servicios</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Nuestros Servicios</h2>
           <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-base sm:text-lg text-slate-600">
+          <p className="text-base sm:text-lg md:text-xl text-slate-600">
             Soluciones integrales diseñadas para optimizar cada aspecto de tu organización
           </p>
         </div>
       </AnimatedSection>
 
-      <div className={styles.servicesShowcase + " max-w-7xl mx-auto px-6 lg:px-8"}>
+      <div className={styles.servicesShowcase + " max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"}>
         <div className={styles.overlapRow}>
           {/* Card 1: Capital humano */}
           <a href="/servicios/capital-humano" className={styles.cardLink}>
@@ -38,15 +38,15 @@ export default function ServicesSection() {
                     alt="Capital humano icon" 
                     width={64} 
                     height={64}
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
                   />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Capital humano</h3>
                   <p className={styles.infoDesc}>Aumenta la eficiencia y resultados de tu negocio.</p>
-                  <a href="/servicios/capital-humano" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                  <button className={styles.detailBtn} onClick={e => e.stopPropagation()}>
                     Conoce más
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -70,15 +70,15 @@ export default function ServicesSection() {
                     alt="Servicios especializados icon" 
                     width={75} 
                     height={75}
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
                   />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Servicios especializados</h3>
                   <p className={styles.infoDesc}>Aumenta la eficiencia y resultados de tu negocio.</p>
-                  <a href="/servicios/desarrollo-organizacional" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                  <button className={styles.detailBtn} onClick={e => e.stopPropagation()}>
                     Conoce más
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -102,15 +102,15 @@ export default function ServicesSection() {
                     alt="Servicios de Impuestos icon" 
                     width={64} 
                     height={64}
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
                   />
                 </div>
                 <div>
                   <h3 className={styles.infoTitle}>Servicios de Impuestos</h3>
                   <p className={styles.infoDesc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam</p>
-                  <a href="/servicios/management-services" className={styles.detailBtn} tabIndex={-1} onClick={e => e.stopPropagation()}>
+                  <button className={styles.detailBtn} onClick={e => e.stopPropagation()}>
                     Conoce más
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

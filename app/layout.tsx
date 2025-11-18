@@ -13,6 +13,12 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Bechapra — Soluciones Empresariales",
   description: "Capital Humano, Desarrollo Organizacional y Management Services",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

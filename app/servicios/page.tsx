@@ -24,8 +24,8 @@ const groups = [
 		icon: "/imagen/icons/icon-training.svg",
 		description: "Mejoramos procesos, cultura y capacidades para que la organización sea más ágil y productiva.",
 		items: [
-			{ title: "Desarrollo organizacional", href: "/servicios/desarrollo-organizacional" },
 			{ title: "Capacitación Empresarial", href: "/servicios/capacitacion-empresarial" },
+			{ title: "Consultoría Organizacional", href: "/servicios/consultoria-organizacional" },
 			{ title: "NOM 035", href: "/servicios/nom-035" },
 		],
 	},
@@ -91,6 +91,9 @@ export default function ServiciosIndex() {
 
 			{/* Más info → final de página */}
 			<div id="fin-servicios" className="mt-16" />
+
+			{/* Footer */}
+			<Footer />
 		</>
 	);
 }
@@ -155,10 +158,6 @@ function GroupCard({ group, index }: { group: (typeof groups)[number]; index: nu
 						<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 					</svg>
 				</span>
-			</div>
-
-			<div>
-				<Footer />
 			</div>
 		</div>
 	);

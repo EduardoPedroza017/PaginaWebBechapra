@@ -93,17 +93,17 @@
   --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-headings: 'Mundial', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
-  /* Tamaños de fuente */
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.875rem;     /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
-  --text-4xl: 2.25rem;     /* 36px */
-  --text-5xl: 3rem;        /* 48px */
-  --text-6xl: 3.75rem;     /* 60px */
+  /* Tamaños de fuente responsivos usando clamp para escalar en todas las pantallas */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);      /* 12-14px */
+  --text-sm: clamp(0.875rem, 0.85rem + 0.125vw, 1rem);       /* 14-16px */
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);      /* 16-18px */
+  --text-lg: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);        /* 18-22px */
+  --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.625rem);      /* 20-26px */
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);             /* 24-32px */
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);       /* 30-40px */
+  --text-4xl: clamp(2.25rem, 1.8rem + 2vw, 3rem);            /* 36-48px */
+  --text-5xl: clamp(2.5rem, 2rem + 2.5vw, 3.75rem);          /* 40-60px */
+  --text-6xl: clamp(3rem, 2.5rem + 3vw, 4.5rem);             /* 48-72px */
 }
 
 
@@ -149,6 +149,10 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Asegurar que el contenido escale correctamente en todas las pantallas */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-size: 16px; /* Base font size para cálculos rem */
 }
 
 body {
@@ -266,14 +270,28 @@ strong, b {
 
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 clamp(1rem, 5vw, 3rem);
+}
+
+/* Contenedor responsivo para diferentes tamaños de pantalla */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1600px;
+    padding: 0 4rem;
+  }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
   }
 }
 
@@ -702,11 +720,11 @@ textarea {
    ========================================================================== */
 
 section {
-  padding: 5rem 0;
+  padding: clamp(3rem, 6vw, 6rem) 0;
 }
 
 .section-title {
-  font-size: var(--text-4xl);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 800;
   color: var(--brand-dark);
   margin-bottom: 1rem;
@@ -714,11 +732,27 @@ section {
 }
 
 .section-subtitle {
-  font-size: var(--text-xl);
+  font-size: clamp(1rem, 1.5vw, 1.375rem);
   color: var(--text-secondary);
   text-align: center;
   max-width: 700px;
   margin: 0 auto 3rem;
+}
+
+/* Responsive adjustments para pantallas muy grandes */
+@media (min-width: 1920px) {
+  section {
+    padding: clamp(5rem, 7vw, 8rem) 0;
+  }
+  
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3rem);
+  }
+  
+  .section-subtitle {
+    font-size: clamp(1.25rem, 1.75vw, 1.5rem);
+    max-width: 800px;
+  }
 }
 
 /* ==========================================================================
@@ -1206,30 +1240,18 @@ img {
 
 @media (max-width: 1024px) {
   :root {
-    --text-5xl: 2.5rem;
-    --text-4xl: 2rem;
-    --text-3xl: 1.75rem;
-  }
-  
-  section {
-    padding: 4rem 0;
-  }
-  
-  .hero {
-    padding: 4rem 0;
-  }
-  
-  .hero-title {
-    font-size: var(--text-5xl);
+    --text-5xl: clamp(2rem, 4vw, 2.5rem);
+    --text-4xl: clamp(1.75rem, 3.5vw, 2rem);
+    --text-3xl: clamp(1.5rem, 3vw, 1.75rem);
   }
 }
 
 @media (max-width: 768px) {
   :root {
-    --text-6xl: 2.5rem;
-    --text-5xl: 2rem;
-    --text-4xl: 1.75rem;
-    --text-3xl: 1.5rem;
+    --text-6xl: clamp(2rem, 5vw, 2.5rem);
+    --text-5xl: clamp(1.75rem, 4vw, 2rem);
+    --text-4xl: clamp(1.5rem, 3.5vw, 1.75rem);
+    --text-3xl: clamp(1.375rem, 3vw, 1.5rem);
   }
   
   .nav-menu {
@@ -1246,11 +1268,32 @@ img {
   
   .card,
   .service-card {
-    padding: 1.5rem;
+    padding: clamp(1.25rem, 2vw, 1.75rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .card,
+  .service-card {
+    padding: 1rem;
+  }
+}
+
+/* Responsive para pantallas muy grandes */
+@media (min-width: 1920px) {
+  .card,
+  .service-card {
+    padding: clamp(2.25rem, 3vw, 3rem);
   }
   
-  section {
-    padding: 3rem 0;
+  .btn {
+    font-size: clamp(1rem, 1.1vw, 1.125rem);
+    padding: clamp(0.875rem, 1.2vw, 1.125rem) clamp(1.75rem, 2.2vw, 2.25rem);
+  }
+  
+  .btn-large {
+    padding: clamp(1.125rem, 1.5vw, 1.375rem) clamp(2.25rem, 2.8vw, 2.75rem);
+    font-size: clamp(1.125rem, 1.25vw, 1.375rem);
   }
 }
 

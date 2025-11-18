@@ -1,35 +1,36 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   width: 100%;
   background-color: #ffffff;
   border-bottom: 1px solid #f3f4f6;
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
-  height: 4.5rem;
+  height: clamp(4rem, 5vw, 5.5rem);
   align-items: center;
   justify-content: space-between;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: clamp(1rem, 2vw, 2rem);
+  padding-right: clamp(1rem, 2vw, 2rem);
 }
 
 @media (min-width: 640px) {
   .container {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: clamp(1.5rem, 2.5vw, 2.5rem);
+    padding-right: clamp(1.5rem, 2.5vw, 2.5rem);
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1920px) {
   .container {
-    height: 5rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    max-width: 1600px;
+    height: clamp(5rem, 5.5vw, 6rem);
+    padding-left: 3rem;
+    padding-right: 3rem;
   }
 }
 
@@ -40,20 +41,14 @@
 }
 
 .logoImage {
-  height: 2.5rem;
+  height: clamp(2.25rem, 3.5vw, 4.5rem);
   width: auto;
   display: block;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1920px) {
   .logoImage {
-    height: 3rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .logoImage {
-    height: 4rem;
+    height: clamp(4rem, 4.5vw, 5rem);
   }
 }
 
@@ -79,12 +74,18 @@
 .menu {
   display: none;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 1.5vw, 2rem);
 }
 
 @media (min-width: 768px) {
   .menu {
     display: flex;
+  }
+}
+
+@media (min-width: 1920px) {
+  .menu {
+    gap: clamp(1.5rem, 2vw, 2.5rem);
   }
 }
 
@@ -120,7 +121,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 60;
+  z-index: 90;
   background-color: #ffffff;
   animation: slideIn 0.25s ease-out;
   overflow-y: auto;
@@ -171,13 +172,19 @@
 
 /* Desktop Navigation Links */
 .navLink {
-  font-size: 0.875rem;
+  font-size: clamp(0.875rem, 1vw, 1rem);
   font-weight: 500;
   color: #334155;
   text-decoration: none;
   transition: color 0.2s ease;
   position: relative;
   padding-bottom: 0.25rem;
+}
+
+@media (min-width: 1920px) {
+  .navLink {
+    font-size: clamp(1rem, 1.1vw, 1.125rem);
+  }
 }
 
 .navLink::after {
@@ -252,13 +259,21 @@
   justify-content: center;
   border-radius: 9999px;
   background-color: #2563eb;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
+  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(1rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.875rem, 1vw, 1rem);
   font-weight: 600;
   color: #ffffff !important;
   text-decoration: none;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+@media (min-width: 1920px) {
+  .ctaButton {
+    padding: clamp(0.65rem, 0.9vw, 0.875rem) clamp(1.25rem, 1.75vw, 1.75rem);
+    font-size: clamp(0.95rem, 1.05vw, 1.125rem);
+  }
 }
 
 .ctaButton:hover {
