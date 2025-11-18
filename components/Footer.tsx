@@ -24,17 +24,17 @@ export default function Footer() {
 			{label: 'Desarrollo Organizacional', href: '/servicios/desarrollo-organizacional'},
 		],
 		legal: [
-			{label: 'Política de privacidad', href: '#'},
-			{label: 'Términos de servicio', href: '#'},
-			{label: 'Política de cookies', href: '#'},
+			{label: 'Política de privacidad', href: '/politica-de-privacidad'},
+			{label: 'Términos de servicio', href: '/terminos-de-servicio'},
+			{label: 'Política de cookies', href: '/politica-de-cookies'},
 		]
 	};
 
 	const socialLinks = [
-		{icon: Facebook, href: 'https://facebook.com/bechapra', label: 'Facebook'},
-		{icon: Linkedin, href: 'https://linkedin.com/company/bechapra', label: 'LinkedIn'},
-		{icon: Youtube, href: 'https://youtube.com/@bechapra', label: 'YouTube'},
-		{icon: Instagram, href: 'https://instagram.com/bechapra', label: 'Instagram'},
+		{iconPath: '/imagen/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bechapra', label: 'Facebook'},
+		{iconPath: '/imagen/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bechapra', label: 'LinkedIn'},
+		{iconPath: '/imagen/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bechapra', label: 'YouTube'},
+		{iconPath: '/imagen/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bechapra', label: 'Instagram'},
 	];
 
 	return (
@@ -77,17 +77,17 @@ export default function Footer() {
 			/>
 
 			<div style={{
-				maxWidth: '1280px',
+				maxWidth: '1400px',
 				margin: '0 auto',
-				padding: '4rem 1.5rem 2rem',
+				padding: '4rem 2rem 2rem',
 				position: 'relative',
 				zIndex: 2
 			}}>
 				{/* Main footer content grid */}
 				<div style={{
 					display: 'grid',
-					gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr',
-					gap: '3rem',
+					gridTemplateColumns: '1.3fr 1fr 1fr 1fr 1.1fr',
+					gap: '4rem',
 					marginBottom: '3rem',
 					alignItems: 'start'
 				}}>
@@ -134,7 +134,6 @@ export default function Footer() {
 							marginTop: '1.5rem'
 						}}>
 							{socialLinks.map((social, i) => {
-								const Icon = social.icon;
 								return (
 									<motion.a
 										key={i}
@@ -155,10 +154,21 @@ export default function Footer() {
 											color: 'white',
 											textDecoration: 'none',
 											transition: 'all 0.3s ease',
-											border: '1px solid rgba(255,255,255,0.2)'
+											border: '1px solid rgba(255,255,255,0.2)',
+											padding: '0.5rem'
 										}}
 									>
-										<Icon size={18} />
+										<Image 
+											src={social.iconPath}
+											alt={social.label}
+											width={24}
+											height={24}
+											style={{
+												width: '100%',
+												height: '100%',
+												objectFit: 'contain'
+											}}
+										/>
 									</motion.a>
 								);
 							})}
@@ -181,7 +191,7 @@ export default function Footer() {
 							<h3 style={{
 								fontSize: '1rem',
 								fontWeight: 800,
-								marginBottom: '1.25rem',
+								marginBottom: '1.75rem',
 								color: 'white',
 								margin: 0,
 								textTransform: 'uppercase',
@@ -197,7 +207,7 @@ export default function Footer() {
 								margin: 0,
 								display: 'flex',
 								flexDirection: 'column',
-								gap: '0.75rem'
+								gap: '1rem'
 							}}>
 								{section.links.map((link, i) => (
 									<li key={i}>
@@ -237,7 +247,7 @@ export default function Footer() {
 						<h3 style={{
 							fontSize: '1rem',
 							fontWeight: 800,
-							marginBottom: '1.25rem',
+							marginBottom: '1.75rem',
 							color: 'white',
 							margin: 0,
 							textTransform: 'uppercase',
@@ -250,7 +260,7 @@ export default function Footer() {
 						<div style={{
 							display: 'flex',
 							flexDirection: 'column',
-							gap: '1rem'
+							gap: '1.25rem'
 						}}>
 							<a href="mailto:contacto@bechapra.com" style={{
 								display: 'flex',
@@ -340,7 +350,7 @@ export default function Footer() {
 						gap: '2rem',
 						flexWrap: 'wrap'
 					}}>
-						<a href="#" style={{
+						<a href="/politica-de-privacidad" style={{
 							fontSize: '0.9rem',
 							color: 'rgba(255,255,255,0.6)',
 							textDecoration: 'none',
@@ -355,7 +365,7 @@ export default function Footer() {
 						>
 							Política de privacidad
 						</a>
-						<a href="#" style={{
+						<a href="/terminos-de-servicio" style={{
 							fontSize: '0.9rem',
 							color: 'rgba(255,255,255,0.6)',
 							textDecoration: 'none',

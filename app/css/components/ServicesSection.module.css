@@ -1,29 +1,29 @@
 .cardLink:hover .detailBtn, .cardLink:focus .detailBtn {
   background: #fff;
-  color: #2563eb;
-  box-shadow: 0 4px 16px rgba(30,64,175,0.18);
-  transform: translateY(-2px) scale(1.04);
+  color: #004AB7;
+  box-shadow: 0 4px 16px rgba(0,74,183,0.18);
+  transform: translateY(-2px) scale(1.02);
 }
 .detailBtn {
   display: inline-block;
   margin-top: 1rem;
-  background: #2563eb;
+  background: #004AB7;
   color: #fff;
   font-weight: 600;
   font-size: 0.98rem;
   padding: 0.5rem 1.25rem;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(30,64,175,0.10);
+  box-shadow: 0 2px 8px rgba(0,74,183,0.10);
   text-decoration: none;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   outline: none;
   border: none;
   cursor: pointer;
 }
 .detailBtn:hover, .detailBtn:focus {
-  background: #1e40af;
-  box-shadow: 0 4px 16px rgba(30,64,175,0.18);
-  transform: translateY(-2px) scale(1.04);
+  background: #003d95;
+  box-shadow: 0 4px 16px rgba(0,74,183,0.18);
+  transform: translateY(-2px) scale(1.02);
 }
 .cardOverlap, .cardOverlapBlue {
   opacity: 0;
@@ -59,8 +59,8 @@
   }
 }
 .cardLink:hover .infoBox {
-  background: linear-gradient(135deg, #2563eb 80%, #1e40af 100%);
-  box-shadow: 0 2px 24px rgba(30,64,175,0.18);
+  background: linear-gradient(135deg, #004AB7 80%, #003d95 100%);
+  box-shadow: 0 2px 24px rgba(0,74,183,0.18);
 }
 .cardLink:hover .infoTitle {
   color: #fff;
@@ -95,7 +95,7 @@
 .cardOverlap, .cardOverlapBlue {
   background: #f8fafc;
   border-radius: 2rem;
-  box-shadow: 0 6px 32px rgba(30,64,175,0.08);
+  box-shadow: 0 6px 32px rgba(0,74,183,0.08);
   overflow: visible;
   width: 350px;
   min-width: 350px;
@@ -104,14 +104,14 @@
   height: 470px;
   margin-right: -60px;
   position: relative;
-  transition: box-shadow 0.3s, transform 0.3s;
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 .cardOverlap:hover, .cardOverlapBlue:hover {
-  box-shadow: 0 16px 48px rgba(30,64,175,0.22);
-  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0,74,183,0.18);
+  transform: translateY(-4px) scale(1.01);
 }
 
 .cardImageCrop {
@@ -184,9 +184,9 @@
   z-index: 1;
 }
 .infoBoxBlue {
-  background: linear-gradient(135deg, #2563eb 80%, #1e40af 100%);
+  background: linear-gradient(135deg, #004AB7 80%, #003d95 100%);
   border-radius: 1.25rem;
-  box-shadow: 0 2px 24px rgba(30,64,175,0.18);
+  box-shadow: 0 2px 24px rgba(0,74,183,0.18);
   padding: 1.5rem 1.25rem 1.25rem 1.25rem;
   margin: -2.5rem 1.5rem 1.5rem 1.5rem;
   display: flex;
@@ -226,7 +226,7 @@
 .infoTitle {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #2563eb;
+  color: #004AB7;
   margin-bottom: 0.25rem;
 }
 .infoTitleBlue {

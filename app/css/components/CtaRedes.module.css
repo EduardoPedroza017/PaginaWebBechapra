@@ -327,7 +327,7 @@
 .socialIconBox {
   width: 56px;
   height: 56px;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 12px;
   background: white;
   transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -337,9 +337,20 @@
   align-items: center;
   justify-content: center;
   color: var(--brand-primary);
+  position: relative;
+  overflow: visible;
 }
 
-/* normalize SVG icon sizing and color */
+/* Estilos para iconos de imagen (PNG) */
+.socialIconBox img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* normalize SVG icon sizing and color (para compatibilidad futura) */
 .socialIconBox svg {
   width: 24px;
   height: 24px;
@@ -374,9 +385,9 @@
 @media (min-width: 768px) {
   /* slightly larger icons on desktop/laptop */
   .socialIconBox {
-    width: 56px;
-    height: 56px;
-    padding: 0.5rem;
+    width: 64px;
+    height: 64px;
+    padding: 0.875rem;
   }
 
   .socialLabel {
@@ -465,7 +476,7 @@
   .socialIconBox {
     width: 48px;
     height: 48px;
-    padding: 0.65rem;
+    padding: 0.6rem;
   }
 
   .socialLabel {
