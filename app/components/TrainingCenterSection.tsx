@@ -53,12 +53,12 @@ export default function TrainingCenterSection() {
   }
 
   return (
-    <section id="training-center" style={{marginBottom: '6rem'}}>
+    <section id="training-center">
       <AnimatedSection>
         <div style={{
           textAlign: 'center',
           maxWidth: '900px',
-          margin: '0 auto 4rem',
+          margin: '0 auto 1.5rem',
           padding: '0 1.5rem'
         }}>
           <div style={{
@@ -117,11 +117,12 @@ export default function TrainingCenterSection() {
         <div style={{
           position: 'relative',
           zIndex: 1,
-          background: 'white',
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(12px)',
           borderRadius: '24px',
           padding: '3rem 2rem',
-          boxShadow: '0 12px 40px rgba(0,61,143,0.08)',
-          border: '1px solid rgba(0,61,143,0.08)'
+          boxShadow: '0 8px 32px rgba(0, 74, 183, 0.12)',
+          border: 'none'
         }}
         onMouseEnter={stopAutoplay}
         onMouseLeave={startAutoplay}
@@ -315,7 +316,7 @@ export default function TrainingCenterSection() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '2rem',
           maxWidth: '1200px',
-          margin: '4rem auto 0',
+          margin: '1.5rem auto 0',
           padding: '0 1.5rem'
         }}>
           {features.map((feature, i) => (
@@ -327,11 +328,12 @@ export default function TrainingCenterSection() {
               transition={{duration: 0.5, delay: i * 0.1}}
               whileHover={{scale: 1.03, y: -8}}
               style={{
-                background: 'white',
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(12px)',
                 padding: '2rem',
                 borderRadius: '16px',
-                border: '1px solid rgba(0,61,143,0.1)',
-                boxShadow: '0 4px 20px rgba(0,61,143,0.06)',
+                border: 'none',
+                boxShadow: '0 8px 32px rgba(0, 74, 183, 0.12)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}

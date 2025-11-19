@@ -75,7 +75,9 @@ export default function ServiciosIndex() {
 			</section>
 
 			{/* 3 columnas con subservicios (tarjetas clicables) */}
-			<section id="servicios-grid" className={styles.servicesGrid}>
+			<section id="servicios-grid" className={styles.servicesGrid} style={{
+				background: '#FFFFFF'
+			}}>
 				<div className="max-w-7xl mx-auto px-6">
 					<div className={styles.gridHeader}>
 						<h2 className={styles.gridTitle}>Explora Nuestras Líneas de Servicio</h2>

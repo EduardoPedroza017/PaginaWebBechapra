@@ -7,9 +7,7 @@ import { Calendar, ExternalLink } from 'lucide-react';
 
 export default function PressCards() {
 	return (
-		<section style={{
-			padding: '4rem 0'
-		}}>
+		<section>
 			<motion.div
 				initial={{opacity: 0, y: 20}}
 				whileInView={{opacity: 1, y: 0}}
@@ -17,7 +15,7 @@ export default function PressCards() {
 				transition={{duration: 0.6}}
 				style={{
 					textAlign: 'center',
-					marginBottom: '3rem'
+					marginBottom: '1.5rem'
 				}}
 			>
 				<h2 style={{
@@ -156,7 +154,7 @@ export default function PressCards() {
 				transition={{duration: 0.6, delay: 0.3}}
 				style={{
 					textAlign: 'center',
-					marginTop: '3rem'
+					marginTop: '1.5rem'
 				}}
 			>
 				<Link

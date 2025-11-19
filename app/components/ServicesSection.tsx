@@ -6,11 +6,11 @@ import styles from "../css/components/ServicesSection.module.css";
 
 export default function ServicesSection() {
   return (
-    <section id="servicios" className="mb-16 sm:mb-24 md:mb-32">
+    <section id="servicios">
       <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Nuestros Servicios</h2>
-          <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
+        <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-5 px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">Nuestros Servicios</h2>
+          <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-4" />
           <p className="text-base sm:text-lg md:text-xl text-slate-600">
             Soluciones integrales diseñadas para optimizar cada aspecto de tu organización
           </p>

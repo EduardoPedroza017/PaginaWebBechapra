@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
-import styles from "@/app/css/components/AwardsSection.module.css";
 
 export default function AwardsSection() {
   const reconocimientos = [
@@ -29,96 +28,108 @@ export default function AwardsSection() {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6 },
-    },
-  };
+  // Duplicar logos para efecto infinito
+  const duplicatedLogos = [...reconocimientos, ...reconocimientos];
 
   return (
-    <section className={styles.section}>
+    <section style={{ padding: 0, overflow: 'hidden' }}>
       <AnimatedSection>
         {/* Header */}
-        <motion.div 
-          className={styles.headerContainer}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-        >
-          <motion.h2 
-            className={styles.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-          >
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h2 style={{
+            fontSize: 'clamp(2rem, 4vw, 2.75rem)',
+            fontWeight: 900,
+            color: '#0057D9',
+            marginBottom: '0.75rem',
+            letterSpacing: '-0.02em'
+          }}>
             Reconocimientos
-          </motion.h2>
+          </h2>
+          <div style={{
+            width: '80px',
+            height: '4px',
+            background: 'linear-gradient(90deg, #0057D9 0%, #004AB7 100%)',
+            borderRadius: '4px',
+            margin: '0 auto'
+          }} />
+        </div>
 
-          <motion.div 
-            className={styles.underline}
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            style={{ originX: 0.5 }}
-          />
-        </motion.div>
-
-        {/* Compact centered logo strip (desktop & mobile-friendly).
-            Shows logos in a centered row with subtle side fades like the provided reference image. */}
-        <div className={styles.stripContainer}>
+        {/* Carrusel infinito */}
+        <div style={{
+          position: 'relative',
+          width: '100%',
+          overflow: 'hidden',
+          padding: '1rem 0'
+        }}>
           <motion.div
-            className={styles.stripWrapper}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            animate={{
+              x: [0, -50 + '%'],
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 20,
+                ease: "linear",
+              },
+            }}
+            style={{
+              display: 'flex',
+              gap: 'clamp(2rem, 4vw, 4rem)',
+              width: 'fit-content'
+            }}
           >
-            <div className={styles.strip}>
-              {reconocimientos.map((rec) => (
-                <motion.figure
-                  key={rec.id}
-                  className={styles.logoItem}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05, y: -8 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                  <div className={styles.logoCard}>
-                    {rec.img ? (
-                      <Image
-                        src={rec.img}
-                        alt={rec.title}
-                        width={200}
-                        height={140}
-                        className={styles.logoImage}
-                        priority
-                      />
-                    ) : (
-                      <div className={styles.logoPlaceholder}>
-                        <span className={styles.placeholderText}>Logo</span>
-                      </div>
-                    )}
+            {duplicatedLogos.map((rec, i) => (
+              <div
+                key={`${rec.id}-${i}`}
+                style={{
+                  background: '#FFFFFF',
+                  borderRadius: '12px',
+                  padding: 'clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 3vw, 2.5rem)',
+                  boxShadow: '0 2px 8px rgba(0, 87, 217, 0.08)',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '180px',
+                  minHeight: '90px',
+                  flexShrink: 0
+                }}
+              >
+                {rec.img ? (
+                  <Image
+                    src={rec.img}
+                    alt={rec.title}
+                    width={140}
+                    height={70}
+                    style={{
+                      width: 'auto',
+                      height: 'clamp(50px, 5vw, 70px)',
+                      maxWidth: '160px',
+                      objectFit: 'contain',
+                      filter: 'grayscale(100%) opacity(0.7)'
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '140px',
+                    height: '70px',
+                    background: '#f8f9fa',
+                    border: '2px dashed #cbd5e1',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: '#94a3b8',
+                    textTransform: 'uppercase'
+                  }}>
+                    LOGO
                   </div>
-                  <figcaption className={styles.srOnly}>{rec.title}</figcaption>
-                </motion.figure>
-              ))}
-            </div>
+                )}
+              </div>
+            ))}
           </motion.div>
         </div>
       </AnimatedSection>

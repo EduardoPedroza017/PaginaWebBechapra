@@ -39,9 +39,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section className={`${styles.heroSection} ${styles.fullBleed} mb-16 sm:mb-24 md:mb-32 relative`}>
+    <section className={`${styles.heroSection} ${styles.fullBleed} relative`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 items-center relative">
           <div className={styles.radialDecor} aria-hidden />
 
           <motion.div
@@ -49,7 +49,7 @@ export default function HeroSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className={`space-y-4 sm:space-y-6 ${styles.heroInner} z-20`}
+            className={`space-y-4 sm:space-y-5 ${styles.heroInner} z-20`}
           >
             <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl ${styles.heroTitle}`}>
               Impulsamos
@@ -66,7 +66,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center gap-4 sm:gap-6 mt-6 w-full"
+              className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center gap-5 sm:gap-8 lg:gap-10 mt-6 w-full"
             >
               <motion.a
                 href="#servicios"

@@ -130,7 +130,7 @@ export default function Navbar() {
               className={styles.mobileNavLink}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Pag. Principal
+              Inicio
             </Link>
             <Link 
               href="/servicios" 

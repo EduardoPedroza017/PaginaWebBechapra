@@ -38,14 +38,104 @@ export default function Footer() {
 	];
 
 	return (
-		<footer style={{
-			width: '100vw',
-			marginLeft: 'calc(-50vw + 50%)',
-			background: 'linear-gradient(135deg, #001a4d 0%, #003d8f 50%, #004AB7 100%)',
-			color: 'white',
-			position: 'relative',
-			overflow: 'hidden'
-		}}>
+		<>
+			<style jsx>{`
+				.footer-brand-link {
+					display: flex;
+					justify-content: center;
+				}
+				.footer-logo {
+					height: 70px !important;
+					margin-bottom: 1.25rem !important;
+				}
+				.footer-description {
+					font-size: 0.875rem !important;
+					margin-bottom: 1.25rem !important;
+					text-align: center;
+					padding-right: 0 !important;
+				}
+				.footer-social {
+					justify-content: center !important;
+				}
+				.footer-section-title {
+					font-size: 0.875rem !important;
+					margin-bottom: 1.25rem !important;
+					text-align: center;
+				}
+				.footer-link {
+					font-size: 0.875rem !important;
+				}
+				.footer-links-list {
+					align-items: center !important;
+				}
+				.footer-contact {
+					align-items: center !important;
+				}
+				@media (min-width: 640px) {
+					.footer-grid {
+						grid-template-columns: repeat(2, 1fr) !important;
+						gap: 3rem !important;
+					}
+					.footer-bottom {
+						flex-direction: row !important;
+						justify-content: space-between !important;
+						gap: 2rem !important;
+					}
+					.footer-brand-link {
+						display: inline-block;
+						justify-content: flex-start;
+					}
+					.footer-logo {
+						height: 90px !important;
+						margin-bottom: 1.75rem !important;
+					}
+					.footer-description {
+						font-size: 0.95rem !important;
+						margin-bottom: 1.5rem !important;
+						text-align: left;
+						padding-right: 1rem !important;
+					}
+					.footer-social {
+						justify-content: flex-start !important;
+					}
+					.footer-section-title {
+						font-size: 1rem !important;
+						margin-bottom: 1.75rem !important;
+						text-align: left;
+					}
+					.footer-link {
+						font-size: 0.95rem !important;
+					}
+					.footer-links-list {
+						align-items: flex-start !important;
+					}
+					.footer-contact {
+						align-items: flex-start !important;
+					}
+				}
+				@media (min-width: 1024px) {
+					.footer-grid {
+						grid-template-columns: 1.3fr 1fr 1fr 1fr 1.1fr !important;
+						gap: 4rem !important;
+						margin-bottom: 3rem !important;
+					}
+					.footer-container {
+						padding: 4rem 2rem 2rem !important;
+					}
+					.footer-logo {
+						height: 100px !important;
+						margin-bottom: 2rem !important;
+					}
+				}
+			`}</style>
+			<footer style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(135deg, #001a4d 0%, #003d8f 50%, #004AB7 100%)',
+				color: 'white',
+				position: 'relative',
+				overflow: 'hidden'
+			}}>
 			{/* Decorative background elements */}
 			<motion.div
 				animate={{scale: [1, 1.1, 1]}}
@@ -76,21 +166,21 @@ export default function Footer() {
 				}}
 			/>
 
-			<div style={{
+			<div className="footer-container" style={{
 				maxWidth: '1400px',
 				margin: '0 auto',
-				padding: '4rem 2rem 2rem',
+				padding: '2.5rem 1.25rem 1.5rem',
 				position: 'relative',
 				zIndex: 2
 			}}>
 				{/* Main footer content grid */}
-				<div style={{
-					display: 'grid',
-					gridTemplateColumns: '1.3fr 1fr 1fr 1fr 1.1fr',
-					gap: '4rem',
-					marginBottom: '3rem',
-					alignItems: 'start'
-				}}>
+					<div className="footer-grid" style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(1, 1fr)',
+						gap: '2rem',
+						marginBottom: '1.75rem',
+						alignItems: 'start'
+					}}>
 					{/* Brand section - larger */}
 					<motion.div
 						initial={{opacity: 0, y: 20}}
@@ -98,41 +188,42 @@ export default function Footer() {
 						viewport={{once: true}}
 						transition={{duration: 0.6}}
 					>
-						<Link href="/" style={{
-							display: 'inline-block',
-							marginBottom: '2rem',
-							textDecoration: 'none'
-						}}>
+					<Link href="/" className="footer-brand-link" style={{
+						display: 'flex',
+						justifyContent: 'center',
+						marginBottom: '1.25rem',
+						textDecoration: 'none'
+					}}>
 							<Image
 								src="/imagen/Logo_1x1_BlancoSinFondo@2x.png"
 								alt="Bechapra Logo"
 								width={100}
 								height={100}
+								className="footer-logo"
 								style={{
 									width: 'auto',
-									height: '100px'
+									height: '70px'
 								}}
 								priority
 							/>
 						</Link>
 
-						<p style={{
-							fontSize: '0.95rem',
-							color: 'rgba(255,255,255,0.8)',
-							lineHeight: 1.6,
-							marginBottom: '1.5rem',
-							margin: 0,
-							paddingRight: '1rem'
-						}}>
+					<p className="footer-description" style={{
+						fontSize: '0.875rem',
+						color: 'rgba(255,255,255,0.8)',
+						lineHeight: 1.5,
+						marginBottom: '1.25rem',
+						margin: 0
+					}}>
 							Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro.
 						</p>
 
-						{/* Social links */}
-						<div style={{
-							display: 'flex',
-							gap: '1rem',
-							marginTop: '1.5rem'
-						}}>
+					{/* Social links */}
+					<div className="footer-social" style={{
+						display: 'flex',
+						gap: '0.875rem',
+						marginTop: '1.25rem'
+					}}>
 							{socialLinks.map((social, i) => {
 								return (
 									<motion.a
@@ -188,7 +279,7 @@ export default function Footer() {
 							viewport={{once: true}}
 							transition={{duration: 0.6, delay: (sectionIdx + 1) * 0.1}}
 						>
-							<h3 style={{
+							<h3 className="footer-section-title" style={{
 								fontSize: '1rem',
 								fontWeight: 800,
 								marginBottom: '1.75rem',
@@ -201,23 +292,24 @@ export default function Footer() {
 								{section.title}
 							</h3>
 
-							<ul style={{
+							<ul className="footer-links-list" style={{
 								listStyle: 'none',
 								padding: 0,
 								margin: 0,
 								display: 'flex',
 								flexDirection: 'column',
-								gap: '1rem'
+								gap: '0.875rem',
+								alignItems: 'center'
 							}}>
 								{section.links.map((link, i) => (
 									<li key={i}>
-										<Link href={link.href} style={{
-											color: 'rgba(255,255,255,0.75)',
-											textDecoration: 'none',
-											fontSize: '0.95rem',
-											transition: 'all 0.3s ease',
-											display: 'inline-block'
-										}}
+									<Link href={link.href} className="footer-link" style={{
+										color: 'rgba(255,255,255,0.75)',
+										textDecoration: 'none',
+										fontSize: '0.875rem',
+										transition: 'all 0.3s ease',
+										display: 'inline-block'
+									}}
 										onMouseEnter={(e) => {
 											const el = e.currentTarget as HTMLAnchorElement;
 											el.style.color = '#FFD700';
@@ -244,10 +336,10 @@ export default function Footer() {
 						viewport={{once: true}}
 						transition={{duration: 0.6, delay: 0.4}}
 					>
-						<h3 style={{
-							fontSize: '1rem',
+						<h3 className="footer-section-title" style={{
+							fontSize: '0.875rem',
 							fontWeight: 800,
-							marginBottom: '1.75rem',
+							marginBottom: '1.25rem',
 							color: 'white',
 							margin: 0,
 							textTransform: 'uppercase',
@@ -257,11 +349,11 @@ export default function Footer() {
 							Contacto
 						</h3>
 
-						<div style={{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: '1.25rem'
-						}}>
+					<div className="footer-contact" style={{
+						display: 'flex',
+						flexDirection: 'column',
+						gap: '1rem'
+					}}>
 							<a href="mailto:contacto@bechapra.com" style={{
 								display: 'flex',
 								alignItems: 'flex-start',
@@ -269,7 +361,7 @@ export default function Footer() {
 								color: 'rgba(255,255,255,0.75)',
 								textDecoration: 'none',
 								transition: 'all 0.3s ease',
-								fontSize: '0.9rem'
+								fontSize: '0.875rem'
 							}}
 							onMouseEnter={(e) => {
 								e.currentTarget.style.color = '#FFD700';
@@ -289,7 +381,7 @@ export default function Footer() {
 								color: 'rgba(255,255,255,0.75)',
 								textDecoration: 'none',
 								transition: 'all 0.3s ease',
-								fontSize: '0.9rem'
+								fontSize: '0.875rem'
 							}}
 							onMouseEnter={(e) => {
 								e.currentTarget.style.color = '#FFD700';
@@ -307,7 +399,7 @@ export default function Footer() {
 								alignItems: 'flex-start',
 								gap: '0.75rem',
 								color: 'rgba(255,255,255,0.75)',
-								fontSize: '0.9rem'
+								fontSize: '0.875rem'
 							}}>
 								<MapPin size={18} style={{marginTop: '2px', flexShrink: 0}} />
 								<span>Ciudad de México, México</span>
@@ -320,7 +412,7 @@ export default function Footer() {
 				<div style={{
 					height: '1px',
 					background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
-					margin: '3rem 0'
+					margin: '1.75rem 0 1.25rem'
 				}} />
 
 				{/* Bottom footer */}
@@ -329,16 +421,18 @@ export default function Footer() {
 					whileInView={{opacity: 1}}
 					viewport={{once: true}}
 					transition={{duration: 0.6, delay: 0.5}}
+					className="footer-bottom"
 					style={{
 						display: 'flex',
-						justifyContent: 'space-between',
+						justifyContent: 'center',
 						alignItems: 'center',
-						flexWrap: 'wrap',
-						gap: '2rem'
+						flexDirection: 'column',
+						gap: '1rem',
+						textAlign: 'center'
 					}}
 				>
 					<p style={{
-						fontSize: '0.9rem',
+						fontSize: '0.8rem',
 						color: 'rgba(255,255,255,0.6)',
 						margin: 0
 					}}>
@@ -347,11 +441,12 @@ export default function Footer() {
 
 					<div style={{
 						display: 'flex',
-						gap: '2rem',
-						flexWrap: 'wrap'
+						gap: '1rem',
+						flexWrap: 'wrap',
+						justifyContent: 'center'
 					}}>
 						<a href="/politica-de-privacidad" style={{
-							fontSize: '0.9rem',
+							fontSize: '0.8rem',
 							color: 'rgba(255,255,255,0.6)',
 							textDecoration: 'none',
 							transition: 'color 0.3s ease'
@@ -366,7 +461,7 @@ export default function Footer() {
 							Política de privacidad
 						</a>
 						<a href="/terminos-de-servicio" style={{
-							fontSize: '0.9rem',
+							fontSize: '0.8rem',
 							color: 'rgba(255,255,255,0.6)',
 							textDecoration: 'none',
 							transition: 'color 0.3s ease'
@@ -384,5 +479,6 @@ export default function Footer() {
 				</motion.div>
 			</div>
 		</footer>
+		</>
 	);
 }

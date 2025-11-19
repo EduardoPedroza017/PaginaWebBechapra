@@ -61,7 +61,7 @@ export default function CtaRedes() {
   };
 
   return (
-    <section className="mb-32 px-4 md:px-0">
+    <section className="px-4 md:px-0">
       <AnimatedSection>
         <motion.div 
           className={`${styles.container} max-w-6xl mx-auto`}

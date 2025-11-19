@@ -14,42 +14,93 @@ import Footer from "../components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900 overflow-x-hidden">
-      {/* HERO (full-bleed) */}
+    <main className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
+      {/* HERO - Azul con gradiente */}
       <HeroSection />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
-        {/* SERVICIOS */}
-        <ServicesSection />
+      {/* SERVICIOS - Fondo blanco */}
+      <section style={{ 
+        background: '#FFFFFF',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <ServicesSection />
+        </div>
+      </section>
 
-        {/*Cards de Prensa*/}
-        <AnimatedSection delay={0.1}>
-          <PressCards />
-        </AnimatedSection>
+      {/* PRENSA - Fondo azul Bechapra */}
+      <section style={{ 
+        background: '#E3F2FD',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <AnimatedSection delay={0.1}>
+            <PressCards />
+          </AnimatedSection>
+        </div>
+      </section>
 
-        {/* BECHAPRA TRAINING CENTER */}
-        <TrainingCenterSection />
+      {/* BECHAPRA TRAINING CENTER - Fondo blanco */}
+      <section style={{ 
+        background: '#FFFFFF',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <TrainingCenterSection />
+        </div>
+      </section>
 
-        {/*Cards de Noticias*/}
-        <AnimatedSection>
-          <NewsCards />
-        </AnimatedSection>
-        
-        
-        {/* CTA + REDES */}
-        <AnimatedSection delay={0.2}>
-            <CtaRedes />
-        </AnimatedSection>
-
-        {/* PREMIOS */}
-        <AwardsSection />
-
-        {/* FORMULARIO */}
-        <section id="contacto" className="mb-8 sm:mb-12 md:mb-16">
+      {/* NOTICIAS - Fondo azul Bechapra */}
+      <section style={{ 
+        background: '#E3F2FD',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <AnimatedSection>
-            <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Contáctanos</h2>
-              <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
+            <NewsCards />
+          </AnimatedSection>
+        </div>
+      </section>
+        
+      {/* CTA + REDES - Fondo blanco */}
+      <section style={{ 
+        background: '#FFFFFF',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <AnimatedSection delay={0.2}>
+            <CtaRedes />
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* PREMIOS - Fondo azul Bechapra */}
+      <section style={{ 
+        background: '#E3F2FD',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <AwardsSection />
+        </div>
+      </section>
+
+      {/* FORMULARIO DE CONTACTO - Fondo blanco */}
+      <section id="contacto" style={{ 
+        background: '#FFFFFF',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <AnimatedSection>
+            <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-5 px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Contáctanos</h2>
+              <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-4" />
               <p className="text-base sm:text-lg text-slate-600">
                 ¿Tienes alguna pregunta o proyecto en mente? Déjanos tu mensaje.
               </p>
@@ -59,8 +110,8 @@ export default function Home() {
           <AnimatedSection delay={0.2}>
             <ContactForm />
           </AnimatedSection>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* FOOTER */}
       <Footer />

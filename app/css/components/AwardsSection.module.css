@@ -4,26 +4,26 @@
 .section {
   position: relative;
   width: 100%;
-  padding: 4rem 1rem;
-  background: linear-gradient(to bottom, #FFFFFF 0%, #F0F4FC 50%, #FFFFFF 100%);
+  padding: 0;
+  background: transparent;
   overflow: hidden;
 }
 
 .headerContainer {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 1.5rem;
   max-width: 100%;
 }
 
 @media (max-width: 768px) {
   .headerContainer {
-    margin-bottom: 3rem;
+    margin-bottom: 1.25rem;
   }
 }
 
 @media (max-width: 640px) {
   .headerContainer {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -282,7 +282,7 @@
 /* Responsive adjustments for very small screens */
 @media (max-width: 480px) {
   .section {
-    padding: 1.5rem 0.75rem;
+    padding: 0;
   }
 
   .title {
@@ -316,28 +316,26 @@
   }
 }
 
-/* --- New: Compact centered logo strip (desktop-first visual from provided image) --- */
+/* --- Carrusel estilo "Trusted by" --- */
 .stripContainer {
   position: relative;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2.25rem 1rem;
-  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
 }
 
 .stripWrapper {
   width: 100%;
-  max-width: 1100px;
+  position: relative;
 }
 
 .strip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2.5rem;
-  padding: 0 2rem;
+  gap: 3rem;
+  padding: 1rem 0;
+  flex-wrap: wrap;
 }
 
 .logoItem {
@@ -345,112 +343,117 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
   padding: 0;
   background: transparent;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.3s ease;
 }
 
 .logoCard {
   background: #FFFFFF;
-  border-radius: 16px;
-  padding: 2rem 2.5rem;
-  box-shadow: 0 8px 32px rgba(0, 87, 217, 0.08), 0 2px 8px rgba(0, 87, 217, 0.04);
+  border-radius: 12px;
+  padding: 1.25rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 87, 217, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  min-height: 160px;
+  transition: all 0.3s ease;
+  min-height: 100px;
+  min-width: 160px;
 }
 
 .logoItem:hover .logoCard {
-  box-shadow: 0 16px 48px rgba(0, 87, 217, 0.12), 0 4px 16px rgba(0, 87, 217, 0.08);
-  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 87, 217, 0.12);
+  transform: translateY(-2px);
 }
 
 .logoImage {
   width: auto;
-  height: 100px;
-  max-width: 180px;
+  height: 60px;
+  max-width: 140px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.04));
-  transition: transform 0.3s ease;
+  filter: grayscale(100%) opacity(0.6);
+  transition: all 0.3s ease;
 }
 
 .logoItem:hover .logoImage {
+  filter: grayscale(0%) opacity(1);
   transform: scale(1.05);
 }
 
 .logoPlaceholder {
-  width: 180px;
-  height: 100px;
+  width: 140px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f0f4fc 0%, #e8eef8 100%);
+  background: #f8f9fa;
   border: 2px dashed #cbd5e1;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .logoItem:hover .logoPlaceholder {
-  background: linear-gradient(135deg, #e8eef8 0%, #dfe6f3 100%);
+  background: #e8eef8;
   border-color: #0057D9;
 }
 
 .placeholderText {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Subtle left/right fades to emulate the reference styling */
-.sideFade {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 6.5rem;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgba(240,244,252,1), rgba(240,244,252,0));
-}
-.sideFade:nth-of-type(2) {
-  right: 0;
-  left: auto;
-  transform: scaleX(-1);
-}
-.sideFade:first-of-type {
-  left: 0;
-}
-
-/* visually hidden helper for captions */
 .srOnly {
   position: absolute !important;
-  height: 1px; width: 1px;
+  height: 1px; 
+  width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap;
-  border: 0; padding: 0; margin: -1px;
+  border: 0; 
+  padding: 0; 
+  margin: -1px;
 }
 
-/* Responsive tweaks: smaller logos on narrow screens, allow scroll if necessary */
 @media (max-width: 900px) {
-  .logoImage { height: 80px; max-width: 160px; }
-  .logoCard { padding: 1.5rem 2rem; min-height: 140px; }
-  .strip { gap: 2rem; padding: 0 1rem; }
-  .stripContainer { padding: 1.5rem 0.5rem; }
+  .strip { 
+    gap: 2rem; 
+  }
+  .logoCard { 
+    padding: 1rem 1.5rem; 
+    min-height: 90px;
+    min-width: 140px;
+  }
+  .logoImage { 
+    height: 50px; 
+    max-width: 120px; 
+  }
 }
 
 @media (max-width: 640px) {
-  .logoImage { height: 70px; max-width: 140px; }
-  .logoCard { padding: 1.25rem 1.5rem; min-height: 120px; }
   .strip { 
-    gap: 1.5rem; 
-    padding: 0 0.5rem; 
-    overflow-x: auto; 
-    -webkit-overflow-scrolling: touch;
+    gap: 1.5rem;
     justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 1rem;
+  }
+  .logoCard { 
+    padding: 0.875rem 1.25rem; 
+    min-height: 80px;
+    min-width: 130px;
+  }
+  .logoImage { 
+    height: 45px; 
+    max-width: 110px; 
+  }
+  .logoPlaceholder {
+    width: 110px;
+    height: 45px;
   }
 }
 

@@ -24,7 +24,7 @@
 /* Hero section - responsivo para todas las pantallas */
 .heroSection {
   border-radius: 0;
-  padding: clamp(3rem, 5vw, 6rem) clamp(1rem, 3vw, 2rem);
+  padding: clamp(2.5rem, 4vw, 4rem) clamp(1rem, 2vw, 2rem);
   /* Gradiente más transparente para que se vea mejor la imagen */
   background-image: 
     url('/imagen/prueba/Flayers_Home_01100.jpg'), 
@@ -44,24 +44,26 @@
 }
 
 .heroInner {
-  padding: clamp(1rem, 2vw, 2rem) clamp(0.5rem, 1vw, 1rem);
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(0.25rem, 0.5vw, 0.5rem);
 }
 
 .heroTitle {
-  color: #2a4cc5;
-  font-weight: 800;
+  color: #0D1F5C;
+  font-weight: 900;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  font-size: clamp(2rem, 5vw, 3.75rem); /* Responsive size */
+  text-shadow: 0 2px 8px rgba(255,255,255,0.8), 0 1px 3px rgba(255,255,255,0.6);
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  opacity: 1;
 }
 
 .heroSubtitle {
-  color: rgba(42,76,197,0.95);
+  color: #1E3A8A;
   max-width: 44rem;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.12);
-  font-size: clamp(1rem, 1.5vw, 1.25rem); /* Responsive size */
+  text-shadow: 0 1px 6px rgba(255,255,255,0.7), 0 1px 2px rgba(255,255,255,0.5);
+  font-size: clamp(0.95rem, 1.5vw, 1.125rem);
   line-height: 1.6;
+  opacity: 1;
 }
 
 .radialDecor {
@@ -166,7 +168,7 @@
 @media (min-width: 640px) {
   .exploreBtn {
     width: auto;
-    min-width: 180px;
+    min-width: 160px;
   }
 }
 
@@ -214,8 +216,8 @@
 }
 
 .secondaryBtn {
-  background: rgba(42,76,197,0.06);
-  color: #2a4cc5;
+  background: rgba(255,255,255,0.95);
+  color: #004AB7;
   width: 100%;
   min-width: auto;
   padding: clamp(0.6rem, 1.2vw, 0.85rem) clamp(1rem, 1.8vw, 1.5rem);
@@ -224,17 +226,18 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid rgba(42,76,197,0.58);
+  border: 2px solid #004AB7;
   transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, background 180ms ease;
   font-size: clamp(0.9rem, 1.1vw, 1.125rem);
-  font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  font-weight: 700;
+  text-shadow: none;
+  box-shadow: 0 4px 12px rgba(0,74,183,0.15);
 }
 
 @media (min-width: 640px) {
   .secondaryBtn {
     width: auto;
-    min-width: 160px;
+    min-width: 150px;
   }
 }
 
@@ -246,11 +249,11 @@
 }
 
 .secondaryBtn:hover {
-  transform: translateY(-3px) scale(1.01);
-  background: rgba(42,76,197,0.12);
-  color: #1e3a8a;
-  border-color: #2563eb;
-  box-shadow: 0 14px 36px rgba(3,102,214,0.12);
+  transform: translateY(-3px) scale(1.02);
+  background: #FFFFFF;
+  color: #003d8f;
+  border-color: #003d8f;
+  box-shadow: 0 8px 20px rgba(0,74,183,0.25);
 }
 
 .secondaryBtn:active {

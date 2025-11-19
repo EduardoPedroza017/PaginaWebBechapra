@@ -7,9 +7,7 @@ import { Clock, BookOpen, FileText, Users } from 'lucide-react';
 
 export default function NewsCards() {
 	return (
-		<section style={{
-			padding: 'clamp(3rem, 5vw, 5rem) 0'
-		}}>
+		<section>
 			<motion.div
 				initial={{opacity: 0, y: 20}}
 				whileInView={{opacity: 1, y: 0}}
@@ -17,7 +15,7 @@ export default function NewsCards() {
 				transition={{duration: 0.6}}
 				style={{
 					textAlign: 'center',
-					marginBottom: 'clamp(2rem, 4vw, 3.5rem)'
+					marginBottom: 'clamp(1.25rem, 2.5vw, 2rem)'
 				}}
 			>
 				<h2 style={{
@@ -98,10 +96,11 @@ export default function NewsCards() {
 							whileHover={{scale: 1.03, y: -8}}
 							style={{
 								borderRadius: '16px',
-								background: 'white',
-								border: '2px solid rgba(0,61,143,0.12)',
+								background: 'rgba(255, 255, 255, 0.9)',
+								backdropFilter: 'blur(12px)',
+								border: 'none',
 								transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-								boxShadow: '0 12px 35px rgba(0,61,143,0.08)',
+								boxShadow: '0 8px 32px rgba(0, 74, 183, 0.12)',
 								overflow: 'hidden',
 								cursor: 'pointer'
 							}}
@@ -214,7 +213,7 @@ export default function NewsCards() {
 				transition={{duration: 0.6, delay: 0.3}}
 				style={{
 					textAlign: 'center',
-					marginTop: '3rem'
+					marginTop: '1.5rem'
 				}}
 			>
 				<Link
