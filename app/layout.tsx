@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import CookieConsent from "@/components/CookieConsent";
+import Analytics from "@/components/Analytics";
 import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
@@ -14,12 +15,13 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Bechapra — Soluciones Empresariales",
   description: "Capital Humano, Desarrollo Organizacional y Management Services",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="container">
           {children}
         </main>
+        <Analytics />
         <CookieConsent />
       </body>
     </html>

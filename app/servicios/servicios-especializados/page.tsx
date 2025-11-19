@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3, TrendingUp, Award, Clock, ChevronRight, ChevronLeft } from "lucide-react";
-import Footer from '@/components/Footer';
-
+import Image from "next/image";
 
 const servicios = [
 	{
@@ -170,14 +169,12 @@ export default function ServiciosEspecializadosPage() {
 							overflow: 'hidden',
 							boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)'
 						}}>
-							<img
+							<Image
 								src="/imagen/servicos/servicios-especializados.jpg"
 								alt="Servicios Especializados Bechapra"
+								fill
 								style={{
-									width: '100%',
-									height: '100%',
-									objectFit: 'cover',
-									display: 'block'
+									objectFit: 'cover'
 								}}
 							/>
 						</div>

@@ -3,6 +3,7 @@ import React from "react";
 import { FileText, Calendar, Banknote, Users, Shield, CheckCircle, Briefcase, ChevronLeft, ChevronRight, ClipboardList, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./styles.module.css";
 import Footer from '@/components/Footer';
 import ContactForm from '@/app/components/ContactForm';
@@ -164,22 +165,18 @@ export default function PayrollPage() {
                             overflow: 'hidden',
                             boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)'
                         }}>
-                            <img
-                                src="/imagen/talento/atracciontalento.jpg"
-                                alt="Payroll Bechapra"
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    display: 'block'
-                                }}
-                            />
-                        </div>
+                        <Image
+                            src="/imagen/talento/atracciontalento.jpg"
+                            alt="Payroll Bechapra"
+                            fill
+                            style={{
+                                objectFit: 'cover'
+                            }}
+                        />
                     </div>
                 </div>
-            </section>
-
-            {/* ¿QUÉ ES PAYROLL? */}
+            </div>
+        </section>            {/* ¿QUÉ ES PAYROLL? */}
             <section style={{
                 maxWidth: '1280px',
                 margin: '0 auto',

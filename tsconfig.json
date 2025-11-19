@@ -16,22 +16,21 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "*"
+        "./*"
       ],
       "@/app/*": [
-        "app/*"
+        "./app/*"
       ],
       "@/components/*": [
-        "components/*"
+        "./components/*"
       ],
       "@/hooks/*": [
-        "hooks/*"
+        "./hooks/*"
       ],
       "@/lib/*": [
-        "lib/*"
+        "./lib/*"
       ]
     },
     "esModuleInterop": true,

@@ -53,18 +53,20 @@ function MyComponent() {
 }
 ```
 
-### 2. Usar Google Analytics:
+### 2. Usar Microsoft Clarity:
 
 ```typescript
-// En tu layout.tsx o _app.tsx
-import { initGoogleAnalytics } from '@/lib/analytics';
-import { hasAcceptedCookies } from '@/lib/cookieConsent';
+// Ya está configurado automáticamente en app/layout.tsx
+// El componente <Analytics /> inicializa Clarity cuando el usuario acepta cookies
 
-useEffect(() => {
-  if (hasAcceptedCookies()) {
-    initGoogleAnalytics();
-  }
-}, []);
+// Para rastrear eventos personalizados:
+import { trackClarityEvent, identifyClarityUser } from '@/lib/analytics';
+
+// Rastrear un evento
+trackClarityEvent('button_click', { button_name: 'Contact Form' });
+
+// Identificar un usuario (opcional)
+identifyClarityUser('user_123', { name: 'Juan Pérez', plan: 'premium' });
 ```
 
 ### 3. Rastrear eventos personalizados:
@@ -144,9 +146,47 @@ Este sistema cumple con:
 - ✅ LFPDPPP (Ley Federal de Protección de Datos Personales - México)
 - ✅ CCPA (California Consumer Privacy Act - USA)
 
+## 🚀 Instalación de Microsoft Clarity (Recomendado)
+
+Microsoft Clarity es **gratuito** y proporciona:
+- 📊 Mapas de calor
+- 🎥 Grabaciones de sesiones
+- 📈 Análisis de comportamiento
+- 🆓 Sin límites de tráfico
+
+### Pasos para configurar:
+
+1. **Crea una cuenta en Microsoft Clarity:**
+   - Ve a https://clarity.microsoft.com
+   - Inicia sesión con tu cuenta Microsoft
+   - Crea un nuevo proyecto
+
+2. **Obtén tu Project ID:**
+   - En tu proyecto, ve a "Settings" > "Setup"
+   - Copia el **Project ID** (formato: XXXXXXXXXX)
+
+3. **Configura el Project ID:**
+   - Abre `lib/analytics.ts`
+   - Reemplaza `XXXXXXXXXX` con tu Project ID real:
+   ```typescript
+   const CLARITY_PROJECT_ID = 'tu_project_id_aqui';
+   ```
+
+4. **¡Listo!** Microsoft Clarity se inicializará automáticamente cuando un usuario acepte cookies.
+
+### Verificar que funciona:
+
+1. Abre tu sitio web
+2. Abre DevTools (F12)
+3. Ve a la pestaña Console
+4. Deberías ver: `✅ Microsoft Clarity inicializado`
+5. En https://clarity.microsoft.com verás las sesiones en tiempo real
+
+---
+
 ## 🚀 Instalación de Google Analytics (Opcional)
 
-Si quieres usar Google Analytics:
+Si también quieres usar Google Analytics:
 
 1. Obtén tu ID de Google Analytics (ej: `G-XXXXXXXXXX`)
 2. Edita `lib/analytics.ts` y reemplaza `G-XXXXXXXXXX` con tu ID real

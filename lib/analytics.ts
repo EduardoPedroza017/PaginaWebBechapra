@@ -1,44 +1,77 @@
 /**
- * Ejemplo de cómo integrar Google Analytics con consentimiento de cookies
+ * Integración de Microsoft Clarity con consentimiento de cookies
  * 
  * Para usar este archivo:
- * 1. Instala: npm install react-ga4
- * 2. Importa en tu layout.tsx o donde necesites analytics
- * 3. Reemplaza 'G-XXXXXXXXXX' con tu ID de Google Analytics
+ * 1. Obtén tu Project ID de Microsoft Clarity (https://clarity.microsoft.com)
+ * 2. Reemplaza 'XXXXXXXXXX' con tu Project ID real
+ * 3. Importa en tu layout.tsx
  */
 
 import { canUseAnalytics } from './cookieConsent';
 
-// Tu ID de Google Analytics
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Reemplaza con tu ID real
+// Tu Project ID de Microsoft Clarity
+const CLARITY_PROJECT_ID = 'XXXXXXXXXX'; // Reemplaza con tu ID real de Clarity
 
 /**
- * Inicializa Google Analytics solo si el usuario aceptó cookies
+ * Inicializa Microsoft Clarity solo si el usuario aceptó cookies
  */
-export const initGoogleAnalytics = () => {
+export const initMicrosoftClarity = () => {
 	if (typeof window === 'undefined') return;
 
 	// Solo inicializar si el usuario aceptó cookies de analytics
+	if (!canUseAnalytics()) {
+		console.log('📊 Microsoft Clarity deshabilitado - Usuario rechazó cookies');
+		return;
+	}
+
+	// Inyectar script de Microsoft Clarity
+	(function(c: unknown, l: Document, a: string, r: string, i: string, t?: HTMLScriptElement, y?: Element | null) {
+		const win = c as Record<string, unknown>;
+		win[a] = win[a] || function(...args: unknown[]) { 
+			const clarityObj = win[a] as { q?: unknown[] };
+			clarityObj.q = clarityObj.q || [];
+			clarityObj.q.push(args); 
+		};
+		t = l.createElement(r) as HTMLScriptElement;
+		t.async = true;
+		t.src = "https://www.clarity.ms/tag/" + i;
+		y = l.getElementsByTagName(r)[0];
+		if (y && y.parentNode) {
+			y.parentNode.insertBefore(t, y);
+		}
+	})(window, document, "clarity", "script", CLARITY_PROJECT_ID);
+
+	console.log('✅ Microsoft Clarity inicializado');
+};
+
+/**
+ * OPCIONAL: Inicializa Google Analytics solo si el usuario aceptó cookies
+ */
+const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Opcional: Si también quieres GA
+
+export const initGoogleAnalytics = () => {
+	if (typeof window === 'undefined') return;
+
 	if (!canUseAnalytics()) {
 		console.log('📊 Google Analytics deshabilitado - Usuario rechazó cookies');
 		return;
 	}
 
-	// Método 1: Google Analytics 4 con gtag.js
 	const script = document.createElement('script');
 	script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
 	script.async = true;
 	document.head.appendChild(script);
 
-	(window as any).dataLayer = (window as any).dataLayer || [];
-	function gtag(...args: any[]) {
-		(window as any).dataLayer.push(args);
+	const win = window as unknown as { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+	win.dataLayer = win.dataLayer || [];
+	function gtag(...args: unknown[]) {
+		(win.dataLayer as unknown[]).push(args);
 	}
-	(window as any).gtag = gtag;
+	win.gtag = gtag;
 
 	gtag('js', new Date());
 	gtag('config', GA_MEASUREMENT_ID, {
-		anonymize_ip: true, // Anonimizar IP por privacidad
+		anonymize_ip: true,
 		cookie_flags: 'SameSite=None;Secure'
 	});
 
@@ -46,14 +79,41 @@ export const initGoogleAnalytics = () => {
 };
 
 /**
- * Registra un evento en Google Analytics
+ * Registra un evento personalizado en Microsoft Clarity
  */
-export const trackEvent = (eventName: string, eventParams?: Record<string, any>) => {
+export const trackClarityEvent = (eventName: string, eventData?: Record<string, unknown>) => {
 	if (!canUseAnalytics()) return;
 
-	if (typeof window !== 'undefined' && (window as any).gtag) {
-		(window as any).gtag('event', eventName, eventParams);
-		console.log(`📊 Evento rastreado: ${eventName}`, eventParams);
+	const win = window as unknown as { clarity?: (...args: unknown[]) => void };
+	if (typeof window !== 'undefined' && win.clarity) {
+		win.clarity('event', eventName);
+		console.log(`📊 Evento Clarity: ${eventName}`, eventData);
+	}
+};
+
+/**
+ * Identifica un usuario en Microsoft Clarity
+ */
+export const identifyClarityUser = (userId: string, sessionData?: Record<string, unknown>) => {
+	if (!canUseAnalytics()) return;
+
+	const win = window as unknown as { clarity?: (...args: unknown[]) => void };
+	if (typeof window !== 'undefined' && win.clarity) {
+		win.clarity('identify', userId, sessionData);
+		console.log(`👤 Usuario identificado en Clarity: ${userId}`);
+	}
+};
+
+/**
+ * Registra un evento en Google Analytics (si está habilitado)
+ */
+export const trackEvent = (eventName: string, eventParams?: Record<string, unknown>) => {
+	if (!canUseAnalytics()) return;
+
+	const win = window as unknown as { gtag?: (...args: unknown[]) => void };
+	if (typeof window !== 'undefined' && win.gtag) {
+		win.gtag('event', eventName, eventParams);
+		console.log(`📊 Evento GA: ${eventName}`, eventParams);
 	}
 };
 
@@ -63,8 +123,9 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, any>)
 export const trackPageView = (url: string) => {
 	if (!canUseAnalytics()) return;
 
-	if (typeof window !== 'undefined' && (window as any).gtag) {
-		(window as any).gtag('config', GA_MEASUREMENT_ID, {
+	const win = window as unknown as { gtag?: (...args: unknown[]) => void };
+	if (typeof window !== 'undefined' && win.gtag) {
+		win.gtag('config', GA_MEASUREMENT_ID, {
 			page_path: url
 		});
 		console.log(`📊 Página vista: ${url}`);
@@ -111,7 +172,8 @@ export const disableGoogleAnalytics = () => {
 	if (typeof window === 'undefined') return;
 
 	// Deshabilitar Google Analytics
-	(window as any)[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
+	const win = window as unknown as Record<string, boolean>;
+	win[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
 	
 	console.log('❌ Google Analytics deshabilitado');
 };

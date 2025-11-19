@@ -1,105 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ChevronDown, CheckCircle, Target, TrendingUp, Lightbulb, Shield, BarChart3 } from 'lucide-react';
+import { CheckCircle, Target, TrendingUp, Lightbulb, Shield, BarChart3 } from 'lucide-react';
 import ContactForm from '../../components/ContactForm';
 import Footer from '@/components/Footer';
-import Image from 'next/image';
-
-const AccordionSection = ({ title, isOpen, onClick, children }: any) => (
-	<motion.div
-		initial={{opacity: 0, y: 20}}
-		whileInView={{opacity: 1, y: 0}}
-		viewport={{once: true}}
-		style={{
-			marginBottom: '1.25rem',
-			borderRadius: '16px',
-			border: '2px solid rgba(0,61,143,0.15)',
-			overflow: 'hidden',
-			background: 'white',
-			boxShadow: '0 4px 12px rgba(0,61,143,0.06)',
-			transition: 'all 0.3s ease'
-		}}
-	>
-		<button
-			onClick={onClick}
-			style={{
-				width: '100%',
-				padding: '1.75rem 2rem',
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				background: isOpen 
-					? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)' 
-					: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-				border: 'none',
-				cursor: 'pointer',
-				transition: 'all 0.3s ease',
-				fontSize: '1.2rem',
-				fontWeight: 800,
-				color: '#003d8f',
-				textAlign: 'left',
-				position: 'relative'
-			}}
-		>
-			{/* Barra decorativa izquierda */}
-			<div style={{
-				position: 'absolute',
-				left: 0,
-				top: 0,
-				bottom: 0,
-				width: '4px',
-				background: isOpen 
-					? 'linear-gradient(180deg, #003d8f 0%, #004AB7 100%)' 
-					: 'transparent',
-				transition: 'all 0.3s ease'
-			}} />
-			
-			<span style={{marginLeft: '1rem'}}>{title}</span>
-			<motion.div
-				animate={{ rotate: isOpen ? 180 : 0 }}
-				transition={{ duration: 0.3 }}
-				style={{
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					width: '32px',
-					height: '32px',
-					borderRadius: '8px',
-					background: isOpen ? '#003d8f' : 'rgba(0,61,143,0.1)',
-					color: isOpen ? 'white' : '#003d8f',
-					transition: 'all 0.3s ease'
-				}}
-			>
-				<ChevronDown size={20} />
-			</motion.div>
-		</button>
-		<motion.div
-			initial={false}
-			animate={{
-				height: isOpen ? 'auto' : 0,
-				opacity: isOpen ? 1 : 0
-			}}
-			transition={{duration: 0.3, ease: 'easeInOut'}}
-			style={{overflow: 'hidden'}}
-		>
-			<div style={{
-				padding: '2rem 2rem 2rem 3rem', 
-				color: '#666', 
-				lineHeight: 1.8,
-				background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, white 100%)'
-			}}>
-				{children}
-			</div>
-		</motion.div>
-	</motion.div>
-);
 
 export default function Page() {
-	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-
 	return (
 		<main>
 			{/* HERO */}

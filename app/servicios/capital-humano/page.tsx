@@ -31,19 +31,9 @@ const services = [
 	}
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-};
-
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-};
-
-const iconVariants = {
-	hidden: { opacity: 0, scale: 0.85 },
-	show: { opacity: 1, scale: 1, transition: { duration: 0.45 } },
 };
 
 export default function Page() {

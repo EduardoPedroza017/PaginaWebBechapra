@@ -692,16 +692,14 @@ export default function Page() {
 						MO
 					</div>
 
-					<blockquote style={{
-						fontSize: '1.25rem',
-						fontStyle: 'italic',
-						color: '#003d8f',
-						marginBottom: '1.5rem'
-					}}>
-						"La asesoría preventiva nos ayudó a reducir contingencias y a formalizar procesos clave en la operación."
-					</blockquote>
-
-					<cite style={{
+				<blockquote style={{
+					fontSize: '1.25rem',
+					fontStyle: 'italic',
+					color: '#003d8f',
+					marginBottom: '1.5rem'
+				}}>
+					&ldquo;La asesoría preventiva nos ayudó a reducir contingencias y a formalizar procesos clave en la operación.&rdquo;
+				</blockquote>					<cite style={{
 						fontSize: '1rem',
 						fontStyle: 'normal',
 						color: '#666',

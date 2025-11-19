@@ -587,14 +587,14 @@ export default function Page() {
 
 					<blockquote style={{
 						fontSize: '1.25rem',
-						fontStyle: 'italic',
-						color: '#003d8f',
-						marginBottom: '1.5rem'
-					}}>
-						"Trabajar con el equipo contable mejoró nuestra predictibilidad financiera y liberó tiempo para decisiones estratégicas."
-					</blockquote>
+					fontStyle: 'italic',
+					color: '#003d8f',
+					marginBottom: '1.5rem'
+				}}>
+					&ldquo;Trabajar con el equipo contable mejoró nuestra predictibilidad financiera y liberó tiempo para decisiones estratégicas.&rdquo;
+				</blockquote>
 
-					<cite style={{
+				<cite style={{
 						fontSize: '1rem',
 						fontStyle: 'normal',
 						color: '#666',

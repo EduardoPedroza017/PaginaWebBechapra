@@ -3,19 +3,19 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { BookOpen, Users, Award, BarChart3, ChevronDown, ChevronUp, CheckCircle, Target, TrendingUp, UserPlus, Lightbulb, Rocket } from 'lucide-react';
+import { Users, ChevronDown, CheckCircle, Target, TrendingUp, UserPlus, Lightbulb, Rocket } from 'lucide-react';
 import ContactForm from '@/app/components/ContactForm';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
 
-const programas = [
-	{ icon: <BookOpen size={26} />, title: 'Talleres de habilidades blandas', desc: 'Comunicación, liderazgo y trabajo en equipo, diseñados para mejorar la colaboración interna.', details: 'Sesiones prácticas con actividades en vivo, role-play y feedback dirigido. Duración típica: 8-16 horas por cohort.' },
-	{ icon: <Users size={26} />, title: 'Formación técnica especializada', desc: 'Capacitaciones en herramientas y procesos específicos para tu operación.', details: 'Cursos adaptados al stack y procesos internos, incluyen ejercicios reales y material para transferir aprendizaje.' },
-	{ icon: <Award size={26} />, title: 'Programas de liderazgo', desc: 'Mentoring y programas para mandos medios y directivos con seguimiento de impacto.', details: 'Planes de 6-12 meses con coaching, workshops y seguimiento de KPIs de liderazgo.' },
-	{ icon: <BarChart3 size={26} />, title: 'Medición y evaluación', desc: 'KPI y evaluación post-capacitación para medir ROI y efectividad.', details: 'Diseñamos encuestas, rúbricas y paneles de control para medir la transferencia y el impacto en los indicadores clave.' },
-];
+interface AccordionSectionProps {
+	title: string;
+	isOpen: boolean;
+	onClick: () => void;
+	children: React.ReactNode;
+}
 
-const AccordionSection = ({ title, isOpen, onClick, children }: any) => (
+const AccordionSection = ({ title, isOpen, onClick, children }: AccordionSectionProps) => (
 	<motion.div
 		initial={{opacity: 0, y: 20}}
 		whileInView={{opacity: 1, y: 0}}

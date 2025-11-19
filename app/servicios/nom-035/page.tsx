@@ -669,7 +669,7 @@ export default function Page() {
 							marginBottom: '1rem',
 							lineHeight: 1.7
 						}}>
-							"La implementación fue clara, práctica y con resultados visibles en 3 meses. El acompañamiento facilitó la aceptación interna."
+						&ldquo;La implementación fue clara, práctica y con resultados visibles en 3 meses. El acompañamiento facilitó la aceptación interna.&rdquo;
 						</p>
 						<p style={{
 							fontSize: '0.95rem',

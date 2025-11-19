@@ -41,8 +41,8 @@ export default function CookieConsent() {
 	// Función para habilitar todas las cookies
 	const enableAllCookies = () => {
 		// Aquí puedes activar Google Analytics
-		if (typeof window !== 'undefined' && (window as any).gtag) {
-			(window as any).gtag('consent', 'update', {
+		if (typeof window !== 'undefined' && (window as Window & { gtag?: (...args: unknown[]) => void }).gtag) {
+			(window as unknown as { gtag: (...args: unknown[]) => void }).gtag('consent', 'update', {
 				analytics_storage: 'granted',
 				ad_storage: 'granted',
 				functionality_storage: 'granted',
@@ -68,8 +68,8 @@ export default function CookieConsent() {
 	// Función para deshabilitar cookies no esenciales
 	const disableNonEssentialCookies = () => {
 		// Denegar consentimiento en Google Analytics
-		if (typeof window !== 'undefined' && (window as any).gtag) {
-			(window as any).gtag('consent', 'update', {
+		if (typeof window !== 'undefined' && (window as Window & { gtag?: (...args: unknown[]) => void }).gtag) {
+			(window as unknown as { gtag: (...args: unknown[]) => void }).gtag('consent', 'update', {
 				analytics_storage: 'denied',
 				ad_storage: 'denied',
 				functionality_storage: 'denied',
