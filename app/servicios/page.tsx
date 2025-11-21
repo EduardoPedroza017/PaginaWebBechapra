@@ -10,7 +10,8 @@ const groups = [
 	{
 		title: "Capital Humano",
 		href: "/servicios/capital-humano",
-		icon: "/imagen/icons/icon-attraction.svg",
+		// Icono azul proporcionado para "Capital Humano"
+		icon: "/imagen/icon/Capital Humano_Icon_Color@2x.png",
 		description: "Gestionamos talento, nómina y soluciones humanas que permiten a tu empresa crecer.",
 		items: [
 			{ title: "Servicios especializados", href: "/servicios/servicios-especializados" },
@@ -21,7 +22,8 @@ const groups = [
 	{
 		title: "Desarrollo Organizacional",
 		href: "/servicios/desarrollo-organizacional",
-		icon: "/imagen/icons/icon-training.svg",
+		// Icono azul para "Desarrollo Organizacional"
+		icon: "/imagen/icon/Iconos_Redes/Chat_NegativoStroke@2x.png",
 		description: "Mejoramos procesos, cultura y capacidades para que la organización sea más ágil y productiva.",
 		items: [
 			{ title: "Capacitación Empresarial", href: "/servicios/capacitacion-empresarial" },
@@ -32,7 +34,8 @@ const groups = [
 	{
 		title: "Management Services",
 		href: "/servicios/management-services",
-		icon: "/imagen/icons/icon-outsourcing.svg",
+		// Icono azul proporcionado para "Management Services"
+		icon: "/imagen/icon/Servicios Administrativos_Icon_Color@2x.png",
 		description: "Servicios contables, legales y administrativos bajo un solo proveedor confiable.",
 		items: [
 			{ title: "Servicios Contables", href: "/servicios/servicios-contables" },
@@ -44,10 +47,10 @@ const groups = [
 
 
 export default function ServiciosIndex() {
-	return (
-		<>
-			{/* Encabezado con 3D simple a un lado */}
-			<section className={`${styles.heroSection}`}>
+	   return (
+		   <div style={{ background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)', minHeight: '100vh' }}>
+			   {/* Encabezado con 3D simple a un lado */}
+			   <section className={`${styles.heroSection}`}>
 				<div className={`${styles.heroInner} max-w-7xl mx-auto px-6`}>
 					<div className={styles.heroContent}>
 						<h1 className={styles.heroTitle}>Nuestros Servicios</h1>
@@ -75,10 +78,19 @@ export default function ServiciosIndex() {
 			</section>
 
 			{/* 3 columnas con subservicios (tarjetas clicables) */}
-			<section id="servicios-grid" className={styles.servicesGrid} style={{
-				background: '#FFFFFF'
-			}}>
-				<div className="max-w-7xl mx-auto px-6">
+			   <section
+				   id="servicios-grid"
+				   className={styles.servicesGrid}
+				   style={{
+					   background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)',
+					   width: '100vw',
+					   marginLeft: 'calc(-50vw + 50%)',
+					   position: 'relative',
+					   overflow: 'hidden',
+					   padding: '0',
+				   }}
+			   >
+				   <div className="max-w-7xl mx-auto px-6">
 					<div className={styles.gridHeader}>
 						<h2 className={styles.gridTitle}>Explora Nuestras Líneas de Servicio</h2>
 						<p className={styles.gridSubtitle}>Soluciones especializadas para cada necesidad de tu negocio</p>
@@ -91,12 +103,12 @@ export default function ServiciosIndex() {
 				</div>
 			</section>
 
-			{/* Más info → final de página */}
-			<div id="fin-servicios" className="mt-16" />
+			   {/* Más info → final de página */}
+			   <div id="fin-servicios" className="mt-16" />
 
-			{/* Footer */}
-			<Footer />
-		</>
+			   {/* Footer */}
+			   <Footer />
+		   </div>
 	);
 }
 

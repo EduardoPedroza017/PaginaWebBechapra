@@ -98,11 +98,12 @@ export default function Home() {
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <AnimatedSection>
-            <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-5 px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Contáctanos</h2>
+            <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-6 px-4">
+              <span className="inline-block text-blue-700 bg-blue-100 font-semibold text-xs sm:text-sm px-3 py-1 rounded-full mb-2 tracking-wide">¿Listo para conectar?</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-slate-900">Hablemos sobre tu proyecto</h2>
               <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-4" />
-              <p className="text-base sm:text-lg text-slate-600">
-                ¿Tienes alguna pregunta o proyecto en mente? Déjanos tu mensaje.
+              <p className="text-base sm:text-lg text-slate-600 font-medium">
+                Cuéntanos tus ideas, necesidades o dudas y nuestro equipo te contactará a la brevedad. ¡Estamos aquí para ayudarte a transformar tu operación!
               </p>
             </div>
           </AnimatedSection>

@@ -1,8 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
+const ContactForm = dynamic(() => import("@/app/components/ContactForm"), { ssr: false });
+import Footer from '@/components/Footer';
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3, TrendingUp, Award, Clock, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
+
+const cardBgColors = [
+	'linear-gradient(135deg, #e3f0ff 60%, #c7e0ff 100%)', // azul más saturado
+	'linear-gradient(135deg, #e6eaff 60%, #d1d8f7 100%)', // azul-gris más fuerte
+	'linear-gradient(135deg, #e0f3ff 60%, #b8e2ff 100%)', // celeste más vivo
+	'linear-gradient(135deg, #ede3ff 60%, #d7c7ff 100%)', // lila más saturado
+	'linear-gradient(135deg, #e3fff6 60%, #b8ffe6 100%)', // menta más saturado
+	'linear-gradient(135deg, #f3e3ff 60%, #e0c7ff 100%)', // lila-gris más fuerte
+	'linear-gradient(135deg, #e3f0ff 60%, #c7e0ff 100%)', // azul hielo más saturado
+];
 
 const servicios = [
 	{
@@ -99,18 +112,21 @@ export default function ServiciosEspecializadosPage() {
 							display: 'inline-flex',
 							alignItems: 'center',
 							gap: '0.5rem',
-							background: 'rgba(255,255,255,0.15)',
-							backdropFilter: 'blur(10px)',
-							color: 'white',
+							background: '#fff',
+							color: '#004AB7',
 							padding: '0.6rem 1.2rem',
 							borderRadius: '50px',
-							border: '1px solid rgba(255,255,255,0.3)',
+							border: '2px solid #fff',
 							fontSize: '0.95rem',
-							fontWeight: 600,
+							fontWeight: 700,
 							cursor: 'pointer',
 							transition: 'all 0.3s ease',
 							textDecoration: 'none',
-							marginBottom: '1.5rem'
+							marginBottom: '1.5rem',
+							boxShadow: '0 2px 8px rgba(0,74,183,0.08)',
+							letterSpacing: '-0.5px',
+							position: 'relative',
+							zIndex: 2
 						}}>
 							<ChevronLeft size={18} />
 							Volver
@@ -216,8 +232,15 @@ export default function ServiciosEspecializadosPage() {
 			</section>
 
 			{/* NUESTRAS SOLUCIONES SECTION */}
-			<section style={{ padding: '5rem 2rem', background: '#ffffff' }}>
-				<div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+			<section style={{
+				padding: '5rem 0',
+				background: '#fff',
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				position: 'relative',
+				overflow: 'hidden',
+			}}>
+				<div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
 					
 					<div style={{ textAlign: 'center', marginBottom: '4rem' }}>
 						<h2 style={{ 
@@ -242,22 +265,23 @@ export default function ServiciosEspecializadosPage() {
 								onMouseEnter={() => setHoveredCard(i)}
 								onMouseLeave={() => setHoveredCard(null)}
 								style={{
-									background: hoveredCard === i 
-										? 'linear-gradient(135deg, #F8FAFF 0%, #EEF4FF 100%)'
-										: 'white',
+									background: hoveredCard === i
+										? cardBgColors[i % cardBgColors.length]
+										: cardBgColors[i % cardBgColors.length],
 									borderRadius: '24px',
 									padding: '2.5rem',
-									border: hoveredCard === i 
-										? '2px solid #0057D9'
-										: '2px solid #E5EEFF',
+									border: hoveredCard === i
+										? '2.5px solid #0057D9'
+										: '2.5px solid #D0D8F0',
 									transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-									transform: hoveredCard === i ? 'translateY(-12px) scale(1.02)' : 'translateY(0) scale(1)',
-									boxShadow: hoveredCard === i 
-										? '0 25px 60px rgba(0,87,217,0.2)'
-										: '0 4px 20px rgba(0,87,217,0.05)',
+									transform: hoveredCard === i ? 'translateY(-14px) scale(1.025)' : 'translateY(0) scale(1)',
+									boxShadow: hoveredCard === i
+										? '0 12px 40px 0 rgba(0,87,217,0.18), 0 2px 8px 0 rgba(0,87,217,0.10)'
+										: '0 2px 12px 0 rgba(0,87,217,0.10)',
 									cursor: 'pointer',
 									position: 'relative',
-									overflow: 'hidden'
+									overflow: 'hidden',
+									color: hoveredCard === i ? '#0A1933' : '#0A1933',
 								}}
 							>
 								{/* Background decoration */}
@@ -294,46 +318,49 @@ export default function ServiciosEspecializadosPage() {
 								</div>
 
 								{/* Content */}
-								<h3 style={{ 
-									fontSize: '1.35rem', 
-									fontWeight: 800, 
-									color: hoveredCard === i ? '#0057D9' : '#0A1933',
-									marginBottom: '1rem',
-									transition: 'color 0.3s ease',
-									position: 'relative',
-									zIndex: 1,
-									letterSpacing: '-0.3px'
-								}}>
-									{servicio.title}
-								</h3>
-								<p style={{ 
-									fontSize: '1.05rem', 
-									color: '#0A1933', 
-									opacity: 0.75,
-									lineHeight: 1.6,
-									position: 'relative',
-									zIndex: 1
-								}}>
-									{servicio.desc}
-								</p>
+																<h3 style={{
+																	fontSize: '1.35rem',
+																	fontWeight: 800,
+																	color: hoveredCard === i ? '#004AB7' : '#0A1933',
+																	marginBottom: '1rem',
+																	transition: 'color 0.3s ease',
+																	position: 'relative',
+																	zIndex: 1,
+																	letterSpacing: '-0.3px',
+																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+																}}>
+																	{servicio.title}
+																</h3>
+																<p style={{
+																	fontSize: '1.05rem',
+																	color: hoveredCard === i ? '#0A1933' : '#0A1933',
+																	opacity: hoveredCard === i ? 0.95 : 0.75,
+																	lineHeight: 1.6,
+																	position: 'relative',
+																	zIndex: 1,
+																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+																}}>
+																	{servicio.desc}
+																</p>
 
 								{/* Arrow indicator */}
-								<div style={{
-									marginTop: '1.5rem',
-									display: 'flex',
-									alignItems: 'center',
-									gap: '0.5rem',
-									color: servicio.color,
-									fontWeight: 700,
-									fontSize: '0.95rem',
-									opacity: hoveredCard === i ? 1 : 0,
-									transform: hoveredCard === i ? 'translateX(0)' : 'translateX(-10px)',
-									transition: 'all 0.3s ease',
-									position: 'relative',
-									zIndex: 1
-								}}>
-									Conocer más <ChevronRight size={18} />
-								</div>
+																<div style={{
+																	marginTop: '1.5rem',
+																	display: 'flex',
+																	alignItems: 'center',
+																	gap: '0.5rem',
+																	color: hoveredCard === i ? '#004AB7' : servicio.color,
+																	fontWeight: 700,
+																	fontSize: '0.95rem',
+																	opacity: hoveredCard === i ? 1 : 0,
+																	transform: hoveredCard === i ? 'translateX(0)' : 'translateX(-10px)',
+																	transition: 'all 0.3s ease',
+																	position: 'relative',
+																	zIndex: 1,
+																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+																}}>
+																	Conocer más <ChevronRight size={18} />
+																</div>
 							</div>
 						))}
 					</div>
@@ -341,8 +368,15 @@ export default function ServiciosEspecializadosPage() {
 			</section>
 
 			{/* WHY BECHAPRA SECTION */}
-			<section style={{ padding: '5rem 2rem', background: 'linear-gradient(180deg, #F8FAFF 0%, #ffffff 100%)' }}>
-				<div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+			<section style={{
+				padding: '5rem 0',
+				background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)',
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				position: 'relative',
+				overflow: 'hidden',
+			}}>
+				<div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
 					<h2 style={{ 
 						fontSize: 'clamp(2rem, 4vw, 3rem)', 
 						fontWeight: 900, 
@@ -386,75 +420,60 @@ export default function ServiciosEspecializadosPage() {
 				</div>
 			</section>
 
-			{/* FINAL CTA - Estilo Hero */}
-			<section style={{
-				position: 'relative',
-				padding: '5rem 0',
-				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-				overflow: 'hidden',
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)'
-			}}>
-				{/* Overlay decorativo */}
-				<div style={{
-					content: '',
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					right: 0,
-					bottom: 0,
-					background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.1) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(255,255,255,0.08) 0%, transparent 40%)',
-					pointerEvents: 'none'
-				}} />
 
-				<div style={{
-					position: 'relative',
-					zIndex: 1,
-					maxWidth: '1280px',
-					margin: '0 auto',
-					padding: '0 1.5rem',
-					textAlign: 'center'
-				}}>
-					<h3 style={{
-						fontSize: 'clamp(2rem, 4vw, 3rem)',
-						fontWeight: 900,
-						color: 'white',
-						marginBottom: '1.5rem',
-						letterSpacing: '-0.02em',
-						lineHeight: 1.1
-					}}>
+			{/* FORMULARIO DE CONTACTO */}
+			<section style={{
+				background: '#fff',
+				padding: '5rem 0 3rem',
+				borderTop: '1px solid #E5EEFF',
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				position: 'relative',
+				overflow: 'hidden',
+			}}>
+				<div
+					style={{
+						maxWidth: '900px',
+						margin: '0 auto',
+						padding: '0 1.5rem',
+						width: '100%',
+					}}
+				>
+					<h3
+						style={{
+							fontSize: '2.3rem',
+							fontWeight: 900,
+							color: '#004AB7',
+							marginBottom: '1.5rem',
+							letterSpacing: '-0.02em',
+							textAlign: 'center',
+						}}
+					>
 						¿Listo para transformar tu operación?
 					</h3>
-					<p style={{
-						fontSize: '1.25rem',
-						color: 'rgba(255,255,255,0.9)',
-						marginBottom: '2.5rem',
-						maxWidth: '700px',
-						margin: '0 auto 2.5rem',
-						lineHeight: 1.6
-					}}>
+					<p
+						style={{
+							fontSize: '1.25rem',
+							color: '#0A1933',
+							marginBottom: '2.5rem',
+							textAlign: 'center',
+							opacity: 0.8,
+							lineHeight: 1.6,
+							maxWidth: 700,
+							marginLeft: 'auto',
+							marginRight: 'auto',
+						}}
+					>
 						Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.
 					</p>
-					<a href="/contacto" style={{
-						display: 'inline-flex',
-						alignItems: 'center',
-						gap: '0.75rem',
-						padding: '1rem 2.5rem',
-						background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F4FF 100%)',
-						color: '#004AB7',
-						fontWeight: 700,
-						fontSize: '1.15rem',
-						borderRadius: '9999px',
-						textDecoration: 'none',
-						boxShadow: '0 10px 30px rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.1)',
-						transition: 'all 0.3s cubic-bezier(0.2,0.9,0.2,1)',
-						border: '2px solid rgba(255,255,255,0.3)'
-					}}>
-						Solicitar consultoría gratuita
-						<ChevronRight size={22} />
-					</a>
+					<div style={{ width: '100%' }}>
+						<ContactForm />
+					</div>
 				</div>
 			</section>
+
+			{/* FOOTER */}
+			<Footer />
 		</div>
 	);
 }

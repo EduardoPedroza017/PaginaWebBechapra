@@ -155,18 +155,20 @@ export default function Page() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              color: 'white',
+              background: '#fff',
+              color: '#004AB7',
               padding: '0.6rem 1.2rem',
               borderRadius: '50px',
-              border: '1px solid rgba(255,255,255,0.3)',
+              border: '2px solid #004AB7',
               fontSize: '0.95rem',
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.3s ease',
               textDecoration: 'none',
-              marginBottom: '1.5rem'
+              marginBottom: '1.5rem',
+              boxShadow: '0 2px 12px rgba(0,61,143,0.06)',
+              letterSpacing: '-0.01em',
+              outline: 'none',
             }}>
               <ChevronLeft size={18} />
               Volver
@@ -234,12 +236,41 @@ export default function Page() {
 
       {/* === BENEFICIOS CLAVE === */}
       <section style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '4rem 1.5rem',
-        background: 'linear-gradient(180deg, #FAFBFC 0%, #F0F7FF 100%)',
-        borderRadius: '0'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0 4rem',
+        background: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '1.5px solid #e3f0ff',
       }}>
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
         <motion.h2 style={{
           fontSize: 'clamp(2rem, 4vw, 3rem)',
           fontWeight: 900,
@@ -328,15 +359,46 @@ export default function Page() {
             </motion.div>
           ))}
         </motion.div>
+        </div>
       </section>
 
       {/* === PERFILES === */}
       <section style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '5rem 1.5rem',
-        background: 'linear-gradient(180deg, transparent 0%, rgba(0,61,143,0.02) 100%)'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0',
+        background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '1.5px solid #e3f0ff',
       }}>
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
         <motion.div initial={{opacity:0, y:30}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.6}} style={{textAlign: 'center', marginBottom: '4rem'}}>
           <h2 style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -517,15 +579,46 @@ export default function Page() {
         }}>
           ← Desliza para más perfiles →
         </div>
+        </div>
       </section>
 
       {/* === PROCESO === */}
       <section id="proceso" style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '5rem 1.5rem',
-        background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, transparent 100%)'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0',
+        background: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '1.5px solid #e3f0ff',
       }}>
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
         <motion.div initial={{opacity:0, y:30}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.6}} style={{textAlign: 'center', marginBottom: '4rem'}}>
           <h2 style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -559,94 +652,70 @@ export default function Page() {
           {steps.map((step, i) => (
             <motion.div
               key={i}
-              initial={{opacity:0, y:40, scale:0.95}}
+              initial={{opacity:0, y:40, scale:0.97}}
               whileInView={{opacity:1, y:0, scale:1}}
               viewport={{once:true}}
               transition={{duration:0.7, delay:i*0.1, type:"spring", bounce:0.35}}
               whileHover={{
-                y:-15,
-                scale:1.02,
-                boxShadow: '0 40px 80px rgba(0,61,143,0.25), 0 0 60px rgba(0,172,183,0.3)',
-                borderColor: 'rgba(0,172,183,0.5)'
+                y:-10,
+                scale:1.025,
+                boxShadow: '0 16px 40px rgba(0,61,143,0.10), 0 0 24px rgba(0,172,183,0.10)',
+                borderColor: 'rgba(0,172,183,0.18)'
               }}
               style={{
                 position: 'relative',
-                padding: '2.5rem 2rem',
+                padding: '2.2rem 1.5rem 2rem',
                 borderRadius: '18px',
-                background: `linear-gradient(135deg, ${['rgba(232,244,255,0.98)', 'rgba(208,232,255,0.98)', 'rgba(184,220,255,0.98)', 'rgba(160,208,255,0.98)', 'rgba(136,200,255,0.98)', 'rgba(112,192,255,0.98)'][i]} 0%, ${['rgba(208,232,255,0.95)', 'rgba(184,220,255,0.95)', 'rgba(160,208,255,0.95)', 'rgba(136,200,255,0.95)', 'rgba(112,192,255,0.95)', 'rgba(88,180,255,0.95)'][i]} 100%)`,
-                border: '2.5px solid rgba(0,61,143,0.12)',
-                boxShadow: '0 15px 40px rgba(0,61,143,0.12), inset 0 1px 0 rgba(255,255,255,0.5)',
-                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                background: 'linear-gradient(135deg, #fff 60%, #f3faff 100%)',
+                border: '1.5px solid #e3f0ff',
+                boxShadow: '0 6px 24px rgba(0,61,143,0.07), 0 1.5px 0 rgba(0,172,183,0.04)',
+                transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 cursor: 'pointer',
                 overflow: 'hidden',
-                backdropFilter: 'blur(12px)'
+                backdropFilter: 'blur(6px)'
               }}
             >
-              {/* Fondo decorativo de esquina */}
+              {/* Badge de número más limpio */}
               <motion.div
-                initial={{opacity: 0, scale: 0}}
-                whileInView={{opacity: 0.8, scale: 1}}
+                initial={{scale: 0, rotate: -180}}
+                whileInView={{scale: 1, rotate: 0}}
                 viewport={{once:true}}
-                transition={{duration:0.8, delay:i*0.1}}
+                transition={{duration:0.7, delay:i*0.12, type:"spring", bounce:0.5}}
                 style={{
                   position: 'absolute',
-                  top: '-60px',
-                  right: '-60px',
-                  width: '180px',
-                  height: '180px',
-                  background: `radial-gradient(circle, ${['#003d8f', '#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff'][i]}33 0%, transparent 70%)`,
+                  top: '18px',
+                  left: '18px',
+                  width: '44px',
+                  height: '44px',
+                  background: 'linear-gradient(135deg, #e3f0ff 0%, #b3d0f7 100%)',
                   borderRadius: '50%',
-                  pointerEvents: 'none',
-                  zIndex: 1
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#003d8f',
+                  fontWeight: 900,
+                  fontSize: '1.1rem',
+                  boxShadow: '0 2px 8px rgba(0,61,143,0.08)',
+                  border: '2px solid #fff',
+                  zIndex: 2
                 }}
-              />
+              >
+                {step.n}
+              </motion.div>
 
-              {/* Línea superior con degradado */}
-              <motion.div
-                initial={{scaleX: 0, opacity: 0}}
-                whileInView={{scaleX: 1, opacity: 1}}
-                viewport={{once:true}}
-                transition={{duration:0.7, delay:i*0.12, ease:"easeOut"}}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '5px',
-                  background: `linear-gradient(90deg, ${['#003d8f', '#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff'][i]} 0%, ${['#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff', '#4040ff'][i]} 50%, ${['#0056d4', '#0066ff', '#0076d4', '#5060ff', '#4040ff', '#3030ff'][i]} 100%)`,
-                  transformOrigin: 'left',
-                  zIndex: 3
-                }}
-              />
+              {/* Línea superior sutil */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '4px',
+                background: 'linear-gradient(90deg, #e3f0ff 0%, #b3d0f7 100%)',
+                borderRadius: '18px 18px 0 0',
+                zIndex: 1
+              }} />
 
               <div style={{position: 'relative', zIndex: 2}}>
-                {/* Número badge con animación */}
-                <motion.div
-                  initial={{scale: 0, rotate: -180}}
-                  whileInView={{scale: 1, rotate: 0}}
-                  viewport={{once:true}}
-                  transition={{duration:0.8, delay:i*0.12, type:"spring", bounce:0.6}}
-                  style={{
-                    position: 'absolute',
-                    top: '-30px',
-                    left: '25px',
-                    width: '70px',
-                    height: '70px',
-                    background: `linear-gradient(135deg, ${['#003d8f', '#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff'][i]} 0%, ${['#004AB7', '#0056d4', '#0066ff', '#0076ff', '#5060ff', '#4040ff'][i]} 100%)`,
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: 900,
-                    fontSize: '2rem',
-                    boxShadow: '0 15px 35px rgba(0,61,143,0.35), 0 0 0 5px rgba(255,255,255,0.9)',
-                    border: '4px solid white'
-                  }}
-                >
-                  {step.n}
-                </motion.div>
-
                 {/* Icono grande */}
                 <motion.div
                   initial={{opacity: 0, scale: 0.8}}
@@ -654,10 +723,11 @@ export default function Page() {
                   viewport={{once:true}}
                   transition={{duration:0.6, delay:i*0.15}}
                   style={{
-                    fontSize: '3.5rem',
-                    marginBottom: '1.5rem',
-                    marginTop: '2rem',
-                    filter: 'drop-shadow(0 4px 8px rgba(0,61,143,0.25))'
+                    fontSize: '2.2rem',
+                    marginBottom: '1.1rem',
+                    marginTop: '1.2rem',
+                    color: '#004AB7',
+                    filter: 'drop-shadow(0 2px 4px rgba(0,61,143,0.10))'
                   }}
                 >
                   {step.icon}
@@ -670,12 +740,12 @@ export default function Page() {
                   viewport={{once:true}}
                   transition={{duration:0.5, delay:i*0.18}}
                   style={{
-                    fontSize: '1.3rem',
-                    fontWeight: 900,
+                    fontSize: '1.13rem',
+                    fontWeight: 800,
                     color: '#003d8f',
-                    marginBottom: '1rem',
+                    marginBottom: '0.7rem',
                     letterSpacing: '-0.01em',
-                    lineHeight: 1.2
+                    lineHeight: 1.18
                   }}
                 >
                   {step.title}
@@ -688,8 +758,8 @@ export default function Page() {
                   viewport={{once:true}}
                   transition={{duration:0.5, delay:i*0.22}}
                   style={{
-                    fontSize: '0.95rem',
-                    color: '#555',
+                    fontSize: '0.97rem',
+                    color: '#3a4a5d',
                     lineHeight: 1.7,
                     margin: 0,
                     fontWeight: 500
@@ -699,7 +769,7 @@ export default function Page() {
                 </motion.p>
               </div>
 
-              {/* Efecto overlay hover */}
+              {/* Efecto overlay hover sutil */}
               <motion.div
                 initial={{opacity: 0}}
                 whileHover={{opacity: 1}}
@@ -708,7 +778,7 @@ export default function Page() {
                   position: 'absolute',
                   inset: 0,
                   borderRadius: '18px',
-                  background: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(0,172,183,0.15) 0%, transparent 50%)',
+                  background: 'radial-gradient(circle at 25% 25%, rgba(0,172,183,0.07) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(0,172,183,0.06) 0%, transparent 50%)',
                   pointerEvents: 'none',
                   zIndex: 2
                 }}
@@ -779,16 +849,46 @@ export default function Page() {
             Nuestro proceso garantiza que encontramos exactamente el perfil que necesitas. Transparencia, calidad y velocidad en cada paso.
           </p>
         </motion.div>
+        </div>
       </section>
 
       {/* === KPIs === */}
       <section id="kpis" style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '4rem 1.5rem',
-        background: 'linear-gradient(180deg, #FAFBFC 0%, #F0F7FF 100%)',
-        borderRadius: '0'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0 4rem',
+        background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '1.5px solid #e3f0ff',
       }}>
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
         <motion.h2 style={{
           fontSize: 'clamp(2rem, 4vw, 3rem)',
           fontWeight: 900,
@@ -870,14 +970,45 @@ export default function Page() {
             </motion.div>
           ))}
         </motion.div>
+        </div>
       </section>
 
       {/* === MODALIDADES === */}
       <section id="modalidades" style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '4rem 1.5rem'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0 4rem',
+        background: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
         <motion.h2 style={{
           fontSize: 'clamp(2rem, 4vw, 3rem)',
           fontWeight: 900,
@@ -970,6 +1101,7 @@ export default function Page() {
             </motion.div>
           ))}
         </motion.div>
+        </div>
       </section>
 
       {/* === CTA FINAL - Estilo Hero === */}
@@ -1063,12 +1195,73 @@ export default function Page() {
         </div>
       </section>
 
-      {/* === CONTACT FORM === */}
+      {/* === CONTACT FORM - FONDO AZUL SUAVE ANCHO COMPLETO === */}
       <section style={{
-        padding: '5rem 1.5rem',
-        background: '#f8f9fa'
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        padding: '5rem 0 3rem',
+        background: 'linear-gradient(120deg, #f7fbff 0%, #eaf6ff 100%)',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
-        <ContactForm />
+        {/* Fondo decorativo extra */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '220px',
+          height: '220px',
+          background: 'radial-gradient(circle, #e3f0ff 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-60px',
+          right: '-60px',
+          width: '180px',
+          height: '180px',
+          background: 'radial-gradient(circle, #b3d0f7 0%, transparent 80%)',
+          zIndex: 0,
+        }} />
+        <div style={{
+          maxWidth: '900px',
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}>
+          <h3
+            style={{
+              fontSize: '2.3rem',
+              fontWeight: 900,
+              color: '#004AB7',
+              marginBottom: '1.5rem',
+              letterSpacing: '-0.02em',
+              textAlign: 'center',
+            }}
+          >
+            ¿Listo para transformar tu operación?
+          </h3>
+          <p
+            style={{
+              fontSize: '1.25rem',
+              color: '#0A1933',
+              marginBottom: '2.5rem',
+              textAlign: 'center',
+              opacity: 0.8,
+              lineHeight: 1.6,
+              maxWidth: 700,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          >
+            Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.
+          </p>
+          <div style={{ width: '100%' }}>
+            <ContactForm />
+          </div>
+        </div>
       </section>
 
       <Footer />

@@ -33,7 +33,7 @@ export default function HeroSection() {
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => 
+    setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? heroImages.length - 1 : prevIndex - 1
     );
   };
@@ -66,7 +66,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center gap-5 sm:gap-8 lg:gap-10 mt-6 w-full"
+              className="flex flex-row items-center gap-5 sm:gap-8 lg:gap-10 mt-6"
             >
               <motion.a
                 href="#servicios"
@@ -111,7 +111,7 @@ export default function HeroSection() {
               }}>
                 <Image src={heroImages[0]} alt="Imagen 1" fill sizes="600px" className="object-cover" priority />
               </div>
-              
+
               {/* Imagen 1 */}
               <div style={{
                 position: 'absolute',
@@ -122,7 +122,7 @@ export default function HeroSection() {
               }}>
                 <Image src={heroImages[1]} alt="Imagen 2" fill sizes="600px" className="object-cover" />
               </div>
-              
+
               {/* Imagen 2 */}
               <div style={{
                 position: 'absolute',
@@ -133,7 +133,7 @@ export default function HeroSection() {
               }}>
                 <Image src={heroImages[2]} alt="Imagen 3" fill sizes="600px" className="object-cover" />
               </div>
-              
+
               {/* Imagen 3 */}
               <div style={{
                 position: 'absolute',
@@ -144,7 +144,7 @@ export default function HeroSection() {
               }}>
                 <Image src={heroImages[3]} alt="Imagen 4" fill sizes="600px" className="object-cover" />
               </div>
-              
+
               {/* Imagen 4 */}
               <div style={{
                 position: 'absolute',
@@ -187,7 +187,7 @@ export default function HeroSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              
+
               <button
                 onClick={nextImage}
                 style={{
@@ -230,11 +230,10 @@ export default function HeroSection() {
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      index === currentImageIndex
-                        ? "bg-blue-600 w-6"
-                        : "bg-blue-300 hover:bg-blue-400 w-2"
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentImageIndex
+                      ? "bg-blue-600 w-6"
+                      : "bg-blue-300 hover:bg-blue-400 w-2"
+                      }`}
                     aria-label={`Ir a imagen ${index + 1}`}
                   />
                 ))}
