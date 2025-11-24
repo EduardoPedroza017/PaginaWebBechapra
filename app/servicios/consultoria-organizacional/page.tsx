@@ -145,12 +145,20 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* Sección de tarjetas de servicios */}
+			{/* Sección de tarjetas de servicios (fondo blanco, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem 3rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '5rem 0 3rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 2rem',
+				}}>
 				<motion.h2
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
@@ -288,18 +296,27 @@ export default function Page() {
 						);
 					})}
 				</div>
+				</div>
 			</section>
 
-			{/* Cómo Trabajamos */}
+			{/* Cómo Trabajamos (fondo azul claro y suave, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem',
-				display: 'grid',
-				gridTemplateColumns: '1fr 1fr',
-				gap: '4rem',
-				alignItems: 'center'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '4rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					maxWidth: '1280px',
+					width: '100%',
+					display: 'grid',
+					gridTemplateColumns: '1fr 1fr',
+					gap: '4rem',
+					alignItems: 'center',
+					padding: '0 2rem',
+				}}>
 				<motion.div
 					initial={{opacity: 0, x: -30}}
 					whileInView={{opacity: 1, x: 0}}
@@ -366,18 +383,27 @@ export default function Page() {
 						))}
 					</div>
 				</motion.div>
+				</div>
 			</section>
 
-			{/* Potencia el crecimiento */}
+			{/* Potencia el crecimiento (fondo blanco, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem',
-				display: 'grid',
-				gridTemplateColumns: '1fr 1fr',
-				gap: '4rem',
-				alignItems: 'center'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '4rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					maxWidth: '1280px',
+					width: '100%',
+					display: 'grid',
+					gridTemplateColumns: '1fr 1fr',
+					gap: '4rem',
+					alignItems: 'center',
+					padding: '0 2rem',
+				}}>
 				<motion.div
 					initial={{opacity: 0, x: -30}}
 					whileInView={{opacity: 1, x: 0}}
@@ -449,18 +475,25 @@ export default function Page() {
 						<span style={{fontSize: '1.2rem', color: '#003d8f', fontWeight: 700}}>Imagen Potencia</span>
 					</div>
 				</motion.div>
+				</div>
 			</section>
 
-			{/* Sección con beneficios */}
+			{/* Sección con beneficios (fondo azul claro y suave, full width, cards centrados) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '4rem 0 0 0',
+				marginBottom: '0',
 			}}>
 				<div style={{
+					width: '100%',
+					maxWidth: '1400px',
+					margin: '0 auto',
 					display: 'grid',
-					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-					gap: '2.5rem'
+					gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+					gap: '2.5rem',
+					alignItems: 'end',
 				}}>
 					{[
 						{title: 'Plan estratégico personalizado', icon: Target},
@@ -474,12 +507,17 @@ export default function Page() {
 							viewport={{once: true}}
 							transition={{duration: 0.5, delay: i * 0.1}}
 							style={{
-								padding: '2.5rem 2rem',
-								borderRadius: '16px',
+								padding: '2.5rem 2rem 2rem 2rem',
+								borderRadius: '20px',
 								background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-								border: '2px solid rgba(0,61,143,0.1)',
+								border: '2px solid rgba(0,61,143,0.12)',
 								textAlign: 'center',
-								boxShadow: '0 8px 24px rgba(0,61,143,0.08)'
+								boxShadow: '0 10px 30px rgba(0,61,143,0.08)',
+								cursor: 'pointer',
+								position: 'relative',
+								overflow: 'hidden',
+								transition: 'all 0.3s ease',
+								marginBottom: '0',
 							}}
 						>
 							<benefit.icon size={40} style={{color: '#003d8f', margin: '0 auto 1rem'}} />
@@ -553,60 +591,67 @@ export default function Page() {
 				</div>
 			</motion.section>
 
-			{/* Sección de Contacto */}
+			{/* Sección de Contacto (full width) */}
 			<section id="contacto" style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '6rem 1.5rem',
-				background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, white 100%)'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, white 100%)',
+				padding: '6rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
-				<motion.div
-					initial={{opacity: 0, y: 30}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-					style={{
-						textAlign: 'center',
-						marginBottom: '3rem'
-					}}
-				>
-					<h2 style={{
-						fontSize: 'clamp(2rem, 4vw, 3rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '1rem',
-						letterSpacing: '-0.02em'
-					}}>
-						¿Interesado en alguno de nuestros servicios?
-					</h2>
-					<p style={{
-						fontSize: '1.1rem',
-						color: '#666',
-						maxWidth: '700px',
-						margin: '0 auto',
-						lineHeight: 1.7
-					}}>
-						¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!
-					</p>
-				</motion.div>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
+					<motion.div
+						initial={{opacity: 0, y: 30}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{
+							textAlign: 'center',
+							marginBottom: '3rem'
+						}}
+					>
+						<h2 style={{
+							fontSize: 'clamp(2rem, 4vw, 3rem)',
+							fontWeight: 900,
+							color: '#003d8f',
+							marginBottom: '1rem',
+							letterSpacing: '-0.02em'
+						}}>
+							¿Interesado en alguno de nuestros servicios?
+						</h2>
+						<p style={{
+							fontSize: '1.1rem',
+							color: '#666',
+							maxWidth: '700px',
+							margin: '0 auto',
+							lineHeight: 1.7
+						}}>
+							¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!
+						</p>
+					</motion.div>
 
-				<motion.div
-					initial={{opacity: 0, y: 40}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7, delay: 0.2}}
-					style={{
-						maxWidth: '900px',
-						margin: '0 auto',
-						background: 'white',
-						padding: '3rem 2.5rem',
-						borderRadius: '20px',
-						boxShadow: '0 10px 40px rgba(0,61,143,0.08)',
-						border: '1px solid rgba(0,61,143,0.08)'
-					}}
-				>
-					<ContactForm />
-				</motion.div>
+					<motion.div
+						initial={{opacity: 0, y: 40}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7, delay: 0.2}}
+						style={{
+							maxWidth: '900px',
+							margin: '0 auto',
+							background: 'white',
+							padding: '3rem 2.5rem',
+							borderRadius: '20px'
+							// Sin sombra ni borde para un look limpio
+						}}
+					>
+						<ContactForm />
+					</motion.div>
+				</div>
 			</section>
 
 			{/* Footer */}

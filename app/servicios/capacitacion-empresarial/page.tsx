@@ -173,7 +173,7 @@ export default function Page() {
 							}}
 						>
 							<span style={{fontSize: '1.1rem'}}>‹</span>
-							Volver a Servicios
+							Volver
 						</Link>
 						<h1 style={{
 							fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
@@ -386,98 +386,118 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* Cómo Trabajamos */}
+			{/* Cómo Trabajamos (mejorado, fondo azul claro y suave, layout moderno) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem',
-				display: 'grid',
-				gridTemplateColumns: '1fr 1fr',
-				gap: '4rem',
-				alignItems: 'center'
-			}}>
-				<motion.div
-					initial={{opacity: 0, x: -30}}
-					whileInView={{opacity: 1, x: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-				>
-					<div style={{
-						width: '100%',
-						height: '400px',
-						background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-						borderRadius: '20px',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						position: 'relative',
-						overflow: 'hidden',
-						border: '2px solid rgba(0,61,143,0.1)'
-					}}>
-						<Image
-							src="/imagen/servicos/servicios-especializados.jpg"
-							alt="Cómo Trabajamos"
-							fill
-							style={{objectFit: 'cover'}}
-						/>
-					</div>
-				</motion.div>
-
-				<motion.div
-					initial={{opacity: 0, x: 30}}
-					whileInView={{opacity: 1, x: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-				>
-					<h2 style={{
-						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '1.5rem',
-						letterSpacing: '-0.02em'
-					}}>
-						Cómo Trabajamos
-					</h2>
-					<p style={{
-						fontSize: '1.05rem',
-						color: '#666',
-						lineHeight: 1.8,
-						marginBottom: '1.5rem'
-					}}>
-						Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.
-					</p>
-					<div style={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: '0.75rem'
-					}}>
-						{[
-							'Adaptamos cada programa con necesidades específicas',
-							'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
-						].map((item, i) => (
-							<div key={i} style={{
-								display: 'flex',
-								alignItems: 'flex-start',
-								gap: '0.75rem'
-							}}>
-								<CheckCircle size={24} style={{color: '#003d8f', flexShrink: 0, marginTop: '2px'}} />
-								<span style={{fontSize: '0.95rem', color: '#666', lineHeight: 1.6}}>{item}</span>
-							</div>
-						))}
-					</div>
-				</motion.div>
-			</section>
-
-			{/* Sección con 3 beneficios */}
-			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
 				<div style={{
+					maxWidth: '1280px',
+					width: '100%',
+					display: 'flex',
+					flexWrap: 'wrap',
+					alignItems: 'center',
+					gap: '3rem',
+					padding: '0 2rem',
+				}}>
+					<motion.div
+						initial={{opacity: 0, x: -30}}
+						whileInView={{opacity: 1, x: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{flex: '1 1 420px', minWidth: 320, maxWidth: 540}}
+					>
+						<div style={{
+							width: '100%',
+							aspectRatio: '16/9',
+							background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+							borderRadius: '20px',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							position: 'relative',
+							overflow: 'hidden',
+							border: '2px solid rgba(0,61,143,0.10)',
+							boxShadow: '0 8px 32px rgba(0,61,143,0.08)'
+						}}>
+							<Image
+								src="/imagen/servicos/servicios-especializados.jpg"
+								alt="Cómo Trabajamos"
+								fill
+								style={{objectFit: 'cover'}}
+							/>
+						</div>
+					</motion.div>
+					<motion.div
+						initial={{opacity: 0, x: 30}}
+						whileInView={{opacity: 1, x: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{flex: '1 1 420px', minWidth: 320, maxWidth: 600}}
+					>
+						<h2 style={{
+							fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+							fontWeight: 900,
+							color: '#003d8f',
+							marginBottom: '1.5rem',
+							letterSpacing: '-0.02em',
+							textAlign: 'left'
+						}}>
+							Cómo Trabajamos
+						</h2>
+						<p style={{
+							fontSize: '1.08rem',
+							color: '#003d8f',
+							lineHeight: 1.8,
+							marginBottom: '1.5rem',
+							textAlign: 'left'
+						}}>
+							Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.
+						</p>
+						<div style={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: '1rem',
+							alignItems: 'flex-start'
+						}}>
+							{[
+								'Adaptamos cada programa con necesidades específicas',
+								'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
+							].map((item, i) => (
+								<div key={i} style={{
+									display: 'flex',
+									alignItems: 'center',
+									gap: '0.75rem',
+								}}>
+									<CheckCircle size={22} style={{color: '#0050C8', flexShrink: 0}} />
+									<span style={{fontSize: '1rem', color: '#003d8f', lineHeight: 1.6}}>{item}</span>
+								</div>
+							))}
+						</div>
+					</motion.div>
+				</div>
+			</section>
+
+			{/* Sección con 3 beneficios (fondo blanco, full width) */}
+			<section style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '4rem 0',
+				display: 'flex',
+				justifyContent: 'center',
+			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1400px',
 					display: 'grid',
-					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-					gap: '2.5rem'
+					gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+					gap: '2.5rem',
+					padding: '0 2rem',
 				}}>
 					{[
 						{title: 'Conjunto de habilidades técnicas y soft skills mejoradas', icon: Target},
@@ -514,93 +534,108 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* Mejora el rendimiento */}
+			{/* Mejora el rendimiento de tu equipo (mejorado, fondo azul claro y suave, layout moderno) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '4rem 1.5rem',
-				display: 'grid',
-				gridTemplateColumns: '1fr 1fr',
-				gap: '4rem',
-				alignItems: 'center'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
-				<motion.div
-					initial={{opacity: 0, x: -30}}
-					whileInView={{opacity: 1, x: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-				>
-					<h2 style={{
-						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-						fontWeight: 900,
-						color: '#1a1a1a',
-						marginBottom: '1.5rem',
-						letterSpacing: '-0.02em'
-					}}>
-						Mejora el rendimiento de tu equipo
-					</h2>
-					<p style={{
-						fontSize: '1.05rem',
-						color: '#666',
-						lineHeight: 1.8,
-						marginBottom: '2rem'
-					}}>
-						Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.
-					</p>
-					<p style={{
-						fontSize: '1.15rem',
-						color: '#003d8f',
-						fontWeight: 700,
-						fontStyle: 'italic'
-					}}>
-						¡Convierte a tu equipo en un motor de éxito!
-					</p>
-					<Link
-						href="#contacto"
-						style={{
-							display: 'inline-block',
-							marginTop: '2rem',
-							padding: '1rem 2.5rem',
-							borderRadius: '12px',
-							background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
-							color: 'white',
-							fontWeight: 700,
-							fontSize: '1rem',
-							textDecoration: 'none',
-							boxShadow: '0 8px 24px rgba(0,61,143,0.25)',
-							transition: 'all 0.3s ease'
-						}}
+				<div style={{
+					maxWidth: '1280px',
+					width: '100%',
+					display: 'flex',
+					flexWrap: 'wrap',
+					alignItems: 'center',
+					gap: '3rem',
+					padding: '0 2rem',
+				}}>
+					<motion.div
+						initial={{opacity: 0, x: 0}}
+						whileInView={{opacity: 1, x: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{flex: '1 1 420px', minWidth: 320, maxWidth: 600}}
 					>
-						COMIENZA AHORA →
-					</Link>
-				</motion.div>
-
-				<motion.div
-					initial={{opacity: 0, x: 30}}
-					whileInView={{opacity: 1, x: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-				>
-					<div style={{
-						width: '100%',
-						height: '400px',
-						background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-						borderRadius: '20px',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						position: 'relative',
-						overflow: 'hidden',
-						border: '2px solid rgba(0,61,143,0.1)'
-					}}>
-						<Image
-							src="/imagen/servicos/Capital_Humano_FInal.jpg"
-							alt="Mejora el rendimiento"
-							fill
-							style={{objectFit: 'cover'}}
-						/>
-					</div>
-				</motion.div>
+						<h2 style={{
+							fontSize: 'clamp(2rem, 4vw, 2.5rem)',
+							fontWeight: 900,
+							color: '#003d8f',
+							marginBottom: '1.5rem',
+							letterSpacing: '-0.02em',
+							textAlign: 'left'
+						}}>
+							Mejora el rendimiento de tu equipo
+						</h2>
+						<p style={{
+							fontSize: '1.08rem',
+							color: '#003d8f',
+							lineHeight: 1.8,
+							marginBottom: '1.5rem',
+							textAlign: 'left'
+						}}>
+							Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.
+						</p>
+						<p style={{
+							fontSize: '1.15rem',
+							color: '#0050C8',
+							fontWeight: 700,
+							fontStyle: 'italic',
+							marginBottom: '2rem',
+							textAlign: 'left'
+						}}>
+							¡Convierte a tu equipo en un motor de éxito!
+						</p>
+						<Link
+							href="#contacto"
+							style={{
+								display: 'inline-block',
+								marginTop: '0',
+								padding: '1rem 2.5rem',
+								borderRadius: '12px',
+								background: '#003d8f',
+								color: 'white',
+								fontWeight: 700,
+								fontSize: '1rem',
+								textDecoration: 'none',
+								boxShadow: '0 8px 24px rgba(0,61,143,0.15)',
+								transition: 'all 0.3s ease'
+							}}
+						>
+							COMIENZA AHORA →
+						</Link>
+					</motion.div>
+					<motion.div
+						initial={{opacity: 0, x: 30}}
+						whileInView={{opacity: 1, x: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{flex: '1 1 420px', minWidth: 320, maxWidth: 540}}
+					>
+						<div style={{
+							width: '100%',
+							aspectRatio: '16/9',
+							background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+							borderRadius: '20px',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							position: 'relative',
+							overflow: 'hidden',
+							border: '2px solid rgba(0,61,143,0.10)',
+							boxShadow: '0 8px 32px rgba(0,61,143,0.08)'
+						}}>
+							<Image
+								src="/imagen/servicos/Capital_Humano_FInal.jpg"
+								alt="Mejora el rendimiento"
+								fill
+								style={{objectFit: 'cover'}}
+							/>
+						</div>
+					</motion.div>
+				</div>
 			</section>
 
 			{/* Acordeones */}
@@ -815,60 +850,52 @@ export default function Page() {
 				</div>
 			</motion.section>
 
-			{/* Sección de Contacto */}
+			{/* Sección de Contacto mejorada (estilo limpio, como la segunda imagen) */}
 			<section id="contacto" style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '6rem 1.5rem',
-				background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, white 100%)'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '6rem 0 5rem 0',
+				borderTop: '1px solid rgba(0, 74, 183, 0.08)'
 			}}>
-				<motion.div
-					initial={{opacity: 0, y: 30}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7}}
-					style={{
-						textAlign: 'center',
-						marginBottom: '3rem'
-					}}
-				>
-					<h2 style={{
-						fontSize: 'clamp(2rem, 4vw, 3rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '1rem',
-						letterSpacing: '-0.02em'
-					}}>
+				<div style={{
+					maxWidth: '1100px',
+					margin: '0 auto',
+					textAlign: 'center',
+					padding: '0 2rem',
+				}}>
+					<h2
+						style={{
+							color: '#0050C8',
+							fontWeight: 900,
+							fontSize: 'clamp(2.3rem, 5vw, 2.8rem)',
+							marginBottom: '1.2rem',
+							letterSpacing: '-0.01em',
+						}}
+					>
 						¿Interesado en nuestros servicios?
 					</h2>
-					<p style={{
-						fontSize: '1.1rem',
-						color: '#666',
-						maxWidth: '700px',
-						margin: '0 auto',
-						lineHeight: 1.7
-					}}>
+					<div
+						style={{
+							color: '#6B7280',
+							fontSize: '1.15rem',
+							marginBottom: '2.5rem',
+							fontWeight: 500,
+						}}
+					>
 						Envíanos un mensaje con los detalles y estaremos encantados de ayudarte.
-					</p>
-				</motion.div>
-
-				<motion.div
-					initial={{opacity: 0, y: 40}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.7, delay: 0.2}}
-					style={{
+					</div>
+					<div style={{
 						maxWidth: '900px',
 						margin: '0 auto',
-						background: 'white',
-						padding: '3rem 2.5rem',
-						borderRadius: '20px',
-						boxShadow: '0 10px 40px rgba(0,61,143,0.08)',
-						border: '1px solid rgba(0,61,143,0.08)'
-					}}
-				>
-					<ContactForm />
-				</motion.div>
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						width: '100%',
+					}}>
+						<ContactForm />
+					</div>
+				</div>
 			</section>
 
 			{/* Footer */}

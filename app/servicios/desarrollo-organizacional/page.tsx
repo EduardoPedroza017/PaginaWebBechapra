@@ -189,12 +189,14 @@ export default function DesarrolloOrganizacionalPage() {
           </div>
         </section>
 
-        {/* SERVICIOS Mejorados */}
+        {/* SERVICIOS Mejorados (Fondo blanco, full width) */}
         <section style={{
-          maxWidth: '1280px',
-          margin: '0 auto',
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
           padding: '5rem 1.5rem',
-          background: 'linear-gradient(180deg, transparent 0%, rgba(0,61,143,0.02) 100%)'
+          background: 'white',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
           <motion.h2 
             initial={{opacity: 0, y: 20}} 
@@ -341,16 +343,16 @@ export default function DesarrolloOrganizacionalPage() {
           </div>
         </section>
 
-        {/* BENEFICIOS Mejorados */}
+        {/* BENEFICIOS Mejorados (Fondo azul suave, full width) */}
         <section style={{
-          maxWidth: '1280px',
-          margin: '0 auto',
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
           padding: '5rem 1.5rem',
-          display: 'grid',
-          gridTemplateColumns: '1.1fr 0.9fr',
-          gap: '3rem',
-          alignItems: 'center'
+          background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
+          <div style={{maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '3rem', alignItems: 'center'}}>
           <div>
             <motion.h2 
               initial={{opacity: 0, y: 20}} 
@@ -469,9 +471,10 @@ export default function DesarrolloOrganizacionalPage() {
               }}
             />
           </div>
+          </div>
         </section>
 
-        {/* CTA FINAL Mejorado */}
+        {/* CTA FINAL Mejorado (Fondo especial, full width, altura mayor) */}
         <motion.section
           initial={{opacity: 0, y: 30}}
           whileInView={{opacity: 1, y: 0}}
@@ -481,14 +484,19 @@ export default function DesarrolloOrganizacionalPage() {
             width: '100vw',
             marginLeft: 'calc(-50vw + 50%)',
             background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 50%, #1a1a2e 100%)',
-            padding: '3rem 2rem',
-            marginTop: '4rem',
+            minHeight: '420px',
+            padding: '5rem 2rem',
+            /* Eliminar marginTop para unir con la sección superior */
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
           <div style={{
             maxWidth: '1280px',
+            width: '100%',
             margin: '0 auto',
             position: 'relative',
             zIndex: 2,
@@ -499,7 +507,8 @@ export default function DesarrolloOrganizacionalPage() {
               gridTemplateColumns: '1fr 520px',
               gap: '3rem',
               alignItems: 'center',
-              padding: '0'
+              padding: '0',
+              minHeight: '320px'
             }}>
               <div style={{
                 textAlign: 'left',
@@ -636,31 +645,51 @@ export default function DesarrolloOrganizacionalPage() {
           </div>
         </motion.section>
 
-        {/* CONTACT SECTION */}
+        {/* CONTACT SECTION (estilo limpio, como ejemplo) */}
         <section style={{
-          padding: '5rem 0',
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
           background: 'white',
-          borderTop: '1px solid rgba(0, 74, 183, 0.08)'
+          padding: '5rem 0 4rem 0',
+          borderTop: '1px solid rgba(0, 74, 183, 0.08)',
         }}>
           <div style={{
-            maxWidth: '1280px',
+            maxWidth: '1100px',
             margin: '0 auto',
-            padding: '0 1.5rem'
+            textAlign: 'center',
+            padding: '0 2rem',
           }}>
             <h2
               style={{
-                color: '#003d8f',
+                color: '#0050C8',
                 fontWeight: 900,
-                fontSize: 'clamp(2.2rem, 4vw, 2.8rem)',
-                textAlign: 'center',
-                marginBottom: '2.5rem',
+                fontSize: 'clamp(2.3rem, 5vw, 2.8rem)',
+                marginBottom: '1.2rem',
                 letterSpacing: '-0.01em',
-                textShadow: '0 2px 12px rgba(0,61,143,0.08)'
               }}
             >
-              Contáctanos
+              ¿Listo para transformar tu operación?
             </h2>
-            <ContactForm />
+            <div
+              style={{
+                color: '#6B7280',
+                fontSize: '1.15rem',
+                marginBottom: '2.5rem',
+                fontWeight: 500,
+              }}
+            >
+              Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.
+            </div>
+            <div style={{
+              maxWidth: '900px',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+            }}>
+              <ContactForm />
+            </div>
           </div>
         </section>
 
