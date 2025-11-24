@@ -74,7 +74,7 @@ export default function Page() {
 							}}
 						>
 							<span style={{fontSize: '1.1rem'}}>‹</span>
-							Volver a Servicios
+							Volver
 						</Link>
 						<h1 style={{
 							fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',

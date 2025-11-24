@@ -4,6 +4,8 @@ import React from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Gavel, FileText, Users, ShieldCheck, ChevronLeft } from 'lucide-react';
+import ContactForm from '@/app/components/ContactForm';
+import Footer from '@/components/Footer';
 
 const services = [
 	{icon: Gavel, title: 'Asesoría mercantil', desc: 'Constitución, contratos y gobierno corporativo para empresas en crecimiento.'},
@@ -179,12 +181,20 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* Servicios Section */}
+			{/* Servicios Section (fondo blanco, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
 				<motion.h2
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
@@ -307,14 +317,23 @@ export default function Page() {
 						);
 					})}
 				</motion.div>
+				</div>
 			</section>
 
-			{/* Packages Section */}
+			{/* Packages Section (fondo azul claro, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
 				<motion.h2
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
@@ -389,14 +408,23 @@ export default function Page() {
 						</motion.div>
 					))}
 				</motion.div>
+				</div>
 			</section>
 
-			{/* Timeline Section */}
+			{/* Timeline Section (fondo blanco, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'white',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
 				<motion.h2
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
@@ -481,14 +509,23 @@ export default function Page() {
 						</motion.div>
 					))}
 				</motion.div>
+				</div>
 			</section>
 
-			{/* FAQ Section */}
+			{/* FAQ Section (fondo azul claro, full width) */}
 			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem'
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)',
+				padding: '5rem 0',
+				display: 'flex',
+				justifyContent: 'center',
 			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
 				<motion.h2
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
@@ -655,59 +692,7 @@ export default function Page() {
 						</motion.div>
 					</div>
 				</motion.div>
-			</section>
-
-			{/* Testimonial Section */}
-			<section style={{
-				maxWidth: '1280px',
-				margin: '0 auto',
-				padding: '5rem 1.5rem'
-			}}>
-				<motion.div
-					initial={{opacity: 0, y: 30}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						padding: '3rem 2.5rem',
-						borderRadius: '16px',
-						background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-						border: '2px solid rgba(0,61,143,0.1)',
-						textAlign: 'center'
-					}}
-				>
-					<div style={{
-						width: '70px',
-						height: '70px',
-						background: 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)',
-						borderRadius: '50%',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						margin: '0 auto 1.5rem',
-						color: 'white',
-						fontSize: '1.8rem',
-						fontWeight: 900
-					}}>
-						MO
-					</div>
-
-				<blockquote style={{
-					fontSize: '1.25rem',
-					fontStyle: 'italic',
-					color: '#003d8f',
-					marginBottom: '1.5rem'
-				}}>
-					&ldquo;La asesoría preventiva nos ayudó a reducir contingencias y a formalizar procesos clave en la operación.&rdquo;
-				</blockquote>					<cite style={{
-						fontSize: '1rem',
-						fontStyle: 'normal',
-						color: '#666',
-						fontWeight: 600
-					}}>
-						— M. Ortega, Dirección Legal
-					</cite>
-				</motion.div>
+				</div>
 			</section>
 
 			{/* CTA Final Section */}
@@ -831,6 +816,71 @@ export default function Page() {
 					</div>
 				</motion.div>
 			</section>
+			{/* Sección de Contacto (full width, limpio) */}
+			<section id="contacto" style={{
+				width: '100vw',
+				marginLeft: 'calc(-50vw + 50%)',
+				background: 'linear-gradient(180deg, rgba(0,61,143,0.02) 0%, white 100%)',
+				padding: '6rem 0',
+				display: 'flex',
+				justifyContent: 'center',
+			}}>
+				<div style={{
+					width: '100%',
+					maxWidth: '1280px',
+					padding: '0 1.5rem',
+				}}>
+					<motion.div
+						initial={{opacity: 0, y: 30}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7}}
+						style={{
+							textAlign: 'center',
+							marginBottom: '3rem'
+						}}
+					>
+						<h2 style={{
+							fontSize: 'clamp(2rem, 4vw, 3rem)',
+							fontWeight: 900,
+							color: '#003d8f',
+							marginBottom: '1rem',
+							letterSpacing: '-0.02em'
+						}}>
+							¿Listo para proteger tu empresa?
+						</h2>
+						<p style={{
+							fontSize: '1.1rem',
+							color: '#666',
+							maxWidth: '700px',
+							margin: '0 auto',
+							lineHeight: 1.7
+						}}>
+							Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita.
+						</p>
+					</motion.div>
+
+					<motion.div
+						initial={{opacity: 0, y: 40}}
+						whileInView={{opacity: 1, y: 0}}
+						viewport={{once: true}}
+						transition={{duration: 0.7, delay: 0.2}}
+						style={{
+							maxWidth: '900px',
+							margin: '0 auto',
+							background: 'white',
+							padding: '3rem 2.5rem',
+							borderRadius: '20px',
+							// Sin sombra ni borde para un look limpio
+						}}
+					>
+						<ContactForm />
+					</motion.div>
+				</div>
+			</section>
+
+			{/* Footer */}
+			<Footer />
 		</main>
 	);
 }
