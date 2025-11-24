@@ -309,78 +309,7 @@ export default function TrainingCenterSection() {
         </div>
       </div>
 
-      {/* Info Cards Grid */}
-      <AnimatedSection delay={0.2}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '2rem',
-          maxWidth: '1200px',
-          margin: '1.5rem auto 0',
-          padding: '0 1.5rem'
-        }}>
-          {features.map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{opacity: 0, y: 30}}
-              whileInView={{opacity: 1, y: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.5, delay: i * 0.1}}
-              whileHover={{scale: 1.03, y: -8}}
-              style={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(12px)',
-                padding: '2rem',
-                borderRadius: '16px',
-                border: 'none',
-                boxShadow: '0 8px 32px rgba(0, 74, 183, 0.12)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onClick={() => setActive(i)}
-            >
-              <div style={{
-                width: '56px',
-                height: '56px',
-                background: i === active 
-                  ? 'linear-gradient(135deg, #003d8f 0%, #004AB7 100%)'
-                  : 'rgba(0,61,143,0.08)',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1.5rem',
-                transition: 'all 0.3s ease'
-              }}>
-                <div style={{
-                  transform: 'scale(0.7)',
-                  color: i === active ? 'white' : '#003d8f'
-                }}>
-                  {feature.icon}
-                </div>
-              </div>
-
-              <h4 style={{
-                fontSize: '1.15rem',
-                fontWeight: 800,
-                color: '#003d8f',
-                marginBottom: '0.75rem'
-              }}>
-                {feature.label}
-              </h4>
-
-              <p style={{
-                fontSize: '0.95rem',
-                color: '#666',
-                lineHeight: 1.6,
-                margin: 0
-              }}>
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </AnimatedSection>
+      {/* Grilla de cards eliminada para evitar duplicidad */}
     </section>
   );
 }
