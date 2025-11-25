@@ -87,7 +87,7 @@ export default function ServiciosIndex() {
 					   marginLeft: 'calc(-50vw + 50%)',
 					   position: 'relative',
 					   overflow: 'hidden',
-					   padding: '0',
+					   padding: '7.5rem 0',
 				   }}
 			   >
 				   <div className="max-w-7xl mx-auto px-6">

@@ -1,3 +1,75 @@
+.heroButtonsRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .heroButtonsRow {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+  }
+}
+
+.heroButtonBlue {
+  background: #2563eb !important;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 2px solid #2563eb;
+  box-shadow: 0 6px 24px 0 rgba(37, 99, 235, 0.25);
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  min-height: 56px;
+}
+.heroButtonBlue:hover, .heroButtonBlue:focus {
+  background: #1d4ed8 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.35);
+}
+
+.heroButtonWhite {
+  background: #fff !important;
+  color: #2563eb !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 2.5px solid #2563eb;
+  box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.10);
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  min-height: 56px;
+}
+.heroButtonWhite:hover, .heroButtonWhite:focus {
+  background: #e0e7ff !important;
+  color: #1d4ed8 !important;
+  box-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.18);
+}
+/* Botón azul sólido para HeroSection */
+.heroButtonBlue {
+  background: #2563eb !important;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 2px solid #2563eb;
+  box-shadow: 0 6px 24px 0 rgba(37, 99, 235, 0.25);
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+
 .heroImage {
   filter: saturate(1.02) contrast(1.02);
   will-change: opacity;
@@ -26,10 +98,10 @@
   border-radius: 0;
   padding: clamp(2.5rem, 4vw, 4rem) clamp(1rem, 2vw, 2rem);
   /* Gradiente más transparente para que se vea mejor la imagen */
-  background-image: 
-    url('/imagen/prueba/Flayers_Home_01100.jpg'), 
-    url('https://images.unsplash.com/photo-1564869736456-0f9d5a0d2f4a?w=1600&q=80&auto=format&fit=crop'), 
-    linear-gradient(180deg, rgba(3,37,85,0.25) 0%, rgba(11,63,150,0.22) 45%, rgba(2,41,110,0.28) 100%);
+  background-image:
+    url('/imagen/prueba/Flayers_Home_01100.jpg'),
+    url('https://images.unsplash.com/photo-1564869736456-0f9d5a0d2f4a?w=1600&q=80&auto=format&fit=crop'),
+    linear-gradient(180deg, rgba(3, 37, 85, 0.25) 0%, rgba(11, 63, 150, 0.22) 45%, rgba(2, 41, 110, 0.28) 100%);
   background-size: cover, cover, cover;
   background-position: center 25%, center 25%, center;
   background-repeat: no-repeat;
@@ -52,7 +124,7 @@
   font-weight: 900;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 8px rgba(255,255,255,0.8), 0 1px 3px rgba(255,255,255,0.6);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(255, 255, 255, 0.6);
   font-size: clamp(2rem, 5vw, 3.75rem);
   opacity: 1;
 }
@@ -60,7 +132,7 @@
 .heroSubtitle {
   color: #1E3A8A;
   max-width: 44rem;
-  text-shadow: 0 1px 6px rgba(255,255,255,0.7), 0 1px 2px rgba(255,255,255,0.5);
+  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.7), 0 1px 2px rgba(255, 255, 255, 0.5);
   font-size: clamp(0.95rem, 1.5vw, 1.125rem);
   line-height: 1.6;
   opacity: 1;
@@ -72,7 +144,7 @@
   top: 0;
   bottom: 0;
   width: 60%;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.008) 32%, transparent 60%);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.008) 32%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -102,18 +174,18 @@
     padding: clamp(5rem, 6vw, 8rem) clamp(2rem, 4vw, 4rem);
     background-position: center 12%, center 12%, center;
   }
-  
+
   .heroTitle {
     font-size: clamp(3rem, 5vw, 4.5rem);
   }
-  
+
   .heroSubtitle {
     font-size: clamp(1.125rem, 1.5vw, 1.5rem);
   }
 }
 
 .overlayCard {
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(6px) saturate(1.02);
   -webkit-backdrop-filter: blur(6px) saturate(1.02);
   border-radius: 14px;
@@ -121,15 +193,15 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  box-shadow: 0 10px 30px rgba(2, 48, 130, 0.12), 0 3px 10px rgba(2,48,130,0.06) inset;
+  box-shadow: 0 10px 30px rgba(2, 48, 130, 0.12), 0 3px 10px rgba(2, 48, 130, 0.06) inset;
   transform-style: preserve-3d;
-  transition: transform 420ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms ease;
+  transition: transform 420ms cubic-bezier(.2, .9, .2, 1), box-shadow 320ms ease;
   will-change: transform, box-shadow;
 }
 
 .overlayCard:hover {
   transform: translateY(-6px) rotateX(3deg) rotateY(-3deg) translateZ(8px);
-  box-shadow: 0 30px 70px rgba(2, 48, 130, 0.18), 0 8px 26px rgba(2,48,130,0.08) inset;
+  box-shadow: 0 30px 70px rgba(2, 48, 130, 0.18), 0 8px 26px rgba(2, 48, 130, 0.08) inset;
 }
 
 .overlayInitial {
@@ -140,20 +212,35 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(3,102,214,0.18);
+  box-shadow: 0 6px 18px rgba(3, 102, 214, 0.18);
   transform: translateZ(12px);
 }
 
 
 @keyframes heroFloat {
-  0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-6px) scale(1.01); }
-  100% { transform: translateY(0) scale(1); }
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-6px) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: translateY(8px) scale(0.995); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes slideInFromRight {
@@ -161,10 +248,12 @@
     opacity: 0;
     transform: translateX(100px) scale(0.9);
   }
+
   60% {
     opacity: 0.8;
     transform: translateX(-10px) scale(1.02);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -176,10 +265,12 @@
     opacity: 0;
     transform: scale(0.8) rotateY(-15deg);
   }
+
   50% {
     opacity: 0.7;
     transform: scale(1.05) rotateY(5deg);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotateY(0deg);
@@ -193,7 +284,7 @@
 }
 
 .overlayCard {
-  animation: popIn 720ms cubic-bezier(.2,.9,.2,1) both;
+  animation: popIn 720ms cubic-bezier(.2, .9, .2, 1) both;
 }
 
 @media (min-width: 1280px) {
