@@ -54,20 +54,20 @@ export default function Navbar() {
                       <Image
                         src={group.icon}
                         alt=""
-                        width={24}
-                        height={24}
+                        width={32}
+                        height={32}
                         className={styles.groupIcon}
                       />
                     </div>
                     <div>
                       <Link href={group.slug} className={styles.dropdownHeader}>{group.name}</Link>
-                      <p className={styles.dropdownDescription}>{group.description}</p>
                     </div>
                   </div>
                   <div className={styles.columnLinks}>
-                    {group.subServices.map(sub => (
+                    {group.subServices.slice(0,2).map(sub => (
                       <Link key={sub.slug} href={sub.slug} className={styles.dropdownItem}>{sub.name}</Link>
                     ))}
+                    <Link href={group.slug} className={styles.dropdownItem} style={{fontWeight:'600',color:'#2563eb'}}>Ver todos</Link>
                   </div>
                 </div>
               ))}
