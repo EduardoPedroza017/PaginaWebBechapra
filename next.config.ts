@@ -1,13 +1,16 @@
 import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
-reactStrictMode: true,
-// Allow development requests from the local LAN IP used when testing on other devices.
-// Add additional origins here if you access the dev server from other hostnames.
-allowedDevOrigins: ["192.168.1.89"],
+	reactStrictMode: true,
+	// Permitir requests de desarrollo desde IPs locales
+	allowedDevOrigins: ["192.168.1.89", "192.168.1.5"],
 	images: {
-		domains: ["images.unsplash.com", "bechapra.com", "www.bechapra.com"],
+		remotePatterns: [
+			{ protocol: 'https', hostname: 'images.unsplash.com' },
+			{ protocol: 'https', hostname: 'bechapra.com' },
+			{ protocol: 'https', hostname: 'www.bechapra.com' }
+		],
 		qualities: [75, 90, 95, 100],
 	},
-experimental: { optimizePackageImports: ["framer-motion", "@react-three/drei"] },
+	experimental: { optimizePackageImports: ["framer-motion", "@react-three/drei"] },
 };
 export default nextConfig;

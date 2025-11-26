@@ -73,6 +73,7 @@ export default function Footer() {
 				}
 				@media (min-width: 640px) {
 					.footer-grid {
+						display: grid !important;
 						grid-template-columns: repeat(2, 1fr) !important;
 						gap: 3rem !important;
 					}
@@ -115,6 +116,7 @@ export default function Footer() {
 				}
 				@media (min-width: 1024px) {
 					.footer-grid {
+						display: grid !important;
 						grid-template-columns: 1.3fr 1fr 1fr 1fr 1.1fr !important;
 						gap: 4rem !important;
 						margin-bottom: 3rem !important;
@@ -125,6 +127,13 @@ export default function Footer() {
 					.footer-logo {
 						height: 100px !important;
 						margin-bottom: 2rem !important;
+					}
+					.footer-section-title,
+					.footer-description,
+					.footer-links-list,
+					.footer-contact {
+						text-align: left !important;
+						align-items: flex-start !important;
 					}
 				}
 			`}</style>
@@ -174,13 +183,7 @@ export default function Footer() {
 				zIndex: 2
 			}}>
 				{/* Main footer content grid */}
-					<div className="footer-grid" style={{
-						display: 'grid',
-						gridTemplateColumns: 'repeat(1, 1fr)',
-						gap: '2rem',
-						marginBottom: '1.75rem',
-						alignItems: 'start'
-					}}>
+					<div className="footer-grid">
 					{/* Brand section - larger */}
 					<motion.div
 						initial={{opacity: 0, y: 20}}
