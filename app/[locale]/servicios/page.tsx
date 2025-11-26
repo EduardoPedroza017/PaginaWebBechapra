@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import styles from "./ServicesSection.module.css";
+import styles from "@/app/css/components/ServicesSection.module.css";
 import Footer from '@/components/Footer';
 
 const groups = [
