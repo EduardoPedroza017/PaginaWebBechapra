@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { serviceGroups } from "../lib/servicesData";
 import styles from "./Navbar.module.css";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const [showLogoImg, setShowLogoImg] = useState(false);
@@ -77,6 +79,9 @@ export default function Navbar() {
           <Link href="/prensa" className={styles.navLink}>Prensa</Link>
           <Link href="/acerca-de" className={styles.navLink}>Acerca de</Link>
           <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.ctaButton}>¿Eres colaborador?</a>
+          <div style={{ marginLeft: 24 }}>
+            <LanguageSwitcher />
+          </div>
         </nav>
 
         {/* Mobile menu button */}
@@ -125,6 +130,9 @@ export default function Navbar() {
             <Link href="/noticias" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Noticias</Link>
             <Link href="/prensa" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Prensa</Link>
             <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.mobileCtaButton}>¿Eres colaborador?</a>
+            <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center' }}>
+              <LanguageSwitcher />
+            </div>
           </nav>
         </div>
       )}

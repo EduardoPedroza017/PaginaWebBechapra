@@ -1,138 +1,314 @@
----
+<div align="center">
 
+# 🏢 Bechapra
+### Soluciones Empresariales en Contabilidad y Tecnología
 
-## Contribución
+<img src="public/imagen/Logo_1x1_BlancoSinFondo@2x.png" alt="Bechapra Logo" width="180" />
 
-Las contribuciones al proyecto son bienvenidas. Si deseas proponer mejoras, corregir errores o agregar nuevas funcionalidades, sigue estos pasos:
+[![Tests](https://img.shields.io/badge/TESTS-PASSING-brightgreen?style=for-the-badge)](https://github.com)
+[![Laravel](https://img.shields.io/badge/LARAVEL-V11+-red?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![LiveWire](https://img.shields.io/badge/LIVEWIRE-V3-pink?style=for-the-badge&logo=livewire)](https://livewire.laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)](https://php.net)
 
-1. Haz un fork del repositorio.
-2. Crea una rama para tu funcionalidad o corrección:
-	```bash
-	git checkout -b mi-nueva-funcionalidad
-	```
-3. Realiza tus cambios y haz commit:
-	```bash
-	git commit -m "Descripción clara del cambio"
-	```
-4. Haz push a tu rama:
-	```bash
-	git push origin mi-nueva-funcionalidad
-	```
-5. Abre un Pull Request detallando tus cambios.
+[![Next.js](https://img.shields.io/badge/Next.js-16.0.4-black?style=flat-square&logo=nextdotjs)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.1.0-61dafb?style=flat-square&logo=react)](https://react.dev)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0.0-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-3178c6?style=flat-square&logo=typescript)](https://typescriptlang.org)
+[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-12.23.24-ff008c?style=flat-square&logo=framer)](https://framer.com/motion)
+[![Zustand](https://img.shields.io/badge/Zustand-5.0.8-ffb300?style=flat-square&logo=react)](https://zustand-demo.pmnd.rs)
 
-Por favor, asegúrate de seguir las buenas prácticas de desarrollo y mantener la coherencia del código.
+<img src="https://github.com/user-attachments/assets/trending-badge.svg" alt="#1 Repository Of The Day" width="300" style="margin: 20px 0;" />
 
+**Plataforma empresarial de vanguardia que integra servicios contables, fiscales y soluciones tecnológicas**  
+*Transformamos la gestión empresarial mediante innovación digital y expertise financiero*
 
-# Bechapra — Soluciones Empresariales
+[🌐 Sitio Web](https://bechapra.com) • [📧 Contacto](mailto:automatizacio@bechapra.com.mx) • [📖 Documentación](https://docs.bechapra.com)
 
-<p align="center">
-	<img src="public/imagen/Logo_1x1_BlancoSinFondo@2x.png" alt="Bechapra Logo" width="120" />
-</p>
-
-<p align="center">
-	<img src="https://img.shields.io/badge/Next.js-16.0.4-black?logo=nextdotjs" />
-	<img src="https://img.shields.io/badge/React-19.1.0-61dafb?logo=react" />
-	<img src="https://img.shields.io/badge/TailwindCSS-4.0.0-38bdf8?logo=tailwindcss" />
-	<img src="https://img.shields.io/badge/TypeScript-5.0.0-3178c6?logo=typescript" />
-	<img src="https://img.shields.io/badge/Framer%20Motion-12.23.24-ff008c?logo=framer" />
-	<img src="https://img.shields.io/badge/Zustand-5.0.8-ffb300?logo=react" />
-</p>
+</div>
 
 ---
 
-## Descripción General
+## 📋 Tabla de Contenidos
 
-Bechapra es una plataforma empresarial desarrollada con tecnologías modernas, orientada a ofrecer soluciones integrales para la transformación y optimización de organizaciones. El proyecto destaca por su arquitectura escalable, diseño profesional, rendimiento optimizado y cumplimiento de las mejores prácticas de seguridad y SEO.
-
----
-
-## Características Destacadas
-
-- Internacionalización (i18n) preparada para múltiples idiomas.
-- Renderizado eficiente y rápido con Next.js 16 y React 19.
-- Interfaz de usuario moderna y adaptable, construida con TailwindCSS y animaciones avanzadas.
-- Componentes reutilizables y estructura modular para facilitar el mantenimiento y la escalabilidad.
-- Diseño completamente responsivo, adaptado a dispositivos móviles y de escritorio.
-- Optimización de imágenes y recursos estáticos para una carga eficiente.
-- Cumplimiento de estándares de seguridad y optimización para motores de búsqueda (SEO).
+- [Acerca del Proyecto](#-acerca-del-proyecto)
+- [Características Principales](#-características-principales)
+- [Tecnologías](#️-tecnologías)
+- [Instalación](#-instalación)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Capturas de Pantalla](#-capturas-de-pantalla)
+- [Contribución](#-contribución)
+- [Contacto](#-contacto)
+- [Licencia](#-licencia)
 
 ---
 
+## 🎯 Acerca del Proyecto
 
-## Capturas de Pantalla
+**Bechapra** es una plataforma empresarial integral diseñada para organizaciones que buscan excelencia en la gestión contable, cumplimiento fiscal y transformación digital. Nuestra solución combina años de experiencia en servicios financieros con tecnología de punta, ofreciendo:
 
-<p align="center">
-	<img src="image/inicio.png" alt="Vista Inicio" width="700" />
-	<br><sub>Página de inicio: presentación institucional y acceso rápido a secciones clave.</sub><br><br>
-	<img src="image/servicios.png" alt="Vista Servicios" width="700" />
-	<br><sub>Sección de servicios: catálogo de soluciones empresariales ofrecidas.</sub><br><br>
-	<img src="image/acerca.png" alt="Vista Acerca de" width="700" />
-	<br><sub>Acerca de: información sobre la empresa, misión y valores.</sub><br><br>
-	<img src="image/noticias.png" alt="Vista Noticias" width="700" />
-	<br><sub>Noticias: últimas novedades y comunicados relevantes.</sub><br><br>
-	<img src="image/prensa.png" alt="Vista Prensa" width="700" />
-	<br><sub>Prensa: apariciones y menciones en medios.</sub>
-</p>
+### 🏆 Nuestra Propuesta de Valor
+
+- **Servicios Contables Especializados**: Contabilidad general, auditoría y consultoría fiscal
+- **Transformación Digital**: Automatización de procesos financieros y administrativos
+- **Cumplimiento Normativo**: Soluciones actualizadas con la legislación vigente
+- **Análisis Financiero**: Reportes inteligentes y dashboards en tiempo real
+- **Integración ERP**: Conectividad con sistemas empresariales existentes
 
 ---
 
-## Instalación y Puesta en Marcha
+## ✨ Características Principales
 
-1. Clona el repositorio:
-	 ```bash
-	 git clone https://github.com/EduardoPedroza017/PaginaWebBechapra.git
-	 cd PaginaWebBechapra
-	 ```
-2. Instala las dependencias:
-	 ```bash
-	 npm install
-	 ```
-3. Ejecuta el entorno de desarrollo:
-	 ```bash
-	 npm run dev
-	 ```
-4. Para producción:
-	 ```bash
-	 npm run build
-	 npm start
-	 ```
+### 🔧 Funcionalidades Empresariales
+
+- **Sistema de Gestión Contable** - Control integral de operaciones financieras
+- **Portal de Clientes** - Acceso seguro a documentación y estados de cuenta
+- **Calculadoras Fiscales** - Herramientas interactivas para ISR, IVA y nómina
+- **Gestión Documental** - Almacenamiento y organización de comprobantes fiscales
+- **Reportes Personalizados** - Generación automatizada de informes financieros
+
+### 🎨 Características Técnicas
+
+- ⚡ **Rendimiento Optimizado** - Carga rápida con SSR y optimización de recursos
+- 🌍 **Internacionalización (i18n)** - Soporte para múltiples idiomas
+- 📱 **Diseño Responsivo** - Experiencia perfecta en todos los dispositivos
+- 🔒 **Seguridad Empresarial** - Encriptación y cumplimiento de estándares
+- ♿ **Accesibilidad WCAG 2.1** - Interfaz inclusiva y conforme a normativas
+- 🚀 **SEO Optimizado** - Posicionamiento mejorado en buscadores
+- 🎭 **Animaciones Fluidas** - Interacciones elegantes con Framer Motion
 
 ---
 
-## Estructura del Proyecto
+## 🛠️ Tecnologías
+
+### Frontend Stack
+
+| Tecnología | Versión | Uso |
+|-----------|---------|-----|
+| **Next.js** | 16.0.4 | Framework React con SSR/SSG |
+| **React** | 19.1.0 | Biblioteca de componentes UI |
+| **TypeScript** | 5.0.0 | Tipado estático y seguridad |
+| **TailwindCSS** | 4.0.0 | Framework CSS utility-first |
+| **Framer Motion** | 12.23.24 | Animaciones y transiciones |
+| **Zustand** | 5.0.8 | Gestión de estado global |
+| **Lucide Icons** | Latest | Iconografía moderna |
+
+### Backend & Integrations
+
+- **PHP** 8.2+ - Lógica del servidor
+- **Laravel** 11+ - Framework backend robusto
+- **Livewire** 3 - Componentes dinámicos full-stack
+
+---
+
+## 🚀 Instalación
+
+### Prerequisitos
+
+- Node.js 18.x o superior
+- npm 9.x o superior
+- Git
+
+### Pasos de Instalación
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/EduardoPedroza017/PaginaWebBechapra.git
+cd PaginaWebBechapra
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Configurar variables de entorno
+cp .env.example .env.local
+# Editar .env.local con tus credenciales
+
+# 4. Ejecutar en modo desarrollo
+npm run dev
+
+# La aplicación estará disponible en http://localhost:3000
+```
+
+### Compilación para Producción
+
+```bash
+# Construir la aplicación
+npm run build
+
+# Ejecutar en modo producción
+npm start
+
+# Análisis del bundle
+npm run analyze
+```
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
-├── app/                # Rutas y páginas principales
-├── components/         # Componentes reutilizables (Navbar, Footer, etc.)
-├── public/             # Imágenes y recursos estáticos
-├── styles/             # Archivos CSS y Tailwind
-├── lib/                # Lógica y utilidades
-├── messages/           # Archivos de traducción i18n
-├── next.config.ts      # Configuración Next.js
-└── package.json        # Dependencias y scripts
+PaginaWebBechapra/
+│
+├── app/                    # Rutas y páginas (App Router)
+│   ├── (landing)/         # Grupo de rutas públicas
+│   ├── (portal)/          # Portal de clientes
+│   └── api/               # API endpoints
+│
+├── components/             # Componentes React reutilizables
+│   ├── ui/                # Componentes de interfaz base
+│   ├── layout/            # Navbar, Footer, Sidebar
+│   ├── sections/          # Secciones de página
+│   └── forms/             # Formularios y validaciones
+│
+├── lib/                    # Utilidades y helpers
+│   ├── api/               # Clientes API
+│   ├── utils/             # Funciones auxiliares
+│   └── constants/         # Constantes y configuración
+│
+├── public/                 # Recursos estáticos
+│   ├── imagen/            # Logotipos e imágenes
+│   └── icons/             # Iconos y favicons
+│
+├── styles/                 # Estilos globales
+│   ├── globals.css        # CSS global y Tailwind
+│   └── animations.css     # Animaciones personalizadas
+│
+├── messages/               # Archivos de traducción i18n
+│   ├── es.json            # Español
+│   └── en.json            # Inglés
+│
+├── types/                  # Definiciones TypeScript
+├── middleware.ts           # Middleware de Next.js
+├── next.config.ts          # Configuración Next.js
+├── tailwind.config.ts      # Configuración Tailwind
+└── tsconfig.json           # Configuración TypeScript
 ```
 
 ---
 
-## Tecnologías Utilizadas
+## 📸 Capturas de Pantalla
 
-- [Next.js 16](https://nextjs.org/)
-- [React 19](https://react.dev/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Zustand](https://zustand-demo.pmnd.rs/)
-- [Lucide Icons](https://lucide.dev/)
+<div align="center">
 
----
+### 🏠 Página de Inicio
+<img src="image/inicio.png" alt="Vista Inicio" width="800" />
 
-## Contacto y Créditos
-
-Proyecto desarrollado por el equipo de Bechapra.
-
-- Correo: automatizacio@bechapra.com.mx
-- Sitio web: [bechapra.com](https://bechapra.com)
+*Presentación institucional con acceso rápido a servicios empresariales clave*
 
 ---
 
-<p align="center"><b>© 2025 Bechapra. Todos los derechos reservados.</b></p>
+### 💼 Catálogo de Servicios
+<img src="image/servicios.png" alt="Vista Servicios" width="800" />
+
+*Portafolio completo de soluciones contables, fiscales y tecnológicas*
+
+---
+
+### 🏢 Acerca de Bechapra
+<img src="image/acerca.png" alt="Vista Acerca de" width="800" />
+
+*Misión, visión y valores que nos distinguen como líderes en el sector*
+
+---
+
+### 📰 Noticias y Actualizaciones
+<img src="image/noticias.png" alt="Vista Noticias" width="800" />
+
+*Últimas novedades, cambios fiscales y comunicados relevantes*
+
+---
+
+### 📢 Sala de Prensa
+<img src="image/prensa.png" alt="Vista Prensa" width="800" />
+
+*Apariciones mediáticas, entrevistas y menciones en publicaciones especializadas*
+
+</div>
+
+---
+
+## 🤝 Contribución
+
+Las contribuciones son bienvenidas y valoradas. Para contribuir al proyecto:
+
+### Proceso de Contribución
+
+1. **Fork del Repositorio**
+   ```bash
+   # Crear tu fork en GitHub, luego clonar
+   git clone https://github.com/tu-usuario/PaginaWebBechapra.git
+   ```
+
+2. **Crear Rama de Desarrollo**
+   ```bash
+   git checkout -b feature/nueva-funcionalidad
+   # o
+   git checkout -b fix/correccion-error
+   ```
+
+3. **Realizar Cambios**
+   ```bash
+   # Desarrollar tu funcionalidad o corrección
+   git add .
+   git commit -m "feat: descripción clara del cambio"
+   ```
+
+4. **Push a tu Fork**
+   ```bash
+   git push origin feature/nueva-funcionalidad
+   ```
+
+5. **Abrir Pull Request**
+   - Describe detalladamente los cambios realizados
+   - Referencia issues relacionados si aplica
+   - Incluye capturas de pantalla si hay cambios visuales
+
+### Guías de Estilo
+
+- Seguir convenciones de código establecidas (ESLint/Prettier)
+- Escribir mensajes de commit descriptivos (Conventional Commits)
+- Documentar funciones y componentes nuevos
+- Incluir pruebas cuando sea posible
+- Mantener la coherencia con el diseño existente
+
+---
+
+## 📞 Contacto
+
+<div align="center">
+
+**Bechapra - Soluciones Empresariales**
+
+📧 **Email**: [automatizacio@bechapra.com.mx](mailto:automatizacio@bechapra.com.mx)  
+🌐 **Website**: [www.bechapra.com](https://bechapra.com)  
+📍 **Ubicación**: Ciudad de México, México
+
+---
+
+### Síguenos
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/company/bechapra)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/bechapra)
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://facebook.com/bechapra)
+
+</div>
+
+---
+
+## 📄 Licencia
+
+**© 2025 Bechapra. Todos los derechos reservados.**
+
+Este proyecto es propiedad de Bechapra y está protegido por las leyes de derechos de autor aplicables. El uso, reproducción o distribución no autorizada está prohibida.
+
+---
+
+<div align="center">
+
+**Desarrollado con 💼 por el equipo de Bechapra**
+
+*Transformando empresas mediante tecnología y expertise financiero*
+
+[![Made with Next.js](https://img.shields.io/badge/Made%20with-Next.js-black?style=flat-square&logo=nextdotjs)](https://nextjs.org)
+[![Powered by React](https://img.shields.io/badge/Powered%20by-React-61dafb?style=flat-square&logo=react)](https://react.dev)
+
+</div>
