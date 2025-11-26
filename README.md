@@ -5,19 +5,12 @@
 
 <img src="public/imagen/Logo_1x1_BlancoSinFondo@2x.png" alt="Bechapra Logo" width="180" />
 
-[![Tests](https://img.shields.io/badge/TESTS-PASSING-brightgreen?style=for-the-badge)](https://github.com)
-[![Laravel](https://img.shields.io/badge/LARAVEL-V11+-red?style=for-the-badge&logo=laravel)](https://laravel.com)
-[![LiveWire](https://img.shields.io/badge/LIVEWIRE-V3-pink?style=for-the-badge&logo=livewire)](https://livewire.laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)](https://php.net)
-
 [![Next.js](https://img.shields.io/badge/Next.js-16.0.4-black?style=flat-square&logo=nextdotjs)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19.1.0-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0.0-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-3178c6?style=flat-square&logo=typescript)](https://typescriptlang.org)
 [![Framer Motion](https://img.shields.io/badge/Framer%20Motion-12.23.24-ff008c?style=flat-square&logo=framer)](https://framer.com/motion)
 [![Zustand](https://img.shields.io/badge/Zustand-5.0.8-ffb300?style=flat-square&logo=react)](https://zustand-demo.pmnd.rs)
-
-<img src="https://github.com/user-attachments/assets/trending-badge.svg" alt="#1 Repository Of The Day" width="300" style="margin: 20px 0;" />
 
 **Plataforma empresarial de vanguardia que integra servicios contables, fiscales y soluciones tecnológicas**  
 *Transformamos la gestión empresarial mediante innovación digital y expertise financiero*
@@ -92,11 +85,6 @@
 | **Zustand** | 5.0.8 | Gestión de estado global |
 | **Lucide Icons** | Latest | Iconografía moderna |
 
-### Backend & Integrations
-
-- **PHP** 8.2+ - Lógica del servidor
-- **Laravel** 11+ - Framework backend robusto
-- **Livewire** 3 - Componentes dinámicos full-stack
 
 ---
 
