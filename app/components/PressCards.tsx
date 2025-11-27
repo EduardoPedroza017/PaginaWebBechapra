@@ -5,14 +5,15 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Calendar, ExternalLink } from 'lucide-react';
 
-export default function PressCards() {
+export default function PressCards({ dict }: { dict: any }) {
+	const releases = dict.prensa?.releases?.items || [];
 	return (
 		<section>
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
 				style={{
 					textAlign: 'center',
 					marginBottom: '1.5rem'
@@ -25,7 +26,7 @@ export default function PressCards() {
 					marginBottom: '1rem',
 					letterSpacing: '-0.02em'
 				}}>
-					Comunicados de Prensa
+					{dict.prensa?.releases?.title ?? 'Comunicados de Prensa'}
 				</h2>
 				<p style={{
 					fontSize: '1.1rem',
@@ -33,45 +34,29 @@ export default function PressCards() {
 					maxWidth: '600px',
 					margin: '0 auto'
 				}}>
-					Nuestros anuncios oficiales, reconocimientos y apariciones en medios
+					{dict.prensa?.hero?.description ?? 'Nuestros anuncios oficiales, reconocimientos y apariciones en medios'}
 				</p>
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 40}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
+				initial={{ opacity: 0, y: 40 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
 				style={{
 					display: 'grid',
 					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
 					gap: '2rem'
 				}}
 			>
-				{[
-					{
-						date: '15 Octubre 2024',
-						title: 'Bechapra expande sus servicios de Capital Humano',
-						excerpt: 'La empresa anuncia nuevas soluciones integrales para el desarrollo organizacional y gestión del talento.',
-					},
-					{
-						date: '3 Septiembre 2024',
-						title: 'Reconocimiento como empresa líder en consultoría',
-						excerpt: 'Bechapra recibe distinción por su excelencia en servicios empresariales y compromiso con clientes.',
-					},
-					{
-						date: '20 Julio 2024',
-						title: 'Nueva alianza estratégica con sector tecnológico',
-						excerpt: 'Acuerdo permitirá integrar innovación digital en todos nuestros servicios de Management.',
-					}
-				].map((item, i) => (
+				{releases.map((item: any, i: number) => (
 					<motion.article
 						key={i}
-						initial={{opacity: 0, y: 30}}
-						whileInView={{opacity: 1, y: 0}}
-						viewport={{once: true}}
-						transition={{duration: 0.5, delay: i * 0.1}}
-						whileHover={{scale: 1.03, y: -8}}
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ duration: 0.5, delay: i * 0.1 }}
+						whileHover={{ scale: 1.03, y: -8 }}
 						style={{
 							padding: '2rem 1.75rem',
 							borderRadius: '16px',
@@ -86,8 +71,8 @@ export default function PressCards() {
 					>
 						{/* Borde superior decorativo */}
 						<motion.div
-							animate={{opacity: [0.6, 1, 0.6]}}
-							transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
+							animate={{ opacity: [0.6, 1, 0.6] }}
+							transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
 							style={{
 								position: 'absolute',
 								top: 0,
@@ -106,7 +91,7 @@ export default function PressCards() {
 							color: '#003d8f'
 						}}>
 							<Calendar size={18} />
-							<span style={{fontSize: '0.9rem', fontWeight: 600}}>{item.date}</span>
+							<span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{item.date}</span>
 						</div>
 
 						<h3 style={{
@@ -128,7 +113,7 @@ export default function PressCards() {
 							{item.excerpt}
 						</p>
 
-						<Link 
+						<Link
 							href="/prensa"
 							style={{
 								display: 'inline-flex',
@@ -141,17 +126,17 @@ export default function PressCards() {
 								transition: 'all 0.3s ease'
 							}}
 						>
-							Leer más <ExternalLink size={16} />
+							{dict.prensa?.releases?.readMore ?? 'Leer más'} <ExternalLink size={16} />
 						</Link>
 					</motion.article>
 				))}
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6, delay: 0.3}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6, delay: 0.3 }}
 				style={{
 					textAlign: 'center',
 					marginTop: '1.5rem'
@@ -174,9 +159,10 @@ export default function PressCards() {
 						boxShadow: '0 12px 30px rgba(0,61,143,0.2)'
 					}}
 				>
-					Ver todos los comunicados →
+					{dict.prensa?.releases?.readMore ?? 'Ver todos los comunicados'} →
 				</Link>
 			</motion.div>
 		</section>
 	);
+}
 }

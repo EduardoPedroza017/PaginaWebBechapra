@@ -6,10 +6,10 @@ import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
 import styles from "@/app/css/components/CtaRedes.module.css";
 
-export default function CtaRedes() {
-  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
 
-  const socialLinks = [
+export default function CtaRedes({ dict }: { dict: any }) {
+  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
+  const socialLinks = dict.home?.ctaRedes?.socialLinks || [
     {
       id: "linkedin",
       name: "LinkedIn",
@@ -107,9 +107,9 @@ export default function CtaRedes() {
                 variants={itemVariants}
                 className={styles.title}
               >
-                Juntos trazamos <br />
+                {dict.home?.ctaRedes?.title?.split('\n')[0] ?? 'Juntos trazamos'} <br />
                 <span className={styles.titleHighlight}>
-                  tu camino al éxito.
+                  {dict.home?.ctaRedes?.title?.split('\n')[1] ?? 'tu camino al éxito.'}
                 </span>
               </motion.h3>
 
@@ -118,7 +118,7 @@ export default function CtaRedes() {
                 variants={itemVariants}
                 className={styles.description}
               >
-                ¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!
+                {dict.home?.ctaRedes?.description ?? '¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!'}
               </motion.p>
 
               {/* Botón CTA */}
@@ -130,19 +130,19 @@ export default function CtaRedes() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <div className={styles.ctaButtonContent}>
-                    <span>¡AGÉNDE AHORA!</span>
-                    <motion.svg 
-                      width="20" 
-                      height="20" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <span>{dict.home?.ctaRedes?.cta ?? '¡AGÉNDE AHORA!'}</span>
+                    <motion.svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
                       strokeWidth="2.5"
                       initial={{ x: 0 }}
                       whileHover={{ x: 4 }}
                       transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     >
-                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </motion.svg>
                   </div>
                 </motion.a>
@@ -164,7 +164,7 @@ export default function CtaRedes() {
                 transition={{ delay: 0.5, duration: 0.5 }}
                 className={styles.socialTitle}
               >
-                ¡VISÍTANOS!
+                {dict.home?.ctaRedes?.visit ?? '¡VISÍTANOS!'}
               </motion.h4>
 
               <motion.div 

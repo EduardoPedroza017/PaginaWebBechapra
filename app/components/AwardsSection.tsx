@@ -4,33 +4,14 @@ import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
 
-export default function AwardsSection() {
-  const reconocimientos = [
-    {
-      id: "ccrh",
-      img: "",
-      title: "Concilio de Recursos Humanos",
-    },
-    {
-      id: "beh",
-      img: "",
-      title: "Distintivo de Empresas Humanitarias",
-    },
-    {
-      id: "trabajo",
-      img: "",
-      title: "Certificación de Trabajo Digno",
-    },
-    {
-      id: "repse",
-      img: "",
-      title: "Registro de Especialistas Profesionales",
-    },
+export default function AwardsSection({ dict }: { dict: any }) {
+  const awards = dict.home?.awards?.items || [
+    { id: "ccrh", img: "", title: "Concilio de Recursos Humanos" },
+    { id: "beh", img: "", title: "Distintivo de Empresas Humanitarias" },
+    { id: "trabajo", img: "", title: "Certificación de Trabajo Digno" },
+    { id: "repse", img: "", title: "Registro de Especialistas Profesionales" },
   ];
-
-  // Duplicar logos para efecto infinito
-  const duplicatedLogos = [...reconocimientos, ...reconocimientos];
-
+  const duplicatedLogos = [...awards, ...awards];
   return (
     <section style={{ padding: 0, overflow: 'hidden' }}>
       <AnimatedSection>
@@ -43,7 +24,7 @@ export default function AwardsSection() {
             marginBottom: '0.75rem',
             letterSpacing: '-0.02em'
           }}>
-            Reconocimientos
+            {dict.home?.awards?.title ?? 'Reconocimientos'}
           </h2>
           <div style={{
             width: '80px',
@@ -62,9 +43,7 @@ export default function AwardsSection() {
           padding: '1rem 0'
         }}>
           <motion.div
-            animate={{
-              x: [0, -50 + '%'],
-            }}
+            animate={{ x: [0, -50 + '%'] }}
             transition={{
               x: {
                 repeat: Infinity,
@@ -125,7 +104,7 @@ export default function AwardsSection() {
                     color: '#94a3b8',
                     textTransform: 'uppercase'
                   }}>
-                    LOGO
+                    {rec.title}
                   </div>
                 )}
               </div>

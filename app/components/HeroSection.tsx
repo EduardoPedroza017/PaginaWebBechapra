@@ -9,7 +9,7 @@ const heroImages = [
   "/imagen/prueba/Flayers_Home_01100.jpg"
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ dict }: { dict: any }) {
   const [currentImageIndex] = useState(0);
 
   return (
@@ -26,13 +26,16 @@ export default function HeroSection() {
             className={`space-y-4 sm:space-y-5 ${styles.heroInner} z-20`}
           >
             <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl ${styles.heroTitle}`}>
-              Impulsamos
-              <br />
-              tu talento y operación
+              {dict.home?.hero?.title?.split('\n').map((line: string, i: number) => (
+                <span key={i}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </h1>
 
             <p className={`text-base sm:text-lg leading-relaxed ${styles.heroSubtitle}`}>
-              Capital Humano, Desarrollo Organizacional y Management Services integrados bajo una misma marca para acompañarte en cada etapa de crecimiento.
+              {dict.home?.hero?.subtitle}
             </p>
 
             <div className={styles.heroButtonsRow}>
@@ -41,7 +44,7 @@ export default function HeroSection() {
                 href="#servicios"
                 className={styles.heroButtonBlue}
               >
-                Explorar Servicios
+                {dict.home?.hero?.explore}
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: '8px' }}>
                   <path d="M13 7l5 5-5 5M6 12h12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -54,7 +57,7 @@ export default function HeroSection() {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
                   <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Contactar
+                {dict.home?.hero?.contact}
               </a>
             </div>
           </motion.div>

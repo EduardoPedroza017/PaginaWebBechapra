@@ -5,8 +5,9 @@ import { GraduationCap, Users, Video, Award } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { motion } from "framer-motion";
 
-export default function TrainingCenterSection() {
-  const features = [
+
+export default function TrainingCenterSection({ dict }: { dict: any }) {
+  const features = dict.home?.trainingCenter?.features || [
     {
       label: "Ferias de Empleo",
       description: "Participación activa en ferias de empleo con escuelas y universidades",
@@ -68,7 +69,7 @@ export default function TrainingCenterSection() {
             gap: '1rem',
             marginBottom: '1rem'
           }}>
-            <GraduationCap size={40} style={{color: '#003d8f'}} />
+            <GraduationCap size={40} style={{ color: '#003d8f' }} />
             <h2 style={{
               fontSize: 'clamp(2rem, 4vw, 2.8rem)',
               fontWeight: 900,
@@ -76,7 +77,7 @@ export default function TrainingCenterSection() {
               margin: 0,
               letterSpacing: '-0.02em'
             }}>
-              Bechapra Training Center
+              {dict.home?.trainingCenter?.title ?? 'Bechapra Training Center'}
             </h2>
           </div>
           <div style={{
@@ -91,7 +92,7 @@ export default function TrainingCenterSection() {
             color: '#666',
             lineHeight: 1.7
           }}>
-            Formamos y conectamos el talento del futuro con las mejores oportunidades
+            {dict.home?.trainingCenter?.description ?? 'Formamos y conectamos el talento del futuro con las mejores oportunidades'}
           </p>
         </div>
       </AnimatedSection>
@@ -243,7 +244,7 @@ export default function TrainingCenterSection() {
                 e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,61,143,0.2)';
               }}
               >
-                Conoce más →
+                {dict.home?.trainingCenter?.cta ?? 'Conoce más →'}
               </button>
             </div>
 

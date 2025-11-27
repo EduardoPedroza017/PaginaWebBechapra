@@ -32,10 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://use.typekit.net/abc1def.css"></link>
       </head>
       <body>
-        <Navbar />
-        <main className="container">
-          {children}
-        </main>
+        {children}
         <Analytics />
         <CookieConsent />
       </body>

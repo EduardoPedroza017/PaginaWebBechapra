@@ -5,14 +5,21 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Clock, BookOpen, FileText, Users } from 'lucide-react';
 
-export default function NewsCards() {
+const iconMap: Record<string, any> = {
+	blog: BookOpen,
+	legal: FileText,
+	event: Users,
+};
+
+export default function NewsCards({ dict }: { dict: any }) {
+	const articles = dict.noticias?.articles || [];
 	return (
 		<section>
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
 				style={{
 					textAlign: 'center',
 					marginBottom: 'clamp(1.25rem, 2.5vw, 2rem)'
@@ -25,7 +32,7 @@ export default function NewsCards() {
 					marginBottom: '1rem',
 					letterSpacing: '-0.02em'
 				}}>
-					Últimas Noticias
+					{dict.noticias?.recent?.title ?? 'Últimas Noticias'}
 				</h2>
 				<p style={{
 					fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
@@ -34,15 +41,15 @@ export default function NewsCards() {
 					margin: '0 auto',
 					padding: '0 1rem'
 				}}>
-					Mantente informado sobre tendencias, eventos y cambios legislativos importantes
+					{dict.noticias?.hero?.description ?? 'Mantente informado sobre tendencias, eventos y cambios legislativos importantes'}
 				</p>
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 40}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
+				initial={{ opacity: 0, y: 40 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
 				style={{
 					display: 'grid',
 					gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
@@ -50,50 +57,23 @@ export default function NewsCards() {
 					padding: '0 1rem'
 				}}
 			>
-				{[
-					{
-						category: 'Blog',
-						date: '14 Noviembre 2024',
-						title: 'Nuevas tendencias en atracción de talento 2025',
-						excerpt: 'Descubre cómo las empresas están transformando sus estrategias de reclutamiento con inteligencia artificial.',
-						readTime: '5 min',
-						type: 'blog',
-						icon: BookOpen,
-						color: '#003d8f',
-						bgGradient: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
-					},
-					{
-						category: 'Cambios Legislativos',
-						date: '12 Noviembre 2024',
-						title: 'Reforma fiscal 2025: Lo que tu empresa debe saber',
-						excerpt: 'Análisis completo de las nuevas disposiciones fiscales y su impacto en los servicios contables.',
-						readTime: '7 min',
-						type: 'legal',
-						icon: FileText,
-						color: '#D97706',
-						bgGradient: 'linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%)'
-					},
-					{
-						category: 'Evento',
-						date: '10 Noviembre 2024',
-						title: 'Bechapra presente en HR Summit México 2024',
-						excerpt: 'Nuestra participación en el evento más importante de Recursos Humanos del año.',
-						readTime: '4 min',
-						type: 'event',
-						icon: Users,
-						color: '#7C3AED',
-						bgGradient: 'linear-gradient(135deg, #F0E6FF 0%, #E8D4FF 100%)'
-					}
-				].map((item, i) => {
-					const Icon = item.icon;
+				{articles.slice(0, 3).map((item: any, i: number) => {
+					const Icon = iconMap[item.type] || BookOpen;
+					// Color and bgGradient based on type
+					const color = item.type === 'blog' ? '#003d8f' : item.type === 'legal' ? '#D97706' : '#7C3AED';
+					const bgGradient = item.type === 'blog'
+						? 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
+						: item.type === 'legal'
+						? 'linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%)'
+						: 'linear-gradient(135deg, #F0E6FF 0%, #E8D4FF 100%)';
 					return (
 						<motion.article
 							key={i}
-							initial={{opacity: 0, y: 30}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.5, delay: i * 0.1}}
-							whileHover={{scale: 1.03, y: -8}}
+							initial={{ opacity: 0, y: 30 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true }}
+							transition={{ duration: 0.5, delay: i * 0.1 }}
+							whileHover={{ scale: 1.03, y: -8 }}
 							style={{
 								borderRadius: '16px',
 								background: 'rgba(255, 255, 255, 0.9)',
@@ -109,7 +89,7 @@ export default function NewsCards() {
 							<div style={{
 								width: '100%',
 								height: 'clamp(180px, 25vw, 220px)',
-								background: item.bgGradient,
+								background: bgGradient,
 								position: 'relative',
 								overflow: 'hidden',
 								display: 'flex',
@@ -121,7 +101,7 @@ export default function NewsCards() {
 									position: 'absolute',
 									top: '1rem',
 									left: '1rem',
-									background: item.color,
+									background: color,
 									color: 'white',
 									padding: 'clamp(0.4rem, 0.8vw, 0.5rem) clamp(0.8rem, 1.2vw, 1rem)',
 									borderRadius: '8px',
@@ -142,13 +122,13 @@ export default function NewsCards() {
 									alignItems: 'center',
 									justifyContent: 'center',
 									boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-									border: `3px solid ${item.color}20`
+									border: `3px solid ${color}20`
 								}}>
-									<Icon size={50} strokeWidth={2} style={{color: item.color, width: 'clamp(40px, 6vw, 60px)', height: 'clamp(40px, 6vw, 60px)'}} />
+									<Icon size={50} strokeWidth={2} style={{ color, width: 'clamp(40px, 6vw, 60px)', height: 'clamp(40px, 6vw, 60px)' }} />
 								</div>
 							</div>
 
-							<div style={{padding: 'clamp(1.25rem, 2vw, 1.75rem)'}}>
+							<div style={{ padding: 'clamp(1.25rem, 2vw, 1.75rem)' }}>
 								<div style={{
 									display: 'flex',
 									alignItems: 'center',
@@ -158,7 +138,7 @@ export default function NewsCards() {
 									color: '#666',
 									flexWrap: 'wrap'
 								}}>
-									<div style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
 										<Clock size={16} />
 										<span>{item.date}</span>
 									</div>
@@ -185,7 +165,7 @@ export default function NewsCards() {
 									{item.excerpt}
 								</p>
 
-								<Link 
+								<Link
 									href="/noticias"
 									style={{
 										display: 'inline-flex',
@@ -198,7 +178,7 @@ export default function NewsCards() {
 										transition: 'all 0.3s ease'
 									}}
 								>
-									Leer más →
+									{dict.noticias?.labels?.readArticle ?? 'Leer más'} →
 								</Link>
 							</div>
 						</motion.article>
@@ -207,10 +187,10 @@ export default function NewsCards() {
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6, delay: 0.3}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6, delay: 0.3 }}
 				style={{
 					textAlign: 'center',
 					marginTop: '1.5rem'
@@ -233,7 +213,7 @@ export default function NewsCards() {
 						boxShadow: '0 12px 30px rgba(0,61,143,0.2)'
 					}}
 				>
-					Ver todas las noticias →
+					{dict.noticias?.loadMore ?? 'Ver todas las noticias'} →
 				</Link>
 			</motion.div>
 		</section>

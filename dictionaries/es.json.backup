@@ -1,0 +1,763 @@
+{
+    "common": {
+        "back": "Volver",
+        "contact": "Contactar",
+        "readMore": "Leer más",
+        "loading": "Cargando...",
+        "footer": {
+            "rights": "Todos los derechos reservados."
+        }
+    },
+    "serviciosPyme": {
+        "hero": {
+            "back": "Volver",
+            "title": "Servicios",
+            "highlight": "PYME",
+            "description": "Paquetes pensados para empresas pequeñas: menos complejidad, más foco en crecimiento y escalabilidad.",
+            "cta": "Quiero una propuesta"
+        },
+        "included": {
+            "title": "Qué incluimos",
+            "items": [
+                {
+                    "title": "Constitución y contratos",
+                    "desc": "Acompañamiento para constituir tu empresa y contratos comerciales básicos."
+                },
+                {
+                    "title": "Contabilidad simplificada",
+                    "desc": "Procesos simples y reportes claros pensados para PYMEs."
+                },
+                {
+                    "title": "Recursos humanos",
+                    "desc": "Contratos, políticas y gestión de personal en formatos accesibles."
+                },
+                {
+                    "title": "Optimización de costos",
+                    "desc": "Revisión de gastos y recomendaciones para mejorar flujo de efectivo."
+                }
+            ]
+        },
+        "useCases": {
+            "title": "Casos de uso",
+            "items": [
+                {
+                    "title": "Venta en línea",
+                    "desc": "Optimización de procesos contables y facturación para tiendas online que crecen."
+                },
+                {
+                    "title": "Servicios profesionales",
+                    "desc": "Paquetes con contratos, políticas y gestión de clientes recurrentes."
+                },
+                {
+                    "title": "Restaurantes y retail",
+                    "desc": "Control de inventarios, costos y recomendaciones para mejorar margen."
+                },
+                {
+                    "title": "Escalamiento",
+                    "desc": "Procesos para preparar la empresa para inversión o crecimiento estructurado."
+                }
+            ]
+        },
+        "packages": {
+            "title": "Paquetes",
+            "items": [
+                {
+                    "name": "Starter",
+                    "price": "MXN 2,500 / mes",
+                    "items": [
+                        "Registro básico",
+                        "Reporte mensual",
+                        "Consultas por email"
+                    ]
+                },
+                {
+                    "name": "Growth",
+                    "price": "MXN 6,000 / mes",
+                    "items": [
+                        "Todo Starter",
+                        "Reportes KPI",
+                        "Soporte telefónico"
+                    ]
+                },
+                {
+                    "name": "Scale",
+                    "price": "MXN 12,000 / mes",
+                    "items": [
+                        "Todo Growth",
+                        "Cierre anual",
+                        "Consultoría estratégica"
+                    ]
+                }
+            ],
+            "cta": "Elegir paquete"
+        },
+        "faq": {
+            "title": "Preguntas frecuentes",
+            "items": [
+                {
+                    "q": "¿Puedo cambiar de paquete después?",
+                    "a": "Sí, puedes escalar o bajar de paquete con 30 días de aviso y ajustamos la facturación."
+                },
+                {
+                    "q": "¿Ofrecen facturación y nómina?",
+                    "a": "Sí, ofrecemos soluciones de facturación y coordinación con proveedores de nómina según la necesidad."
+                },
+                {
+                    "q": "¿Cuál es el tiempo de implementación?",
+                    "a": "Generalmente entre 1-2 semanas para tener el sistema operando con documentación básica y capacitación inicial."
+                }
+            ]
+        },
+        "finalCta": {
+            "title": "¿Listo para arrancar?",
+            "description": "Solicita una propuesta adaptada a tu operación y tamaño de empresa.",
+            "contact": "Contactar",
+            "viewPackages": "Ver paquetes"
+        },
+        "contact": {
+            "title": "¿Listo para profesionalizar tu PYME?",
+            "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución ideal para tu empresa."
+        }
+    },
+    "serviciosLegales": {
+        "hero": {
+            "back": "Volver",
+            "title": "Servicios",
+            "highlight": "Legales",
+            "description": "Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.",
+            "stats": {
+                "cases": {
+                    "value": "+300",
+                    "label": "Casos atendidos"
+                },
+                "experience": {
+                    "value": "8+",
+                    "label": "Años de experiencia"
+                }
+            },
+            "cta": "Solicitar asesoría"
+        },
+        "services": {
+            "title": "Nuestros servicios",
+            "items": [
+                {
+                    "title": "Asesoría mercantil",
+                    "desc": "Constitución, contratos y gobierno corporativo para empresas en crecimiento."
+                },
+                {
+                    "title": "Cumplimiento y regulatorio",
+                    "desc": "Políticas internas, cumplimiento normativo y defensa administrativa."
+                },
+                {
+                    "title": "Contratación laboral y seguridad",
+                    "desc": "Asesoría en contratos laborales, políticas y desvinculaciones con enfoque preventivo."
+                },
+                {
+                    "title": "Protección de datos y privacidad",
+                    "desc": "Avisos de privacidad, contratos con proveedores y buenas prácticas para datos personales."
+                }
+            ]
+        },
+        "packages": {
+            "title": "Paquetes y modalidades",
+            "items": [
+                {
+                    "name": "Retainer básico",
+                    "price": "MXN 6,500 / mes",
+                    "desc": "Soporte legal continuado: revisiones contractuales y consultas mensuales."
+                },
+                {
+                    "name": "Proyecto puntual",
+                    "price": "Desde MXN 12,000",
+                    "desc": "Contratos, políticas o auditoría legal por proyecto con entregables claros."
+                },
+                {
+                    "name": "Soporte completo",
+                    "price": "A cotizar",
+                    "desc": "Paquete a medida con representación, gestión de riesgos y capacitación a equipo."
+                }
+            ]
+        },
+        "timeline": {
+            "title": "Cómo trabajamos",
+            "items": [
+                {
+                    "step": "01",
+                    "title": "Diagnóstico",
+                    "desc": "Revisión rápida para identificar prioridades y riesgos."
+                },
+                {
+                    "step": "02",
+                    "title": "Plan de trabajo",
+                    "desc": "Propuesta con fases, entregables y cronograma."
+                },
+                {
+                    "step": "03",
+                    "title": "Ejecución",
+                    "desc": "Implementación, capacitación y soporte continuo."
+                }
+            ]
+        },
+        "faq": {
+            "title": "Preguntas frecuentes",
+            "common": {
+                "title": "Dudas comunes",
+                "items": [
+                    {
+                        "q": "¿Pueden acompañar procesos judiciales?",
+                        "a": "Sí, trabajamos con despachos asociados y coordinamos la defensa o representación según el alcance que requiera tu empresa."
+                    },
+                    {
+                        "q": "¿Qué tan rápido implementan políticas internas?",
+                        "a": "Dependiendo del tamaño, en 2 a 6 semanas podemos tener políticas y procedimientos implementados con capacitación al personal clave."
+                    },
+                    {
+                        "q": "¿Ofrecen servicios por proyecto o retainer?",
+                        "a": "Ambos: paquetes por proyecto y retainer mensual para soporte continuo y asesoría preventiva."
+                    }
+                ]
+            },
+            "benefits": {
+                "title": "Beneficios clave",
+                "items": [
+                    {
+                        "title": "Prevención de riesgos",
+                        "desc": "Identificación proactiva de contingencias legales antes de que escalen."
+                    },
+                    {
+                        "title": "Respuesta ágil",
+                        "desc": "Atención rápida y estratégica ante requerimientos o notificaciones."
+                    },
+                    {
+                        "title": "Documentación clara",
+                        "desc": "Contratos, políticas y procedimientos formalizados y aplicables."
+                    }
+                ]
+            }
+        },
+        "finalCta": {
+            "title": "¿Listo para reducir riesgos legales?",
+            "description": "Hablemos: proponemos un plan legal inicial personalizado para tu empresa.",
+            "cta": "Contactar ahora",
+            "secondary": "Solicitar evaluación"
+        },
+        "contact": {
+            "title": "¿Listo para proteger tu empresa?",
+            "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita."
+        }
+    },
+    "serviciosEspecializados": {
+        "hero": {
+            "back": "Volver",
+            "title": "Servicios Especializados",
+            "description": "Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.",
+            "cta": "Contactar a Bechapra"
+        },
+        "stats": {
+            "experience": "Años de experiencia",
+            "clients": "Empresas satisfechas",
+            "support": "Soporte dedicado",
+            "retention": "Tasa de retención"
+        },
+        "solutions": {
+            "title": "Nuestras soluciones",
+            "description": "Adaptamos nuestros servicios a las necesidades de tu sector y operación. Descubre cómo podemos ayudarte:",
+            "items": [
+                {
+                    "title": "Administración de personal externo",
+                    "desc": "Gestión integral de talento para proyectos, outsourcing y servicios temporales."
+                },
+                {
+                    "title": "Servicios por industria",
+                    "desc": "Soluciones especializadas para manufactura, retail, logística, salud, TI y más."
+                },
+                {
+                    "title": "Reclutamiento especializado",
+                    "desc": "Búsqueda y selección de perfiles técnicos, ejecutivos y operativos a la medida."
+                },
+                {
+                    "title": "Cumplimiento normativo",
+                    "desc": "Aseguramos procesos alineados a la ley y regulaciones de cada sector."
+                },
+                {
+                    "title": "Servicios internacionales",
+                    "desc": "Gestión de personal y nómina para empresas globales o con operaciones en México."
+                },
+                {
+                    "title": "Soluciones a la medida",
+                    "desc": "Diseño de esquemas y servicios según el giro, tamaño y retos de tu empresa."
+                },
+                {
+                    "title": "Consultoría y optimización",
+                    "desc": "Diagnóstico, mejora de procesos y asesoría en recursos humanos y nómina."
+                }
+            ],
+            "cta": "Conocer más"
+        },
+        "why": {
+            "title": "¿Por qué elegir Bechapra?",
+            "items": [
+                {
+                    "title": "Experiencia comprobada",
+                    "desc": "Más de 20 años brindando soluciones especializadas a empresas líderes de México y el extranjero."
+                },
+                {
+                    "title": "Resultados medibles",
+                    "desc": "Procesos optimizados, reducción de costos y cumplimiento total en cada proyecto."
+                },
+                {
+                    "title": "Atención personalizada",
+                    "desc": "Equipo dedicado y soporte 24/7 para cada cliente y cada industria."
+                }
+            ]
+        },
+        "contact": {
+            "title": "¿Listo para transformar tu operación?",
+            "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita."
+        }
+    },
+    "noticias": {
+        "hero": {
+            "title": "Noticias",
+            "subtitle": "y Actualidad",
+            "description": "Blog corporativo, eventos destacados y actualizaciones sobre cambios legislativos que impactan tus operaciones empresariales.",
+            "cta": "Suscríbete"
+        },
+        "search": {
+            "placeholder": "Buscar noticias, temas o palabras clave...",
+            "button": "Buscar",
+            "comingSoon": "Buscador próximamente disponible"
+        },
+        "recent": {
+            "title": "Noticias Más Recientes"
+        },
+        "articles": [
+            {
+                "category": "Blog",
+                "date": "14 Noviembre 2024",
+                "title": "Nuevas tendencias en atracción de talento 2025",
+                "excerpt": "Descubre cómo las empresas están transformando sus estrategias de reclutamiento con inteligencia artificial y employer branding.",
+                "readTime": "5 min",
+                "featured": true,
+                "type": "blog"
+            },
+            {
+                "category": "Cambios Legislativos",
+                "date": "12 Noviembre 2024",
+                "title": "Reforma fiscal 2025: Lo que tu empresa debe saber",
+                "excerpt": "Análisis completo de las nuevas disposiciones fiscales y su impacto en los servicios contables y de nómina.",
+                "readTime": "7 min",
+                "featured": true,
+                "type": "legal"
+            },
+            {
+                "category": "Evento",
+                "date": "10 Noviembre 2024",
+                "title": "Bechapra presente en HR Summit México 2024",
+                "excerpt": "Nuestra participación en el evento más importante de Recursos Humanos del año con ponencia sobre transformación digital.",
+                "readTime": "4 min",
+                "featured": false,
+                "type": "event"
+            },
+            {
+                "category": "Blog",
+                "date": "8 Noviembre 2024",
+                "title": "Transformación digital en la gestión de talento",
+                "excerpt": "Cómo la tecnología está revolucionando los procesos de Capital Humano y mejorando la experiencia del empleado.",
+                "readTime": "6 min",
+                "featured": false,
+                "type": "blog"
+            },
+            {
+                "category": "Cambios Legislativos",
+                "date": "5 Noviembre 2024",
+                "title": "Actualizaciones NOM-035: Nuevos lineamientos",
+                "excerpt": "Conoce las modificaciones recientes a la normativa de riesgos psicosociales y cómo implementarlas correctamente.",
+                "readTime": "8 min",
+                "featured": false,
+                "type": "legal"
+            },
+            {
+                "category": "Evento",
+                "date": "1 Noviembre 2024",
+                "title": "Webinar: El futuro del trabajo híbrido",
+                "excerpt": "Revive nuestro webinar exclusivo sobre las mejores prácticas para gestionar equipos en modalidad híbrida.",
+                "readTime": "3 min",
+                "featured": false,
+                "type": "event"
+            }
+        ],
+        "labels": {
+            "featured": "Destacado",
+            "readTime": "de lectura",
+            "readArticle": "Leer artículo completo"
+        },
+        "categories": {
+            "title": "Explora por categoría",
+            "items": [
+                {
+                    "title": "Blog Corporativo",
+                    "count": "42 artículos",
+                    "description": "Tendencias, insights y mejores prácticas"
+                },
+                {
+                    "title": "Eventos",
+                    "count": "18 eventos",
+                    "description": "Webinars, conferencias y capacitaciones"
+                },
+                {
+                    "title": "Cambios Legislativos",
+                    "count": "27 actualizaciones",
+                    "description": "Reformas fiscales, laborales y normativas"
+                }
+            ]
+        },
+        "loadMore": "Ver más noticias"
+    },
+    "prensa": {
+        "hero": {
+            "title": {
+                "highlight": "Sala de",
+                "rest": "Prensa"
+            },
+            "description": "Mantente informado sobre nuestros comunicados oficiales, reconocimientos y apariciones en medios.",
+            "cta": "Contacto de prensa"
+        },
+        "releases": {
+            "title": "Comunicados de Prensa",
+            "items": [
+                {
+                    "date": "15 Octubre 2024",
+                    "title": "Bechapra expande sus servicios de Capital Humano",
+                    "excerpt": "La empresa anuncia nuevas soluciones integrales para el desarrollo organizacional y gestión del talento."
+                },
+                {
+                    "date": "3 Septiembre 2024",
+                    "title": "Reconocimiento como empresa líder en consultoría",
+                    "excerpt": "Bechapra recibe distinción por su excelencia en servicios empresariales y compromiso con clientes."
+                },
+                {
+                    "date": "20 Julio 2024",
+                    "title": "Nueva alianza estratégica con sector tecnológico",
+                    "excerpt": "Acuerdo permitirá integrar innovación digital en todos nuestros servicios de Management."
+                }
+            ],
+            "readMore": "Leer más"
+        }
+    },
+    "politicaPrivacidad": {
+        "hero": {
+            "title": "Política de Privacidad",
+            "subtitle": "Aviso de Privacidad de Bechapra - Protección de Datos Personales"
+        },
+        "introduction": "Bechapra - Soluciones Empresariales, con domicilio en Ciudad de México, México, es responsable del tratamiento de sus datos personales. Este Aviso de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos su información personal en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.",
+        "sections": [
+            {
+                "title": "1. Información que Recopilamos",
+                "content": "Bechapra recopila información personal cuando usted voluntariamente nos la proporciona a través de formularios de contacto, solicitudes de servicio, o registro en nuestro sitio web. Esta información puede incluir:\n\n• Nombre completo\n• Correo electrónico\n• Número telefónico\n• Empresa u organización\n• Puesto o cargo\n• Información relacionada con su consulta o solicitud de servicios"
+            },
+            {
+                "title": "2. Uso de la Información",
+                "content": "La información personal recopilada será utilizada exclusivamente para los siguientes propósitos:\n\n• Responder a sus consultas y solicitudes de información\n• Proporcionar y mejorar nuestros servicios empresariales\n• Enviar comunicaciones relacionadas con servicios contratados\n• Cumplir con obligaciones contractuales y legales\n• Realizar análisis internos para mejorar nuestros servicios\n• Enviar información sobre nuevos servicios (previo consentimiento)"
+            },
+            {
+                "title": "3. Protección de Datos Personales",
+                "content": "En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, Bechapra implementa medidas de seguridad administrativas, técnicas y físicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado.\n\nNos comprometemos a:\n• Mantener la confidencialidad de su información\n• No vender ni compartir sus datos con terceros sin su consentimiento\n• Utilizar protocolos de seguridad encriptados\n• Capacitar a nuestro personal en protección de datos"
+            },
+            {
+                "title": "4. Derechos ARCO",
+                "content": "Como titular de datos personales, usted tiene derecho a:\n\n• Acceder a sus datos personales en nuestra posesión\n• Rectificar datos inexactos o incompletos\n• Cancelar sus datos cuando considere que no se requieren\n• Oponerse al tratamiento de sus datos para fines específicos\n\nPara ejercer cualquiera de estos derechos, puede contactarnos a través de: contacto@bechapra.com"
+            },
+            {
+                "title": "5. Transferencia de Datos",
+                "content": "Bechapra no transferirá sus datos personales a terceros sin su consentimiento, excepto en los siguientes casos:\n\n• Cuando sea necesario para la prestación de servicios contratados\n• Por requerimiento de autoridades competentes\n• A empresas subsidiarias o afiliadas bajo los mismos estándares de protección\n• Cuando sea necesario para proteger los intereses de Bechapra conforme a derecho"
+            },
+            {
+                "title": "6. Cookies y Tecnologías Similares",
+                "content": "Nuestro sitio web utiliza cookies y tecnologías similares para mejorar la experiencia del usuario. Para más información sobre cómo utilizamos estas tecnologías, consulte nuestra Política de Cookies."
+            },
+            {
+                "title": "7. Modificaciones al Aviso de Privacidad",
+                "content": "Bechapra se reserva el derecho de modificar este Aviso de Privacidad en cualquier momento. Cualquier cambio será notificado a través de nuestro sitio web. Le recomendamos revisar periódicamente este aviso para estar informado sobre cómo protegemos su información."
+            },
+            "desc": "Diagnóstico, mejora de procesos y asesoría en recursos humanos y nómina."
+        }
+    ],
+    "cta": "Conocer más"
+},
+"why": {
+    "title": "¿Por qué elegir Bechapra?",
+    "items": [
+        {
+            "title": "Experiencia comprobada",
+            "desc": "Más de 20 años brindando soluciones especializadas a empresas líderes de México y el extranjero."
+        },
+        {
+            "title": "Resultados medibles",
+            "desc": "Procesos optimizados, reducción de costos y cumplimiento total en cada proyecto."
+        },
+        {
+            "title": "Atención personalizada",
+            "desc": "Equipo dedicado y soporte 24/7 para cada cliente y cada industria."
+        }
+    ]
+},
+"contact": {
+    "title": "¿Listo para transformar tu operación?",
+    "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita."
+}
+},
+"noticias": {
+"hero": {
+    "title": "Noticias",
+    "subtitle": "y Actualidad",
+    "description": "Blog corporativo, eventos destacados y actualizaciones sobre cambios legislativos que impactan tus operaciones empresariales.",
+    "cta": "Suscríbete"
+},
+"search": {
+    "placeholder": "Buscar noticias, temas o palabras clave...",
+    "button": "Buscar",
+    "comingSoon": "Buscador próximamente disponible"
+},
+"recent": {
+    "title": "Noticias Más Recientes"
+},
+"articles": [
+    {
+        "category": "Blog",
+        "date": "14 Noviembre 2024",
+        "title": "Nuevas tendencias en atracción de talento 2025",
+        "excerpt": "Descubre cómo las empresas están transformando sus estrategias de reclutamiento con inteligencia artificial y employer branding.",
+        "readTime": "5 min",
+        "featured": true,
+        "type": "blog"
+    },
+    {
+        "category": "Cambios Legislativos",
+        "date": "12 Noviembre 2024",
+        "title": "Reforma fiscal 2025: Lo que tu empresa debe saber",
+        "excerpt": "Análisis completo de las nuevas disposiciones fiscales y su impacto en los servicios contables y de nómina.",
+        "readTime": "7 min",
+        "featured": true,
+        "type": "legal"
+    },
+    {
+        "category": "Evento",
+        "date": "10 Noviembre 2024",
+        "title": "Bechapra presente en HR Summit México 2024",
+        "excerpt": "Nuestra participación en el evento más importante de Recursos Humanos del año con ponencia sobre transformación digital.",
+        "readTime": "4 min",
+        "featured": false,
+        "type": "event"
+    },
+    {
+        "category": "Blog",
+        "date": "8 Noviembre 2024",
+        "title": "Transformación digital en la gestión de talento",
+        "excerpt": "Cómo la tecnología está revolucionando los procesos de Capital Humano y mejorando la experiencia del empleado.",
+        "readTime": "6 min",
+        "featured": false,
+        "type": "blog"
+    },
+    {
+        "category": "Cambios Legislativos",
+        "date": "5 Noviembre 2024",
+        "title": "Actualizaciones NOM-035: Nuevos lineamientos",
+        "excerpt": "Conoce las modificaciones recientes a la normativa de riesgos psicosociales y cómo implementarlas correctamente.",
+        "readTime": "8 min",
+        "featured": false,
+        "type": "legal"
+    },
+    {
+        "category": "Evento",
+        "date": "1 Noviembre 2024",
+        "title": "Webinar: El futuro del trabajo híbrido",
+        "excerpt": "Revive nuestro webinar exclusivo sobre las mejores prácticas para gestionar equipos en modalidad híbrida.",
+        "readTime": "3 min",
+        "featured": false,
+        "type": "event"
+    }
+],
+"labels": {
+    "featured": "Destacado",
+    "readTime": "de lectura",
+    "readArticle": "Leer artículo completo"
+},
+"categories": {
+    "title": "Explora por categoría",
+    "items": [
+        {
+            "title": "Blog Corporativo",
+            "count": "42 artículos",
+            "description": "Tendencias, insights y mejores prácticas"
+        },
+        {
+            "title": "Eventos",
+            "count": "18 eventos",
+            "description": "Webinars, conferencias y capacitaciones"
+        },
+        {
+            "title": "Cambios Legislativos",
+            "count": "27 actualizaciones",
+            "description": "Reformas fiscales, laborales y normativas"
+        }
+    ]
+},
+"loadMore": "Ver más noticias"
+},
+"prensa": {
+"hero": {
+    "title": {
+        "highlight": "Sala de",
+        "rest": "Prensa"
+    },
+    "description": "Mantente informado sobre nuestros comunicados oficiales, reconocimientos y apariciones en medios.",
+    "cta": "Contacto de prensa"
+},
+"releases": {
+    "title": "Comunicados de Prensa",
+    "items": [
+        {
+            "date": "15 Octubre 2024",
+            "title": "Bechapra expande sus servicios de Capital Humano",
+            "excerpt": "La empresa anuncia nuevas soluciones integrales para el desarrollo organizacional y gestión del talento."
+        },
+        {
+            "date": "3 Septiembre 2024",
+            "title": "Reconocimiento como empresa líder en consultoría",
+            "excerpt": "Bechapra recibe distinción por su excelencia en servicios empresariales y compromiso con clientes."
+        },
+        {
+            "date": "20 Julio 2024",
+            "title": "Nueva alianza estratégica con sector tecnológico",
+            "excerpt": "Acuerdo permitirá integrar innovación digital en todos nuestros servicios de Management."
+        }
+    ],
+    "readMore": "Leer más"
+}
+},
+"politicaPrivacidad": {
+"hero": {
+    "title": "Política de Privacidad",
+    "subtitle": "Aviso de Privacidad de Bechapra - Protección de Datos Personales"
+},
+"introduction": "Bechapra - Soluciones Empresariales, con domicilio en Ciudad de México, México, es responsable del tratamiento de sus datos personales. Este Aviso de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos su información personal en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.",
+"sections": [
+    {
+        "title": "1. Información que Recopilamos",
+        "content": "Bechapra recopila información personal cuando usted voluntariamente nos la proporciona a través de formularios de contacto, solicitudes de servicio, o registro en nuestro sitio web. Esta información puede incluir:\n\n• Nombre completo\n• Correo electrónico\n• Número telefónico\n• Empresa u organización\n• Puesto o cargo\n• Información relacionada con su consulta o solicitud de servicios"
+    },
+    {
+        "title": "2. Uso de la Información",
+        "content": "La información personal recopilada será utilizada exclusivamente para los siguientes propósitos:\n\n• Responder a sus consultas y solicitudes de información\n• Proporcionar y mejorar nuestros servicios empresariales\n• Enviar comunicaciones relacionadas con servicios contratados\n• Cumplir con obligaciones contractuales y legales\n• Realizar análisis internos para mejorar nuestros servicios\n• Enviar información sobre nuevos servicios (previo consentimiento)"
+    },
+    {
+        "title": "3. Protección de Datos Personales",
+        "content": "En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, Bechapra implementa medidas de seguridad administrativas, técnicas y físicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado.\n\nNos comprometemos a:\n• Mantener la confidencialidad de su información\n• No vender ni compartir sus datos con terceros sin su consentimiento\n• Utilizar protocolos de seguridad encriptados\n• Capacitar a nuestro personal en protección de datos"
+    },
+    {
+        "title": "4. Derechos ARCO",
+        "content": "Como titular de datos personales, usted tiene derecho a:\n\n• Acceder a sus datos personales en nuestra posesión\n• Rectificar datos inexactos o incompletos\n• Cancelar sus datos cuando considere que no se requieren\n• Oponerse al tratamiento de sus datos para fines específicos\n\nPara ejercer cualquiera de estos derechos, puede contactarnos a través de: contacto@bechapra.com"
+    },
+    {
+        "title": "5. Transferencia de Datos",
+        "content": "Bechapra no transferirá sus datos personales a terceros sin su consentimiento, excepto en los siguientes casos:\n\n• Cuando sea necesario para la prestación de servicios contratados\n• Por requerimiento de autoridades competentes\n• A empresas subsidiarias o afiliadas bajo los mismos estándares de protección\n• Cuando sea necesario para proteger los intereses de Bechapra conforme a derecho"
+    },
+    {
+        "title": "6. Cookies y Tecnologías Similares",
+        "content": "Nuestro sitio web utiliza cookies y tecnologías similares para mejorar la experiencia del usuario. Para más información sobre cómo utilizamos estas tecnologías, consulte nuestra Política de Cookies."
+    },
+    {
+        "title": "7. Modificaciones al Aviso de Privacidad",
+        "content": "Bechapra se reserva el derecho de modificar este Aviso de Privacidad en cualquier momento. Cualquier cambio será notificado a través de nuestro sitio web. Le recomendamos revisar periódicamente este aviso para estar informado sobre cómo protegemos su información."
+    },
+    {
+        "title": "8. Contacto",
+        "content": "Para cualquier duda, aclaración o comentario sobre este Aviso de Privacidad, puede contactarnos:\n\nCorreo electrónico: contacto@bechapra.com\nTeléfono: (55) 8548 2311\nUbicación: Ciudad de México, México\n\nÚltima actualización: Noviembre 2025"
+    }
+],
+"footer": "Al utilizar nuestros servicios, usted acepta los términos establecidos en este Aviso de Privacidad."
+},
+"politicaCookies": {
+"hero": {
+    "title": "Política de Cookies",
+    "subtitle": "Información sobre el uso de cookies en el sitio web de Bechapra"
+},
+"introduction": "Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en nuestro sitio web, y cómo puede controlarlas. Al continuar navegando por nuestro sitio, usted acepta el uso de cookies de acuerdo con esta política.",
+"cookieTypesTitle": "Tipos de Cookies que Utilizamos",
+"cookieTypes": [
+    {
+        "type": "Cookies Estrictamente Necesarias",
+        "description": "Estas cookies son esenciales para que el sitio web funcione correctamente. Permiten la navegación básica y el acceso a áreas seguras del sitio. Sin estas cookies, algunos servicios no pueden ser proporcionados.",
+        "examples": [
+            "Cookies de sesión de usuario",
+            "Cookies de seguridad y autenticación",
+            "Cookies para recordar preferencias básicas"
+        ],
+        "required": true
+    },
+    {
+        "type": "Cookies de Rendimiento",
+        "description": "Estas cookies recopilan información sobre cómo los visitantes usan el sitio web, por ejemplo, qué páginas visitan con más frecuencia. Esta información se usa para optimizar el sitio web y mejorar la experiencia del usuario.",
+        "examples": [
+            "Google Analytics",
+            "Cookies de análisis de tráfico",
+            "Métricas de tiempo de carga de páginas"
+        ],
+        "required": false
+    },
+    {
+        "type": "Cookies de Funcionalidad",
+        "description": "Estas cookies permiten que el sitio web recuerde las elecciones que usted hace (como su idioma o región) y proporcionan características mejoradas y más personales.",
+        "examples": [
+            "Preferencias de idioma",
+            "Configuraciones de visualización",
+            "Recordar información de formularios"
+        ],
+        "required": false
+    },
+    {
+        "type": "Cookies de Marketing y Publicidad",
+        "description": "Estas cookies se utilizan para rastrear a los visitantes a través de sitios web. La intención es mostrar anuncios que sean relevantes y atractivos para el usuario individual.",
+        "examples": [
+            "Cookies de redes sociales (Facebook, LinkedIn)",
+            "Cookies de remarketing",
+            "Seguimiento de conversiones"
+        ],
+        "required": false
+    }
+],
+"sections": [
+    {
+        "title": "¿Qué son las Cookies?",
+        "content": "Las cookies son pequeños archivos de texto que se almacenan en su dispositivo (ordenador, tableta o móvil) cuando visita un sitio web. Permiten que el sitio web reconozca su dispositivo y recuerde información sobre su visita, como sus preferencias y configuraciones.\n\nLas cookies pueden ser:\n• Cookies de sesión: Se eliminan cuando cierra su navegador\n• Cookies persistentes: Permanecen en su dispositivo durante un período determinado\n• Cookies propias: Establecidas por el sitio web que visita\n• Cookies de terceros: Establecidas por otros servicios que aparecen en el sitio"
+    },
+    {
+        "title": "¿Cómo Utilizamos las Cookies?",
+        "content": "Bechapra utiliza cookies para mejorar su experiencia en nuestro sitio web y proporcionar servicios personalizados. Usamos cookies para:\n\n• Mantener su sesión activa mientras navega por el sitio\n• Recordar sus preferencias y configuraciones\n• Analizar cómo los visitantes usan nuestro sitio web\n• Mejorar la seguridad del sitio\n• Comprender el rendimiento del sitio y realizar mejoras\n• Personalizar el contenido según sus intereses\n• Proporcionar funcionalidades de redes sociales"
+    },
+    {
+        "title": "Control de Cookies",
+        "content": "Usted tiene el derecho de aceptar o rechazar las cookies. Puede configurar su navegador para que le notifique cuando reciba una cookie, dándole la oportunidad de decidir si la acepta o no.\n\nCómo gestionar cookies en diferentes navegadores:\n\nChrome: Configuración > Privacidad y seguridad > Cookies\nFirefox: Opciones > Privacidad y seguridad > Cookies\nSafari: Preferencias > Privacidad > Cookies\nEdge: Configuración > Privacidad > Cookies\n\nNota: Si bloquea o elimina las cookies, es posible que algunas funciones del sitio web no funcionen correctamente."
+    },
+    {
+        "title": "Cookies de Terceros",
+        "content": "Nuestro sitio web puede utilizar servicios de terceros que establecen sus propias cookies. Estos servicios incluyen:\n\n• Google Analytics: Para análisis de tráfico web\n• Redes Sociales: Facebook, LinkedIn, Instagram, YouTube\n• Servicios de mapas y geolocalización\n• Herramientas de marketing y publicidad\n\nNo controlamos las cookies de terceros. Le recomendamos revisar las políticas de privacidad de estos servicios para obtener más información sobre cómo manejan sus datos."
+    },
+    {
+        "title": "Actualización de esta Política",
+        "content": "Podemos actualizar esta Política de Cookies periódicamente para reflejar cambios en las tecnologías que utilizamos o por razones legales. Le notificaremos sobre cualquier cambio significativo mediante un aviso en nuestro sitio web.\n\nLe recomendamos revisar esta página regularmente para mantenerse informado sobre cómo utilizamos las cookies."
+    },
+    {
+        "title": "Más Información",
+        "content": "Si tiene preguntas sobre nuestra Política de Cookies o cómo manejamos sus datos, no dude en contactarnos:\n\nCorreo electrónico: contacto@bechapra.com\nTeléfono: (55) 8548 2311\nUbicación: Ciudad de México, México\n\nTambién puede consultar nuestra Política de Privacidad para obtener información detallada sobre cómo protegemos sus datos personales.\n\nÚltima actualización: Noviembre 2025"
+    }
+],
+"labels": {
+    "required": "Necesarias",
+    "optional": "Opcionales",
+    "examples": "Ejemplos:"
+},
+"footer": "Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones."
+}
+}

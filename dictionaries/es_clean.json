@@ -1,0 +1,122 @@
+{
+    "common": {
+        "back": "Volver",
+        "contact": "Contactar",
+        "readMore": "Leer más",
+        "loading": "Cargando...",
+        "footer": {
+            "rights": "Todos los derechos reservados."
+        }
+    },
+    "serviciosPyme": {
+        "hero": {
+            "back": "Volver",
+            "title": "Servicios",
+            "highlight": "PYME",
+            "description": "Paquetes pensados para empresas pequeñas: menos complejidad, más foco en crecimiento y escalabilidad.",
+            "cta": "Quiero una propuesta"
+        },
+        "included": {
+            "title": "Qué incluimos",
+            "items": [
+                {
+                    "title": "Constitución y contratos",
+                    "desc": "Acompañamiento para constituir tu empresa y contratos comerciales básicos."
+                },
+                {
+                    "title": "Contabilidad simplificada",
+                    "desc": "Procesos simples y reportes claros pensados para PYMEs."
+                },
+                {
+                    "title": "Recursos humanos",
+                    "desc": "Contratos, políticas y gestión de personal en formatos accesibles."
+                },
+                {
+                    "title": "Optimización de costos",
+                    "desc": "Revisión de gastos y recomendaciones para mejorar flujo de efectivo."
+                }
+            ]
+        },
+        "useCases": {
+            "title": "Casos de uso",
+            "items": [
+                {
+                    "title": "Venta en línea",
+                    "desc": "Optimización de procesos contables y facturación para tiendas online que crecen."
+                },
+                {
+                    "title": "Servicios profesionales",
+                    "desc": "Paquetes con contratos, políticas y gestión de clientes recurrentes."
+                },
+                {
+                    "title": "Restaurantes y retail",
+                    "desc": "Control de inventarios, costos y recomendaciones para mejorar margen."
+                },
+                {
+                    "title": "Escalamiento",
+                    "desc": "Procesos para preparar la empresa para inversión o crecimiento estructurado."
+                }
+            ]
+        },
+        "packages": {
+            "title": "Paquetes",
+            "items": [
+                {
+                    "name": "Starter",
+                    "price": "MXN 2,500 / mes",
+                    "items": [
+                        "Registro básico",
+                        "Reporte mensual",
+                        "Consultas por email"
+                    ]
+                },
+                {
+                    "name": "Growth",
+                    "price": "MXN 6,000 / mes",
+                    "items": [
+                        "Todo Starter",
+                        "Reportes KPI",
+                        "Soporte telefónico"
+                    ]
+                },
+                {
+                    "name": "Scale",
+                    "price": "MXN 12,000 / mes",
+                    "items": [
+                        "Todo Growth",
+                        "Cierre anual",
+                        "Consultoría estratégica"
+                    ]
+                }
+            ],
+            "cta": "Elegir paquete"
+        },
+        "faq": {
+            "title": "Preguntas frecuentes",
+            "items": [
+                {
+                    "q": "¿Puedo cambiar de paquete después?",
+                    "a": "Sí, puedes escalar o bajar de paquete con 30 días de aviso y ajustamos la facturación."
+                },
+                {
+                    "q": "¿Ofrecen facturación y nómina?",
+                    "a": "Sí, ofrecemos soluciones de facturación y coordinación con proveedores de nómina según la necesidad."
+                },
+                {
+                    "q": "¿Cuál es el tiempo de implementación?",
+                    "a": "Generalmente entre 1-2 semanas para tener el sistema operando con documentación básica y capacitación inicial."
+                }
+            ]
+        },
+        "finalCta": {
+            "title": "¿Listo para arrancar?",
+            "description": "Solicita una propuesta adaptada a tu operación y tamaño de empresa.",
+            "contact": "Contactar",
+            "viewPackages": "Ver paquetes"
+        },
+        "contact": {
+            "title": "¿Listo para profesionalizar tu PYME?",
+            "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución ideal para tu empresa."
+        }
+    }
+}

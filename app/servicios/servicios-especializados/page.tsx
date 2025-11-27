@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import Link from 'next/link';
 const ContactForm = dynamic(() => import("@/app/components/ContactForm"), { ssr: false });
 import Footer from '@/components/Footer';
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3, TrendingUp, Award, Clock, ChevronRight, ChevronLeft } from "lucide-react";
@@ -196,7 +197,7 @@ export default function ServiciosEspecializadosPage() {
 						</div>
 					</div>
 				</div>
-			</section>			{/* STATS SECTION */}
+							<Link href="/contacto" style={{
 			<section style={{ 
 				padding: '4rem 2rem', 
 				background: 'linear-gradient(180deg, #F8FAFF 0%, #ffffff 100%)',
@@ -253,8 +254,8 @@ export default function ServiciosEspecializadosPage() {
 							Nuestras soluciones
 						</h2>
 						<p style={{ fontSize: '1.2rem', color: '#0A1933', opacity: 0.7, maxWidth: '700px', margin: '0 auto' }}>
-							Adaptamos nuestros servicios a las necesidades de tu sector y operación. Descubre cómo podemos ayudarte:
-						</p>
+							<ChevronRight size={20} />
+						</Link>
 					</div>
 
 					{/* Cards Grid */}

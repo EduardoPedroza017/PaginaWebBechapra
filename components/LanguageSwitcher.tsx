@@ -1,21 +1,26 @@
 
+
 import React, { useState, useRef, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { FiGlobe } from "react-icons/fi";
 import { FaFlagUsa, FaFlag } from "react-icons/fa6";
 
 const LANGUAGES = [
-  { code: "es", name: "Español", icon: <FaFlag /> },
-  { code: "en", name: "English", icon: <FaFlagUsa /> },
+  { code: "es-MX", name: "Español", icon: <FaFlag /> },
+  { code: "en-US", name: "English", icon: <FaFlagUsa /> },
   { code: "fr", name: "Français", icon: <FaFlag /> },
   { code: "de", name: "Deutsch", icon: <FaFlag /> },
   { code: "it", name: "Italiano", icon: <FaFlag /> },
   { code: "pt", name: "Português", icon: <FaFlag /> },
 ];
 
+
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(LANGUAGES[0]);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -26,6 +31,22 @@ export default function LanguageSwitcher() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Detect current locale from pathname
+  function getCurrentLocale(path: string) {
+    const match = path.match(/^\/(\w{2}(?:-[A-Z]{2})?)(\/|$)/);
+    return match ? match[1] : "es-MX";
+  }
+
+  function getPathWithLocale(newLocale: string) {
+    const currentLocale = getCurrentLocale(pathname);
+    // Remove current locale prefix
+    let newPath = pathname.replace(new RegExp(`^/${currentLocale}`), "");
+    if (!newPath.startsWith("/")) newPath = "/" + newPath;
+    // If root, avoid double slash
+    if (newPath === "/") return `/${newLocale}`;
+    return `/${newLocale}${newPath}`;
+  }
 
   return (
     <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
@@ -50,7 +71,7 @@ export default function LanguageSwitcher() {
       >
         <FiGlobe style={{ fontSize: 18, marginRight: 4 }} />
         {selected.icon}
-        <span style={{ marginLeft: 4 }}>{selected.code.toUpperCase()}</span>
+        <span style={{ marginLeft: 4 }}>{selected.code.split("-")[0].toUpperCase()}</span>
       </button>
       {open && (
         <ul
@@ -85,6 +106,9 @@ export default function LanguageSwitcher() {
               onClick={() => {
                 setSelected(lang);
                 setOpen(false);
+                // Redirigir a la ruta con el nuevo locale
+                const newPath = getPathWithLocale(lang.code);
+                router.push(newPath);
               }}
               role="option"
               aria-selected={selected.code === lang.code}

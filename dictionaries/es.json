@@ -1,0 +1,197 @@
+{
+    "home": {
+        "hero": {
+            "title": "Impulsamos\ntu talento y operación",
+            "subtitle": "Capital Humano, Desarrollo Organizacional y Management Services integrados bajo una misma marca para acompañarte en cada etapa de crecimiento.",
+            "explore": "Explorar Servicios",
+            "contact": "Contactar"
+        }
+    },
+    "common": {
+        "back": "Volver",
+        "contact": "Contactar",
+        "readMore": "Ver más",
+        "loading": "Cargando...",
+        "footer": {
+            "rights": "Todos los derechos reservados."
+        }
+    },
+    "capitalHumano": {
+        "hero": {
+            "title": "Capital Humano",
+            "description": "Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!",
+            "cta": "Contactar a Bechapra"
+        },
+        "servicesTitle": "Servicios Capital Humano",
+        "services": [
+            {
+                "title": "Servicios Especializados",
+                "desc": "Avalados por la STPS y registrados en el REPSE, garantizando transparencia y cumplimiento legal."
+            },
+            {
+                "title": "Payrolling",
+                "desc": "Desde el alta hasta la desvinculación, incluyendo pagos de cuotas patronales, IMSS, Infonavit, e impuestos."
+            },
+            {
+                "title": "Atracción de Talento",
+                "desc": "Utilizamos estrategias selectivas y entrevistas exhaustivas para presentarte a los candidatos correctos."
+            }
+        ],
+        "benefitsTitle": "Beneficios de Capital Humano",
+        "benefits": [
+            {
+                "title": "Acceso Exclusivo BTC",
+                "desc": "Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos de la Ciudad de México."
+            },
+            {
+                "title": "Reducción de Costos",
+                "desc": "Optimiza los procesos de reclutamiento, selección y gestión de nómina."
+            },
+            {
+                "title": "Asesoramiento Personalizado",
+                "desc": "Sesiones de asesoramiento personalizado con expertos en Capital Humano."
+            }
+        ],
+        "cta": {
+            "title": "Todos los servicios en un solo lugar",
+            "subtitle": "Solicita una reunión para más información",
+            "primary": "Agenda una cita",
+            "secondary": "Ver casos de éxito"
+        },
+        "contactTitle": "Contáctanos"
+    },
+    "nom035": {
+        "hero": {
+            "title": "NOM 035",
+            "description": "Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramientas de medición.",
+            "cta": "Solicitar asesoría"
+        },
+        "stats": [
+            {
+                "label": "Organizaciones asistidas",
+                "value": "+120",
+                "icon": "ShieldCheck",
+                "color": "#003d8f"
+            },
+            {
+                "label": "Acciones implementadas",
+                "value": "95%",
+                "icon": "Users",
+                "color": "#004AB7"
+            }
+        ],
+        "approachTitle": "Nuestro enfoque",
+        "approach": [
+            {
+                "num": "1",
+                "title": "Evaluación",
+                "desc": "Aplicamos encuestas y entrevistas para mapear factores de riesgo y condiciones organizacionales.",
+                "icon": "Clock"
+            },
+            {
+                "num": "2",
+                "title": "Plan de intervención",
+                "desc": "Diseñamos políticas, protocolos y acciones correctivas alineadas a la NOM-035.",
+                "icon": "Book"
+            },
+            {
+                "num": "3",
+                "title": "Capacitación",
+                "desc": "Formación para mandos y colaboradores para reducir riesgos y mejorar resiliencia.",
+                "icon": "Users"
+            }
+        ],
+        "faqTitle": "Preguntas frecuentes",
+        "faq": {
+            "commonTitle": "Dudas comunes",
+            "common": [
+                {
+                    "q": "¿Qué es la NOM-035 y por qué es importante?",
+                    "a": "La NOM-035 protege el bienestar laboral identificando factores de riesgo psicosocial. Su cumplimiento reduce ausentismo, rotación y mejora clima."
+                },
+                {
+                    "q": "¿Cuánto tiempo tarda una implementación típica?",
+                    "a": "Depende del tamaño de la organización; un diagnóstico inicial toma 2-4 semanas y la implementación del plan suele desarrollarse en 3-6 meses."
+                },
+                {
+                    "q": "¿Proveen evidencia documental para auditorías?",
+                    "a": "Sí, entregamos reportes, actas y matrices de cierre que facilitan verificaciones y auditorías internas."
+                }
+            ],
+            "benefitsTitle": "Beneficios clave",
+            "benefits": [
+                {
+                    "icon": "Users",
+                    "title": "Reducción de conflictos",
+                    "desc": "Mejora el clima laboral y reduce conflictos interpersonales."
+                },
+                {
+                    "icon": "Clock",
+                    "title": "Mayor productividad",
+                    "desc": "Colaboradores más enfocados y motivados generan mejores resultados."
+                },
+                {
+                    "icon": "ShieldCheck",
+                    "title": "Protección legal",
+                    "desc": "Cumplimiento normativo que te protege de sanciones y demandas."
+                }
+            ]
+        },
+        "ctaFinal": {
+            "title": "¿Listo para comenzar?",
+            "description": "Solicita un diagnóstico inicial y recibe una hoja de ruta práctica para implementar NOM-035.",
+            "primary": "Contáctanos",
+            "secondary": "Solicitar presupuesto"
+        },
+        "contact": {
+            "title": "¿Listo para transformar tu operación?",
+            "description": "Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita."
+        }
+    },
+    "terminosServicio": {
+        "hero": {
+            "title": "Términos de  Servicio",
+            "subtitle": "Condiciones de Uso del Sitio Web de Bechapra"
+        },
+        "introduction": "Bienvenido a Bechapra. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos.",
+        "sections": [
+            {
+                "title": "1. Aceptación de los Términos",
+                "content": "Al acceder y utilizar el sitio web de Bechapra (en adelante, \"el Sitio\"), usted acepta estar sujeto a estos Términos de Servicio, todas las leyes y regulaciones aplicables, y acepta que es responsable del cumplimiento de las leyes locales aplicables.\n\nSi no está de acuerdo con alguno de estos términos, no debe utilizar o acceder a este sitio. Los materiales contenidos en este sitio están protegidos por las leyes de derechos de autor y marcas registradas aplicables."
+            },
+            {
+                "title": "2. Uso del Sitio Web",
+                "content": "El contenido de este sitio web es únicamente para su información general y está sujeto a cambios sin previo aviso.\n\nUsted se compromete a:\n• Utilizar el Sitio únicamente para fines lícitos\n• No intentar obtener acceso no autorizado a ninguna parte del Sitio\n• No transmitir contenido que sea ilegal, amenazante, abusivo, difamatorio u obsceno\n• No interferir con el funcionamiento del Sitio o servidores\n• No utilizar robots, spiders o dispositivos automáticos sin autorización previa"
+            },
+            {
+                "title": "3. Servicios Profesionales",
+                "content": "Bechapra proporciona servicios de consultoría empresarial, capital humano, servicios legales, contables y organizacionales. La información presentada en este sitio web es de carácter informativo y no constituye una oferta de servicios definitiva.\n\nLos servicios específicos están sujetos a:\n• Evaluación previa de necesidades\n• Firma de contrato o carta de servicios\n• Términos y condiciones particulares para cada servicio\n• Disponibilidad de recursos y profesionales especializados\n\nPara contratar nuestros servicios, es necesario establecer comunicación directa con nuestros representantes autorizados."
+            },
+            {
+                "title": "4. Propiedad Intelectual",
+                "content": "Todo el contenido incluido en este sitio, como textos, gráficos, logotipos, iconos, imágenes, clips de audio, descargas digitales y compilaciones de datos, es propiedad de Bechapra o de sus proveedores de contenido y está protegido por las leyes mexicanas e internacionales de derechos de autor.\n\nQueda expresamente prohibido:\n• Reproducir, duplicar, copiar, vender o revender cualquier contenido sin autorización\n• Usar marcas comerciales de Bechapra sin consentimiento escrito\n• Crear trabajos derivados del contenido del sitio\n• Eliminar avisos de derechos de autor o marcas registradas"
+            },
+            {
+                "title": "5. Limitación de Responsabilidad",
+                "content": "Bechapra no será responsable de ningún daño directo, indirecto, incidental, consecuente o punitivo que resulte de:\n\n• El uso o la imposibilidad de usar el sitio web\n• Acceso no autorizado a nuestros servidores o información\n• Errores u omisiones en el contenido\n• Interrupciones o cesaciones de transmisión\n• Virus que puedan infectar su equipo\n\nEl sitio web se proporciona \"tal cual\" sin garantías de ningún tipo, ya sean expresas o implícitas."
+            },
+            {
+                "title": "6. Enlaces a Sitios de Terceros",
+                "content": "Este sitio puede contener enlaces a sitios web de terceros que no son operados por Bechapra. No tenemos control sobre el contenido, políticas de privacidad o prácticas de sitios de terceros y no asumimos ninguna responsabilidad por ellos.\n\nLe recomendamos que lea los términos y condiciones y las políticas de privacidad de cualquier sitio web de terceros que visite."
+            },
+            {
+                "title": "7. Modificaciones a los Términos",
+                "content": "Bechapra se reserva el derecho de revisar estos términos de servicio en cualquier momento sin previo aviso. Al usar este sitio web, usted acepta estar sujeto a la versión actual de estos términos de servicio.\n\nEs su responsabilidad revisar periódicamente estos términos para estar al tanto de cualquier actualización."
+            },
+            {
+                "title": "8. Ley Aplicable y Jurisdicción",
+                "content": "Estos términos se regirán e interpretarán de acuerdo con las leyes de los Estados Unidos Mexicanos. Cualquier disputa relacionada con estos términos estará sujeta a la jurisdicción exclusiva de los tribunales de Ciudad de México, México."
+            },
+            {
+                "title": "9. Contacto",
+                "content": "Si tiene alguna pregunta sobre estos Términos de Servicio, puede contactarnos:\n\nCorreo electrónico: contacto@bechapra.com\nTeléfono: (55) 8548 2311\nUbicación: Ciudad de México, México\n\nFecha de última actualización: Noviembre 2025"
+            }
+        ],
+        "footer": "El uso continuado de este sitio web constituye la aceptación de estos términos."
+    }
+}

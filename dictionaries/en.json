@@ -1,0 +1,498 @@
+{
+    "home": {
+        "hero": {
+            "title": "We boost\nyour talent and operation",
+            "subtitle": "Human Capital, Organizational Development and Management Services integrated under one brand to support you at every stage of growth.",
+            "explore": "Explore Services",
+            "contact": "Contact"
+        }
+    },
+    "common": {
+        "back": "Back",
+        "contact": "Contact",
+        "readMore": "Read more",
+        "loading": "Loading...",
+        "footer": {
+            "rights": "All rights reserved."
+        }
+    },
+    "serviciosPyme": {
+        "hero": {
+            "back": "Back",
+            "title": "Services",
+            "highlight": "SME",
+            "description": "Packages designed for small businesses: less complexity, more focus on growth and scalability.",
+            "cta": "Get a proposal"
+        },
+        "included": {
+            "title": "What's included",
+            "items": [
+                {
+                    "title": "Incorporation and contracts",
+                    "desc": "Guidance on incorporating your company and basic commercial contracts."
+                },
+                {
+                    "title": "Simplified accounting",
+                    "desc": "Simple processes and clear reports designed for SMEs."
+                },
+                {
+                    "title": "Human resources",
+                    "desc": "Contracts, policies, and personnel management in accessible formats."
+                },
+                {
+                    "title": "Cost optimization",
+                    "desc": "Expense review and recommendations to improve cash flow."
+                }
+            ]
+        },
+        "useCases": {
+            "title": "Use cases",
+            "items": [
+                {
+                    "title": "Online sales",
+                    "desc": "Optimization of accounting processes and invoicing for growing online stores."
+                },
+                {
+                    "title": "Professional services",
+                    "desc": "Packages with contracts, policies, and management of recurring clients."
+                },
+                {
+                    "title": "Restaurants and retail",
+                    "desc": "Inventory control, costs, and recommendations to improve margins."
+                },
+                {
+                    "title": "Scaling",
+                    "desc": "Processes to prepare the company for investment or structured growth."
+                }
+            ]
+        },
+        "packages": {
+            "title": "Packages",
+            "items": [
+                {
+                    "name": "Starter",
+                    "price": "MXN 2,500 / month",
+                    "items": [
+                        "Basic registration",
+                        "Monthly report",
+                        "Email consultations"
+                    ]
+                },
+                {
+                    "name": "Growth",
+                    "price": "MXN 6,000 / month",
+                    "items": [
+                        "All Starter",
+                        "KPI Reports",
+                        "Phone support"
+                    ]
+                },
+                {
+                    "name": "Scale",
+                    "price": "MXN 12,000 / month",
+                    "items": [
+                        "All Growth",
+                        "Annual closing",
+                        "Strategic consulting"
+                    ]
+                }
+            ],
+            "cta": "Choose package"
+        },
+        "faq": {
+            "title": "Frequently asked questions",
+            "items": [
+                {
+                    "q": "Can I change packages later?",
+                    "a": "Yes, you can upgrade or downgrade with 30 days' notice and we will adjust the billing."
+                },
+                {
+                    "q": "Do you offer invoicing and payroll?",
+                    "a": "Yes, we offer invoicing solutions and coordination with payroll providers as needed."
+                },
+                {
+                    "q": "What is the implementation time?",
+                    "a": "Generally between 1-2 weeks to have the system operating with basic documentation and initial training."
+                }
+            ]
+        },
+        "finalCta": {
+            "title": "Ready to start?",
+            "description": "Request a proposal adapted to your operation and company size.",
+            "contact": "Contact",
+            "viewPackages": "View packages"
+        },
+        "contact": {
+            "title": "Ready to professionalize your SME?",
+            "description": "Contact us and receive a free consultation to design the ideal solution for your company."
+        }
+    },
+    "serviciosLegales": {
+        "hero": {
+            "back": "Back",
+            "title": "Services",
+            "highlight": "Legal",
+            "description": "Protect your business with practical legal advice focused on prevention and regulatory compliance.",
+            "stats": {
+                "cases": {
+                    "value": "+300",
+                    "label": "Cases handled"
+                },
+                "experience": {
+                    "value": "8+",
+                    "label": "Years of experience"
+                }
+            },
+            "cta": "Request advice"
+        },
+        "services": {
+            "title": "Our services",
+            "items": [
+                {
+                    "title": "Commercial advice",
+                    "desc": "Incorporation, contracts, and corporate governance for growing companies."
+                },
+                {
+                    "title": "Compliance and regulatory",
+                    "desc": "Internal policies, regulatory compliance, and administrative defense."
+                },
+                {
+                    "title": "Labor contracting and security",
+                    "desc": "Advice on labor contracts, policies, and layoffs with a preventive approach."
+                },
+                {
+                    "title": "Data protection and privacy",
+                    "desc": "Privacy notices, contracts with suppliers, and best practices for personal data."
+                }
+            ]
+        },
+        "packages": {
+            "title": "Packages and modalities",
+            "items": [
+                {
+                    "name": "Basic Retainer",
+                    "price": "MXN 6,500 / month",
+                    "desc": "Ongoing legal support: contract reviews and monthly consultations."
+                },
+                {
+                    "name": "Specific project",
+                    "price": "From MXN 12,000",
+                    "desc": "Contracts, policies, or legal audit per project with clear deliverables."
+                },
+                {
+                    "name": "Full support",
+                    "price": "To quote",
+                    "desc": "Custom package with representation, risk management, and team training."
+                }
+            ]
+        },
+        "timeline": {
+            "title": "How we work",
+            "items": [
+                {
+                    "step": "01",
+                    "title": "Diagnosis",
+                    "desc": "Quick review to identify priorities and risks."
+                },
+                {
+                    "step": "02",
+                    "title": "Work plan",
+                    "desc": "Proposal with phases, deliverables, and schedule."
+                },
+                {
+                    "step": "03",
+                    "title": "Execution",
+                    "desc": "Implementation, training, and continuous support."
+                }
+            ]
+        },
+        "faq": {
+            "title": "Frequently asked questions",
+            "common": {
+                "title": "Common questions",
+                "items": [
+                    {
+                        "q": "Can you accompany judicial processes?",
+                        "a": "Yes, we work with associated firms and coordinate defense or representation according to the scope your company requires."
+                    },
+                    {
+                        "q": "How fast do you implement internal policies?",
+                        "a": "Depending on the size, in 2 to 6 weeks we can have policies and procedures implemented with training for key personnel."
+                    },
+                    {
+                        "q": "Do you offer services by project or retainer?",
+                        "a": "Both: packages by project and monthly retainer for continuous support and preventive advice."
+                    }
+                ]
+            },
+            "benefits": {
+                "title": "Key benefits",
+                "items": [
+                    {
+                        "title": "Risk prevention",
+                        "desc": "Proactive identification of legal contingencies before they escalate."
+                    },
+                    {
+                        "title": "Agile response",
+                        "desc": "Quick and strategic attention to requirements or notifications."
+                    },
+                    {
+                        "title": "Clear documentation",
+                        "desc": "Formalized and applicable contracts, policies, and procedures."
+                    }
+                ]
+            }
+        },
+        "finalCta": {
+            "title": "Ready to reduce legal risks?",
+            "description": "Let's talk: we propose a personalized initial legal plan for your company.",
+            "cta": "Contact now",
+            "secondary": "Request evaluation"
+        },
+        "contact": {
+            "title": "Ready to protect your company?",
+            "description": "Contact us and receive a free consultation to design the legal solution your company needs."
+        }
+    },
+    "serviciosEspecializados": {
+        "hero": {
+            "back": "Back",
+            "title": "Specialized Services",
+            "description": "Modern and secure solutions for the financial sector: we optimize talent, payroll, and compliance processes so your organization stays focused on growth.",
+            "cta": "Contact Bechapra"
+        },
+        "stats": {
+            "experience": "Years of experience",
+            "clients": "Satisfied companies",
+            "support": "Dedicated support",
+            "retention": "Retention rate"
+        },
+        "solutions": {
+            "title": "Our solutions",
+            "description": "We adapt our services to the needs of your sector and operation. Discover how we can help you:",
+            "items": [
+                {
+                    "title": "External personnel administration",
+                    "desc": "Comprehensive talent management for projects, outsourcing, and temporary services."
+                },
+                {
+                    "title": "Services by industry",
+                    "desc": "Specialized solutions for manufacturing, retail, logistics, health, IT, and more."
+                },
+                {
+                    "title": "Specialized recruitment",
+                    "desc": "Search and selection of technical, executive, and operational profiles tailored to your needs."
+                },
+                {
+                    "title": "Regulatory compliance",
+                    "desc": "We ensure processes aligned with the law and regulations of each sector."
+                },
+                {
+                    "title": "International services",
+                    "desc": "Personnel and payroll management for global companies or those with operations in Mexico."
+                },
+                {
+                    "title": "Tailored solutions",
+                    "desc": "Design of schemes and services according to the industry, size, and challenges of your company."
+                },
+                {
+                    "title": "Consulting and optimization",
+                    "desc": "Diagnosis, process improvement, and advice on human resources and payroll."
+                }
+            ],
+            "cta": "Learn more"
+        },
+        "why": {
+            "title": "Why choose Bechapra?",
+            "items": [
+                {
+                    "title": "Proven experience",
+                    "desc": "More than 20 years providing specialized solutions to leading companies in Mexico and abroad."
+                },
+                {
+                    "title": "Measurable results",
+                    "desc": "Optimized processes, cost reduction, and total compliance in every project."
+                },
+                {
+                    "title": "Personalized attention",
+                    "desc": "Dedicated team and 24/7 support for every client and every industry."
+                }
+            ]
+        },
+        "contact": {
+            "title": "Ready to transform your operation?",
+            "description": "Contact us and receive a free consultation to design the specialized solution your company needs."
+        }
+    },
+    "noticias": {
+        "hero": {
+            "title": "News",
+            "subtitle": "and Updates",
+            "description": "Corporate blog, featured events, and updates on legislative changes that impact your business operations.",
+            "cta": "Subscribe"
+        },
+        "search": {
+            "placeholder": "Search news, topics or keywords...",
+            "button": "Search",
+            "comingSoon": "Search coming soon"
+        },
+        "recent": {
+            "title": "Most Recent News"
+        },
+        "articles": [
+            {
+                "category": "Blog",
+                "date": "November 14, 2024",
+                "title": "New trends in talent attraction 2025",
+                "excerpt": "Discover how companies are transforming their recruitment strategies with artificial intelligence and employer branding.",
+                "readTime": "5 min",
+                "featured": true,
+                "type": "blog"
+            },
+            {
+                "category": "Legislative Changes",
+                "date": "November 12, 2024",
+                "title": "Tax reform 2025: What your company needs to know",
+                "excerpt": "Complete analysis of new tax provisions and their impact on accounting and payroll services.",
+                "readTime": "7 min",
+                "featured": true,
+                "type": "legal"
+            },
+            {
+                "category": "Event",
+                "date": "November 10, 2024",
+                "title": "Bechapra at HR Summit Mexico 2024",
+                "excerpt": "Our participation in the most important Human Resources event of the year with a presentation on digital transformation.",
+                "readTime": "4 min",
+                "featured": false,
+                "type": "event"
+            },
+            {
+                "category": "Blog",
+                "date": "November 8, 2024",
+                "title": "Digital transformation in talent management",
+                "excerpt": "How technology is revolutionizing Human Capital processes and improving employee experience.",
+                "readTime": "6 min",
+                "featured": false,
+                "type": "blog"
+            },
+            {
+                "category": "Legislative Changes",
+                "date": "November 5, 2024",
+                "title": "NOM-035 updates: New guidelines",
+                "excerpt": "Learn about recent modifications to psychosocial risk regulations and how to implement them correctly.",
+                "readTime": "8 min",
+                "featured": false,
+                "type": "legal"
+            },
+            {
+                "category": "Event",
+                "date": "November 1, 2024",
+                "title": "Webinar: The future of hybrid work",
+                "excerpt": "Relive our exclusive webinar on best practices for managing teams in hybrid mode.",
+                "readTime": "3 min",
+                "featured": false,
+                "type": "event"
+            }
+        ],
+        "labels": {
+            "featured": "Featured",
+            "readTime": "read",
+            "readArticle": "Read full article"
+        },
+        "categories": {
+            "title": "Explore by category",
+            "items": [
+                {
+                    "title": "Corporate Blog",
+                    "count": "42 articles",
+                    "description": "Trends, insights and best practices"
+                },
+                {
+                    "title": "Events",
+                    "count": "18 events",
+                    "description": "Webinars, conferences and training"
+                },
+                {
+                    "title": "Legislative Changes",
+                    "count": "27 updates",
+                    "description": "Fiscal, labor and regulatory reforms"
+                }
+            ]
+        },
+        "loadMore": "View more news"
+    },
+    "prensa": {
+        "hero": {
+            "title": {
+                "highlight": "Press",
+                "rest": "Room"
+            },
+            "description": "Stay informed about our official communications, recognitions and media appearances.",
+            "cta": "Press contact"
+        },
+        "releases": {
+            "title": "Press Releases",
+            "items": [
+                {
+                    "date": "October 15, 2024",
+                    "title": "Bechapra expands its Human Capital services",
+                    "excerpt": "The company announces new comprehensive solutions for organizational development and talent management."
+                },
+                {
+                    "date": "September 3, 2024",
+                    "title": "Recognition as a leading consulting firm",
+                    "excerpt": "Bechapra receives distinction for its excellence in business services and commitment to clients."
+                },
+                {
+                    "date": "July 20, 2024",
+                    "title": "New strategic alliance with technology sector",
+                    "excerpt": "Agreement will integrate digital innovation into all our Management services."
+                }
+            ],
+            "readMore": "Read more"
+        }
+    },
+    "politicaPrivacidad": {
+        "hero": {
+            "title": "Privacy Policy",
+            "subtitle": "Bechapra Privacy Notice - Personal Data Protection"
+        },
+        "introduction": "Bechapra - Business Solutions, located in Mexico City, Mexico, is responsible for the processing of your personal data. This Privacy Notice describes how we collect, use, store, and protect your personal information in compliance with the Federal Law on Protection of Personal Data Held by Private Parties.",
+        "sections": [
+            {
+                "title": "1. Information We Collect",
+                "content": "Bechapra collects personal information when you voluntarily provide it through contact forms, service requests, or registration on our website. This information may include:\n\n• Full name\n• Email address\n• Phone number\n• Company or organization\n• Position or title\n• Information related to your inquiry or service request"
+            },
+            {
+                "title": "2. Use of Information",
+                "content": "The personal information collected will be used exclusively for the following purposes:\n\n• Respond to your inquiries and information requests\n• Provide and improve our business services\n• Send communications related to contracted services\n• Fulfill contractual and legal obligations\n• Conduct internal analyses to improve our services\n• Send information about new services (with prior consent)"
+            },
+            {
+                "title": "3. Personal Data Protection",
+                "content": "In compliance with the Federal Law on Protection of Personal Data Held by Private Parties, Bechapra implements administrative, technical, and physical security measures to protect your personal data against damage, loss, alteration, destruction, or unauthorized use.\n\nWe commit to:\n• Maintain the confidentiality of your information\n• Not sell or share your data with third parties without your consent\n• Use encrypted security protocols\n• Train our staff in data protection"
+            },
+            {
+                "title": "4. ARCO Rights",
+                "content": "As a personal data holder, you have the right to:\n\n• Access your personal data in our possession\n• Rectify inaccurate or incomplete data\n• Cancel your data when you consider it is no longer required\n• Object to the processing of your data for specific purposes\n\nTo exercise any of these rights, you can contact us at: contacto@bechapra.com"
+            },
+            {
+                "title": "5. Data Transfer",
+                "content": "Bechapra will not transfer your personal data to third parties without your consent, except in the following cases:\n\n• When necessary for the provision of contracted services\n• By requirement of competent authorities\n• To subsidiary or affiliated companies under the same protection standards\n• When necessary to protect Bechapra's interests in accordance with the law"
+            },
+            {
+                "title": "6. Cookies and Similar Technologies",
+                "content": "Our website uses cookies and similar technologies to improve user experience. For more information on how we use these technologies, please see our Cookie Policy."
+            },
+            {
+                "title": "7. Modifications to the Privacy Notice",
+                "content": "Bechapra reserves the right to modify this Privacy Notice at any time. Any changes will be notified through our website. We recommend that you periodically review this notice to stay informed about how we protect your information."
+            },
+            {
+                "title": "8. Contact",
+                "content": "For any questions, clarifications, or comments about this Privacy Notice, you can contact us:\n\nEmail: contacto@bechapra.com\nPhone: (55) 8548 2311\nLocation: Mexico City, Mexico\n\nLast update: November 2025"
+            }
+        ],
+        "footer": "By using our services, you accept the terms set forth in this Privacy Notice."
+    }
+}
