@@ -1,12 +1,19 @@
 "use client";
 
+
 import { useEffect, useRef, useState } from "react";
 import { GraduationCap, Users, Video, Award } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { motion } from "framer-motion";
+import { useLanguage } from '../../lib/LanguageContext';
+import { translateText } from '../../lib/translate';
+
 
 export default function TrainingCenterSection() {
-  const features = [
+  const { lang } = useLanguage();
+  const [title, setTitle] = useState("Bechapra Training Center");
+  const [subtitle, setSubtitle] = useState("Formamos y conectamos el talento del futuro con las mejores oportunidades");
+  const [features, setFeatures] = useState([
     {
       label: "Ferias de Empleo",
       description: "Participación activa en ferias de empleo con escuelas y universidades",
@@ -25,18 +32,76 @@ export default function TrainingCenterSection() {
       image: "/imagen/training-becarios.jpg",
       icon: <Award size={44} color="#fff" />
     }
-  ];
+  ]);
+  const [buttonText, setButtonText] = useState("Conoce más →");
 
   const [active, setActive] = useState(0);
   const intervalRef = useRef<number | null>(null);
+
 
   useEffect(() => {
     const id = window.setInterval(() => {
       setActive((s) => (s + 1) % features.length);
     }, 5000);
-
     return () => clearInterval(id);
   }, [features.length]);
+
+  // Dynamic translation logic
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setTitle("Bechapra Training Center");
+        setSubtitle("Formamos y conectamos el talento del futuro con las mejores oportunidades");
+        setFeatures([
+          {
+            label: "Ferias de Empleo",
+            description: "Participación activa en ferias de empleo con escuelas y universidades",
+            image: "/imagen/training-ferias.jpg",
+            icon: <Users size={44} color="#fff" />
+          },
+          {
+            label: "Webinars Institucionales",
+            description: "Capacitaciones y webinars especializados con instituciones educativas",
+            image: "/imagen/training-webinars.jpg",
+            icon: <Video size={44} color="#fff" />
+          },
+          {
+            label: "Sistema de Becarios",
+            description: "Programa integral de formación y desarrollo de talento joven",
+            image: "/imagen/training-becarios.jpg",
+            icon: <Award size={44} color="#fff" />
+          }
+        ]);
+        setButtonText("Conoce más →");
+      } else {
+        setTitle(await translateText("Bechapra Training Center", lang));
+        setSubtitle(await translateText("Formamos y conectamos el talento del futuro con las mejores oportunidades", lang));
+        setFeatures([
+          {
+            label: await translateText("Ferias de Empleo", lang),
+            description: await translateText("Participación activa en ferias de empleo con escuelas y universidades", lang),
+            image: "/imagen/training-ferias.jpg",
+            icon: <Users size={44} color="#fff" />
+          },
+          {
+            label: await translateText("Webinars Institucionales", lang),
+            description: await translateText("Capacitaciones y webinars especializados con instituciones educativas", lang),
+            image: "/imagen/training-webinars.jpg",
+            icon: <Video size={44} color="#fff" />
+          },
+          {
+            label: await translateText("Sistema de Becarios", lang),
+            description: await translateText("Programa integral de formación y desarrollo de talento joven", lang),
+            image: "/imagen/training-becarios.jpg",
+            icon: <Award size={44} color="#fff" />
+          }
+        ]);
+        setButtonText(await translateText("Conoce más →", lang));
+      }
+    }
+    fetchTranslations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   function startAutoplay() {
     stopAutoplay();

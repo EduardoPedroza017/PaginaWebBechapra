@@ -1,14 +1,131 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ShieldCheck, Clock, Book, Users } from 'lucide-react';
-import ContactForm from '@/app/components/ContactForm';
-import Footer from '@/components/Footer';
+import ContactForm from '../../../app/components/ContactForm';
+import Footer from '../../../components/Footer';
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
+
+type IconName = 'ShieldCheck' | 'Clock' | 'Book' | 'Users';
+interface StatCard { label: string; value: string; icon: IconName; color: string; }
+interface StepCard { num: string; title: string; desc: string; icon: IconName; }
+interface BenefitCard { icon: IconName; title: string; desc: string; }
+
+const iconMap: Record<IconName, typeof ShieldCheck> = {
+	ShieldCheck,
+	Clock,
+	Book,
+	Users,
+};
+
+const initialStats: StatCard[] = [
+	{label: 'Organizaciones asistidas', value: '+120', icon: 'ShieldCheck', color: '#003d8f'},
+	{label: 'Acciones implementadas', value: '95%', icon: 'Users', color: '#004AB7'}
+];
+const initialSteps: StepCard[] = [
+	{num: '1', title: 'Evaluación', desc: 'Aplicamos encuestas y entrevistas para mapear factores de riesgo y condiciones organizacionales.', icon: 'Clock'},
+	{num: '2', title: 'Plan de intervención', desc: 'Diseñamos políticas, protocolos y acciones correctivas alineadas a la NOM-035.', icon: 'Book'},
+	{num: '3', title: 'Capacitación', desc: 'Formación para mandos y colaboradores para reducir riesgos y mejorar resiliencia.', icon: 'Users'}
+];
+const initialFaqs = [
+	{ q: '¿Qué es la NOM-035 y por qué es importante?', a: 'La NOM-035 protege el bienestar laboral identificando factores de riesgo psicosocial. Su cumplimiento reduce ausentismo, rotación y mejora clima.' },
+	{ q: '¿Cuánto tiempo tarda una implementación típica?', a: 'Depende del tamaño de la organización; un diagnóstico inicial toma 2-4 semanas y la implementación del plan suele desarrollarse en 3-6 meses.' },
+	{ q: '¿Proveen evidencia documental para auditorías?', a: 'Sí, entregamos reportes, actas y matrices de cierre que facilitan verificaciones y auditorías internas.' }
+];
+const initialBenefits: BenefitCard[] = [
+	{ icon: 'Users', title: 'Reducción de conflictos', desc: 'Mejora el clima laboral y reduce conflictos interpersonales.' },
+	{ icon: 'Clock', title: 'Mayor productividad', desc: 'Colaboradores más enfocados y motivados generan mejores resultados.' },
+	{ icon: 'ShieldCheck', title: 'Protección legal', desc: 'Cumplimiento normativo que te protege de sanciones y demandas.' }
+];
 
 export default function Page() {
-	const [openFaq, setOpenFaq] = React.useState<number | null>(0);
+	const { lang } = useLanguage();
+	const [openFaq, setOpenFaq] = useState<number | null>(0);
+	// HERO
+	const [heroTitle, setHeroTitle] = useState('NOM 035');
+	const [heroDesc, setHeroDesc] = useState('Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramientas de medición.');
+	const [heroBtn, setHeroBtn] = useState('Solicitar asesoría');
+	// Stats
+	const [stats, setStats] = useState<StatCard[]>(initialStats);
+	// Steps
+	const [steps, setSteps] = useState<StepCard[]>(initialSteps);
+	const [stepsTitle, setStepsTitle] = useState('Nuestro enfoque');
+	// FAQ
+	const [faqs, setFaqs] = useState(initialFaqs);
+	const [faqTitle, setFaqTitle] = useState('Preguntas frecuentes');
+	const [faqSubtitle, setFaqSubtitle] = useState('Dudas comunes');
+	// Benefits
+	const [benefits, setBenefits] = useState<BenefitCard[]>(initialBenefits);
+	const [benefitsTitle, setBenefitsTitle] = useState('Beneficios clave');
+	// CTA
+	const [ctaTitle, setCtaTitle] = useState('¿Listo para comenzar?');
+	const [ctaDesc, setCtaDesc] = useState('Solicita un diagnóstico inicial y recibe una hoja de ruta práctica para implementar NOM-035.');
+	const [ctaBtn, setCtaBtn] = useState('Contáctanos');
+	const [ctaBtn2, setCtaBtn2] = useState('Solicitar presupuesto');
+	// Contact
+	const [contactTitle, setContactTitle] = useState('¿Listo para transformar tu operación?');
+	const [contactDesc, setContactDesc] = useState('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setHeroTitle('NOM 035');
+				setHeroDesc('Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramientas de medición.');
+				setHeroBtn('Solicitar asesoría');
+				setStats(initialStats);
+				setSteps(initialSteps);
+				setStepsTitle('Nuestro enfoque');
+				setFaqs(initialFaqs);
+				setFaqTitle('Preguntas frecuentes');
+				setFaqSubtitle('Dudas comunes');
+				setBenefits(initialBenefits);
+				setBenefitsTitle('Beneficios clave');
+				setCtaTitle('¿Listo para comenzar?');
+				setCtaDesc('Solicita un diagnóstico inicial y recibe una hoja de ruta práctica para implementar NOM-035.');
+				setCtaBtn('Contáctanos');
+				setCtaBtn2('Solicitar presupuesto');
+				setContactTitle('¿Listo para transformar tu operación?');
+				setContactDesc('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+			} else {
+				setHeroTitle('NOM 035');
+				setHeroDesc(await translateText('Te acompañamos en la identificación, diagnóstico y seguimiento de factores de riesgo psicosocial, con metodologías prácticas y herramientas de medición.', lang));
+				setHeroBtn(await translateText('Solicitar asesoría', lang));
+				setStats(await Promise.all(initialStats.map(async s => ({
+					...s,
+					label: await translateText(s.label, lang)
+				}))));
+				setSteps(await Promise.all(initialSteps.map(async s => ({
+					...s,
+					title: await translateText(s.title, lang),
+					desc: await translateText(s.desc, lang)
+				}))));
+				setStepsTitle(await translateText('Nuestro enfoque', lang));
+				setFaqs(await Promise.all(initialFaqs.map(async f => ({
+					q: await translateText(f.q, lang),
+					a: await translateText(f.a, lang)
+				}))));
+				setFaqTitle(await translateText('Preguntas frecuentes', lang));
+				setFaqSubtitle(await translateText('Dudas comunes', lang));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({
+					...b,
+					title: await translateText(b.title, lang),
+					desc: await translateText(b.desc, lang)
+				}))));
+				setBenefitsTitle(await translateText('Beneficios clave', lang));
+				setCtaTitle(await translateText('¿Listo para comenzar?', lang));
+				setCtaDesc(await translateText('Solicita un diagnóstico inicial y recibe una hoja de ruta práctica para implementar NOM-035.', lang));
+				setCtaBtn(await translateText('Contáctanos', lang));
+				setCtaBtn2(await translateText('Solicitar presupuesto', lang));
+				setContactTitle(await translateText('¿Listo para transformar tu operación?', lang));
+				setContactDesc(await translateText('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
 
 	return (
 		<main>
@@ -165,12 +282,9 @@ export default function Page() {
 						gap: '2.5rem'
 					}}
 				>
-					{[
-						{label: 'Organizaciones asistidas', value: '+120', icon: ShieldCheck, color: '#003d8f'},
-						{label: 'Acciones implementadas', value: '95%', icon: Users, color: '#004AB7'}
-					].map((stat, i) => {
-						const Icon = stat.icon;
-						return (
+					   {stats.map((stat: StatCard, i: number) => {
+						   const Icon = iconMap[stat.icon];
+						   return (
 							<motion.div
 								key={i}
 								initial={{opacity:0, y:20}}
@@ -260,28 +374,9 @@ export default function Page() {
 						marginBottom: '4rem'
 					}}
 				>
-					{[
-						{
-							num: '1',
-							title: 'Evaluación',
-							desc: 'Aplicamos encuestas y entrevistas para mapear factores de riesgo y condiciones organizacionales.',
-							icon: Clock
-						},
-						{
-							num: '2',
-							title: 'Plan de intervención',
-							desc: 'Diseñamos políticas, protocolos y acciones correctivas alineadas a la NOM-035.',
-							icon: Book
-						},
-						{
-							num: '3',
-							title: 'Capacitación',
-							desc: 'Formación para mandos y colaboradores para reducir riesgos y mejorar resiliencia.',
-							icon: Users
-						}
-					].map((step, i) => {
-						const Icon = step.icon;
-						return (
+					   {steps.map((step: StepCard, i: number) => {
+						   const Icon = iconMap[step.icon];
+						   return (
 							<motion.div
 								key={i}
 								initial={{opacity: 0, y: 30}}
@@ -529,25 +624,9 @@ export default function Page() {
 							Beneficios clave
 						</h3>
 
-						{[
-							{
-								icon: Users,
-								title: 'Reducción de conflictos',
-								desc: 'Mejora el clima laboral y reduce conflictos interpersonales.'
-							},
-							{
-								icon: Clock,
-								title: 'Mayor productividad',
-								desc: 'Colaboradores más enfocados y motivados generan mejores resultados.'
-							},
-							{
-								icon: ShieldCheck,
-								title: 'Protección legal',
-								desc: 'Cumplimiento normativo que te protege de sanciones y demandas.'
-							}
-						].map((benefit, i) => {
-							const Icon = benefit.icon;
-							return (
+						   {benefits.map((benefit: BenefitCard, i: number) => {
+							   const Icon = iconMap[benefit.icon];
+							   return (
 								<motion.div
 									key={i}
 									initial={{opacity: 0, x: 30}}

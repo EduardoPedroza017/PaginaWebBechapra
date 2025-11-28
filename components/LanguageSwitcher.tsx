@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
+import { useLanguage } from "../lib/LanguageContext";
 import { FiGlobe } from "react-icons/fi";
 import { FaFlagUsa, FaFlag } from "react-icons/fa6";
 
@@ -10,11 +11,17 @@ const LANGUAGES = [
   { code: "de", name: "Deutsch", icon: <FaFlag /> },
   { code: "it", name: "Italiano", icon: <FaFlag /> },
   { code: "pt", name: "Português", icon: <FaFlag /> },
+  { code: "zh", name: "中文", icon: <FaFlag /> },
+  { code: "ja", name: "日本語", icon: <FaFlag /> },
+  { code: "ru", name: "Русский", icon: <FaFlag /> },
+  { code: "ar", name: "العربية", icon: <FaFlag /> },
+  { code: "hi", name: "हिन्दी", icon: <FaFlag /> },
 ];
 
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(LANGUAGES[0]);
+  const { lang, setLang } = useLanguage();
+  const selected = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -83,7 +90,7 @@ export default function LanguageSwitcher() {
                 color: selected.code === lang.code ? "#2563eb" : "#222",
               }}
               onClick={() => {
-                setSelected(lang);
+                setLang(lang.code);
                 setOpen(false);
               }}
               role="option"

@@ -1,13 +1,133 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { CheckCircle, Target, TrendingUp, Lightbulb, Shield, BarChart3 } from 'lucide-react';
 import ContactForm from '../../components/ContactForm';
 import Footer from '@/components/Footer';
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
+
+type IconName = 'Target' | 'BarChart3' | 'Shield' | 'TrendingUp' | 'CheckCircle' | 'Lightbulb';
+interface ServiceCard { title: string; icon: IconName; color: string; }
+interface BenefitCard { title: string; icon: IconName; }
+
+const initialServices: ServiceCard[] = [
+	{ title: 'Estrategia de Organización', icon: 'Target', color: '#003d8f' },
+	{ title: 'Administrativa', icon: 'BarChart3', color: '#004AB7' },
+	{ title: 'Prevención de Riesgos Laborales', icon: 'Shield', color: '#0056d4' },
+	{ title: 'Financiera', icon: 'TrendingUp', color: '#003d8f' },
+	{ title: 'Recursos Humanos', icon: 'CheckCircle', color: '#004AB7' },
+	{ title: 'Especializada', icon: 'Lightbulb', color: '#0056d4' },
+];
+const initialBenefits: BenefitCard[] = [
+	{ title: 'Plan estratégico personalizado', icon: 'Target' },
+	{ title: 'Herramientas y procesos mejorados', icon: 'BarChart3' },
+	{ title: 'Protocolos de Seguridad y Prevención de Riesgos Laborales', icon: 'Shield' },
+];
+const iconMap: Record<IconName, typeof Target> = {
+	Target,
+	BarChart3,
+	Shield,
+	TrendingUp,
+	CheckCircle,
+	Lightbulb,
+};
 
 export default function Page() {
+	const { lang } = useLanguage();
+	// HERO
+	const [backText, setBackText] = useState('Volver a Servicios');
+	const [heroTitle, setHeroTitle] = useState('Consultoría Organizacional');
+	const [heroDesc, setHeroDesc] = useState('Consultoría experta para optimizar estructura y procesos. Desbloquea el potencial de tu organización.');
+	const [heroBtn, setHeroBtn] = useState('Comienza ahora');
+	// Tarjetas
+	const [servicesTitle, setServicesTitle] = useState('Nuestros Servicios de Consultoría');
+	const [services, setServices] = useState(initialServices);
+	// Cómo trabajamos
+	const [comoTitle, setComoTitle] = useState('Cómo Trabajamos');
+	const [comoDesc, setComoDesc] = useState('En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:');
+	const [comoBullets, setComoBullets] = useState([
+		'Diagnóstico y Análisis',
+		'Diseño de Soluciones Personalizadas',
+		'Implementación y Seguimiento',
+	]);
+	// Potencia el crecimiento
+	const [potenciaTitle, setPotenciaTitle] = useState('Potencia el crecimiento y el éxito de tu empresa');
+	const [potenciaDesc, setPotenciaDesc] = useState('Desarrollamos estrategias estructurales y funcionales que impulsan el crecimiento y la eficiencia, permitiéndote superar el estancamiento y alcanzar nuevos horizontes de éxito.');
+	const [potenciaCta, setPotenciaCta] = useState('Estamos aquí para entender tus desafíos y diseñar una solución personalizada para tu empresa.');
+	const [potenciaBtn, setPotenciaBtn] = useState('COMIENZA AHORA →');
+	// Beneficios
+	const [benefits, setBenefits] = useState(initialBenefits);
+	// CTA final
+	const [ctaTitle, setCtaTitle] = useState('No dejes que los problemas detengan tu progreso');
+	const [ctaDesc, setCtaDesc] = useState('¡Descubre cómo podemos ayudarte a superarlos!');
+	// Contacto
+	const [contactTitle, setContactTitle] = useState('¿Interesado en alguno de nuestros servicios?');
+	const [contactDesc, setContactDesc] = useState('¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setBackText('Volver a Servicios');
+				setHeroTitle('Consultoría Organizacional');
+				setHeroDesc('Consultoría experta para optimizar estructura y procesos. Desbloquea el potencial de tu organización.');
+				setHeroBtn('Comienza ahora');
+				setServicesTitle('Nuestros Servicios de Consultoría');
+				setServices(initialServices);
+				setComoTitle('Cómo Trabajamos');
+				setComoDesc('En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:');
+				setComoBullets([
+					'Diagnóstico y Análisis',
+					'Diseño de Soluciones Personalizadas',
+					'Implementación y Seguimiento',
+				]);
+				setPotenciaTitle('Potencia el crecimiento y el éxito de tu empresa');
+				setPotenciaDesc('Desarrollamos estrategias estructurales y funcionales que impulsan el crecimiento y la eficiencia, permitiéndote superar el estancamiento y alcanzar nuevos horizontes de éxito.');
+				setPotenciaCta('Estamos aquí para entender tus desafíos y diseñar una solución personalizada para tu empresa.');
+				setPotenciaBtn('COMIENZA AHORA →');
+				setBenefits(initialBenefits);
+				setCtaTitle('No dejes que los problemas detengan tu progreso');
+				setCtaDesc('¡Descubre cómo podemos ayudarte a superarlos!');
+				setContactTitle('¿Interesado en alguno de nuestros servicios?');
+				setContactDesc('¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!');
+			} else {
+				setBackText(await translateText('Volver a Servicios', lang));
+				setHeroTitle(await translateText('Consultoría Organizacional', lang));
+				setHeroDesc(await translateText('Consultoría experta para optimizar estructura y procesos. Desbloquea el potencial de tu organización.', lang));
+				setHeroBtn(await translateText('Comienza ahora', lang));
+				setServicesTitle(await translateText('Nuestros Servicios de Consultoría', lang));
+				setServices(await Promise.all(initialServices.map(async s => ({
+					...s,
+					title: await translateText(s.title, lang)
+				}))));
+				setComoTitle(await translateText('Cómo Trabajamos', lang));
+				setComoDesc(await translateText('En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:', lang));
+				setComoBullets(await Promise.all([
+					translateText('Diagnóstico y Análisis', lang),
+					translateText('Diseño de Soluciones Personalizadas', lang),
+					translateText('Implementación y Seguimiento', lang),
+				]));
+				setPotenciaTitle(await translateText('Potencia el crecimiento y el éxito de tu empresa', lang));
+				setPotenciaDesc(await translateText('Desarrollamos estrategias estructurales y funcionales que impulsan el crecimiento y la eficiencia, permitiéndote superar el estancamiento y alcanzar nuevos horizontes de éxito.', lang));
+				setPotenciaCta(await translateText('Estamos aquí para entender tus desafíos y diseñar una solución personalizada para tu empresa.', lang));
+				setPotenciaBtn(await translateText('COMIENZA AHORA →', lang));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({
+					...b,
+					title: await translateText(b.title, lang)
+				}))));
+				setCtaTitle(await translateText('No dejes que los problemas detengan tu progreso', lang));
+				setCtaDesc(await translateText('¡Descubre cómo podemos ayudarte a superarlos!', lang));
+				setContactTitle(await translateText('¿Interesado en alguno de nuestros servicios?', lang));
+				setContactDesc(await translateText('¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
+
 	return (
 		<main>
 			{/* HERO */}
@@ -74,7 +194,7 @@ export default function Page() {
 							}}
 						>
 							<span style={{fontSize: '1.1rem'}}>‹</span>
-							Volver a Servicios
+							{backText}
 						</Link>
 						<h1 style={{
 							fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
@@ -84,7 +204,14 @@ export default function Page() {
 							lineHeight: 1.1,
 							letterSpacing: '-0.02em'
 						}}>
-							Consultoría <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Organizacional</span>
+							{heroTitle.split(' ').length > 1 ? (
+								<>
+									{heroTitle.split(' ')[0]}{' '}
+									<span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
+										{heroTitle.split(' ').slice(1).join(' ')}
+									</span>
+								</>
+							) : heroTitle}
 						</h1>
 						<p style={{
 							fontSize: '1.15rem',
@@ -93,7 +220,7 @@ export default function Page() {
 							marginBottom: '2rem',
 							maxWidth: '500px'
 						}}>
-							Consultoría experta para optimizar estructura y procesos. Desbloquea el potencial de tu organización.
+							{heroDesc}
 						</p>
 						<Link href="#contacto" style={{
 							display: 'inline-flex',
@@ -110,7 +237,7 @@ export default function Page() {
 							cursor: 'pointer',
 							boxShadow: '0 10px 30px rgba(255,255,255,0.2)'
 						}}>
-							Comienza ahora
+							{heroBtn}
 							<span>→</span>
 						</Link>
 					</motion.div>
@@ -165,46 +292,15 @@ export default function Page() {
 						letterSpacing: '-0.02em'
 					}}
 				>
-					Nuestros Servicios de Consultoría
+					  {servicesTitle}
 				</motion.h2>
 				<div style={{
 					display: 'grid',
 					gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
 					gap: '2rem'
 				}}>
-					{[
-						{
-							title: 'Estrategia de Organización',
-							icon: Target,
-							color: '#003d8f'
-						},
-						{
-							title: 'Administrativa',
-							icon: BarChart3,
-							color: '#004AB7'
-						},
-						{
-							title: 'Prevención de Riesgos Laborales',
-							icon: Shield,
-							color: '#0056d4'
-						},
-						{
-							title: 'Financiera',
-							icon: TrendingUp,
-							color: '#003d8f'
-						},
-						{
-							title: 'Recursos Humanos',
-							icon: CheckCircle,
-							color: '#004AB7'
-						},
-						{
-							title: 'Especializada',
-							icon: Lightbulb,
-							color: '#0056d4'
-						}
-					].map((item, i) => {
-						const Icon = item.icon;
+					{services.map((item, i) => {
+						const Icon = iconMap[item.icon];
 						return (
 							<motion.div
 								key={i}
@@ -240,7 +336,6 @@ export default function Page() {
 									background: `linear-gradient(90deg, ${item.color} 0%, ${item.color}99 100%)`,
 									borderRadius: '20px 20px 0 0'
 								}} />
-
 								{/* Icon container */}
 								<motion.div
 									initial={{scale: 0}}
@@ -261,7 +356,6 @@ export default function Page() {
 								>
 									<Icon size={36} style={{color: item.color}} />
 								</motion.div>
-
 								<h3 style={{
 									fontSize: '1.2rem',
 									fontWeight: 800,
@@ -271,7 +365,6 @@ export default function Page() {
 								}}>
 									{item.title}
 								</h3>
-
 								{/* Shine effect on hover */}
 								<motion.div
 									initial={{opacity: 0}}
@@ -335,7 +428,7 @@ export default function Page() {
 						marginBottom: '1.5rem',
 						letterSpacing: '-0.02em'
 					}}>
-						Cómo Trabajamos
+						  {comoTitle}
 					</h2>
 					<p style={{
 						fontSize: '1.05rem',
@@ -343,18 +436,14 @@ export default function Page() {
 						lineHeight: 1.8,
 						marginBottom: '1.5rem'
 					}}>
-						En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:
+						  {comoDesc}
 					</p>
 					<div style={{
 						display: 'flex',
 						flexDirection: 'column',
 						gap: '0.75rem'
 					}}>
-						{[
-							'Diagnóstico y Análisis',
-							'Diseño de Soluciones Personalizadas',
-							'Implementación y Seguimiento'
-						].map((item, i) => (
+						{comoBullets.map((item, i) => (
 							<div key={i} style={{
 								display: 'flex',
 								alignItems: 'flex-start',
@@ -391,7 +480,7 @@ export default function Page() {
 						marginBottom: '1.5rem',
 						letterSpacing: '-0.02em'
 					}}>
-						Potencia el crecimiento y el éxito de tu empresa
+						  {potenciaTitle}
 					</h2>
 					<p style={{
 						fontSize: '1.05rem',
@@ -399,7 +488,7 @@ export default function Page() {
 						lineHeight: 1.8,
 						marginBottom: '1.5rem'
 					}}>
-						Desarrollamos estrategias estructurales y funcionales que impulsan el crecimiento y la eficiencia, permitiéndote superar el estancamiento y alcanzar nuevos horizontes de éxito.
+						  {potenciaDesc}
 					</p>
 					<p style={{
 						fontSize: '1.1rem',
@@ -407,7 +496,7 @@ export default function Page() {
 						fontWeight: 700,
 						marginBottom: '2rem'
 					}}>
-						Estamos aquí para entender tus desafíos y diseñar una solución personalizada para tu empresa.
+						  {potenciaCta}
 					</p>
 					<Link
 						href="#contacto"
@@ -424,7 +513,7 @@ export default function Page() {
 							transition: 'all 0.3s ease'
 						}}
 					>
-						COMIENZA AHORA →
+						  {potenciaBtn}
 					</Link>
 				</motion.div>
 
@@ -462,38 +551,37 @@ export default function Page() {
 					gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
 					gap: '2.5rem'
 				}}>
-					{[
-						{title: 'Plan estratégico personalizado', icon: Target},
-						{title: 'Herramientas y procesos mejorados', icon: BarChart3},
-						{title: 'Protocolos de Seguridad y Prevención de Riesgos Laborales', icon: Shield}
-					].map((benefit, i) => (
-						<motion.div
-							key={i}
-							initial={{opacity: 0, y: 30}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.5, delay: i * 0.1}}
-							style={{
-								padding: '2.5rem 2rem',
-								borderRadius: '16px',
-								background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
-								border: '2px solid rgba(0,61,143,0.1)',
-								textAlign: 'center',
-								boxShadow: '0 8px 24px rgba(0,61,143,0.08)'
-							}}
-						>
-							<benefit.icon size={40} style={{color: '#003d8f', margin: '0 auto 1rem'}} />
-							<h3 style={{
-								fontSize: '1.15rem',
-								fontWeight: 700,
-								color: '#003d8f',
-								margin: 0,
-								lineHeight: 1.4
-							}}>
-								{benefit.title}
-							</h3>
-						</motion.div>
-					))}
+					{benefits.map((benefit, i) => {
+						const Icon = iconMap[benefit.icon];
+						return (
+							<motion.div
+								key={i}
+								initial={{opacity: 0, y: 30}}
+								whileInView={{opacity: 1, y: 0}}
+								viewport={{once: true}}
+								transition={{duration: 0.5, delay: i * 0.1}}
+								style={{
+									padding: '2.5rem 2rem',
+									borderRadius: '16px',
+									background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FDFF 100%)',
+									border: '2px solid rgba(0,61,143,0.1)',
+									textAlign: 'center',
+									boxShadow: '0 8px 24px rgba(0,61,143,0.08)'
+								}}
+							>
+								<Icon size={40} style={{color: '#003d8f', margin: '0 auto 1rem'}} />
+								<h3 style={{
+									fontSize: '1.15rem',
+									fontWeight: 700,
+									color: '#003d8f',
+									margin: 0,
+									lineHeight: 1.4
+								}}>
+									{benefit.title}
+								</h3>
+							</motion.div>
+						);
+					})}
 				</div>
 			</section>
 
@@ -532,7 +620,7 @@ export default function Page() {
 							letterSpacing: '-0.02em'
 						}}
 					>
-						No dejes que los problemas detengan tu progreso
+						  {ctaTitle}
 					</motion.h3>
 
 					<motion.p
@@ -548,7 +636,7 @@ export default function Page() {
 							lineHeight: 1.8
 						}}
 					>
-						¡Descubre cómo podemos ayudarte a superarlos!
+						  {ctaDesc}
 					</motion.p>
 				</div>
 			</motion.section>
@@ -577,7 +665,7 @@ export default function Page() {
 						marginBottom: '1rem',
 						letterSpacing: '-0.02em'
 					}}>
-						¿Interesado en alguno de nuestros servicios?
+						  {contactTitle}
 					</h2>
 					<p style={{
 						fontSize: '1.1rem',
@@ -586,7 +674,7 @@ export default function Page() {
 						margin: '0 auto',
 						lineHeight: 1.7
 					}}>
-						¡Envíenos un mensaje con los detalles y estaremos encantados de ayudarle!
+						  {contactDesc}
 					</p>
 				</motion.div>
 

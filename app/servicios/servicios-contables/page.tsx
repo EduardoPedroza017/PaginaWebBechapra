@@ -1,19 +1,122 @@
 "use client";
 
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FileText, PieChart, ClipboardCheck, ChevronLeft } from 'lucide-react';
 import ContactForm from '@/app/components/ContactForm';
 import Footer from '@/components/Footer';
+import { useLanguage } from "../../../lib/LanguageContext";
+import { translateText } from "../../../lib/translate";
 
-const services = [
-	{icon: FileText, title: 'Contabilidad general', desc: 'Registros, conciliaciones y cierre mensual con reportes claros para la dirección.'},
-	{icon: PieChart, title: 'Reportes y KPI', desc: 'Estados financieros, análisis de rentabilidad y dashboards a medida.'},
-	{icon: ClipboardCheck, title: 'Impuestos y cumplimiento', desc: 'Declaraciones, cumplimiento fiscal y asesoría tributaria constante.'},
+type IconName = 'FileText' | 'PieChart' | 'ClipboardCheck';
+interface ServiceCard { icon: IconName; title: string; desc: string; }
+interface BenefitCard { icon: IconName; title: string; desc: string; }
+interface StepCard { step: string; title: string; desc: string; }
+interface FaqItem { q: string; a: string; }
+
+const iconMap: Record<IconName, React.ComponentType<{ size?: number }>> = {
+	FileText,
+	PieChart,
+	ClipboardCheck,
+};
+
+const initialServices: ServiceCard[] = [
+	{ icon: 'FileText', title: 'Contabilidad general', desc: 'Registros, conciliaciones y cierre mensual con reportes claros para la dirección.' },
+	{ icon: 'PieChart', title: 'Reportes y KPI', desc: 'Estados financieros, análisis de rentabilidad y dashboards a medida.' },
+	{ icon: 'ClipboardCheck', title: 'Impuestos y cumplimiento', desc: 'Declaraciones, cumplimiento fiscal y asesoría tributaria constante.' },
 ];
 
-export default function Page() {
+const initialSteps: StepCard[] = [
+	{ step: '01', title: 'Diagnóstico inicial', desc: 'Revisión de libros, procedimientos y puntos críticos.' },
+	{ step: '02', title: 'Plan operativo', desc: 'Propuesta de trabajo, controles y calendarización.' },
+	{ step: '03', title: 'Ejecución y entrega', desc: 'Cierres, reportes y entrega de evidencia.' },
+];
+
+const initialFaqs: FaqItem[] = [
+	{ q: '¿Ofrecen facturación electrónica?', a: 'Sí, gestionamos y enlazamos la contabilidad con tus CFDI para conciliaciones automáticas.' },
+	{ q: '¿Cómo manejan la confidencialidad?', a: 'Firmamos acuerdos de confidencialidad y usamos accesos controlados para proteger tu información.' },
+	{ q: '¿Qué incluyen los reportes mensuales?', a: 'Balance general, estado de resultados, análisis de flujos y recomendaciones para optimización.' },
+];
+
+const initialBenefits: BenefitCard[] = [
+	{ icon: 'FileText', title: 'Claridad financiera', desc: 'Reportes precisos y actualizados para decisiones basadas en datos.' },
+	{ icon: 'PieChart', title: 'Optimización fiscal', desc: 'Estrategias tributarias que reducen tu carga fiscal legalmente.' },
+	{ icon: 'ClipboardCheck', title: 'Cumplimiento total', desc: 'Declaraciones a tiempo y acceso seguro a documentación de auditoría.' },
+];
+
+export default function ServiciosContablesPage() {
+	const { lang } = useLanguage();
+
+	const [services, setServices] = useState<ServiceCard[]>(initialServices);
+	const [steps, setSteps] = useState<StepCard[]>(initialSteps);
+	const [faqs, setFaqs] = useState<FaqItem[]>(initialFaqs);
+	const [benefits, setBenefits] = useState<BenefitCard[]>(initialBenefits);
+	const [heroTitle, setHeroTitle] = useState('Servicios Contables');
+	const [heroDesc, setHeroDesc] = useState('Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos.');
+	const [heroBtn, setHeroBtn] = useState('Solicitar consulta →');
+	const [backBtn, setBackBtn] = useState('Volver');
+	const [queOfrecemosTitle, setQueOfrecemosTitle] = useState('Qué ofrecemos');
+	const [procesoTitle, setProcesoTitle] = useState('Nuestro proceso');
+	const [faqTitle, setFaqTitle] = useState('Preguntas frecuentes');
+	const [dudasComunesTitle, setDudasComunesTitle] = useState('Dudas comunes');
+	const [beneficiosClaveTitle, setBeneficiosClaveTitle] = useState('Beneficios clave');
+	const [ctaTitle, setCtaTitle] = useState('¿Listo para ordenar tus finanzas?');
+	const [ctaDesc, setCtaDesc] = useState('Agenda una reunión y recibe una propuesta de contabilidad personalizada para tu empresa.');
+	const [ctaBtn1, setCtaBtn1] = useState('Solicitar asesoría');
+	const [ctaBtn2, setCtaBtn2] = useState('Agendar reunión');
+	const [contactoTitle, setContactoTitle] = useState('¿Listo para transformar tu contabilidad?');
+	const [contactoDesc, setContactoDesc] = useState('Contáctanos y recibe una consultoría gratuita para diseñar la solución contable que tu empresa necesita.');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setServices(initialServices);
+				setSteps(initialSteps);
+				setFaqs(initialFaqs);
+				setBenefits(initialBenefits);
+				setHeroTitle('Servicios Contables');
+				setHeroDesc('Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos.');
+				setHeroBtn('Solicitar consulta →');
+				setBackBtn('Volver');
+				setQueOfrecemosTitle('Qué ofrecemos');
+				setProcesoTitle('Nuestro proceso');
+				setFaqTitle('Preguntas frecuentes');
+				setDudasComunesTitle('Dudas comunes');
+				setBeneficiosClaveTitle('Beneficios clave');
+				setCtaTitle('¿Listo para ordenar tus finanzas?');
+				setCtaDesc('Agenda una reunión y recibe una propuesta de contabilidad personalizada para tu empresa.');
+				setCtaBtn1('Solicitar asesoría');
+				setCtaBtn2('Agendar reunión');
+				setContactoTitle('¿Listo para transformar tu contabilidad?');
+				setContactoDesc('Contáctanos y recibe una consultoría gratuita para diseñar la solución contable que tu empresa necesita.');
+			} else {
+				setServices(await Promise.all(initialServices.map(async s => ({ ...s, title: await translateText(s.title, lang), desc: await translateText(s.desc, lang) }))));
+				setSteps(await Promise.all(initialSteps.map(async s => ({ ...s, title: await translateText(s.title, lang), desc: await translateText(s.desc, lang) }))));
+				setFaqs(await Promise.all(initialFaqs.map(async f => ({ q: await translateText(f.q, lang), a: await translateText(f.a, lang) }))));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({ ...b, title: await translateText(b.title, lang), desc: await translateText(b.desc, lang) }))));
+				setHeroTitle(await translateText('Servicios Contables', lang));
+				setHeroDesc(await translateText('Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos.', lang));
+				setHeroBtn(await translateText('Solicitar consulta →', lang));
+				setBackBtn(await translateText('Volver', lang));
+				setQueOfrecemosTitle(await translateText('Qué ofrecemos', lang));
+				setProcesoTitle(await translateText('Nuestro proceso', lang));
+				setFaqTitle(await translateText('Preguntas frecuentes', lang));
+				setDudasComunesTitle(await translateText('Dudas comunes', lang));
+				setBeneficiosClaveTitle(await translateText('Beneficios clave', lang));
+				setCtaTitle(await translateText('¿Listo para ordenar tus finanzas?', lang));
+				setCtaDesc(await translateText('Agenda una reunión y recibe una propuesta de contabilidad personalizada para tu empresa.', lang));
+				setCtaBtn1(await translateText('Solicitar asesoría', lang));
+				setCtaBtn2(await translateText('Agendar reunión', lang));
+				setContactoTitle(await translateText('¿Listo para transformar tu contabilidad?', lang));
+				setContactoDesc(await translateText('Contáctanos y recibe una consultoría gratuita para diseñar la solución contable que tu empresa necesita.', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
+
 	return (
 		<main>
 			{/* Hero Section */}
@@ -27,8 +130,8 @@ export default function Page() {
 			}}>
 				{/* Decorative circles */}
 				<motion.div
-					animate={{scale: [1, 1.2, 1]}}
-					transition={{duration: 5, repeat: Infinity}}
+					animate={{ scale: [1, 1.2, 1] }}
+					transition={{ duration: 5, repeat: Infinity }}
 					style={{
 						position: 'absolute',
 						width: '500px',
@@ -41,8 +144,8 @@ export default function Page() {
 					}}
 				/>
 				<motion.div
-					animate={{scale: [1, 1.1, 1]}}
-					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
+					animate={{ scale: [1, 1.1, 1] }}
+					transition={{ duration: 6, repeat: Infinity, delay: 0.5 }}
 					style={{
 						position: 'absolute',
 						width: '400px',
@@ -76,7 +179,7 @@ export default function Page() {
 						transition: 'all 0.3s ease',
 						boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
 					}}>
-						<ChevronLeft size={18} /> Volver
+						<ChevronLeft size={18} /> {backBtn}
 					</Link>
 
 					<div style={{
@@ -86,9 +189,9 @@ export default function Page() {
 						alignItems: 'center'
 					}}>
 						<motion.div
-							initial={{opacity: 0, y: 30}}
-							animate={{opacity: 1, y: 0}}
-							transition={{duration: 0.6}}
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6 }}
 						>
 							<h1 style={{
 								fontSize: 'clamp(2.2rem, 5vw, 3.2rem)',
@@ -98,7 +201,7 @@ export default function Page() {
 								letterSpacing: '-0.02em',
 								lineHeight: 1.2
 							}}>
-								Servicios <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Contables</span>
+								{heroTitle}
 							</h1>
 
 							<p style={{
@@ -107,12 +210,12 @@ export default function Page() {
 								lineHeight: 1.7,
 								marginBottom: '2.5rem'
 							}}>
-								Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos.
+								{heroDesc}
 							</p>
 
 							<motion.div
-								whileHover={{scale: 1.05}}
-								whileTap={{scale: 0.95}}
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
 							>
 								<Link href="/#contacto" style={{
 									display: 'inline-flex',
@@ -128,15 +231,15 @@ export default function Page() {
 									transition: 'all 0.3s ease',
 									boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
 								}}>
-									Solicitar consulta →
+									{heroBtn}
 								</Link>
 							</motion.div>
 						</motion.div>
 
 						<motion.div
-							initial={{opacity: 0, y: 40}}
-							animate={{opacity: 1, y: 0}}
-							transition={{duration: 0.7, delay: 0.2}}
+							initial={{ opacity: 0, y: 40 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.7, delay: 0.2 }}
 							style={{
 								height: '380px',
 								background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
@@ -150,7 +253,7 @@ export default function Page() {
 								color: 'rgba(255,255,255,0.3)'
 							}}
 						>
-							📊
+							<PieChart size={90} />
 						</motion.div>
 					</div>
 				</div>
@@ -199,9 +302,9 @@ export default function Page() {
 						marginBottom: '5rem'
 					}}
 				>
-					{services.map((service, i) => {
-						const Icon = service.icon;
-						return (
+					 {services.map((service, i) => {
+						 const Icon = iconMap[service.icon];
+						 return (
 							<motion.div
 								key={i}
 								initial={{opacity: 0, y: 30}}
@@ -253,7 +356,7 @@ export default function Page() {
 									position: 'relative',
 									zIndex: 2
 								}}>
-									<Icon size={32} />
+									 {Icon ? <Icon size={32} /> : null}
 								</div>
 
 								<div style={{position: 'relative', zIndex: 2}}>
@@ -475,13 +578,9 @@ export default function Page() {
 								gap: '1.5rem'
 							}}
 						>
-							{[
-								{icon: FileText, title: 'Claridad financiera', desc: 'Reportes precisos y actualizados para decisiones basadas en datos.'},
-								{icon: PieChart, title: 'Optimización fiscal', desc: 'Estrategias tributarias que reducen tu carga fiscal legalmente.'},
-								{icon: ClipboardCheck, title: 'Cumplimiento total', desc: 'Declaraciones a tiempo y acceso seguro a documentación de auditoría.'}
-							].map((benefit, i) => {
-								const Icon = benefit.icon;
-								return (
+							 {benefits.map((benefit, i) => {
+								 const Icon = iconMap[benefit.icon];
+								 return (
 									<motion.div
 										key={i}
 										initial={{opacity: 0, y: 20}}
@@ -535,7 +634,7 @@ export default function Page() {
 											zIndex: 2,
 											flexShrink: 0
 										}}>
-											<Icon size={28} />
+											 {Icon ? <Icon size={28} /> : null}
 										</div>
 
 										<div style={{position: 'relative', zIndex: 2, flex: 1}}>

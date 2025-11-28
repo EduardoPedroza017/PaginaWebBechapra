@@ -1,33 +1,68 @@
 "use client";
 
 import { motion } from "framer-motion";
+
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
+import { useLanguage } from "../../lib/LanguageContext";
+import { useEffect, useState } from "react";
+import { translateText } from "../../lib/translate";
 
 export default function AwardsSection() {
+  const { lang } = useLanguage();
+  const [header, setHeader] = useState("Reconocimientos");
+  const [titles, setTitles] = useState([
+    "Concilio de Recursos Humanos",
+    "Distintivo de Empresas Humanitarias",
+    "Certificación de Trabajo Digno",
+    "Registro de Especialistas Profesionales"
+  ]);
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setHeader("Reconocimientos");
+        setTitles([
+          "Concilio de Recursos Humanos",
+          "Distintivo de Empresas Humanitarias",
+          "Certificación de Trabajo Digno",
+          "Registro de Especialistas Profesionales"
+        ]);
+      } else {
+        setHeader(await translateText("Reconocimientos", lang));
+        setTitles([
+          await translateText("Concilio de Recursos Humanos", lang),
+          await translateText("Distintivo de Empresas Humanitarias", lang),
+          await translateText("Certificación de Trabajo Digno", lang),
+          await translateText("Registro de Especialistas Profesionales", lang)
+        ]);
+      }
+    }
+    fetchTranslations();
+  }, [lang]);
+
   const reconocimientos = [
     {
       id: "ccrh",
       img: "",
-      title: "Concilio de Recursos Humanos",
+      title: titles[0],
     },
     {
       id: "beh",
       img: "",
-      title: "Distintivo de Empresas Humanitarias",
+      title: titles[1],
     },
     {
       id: "trabajo",
       img: "",
-      title: "Certificación de Trabajo Digno",
+      title: titles[2],
     },
     {
       id: "repse",
       img: "",
-      title: "Registro de Especialistas Profesionales",
+      title: titles[3],
     },
   ];
-
   // Duplicar logos para efecto infinito
   const duplicatedLogos = [...reconocimientos, ...reconocimientos];
 
@@ -43,7 +78,7 @@ export default function AwardsSection() {
             marginBottom: '0.75rem',
             letterSpacing: '-0.02em'
           }}>
-            Reconocimientos
+            {header}
           </h2>
           <div style={{
             width: '80px',

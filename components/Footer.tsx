@@ -1,15 +1,21 @@
 "use client";
 
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { useLanguage } from '../lib/LanguageContext';
+import { translateText } from '../lib/translate';
+
 
 export default function Footer() {
+	const { lang } = useLanguage();
 	const currentYear = new Date().getFullYear();
 
-	const footerLinks = {
+	// State for translated texts
+	const [footerLinks, setFooterLinks] = useState({
 		empresa: [
 			{label: 'Acerca de', href: '/acerca-de'},
 			{label: 'Servicios', href: '/servicios'},
@@ -28,14 +34,114 @@ export default function Footer() {
 			{label: 'Términos de servicio', href: '/terminos-de-servicio'},
 			{label: 'Política de cookies', href: '/politica-de-cookies'},
 		]
-	};
-
+	});
+	const [sectionTitles, setSectionTitles] = useState({
+		empresa: 'Empresa',
+		servicios: 'Servicios',
+		legal: 'Legal',
+		contacto: 'Contacto',
+	});
+	const [description, setDescription] = useState('Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro.');
+	const [contactInfo, setContactInfo] = useState({
+		email: 'contacto@bechapra.com',
+		phone: '(55) 8548 2311',
+		location: 'Ciudad de México, México',
+	});
+	const [copyright, setCopyright] = useState(`© ${currentYear} Bechapra. Todos los derechos reservados.`);
+	const [bottomLinks, setBottomLinks] = useState([
+		{label: 'Política de privacidad', href: '/politica-de-privacidad'},
+		{label: 'Términos de servicio', href: '/terminos-de-servicio'},
+	]);
 	const socialLinks = [
 		{iconPath: '/imagen/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bechapra', label: 'Facebook'},
 		{iconPath: '/imagen/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bechapra', label: 'LinkedIn'},
 		{iconPath: '/imagen/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bechapra', label: 'YouTube'},
 		{iconPath: '/imagen/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bechapra', label: 'Instagram'},
 	];
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setFooterLinks({
+					empresa: [
+						{label: 'Acerca de', href: '/acerca-de'},
+						{label: 'Servicios', href: '/servicios'},
+						{label: 'Noticias', href: '/noticias'},
+						{label: 'Prensa', href: '/prensa'},
+						{label: 'Contacto', href: '/#contacto'},
+					],
+					servicios: [
+						{label: 'Capital Humano', href: '/servicios/capital-humano'},
+						{label: 'Servicios Legales', href: '/servicios/servicios-legales'},
+						{label: 'Servicios Contables', href: '/servicios/servicios-contables'},
+						{label: 'Desarrollo Organizacional', href: '/servicios/desarrollo-organizacional'},
+					],
+					legal: [
+						{label: 'Política de privacidad', href: '/politica-de-privacidad'},
+						{label: 'Términos de servicio', href: '/terminos-de-servicio'},
+						{label: 'Política de cookies', href: '/politica-de-cookies'},
+					]
+				});
+				setSectionTitles({
+					empresa: 'Empresa',
+					servicios: 'Servicios',
+					legal: 'Legal',
+					contacto: 'Contacto',
+				});
+				setDescription('Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro.');
+				setContactInfo({
+					email: 'contacto@bechapra.com',
+					phone: '(55) 8548 2311',
+					location: 'Ciudad de México, México',
+				});
+				setCopyright(`© ${currentYear} Bechapra. Todos los derechos reservados.`);
+				setBottomLinks([
+					{label: 'Política de privacidad', href: '/politica-de-privacidad'},
+					{label: 'Términos de servicio', href: '/terminos-de-servicio'},
+				]);
+			} else {
+				setFooterLinks({
+					empresa: [
+						{label: await translateText('Acerca de', lang), href: '/acerca-de'},
+						{label: await translateText('Servicios', lang), href: '/servicios'},
+						{label: await translateText('Noticias', lang), href: '/noticias'},
+						{label: await translateText('Prensa', lang), href: '/prensa'},
+						{label: await translateText('Contacto', lang), href: '/#contacto'},
+					],
+					servicios: [
+						{label: await translateText('Capital Humano', lang), href: '/servicios/capital-humano'},
+						{label: await translateText('Servicios Legales', lang), href: '/servicios/servicios-legales'},
+						{label: await translateText('Servicios Contables', lang), href: '/servicios/servicios-contables'},
+						{label: await translateText('Desarrollo Organizacional', lang), href: '/servicios/desarrollo-organizacional'},
+					],
+					legal: [
+						{label: await translateText('Política de privacidad', lang), href: '/politica-de-privacidad'},
+						{label: await translateText('Términos de servicio', lang), href: '/terminos-de-servicio'},
+						{label: await translateText('Política de cookies', lang), href: '/politica-de-cookies'},
+					]
+				});
+				setSectionTitles({
+					empresa: await translateText('Empresa', lang),
+					servicios: await translateText('Servicios', lang),
+					legal: await translateText('Legal', lang),
+					contacto: await translateText('Contacto', lang),
+				});
+				setDescription(await translateText('Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro.', lang));
+				setContactInfo({
+					email: 'contacto@bechapra.com',
+					phone: '(55) 8548 2311',
+					location: await translateText('Ciudad de México, México', lang),
+				});
+				setCopyright(`© ${currentYear} Bechapra. ${await translateText('Todos los derechos reservados.', lang)}`);
+				setBottomLinks([
+					{label: await translateText('Política de privacidad', lang), href: '/politica-de-privacidad'},
+					{label: await translateText('Términos de servicio', lang), href: '/terminos-de-servicio'},
+				]);
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
 
 	return (
 		<>

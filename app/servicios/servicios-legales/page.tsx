@@ -1,20 +1,143 @@
+
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Gavel, FileText, Users, ShieldCheck, ChevronLeft } from 'lucide-react';
 import ContactForm from '@/app/components/ContactForm';
 import Footer from '@/components/Footer';
+import { useLanguage } from "../../../lib/LanguageContext";
+import { translateText } from "../../../lib/translate";
 
-const services = [
-	{icon: Gavel, title: 'Asesoría mercantil', desc: 'Constitución, contratos y gobierno corporativo para empresas en crecimiento.'},
-	{icon: ShieldCheck, title: 'Cumplimiento y regulatorio', desc: 'Políticas internas, cumplimiento normativo y defensa administrativa.'},
-	{icon: FileText, title: 'Contratación laboral y seguridad', desc: 'Asesoría en contratos laborales, políticas y desvinculaciones con enfoque preventivo.'},
-	{icon: Users, title: 'Protección de datos y privacidad', desc: 'Avisos de privacidad, contratos con proveedores y buenas prácticas para datos personales.'},
+type IconName = 'Gavel' | 'FileText' | 'Users' | 'ShieldCheck' | 'ChevronLeft';
+interface ServiceCard { icon: IconName; title: string; desc: string; }
+interface PackageCard { name: string; price: string; desc: string; }
+interface TimelineCard { step: string; title: string; desc: string; }
+interface BenefitCard { icon: IconName; title: string; desc: string; }
+interface FAQ { q: string; a: string; }
+
+const iconMap: Record<IconName, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
+	Gavel,
+	FileText,
+	Users,
+	ShieldCheck,
+	ChevronLeft,
+};
+
+const initialServices: ServiceCard[] = [
+	{icon: 'Gavel', title: 'Asesoría mercantil', desc: 'Constitución, contratos y gobierno corporativo para empresas en crecimiento.'},
+	{icon: 'ShieldCheck', title: 'Cumplimiento y regulatorio', desc: 'Políticas internas, cumplimiento normativo y defensa administrativa.'},
+	{icon: 'FileText', title: 'Contratación laboral y seguridad', desc: 'Asesoría en contratos laborales, políticas y desvinculaciones con enfoque preventivo.'},
+	{icon: 'Users', title: 'Protección de datos y privacidad', desc: 'Avisos de privacidad, contratos con proveedores y buenas prácticas para datos personales.'},
+];
+
+const initialPackages: PackageCard[] = [
+	{name: 'Retainer básico', price: 'MXN 6,500 / mes', desc: 'Soporte legal continuado: revisiones contractuales y consultas mensuales.'},
+	{name: 'Proyecto puntual', price: 'Desde MXN 12,000', desc: 'Contratos, políticas o auditoría legal por proyecto con entregables claros.'},
+	{name: 'Soporte completo', price: 'A cotizar', desc: 'Paquete a medida con representación, gestión de riesgos y capacitación a equipo.'},
+];
+
+const initialTimeline: TimelineCard[] = [
+	{step: '01', title: 'Diagnóstico', desc: 'Revisión rápida para identificar prioridades y riesgos.'},
+	{step: '02', title: 'Plan de trabajo', desc: 'Propuesta con fases, entregables y cronograma.'},
+	{step: '03', title: 'Ejecución', desc: 'Implementación, capacitación y soporte continuo.'},
+];
+
+const initialBenefits: BenefitCard[] = [
+	{icon: 'ShieldCheck', title: 'Prevención de riesgos', desc: 'Identificación proactiva de contingencias legales antes de que escalen.'},
+	{icon: 'Gavel', title: 'Respuesta ágil', desc: 'Atención rápida y estratégica ante requerimientos o notificaciones.'},
+	{icon: 'FileText', title: 'Documentación clara', desc: 'Contratos, políticas y procedimientos formalizados y aplicables.'},
+];
+
+const initialFAQs: FAQ[] = [
+	{q: '¿Pueden acompañar procesos judiciales?', a: 'Sí, trabajamos con despachos asociados y coordinamos la defensa o representación según el alcance que requiera tu empresa.'},
+	{q: '¿Qué tan rápido implementan políticas internas?', a: 'Dependiendo del tamaño, en 2 a 6 semanas podemos tener políticas y procedimientos implementados con capacitación al personal clave.'},
+	{q: '¿Ofrecen servicios por proyecto o retainer?', a: 'Ambos: paquetes por proyecto y retainer mensual para soporte continuo y asesoría preventiva.'},
 ];
 
 export default function Page() {
+	const { lang } = useLanguage();
+	const [services, setServices] = useState<ServiceCard[]>(initialServices);
+	const [packages, setPackages] = useState<PackageCard[]>(initialPackages);
+	const [timeline, setTimeline] = useState<TimelineCard[]>(initialTimeline);
+	const [benefits, setBenefits] = useState<BenefitCard[]>(initialBenefits);
+	const [faqs, setFaqs] = useState<FAQ[]>(initialFAQs);
+	const [heroTitle, setHeroTitle] = useState('Servicios Legales');
+	const [heroDesc, setHeroDesc] = useState('Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.');
+	const [backBtn, setBackBtn] = useState('Volver');
+	const [casesLabel, setCasesLabel] = useState('Casos atendidos');
+	const [yearsLabel, setYearsLabel] = useState('Años de experiencia');
+	const [ctaBtn, setCtaBtn] = useState('Solicitar asesoría →');
+	const [servicesTitle, setServicesTitle] = useState('Nuestros servicios');
+	const [packagesTitle, setPackagesTitle] = useState('Paquetes y modalidades');
+	const [timelineTitle, setTimelineTitle] = useState('Cómo trabajamos');
+	const [faqTitle, setFaqTitle] = useState('Preguntas frecuentes');
+	const [faqLeftTitle, setFaqLeftTitle] = useState('Dudas comunes');
+	const [faqRightTitle, setFaqRightTitle] = useState('Beneficios clave');
+	const [ctaFinalTitle, setCtaFinalTitle] = useState('¿Listo para reducir riesgos legales?');
+	const [ctaFinalDesc, setCtaFinalDesc] = useState('Hablemos: proponemos un plan legal inicial personalizado para tu empresa.');
+	const [ctaContactBtn, setCtaContactBtn] = useState('Contactar ahora');
+	const [ctaEvalBtn, setCtaEvalBtn] = useState('Solicitar evaluación');
+	const [contactoTitle, setContactoTitle] = useState('¿Listo para proteger tu empresa?');
+	const [contactoDesc, setContactoDesc] = useState('Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita.');
+ 
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setServices(initialServices);
+				setPackages(initialPackages);
+				setTimeline(initialTimeline);
+				setBenefits(initialBenefits);
+				setFaqs(initialFAQs);
+				setHeroTitle('Servicios Legales');
+				setHeroDesc('Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.');
+				setBackBtn('Volver');
+				setCasesLabel('Casos atendidos');
+				setYearsLabel('Años de experiencia');
+				setCtaBtn('Solicitar asesoría →');
+				setServicesTitle('Nuestros servicios');
+				setPackagesTitle('Paquetes y modalidades');
+				setTimelineTitle('Cómo trabajamos');
+				setFaqTitle('Preguntas frecuentes');
+				setFaqLeftTitle('Dudas comunes');
+				setFaqRightTitle('Beneficios clave');
+				setCtaFinalTitle('¿Listo para reducir riesgos legales?');
+				setCtaFinalDesc('Hablemos: proponemos un plan legal inicial personalizado para tu empresa.');
+				setCtaContactBtn('Contactar ahora');
+				setCtaEvalBtn('Solicitar evaluación');
+				setContactoTitle('¿Listo para proteger tu empresa?');
+				setContactoDesc('Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita.');
+			} else {
+				setServices(await Promise.all(initialServices.map(async s => ({ ...s, title: await translateText(s.title, lang), desc: await translateText(s.desc, lang) }))));
+				setPackages(await Promise.all(initialPackages.map(async p => ({ ...p, name: await translateText(p.name, lang), price: p.price, desc: await translateText(p.desc, lang) }))));
+				setTimeline(await Promise.all(initialTimeline.map(async t => ({ ...t, title: await translateText(t.title, lang), desc: await translateText(t.desc, lang) }))));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({ ...b, title: await translateText(b.title, lang), desc: await translateText(b.desc, lang) }))));
+				setFaqs(await Promise.all(initialFAQs.map(async f => ({ q: await translateText(f.q, lang), a: await translateText(f.a, lang) }))));
+				setHeroTitle(await translateText('Servicios Legales', lang));
+				setHeroDesc(await translateText('Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.', lang));
+				setBackBtn(await translateText('Volver', lang));
+				setCasesLabel(await translateText('Casos atendidos', lang));
+				setYearsLabel(await translateText('Años de experiencia', lang));
+				setCtaBtn(await translateText('Solicitar asesoría →', lang));
+				setServicesTitle(await translateText('Nuestros servicios', lang));
+				setPackagesTitle(await translateText('Paquetes y modalidades', lang));
+				setTimelineTitle(await translateText('Cómo trabajamos', lang));
+				setFaqTitle(await translateText('Preguntas frecuentes', lang));
+				setFaqLeftTitle(await translateText('Dudas comunes', lang));
+				setFaqRightTitle(await translateText('Beneficios clave', lang));
+				setCtaFinalTitle(await translateText('¿Listo para reducir riesgos legales?', lang));
+				setCtaFinalDesc(await translateText('Hablemos: proponemos un plan legal inicial personalizado para tu empresa.', lang));
+				setCtaContactBtn(await translateText('Contactar ahora', lang));
+				setCtaEvalBtn(await translateText('Solicitar evaluación', lang));
+				setContactoTitle(await translateText('¿Listo para proteger tu empresa?', lang));
+				setContactoDesc(await translateText('Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita.', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
+
 	return (
 		<main>
 			{/* Hero Section */}
@@ -77,7 +200,7 @@ export default function Page() {
 						transition: 'all 0.3s ease',
 						boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
 					}}>
-						<ChevronLeft size={18} /> Volver
+						{iconMap['ChevronLeft'] && <span style={{display:'inline-flex',alignItems:'center'}}><iconMap.ChevronLeft size={18} /></span>} {backBtn}
 					</Link>
 
 					<div style={{
@@ -99,7 +222,9 @@ export default function Page() {
 								letterSpacing: '-0.02em',
 								lineHeight: 1.2
 							}}>
-								Servicios <span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Legales</span>
+								{heroTitle.split(' ').map((word, idx) =>
+									word === 'Legales' ? <span key={idx} style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{word}</span> : (word + ' ')
+								)}
 							</h1>
 
 							<p style={{
@@ -108,32 +233,32 @@ export default function Page() {
 								lineHeight: 1.7,
 								marginBottom: '2.5rem'
 							}}>
-								Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.
+								{heroDesc}
 							</p>
 
-							<div style={{
-								display: 'flex',
-								gap: '1.5rem',
-								marginBottom: '2.5rem',
-								flexWrap: 'wrap'
-							}}>
 								<div style={{
 									display: 'flex',
-									flexDirection: 'column',
-									gap: '0.25rem'
+									gap: '1.5rem',
+									marginBottom: '2.5rem',
+									flexWrap: 'wrap'
 								}}>
-									<strong style={{fontSize: '1.5rem', color: '#FFD700'}}>+300</strong>
-									<span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)'}}>Casos atendidos</span>
+									<div style={{
+										display: 'flex',
+										flexDirection: 'column',
+										gap: '0.25rem'
+									}}>
+										<strong style={{fontSize: '1.5rem', color: '#FFD700'}}>+300</strong>
+										<span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)'}}>{casesLabel}</span>
+									</div>
+									<div style={{
+										display: 'flex',
+										flexDirection: 'column',
+										gap: '0.25rem'
+									}}>
+										<strong style={{fontSize: '1.5rem', color: '#FFD700'}}>8+</strong>
+										<span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)'}}>{yearsLabel}</span>
+									</div>
 								</div>
-								<div style={{
-									display: 'flex',
-									flexDirection: 'column',
-									gap: '0.25rem'
-								}}>
-									<strong style={{fontSize: '1.5rem', color: '#FFD700'}}>8+</strong>
-									<span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)'}}>Años de experiencia</span>
-								</div>
-							</div>
 
 							<motion.div
 								whileHover={{scale: 1.05}}
@@ -153,7 +278,7 @@ export default function Page() {
 									transition: 'all 0.3s ease',
 									boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
 								}}>
-									Solicitar asesoría →
+									{ctaBtn}
 								</Link>
 							</motion.div>
 						</motion.div>
@@ -209,7 +334,7 @@ export default function Page() {
 						textAlign: 'center'
 					}}
 				>
-					Nuestros servicios
+					{servicesTitle}
 				</motion.h2>
 
 				<motion.div
@@ -225,7 +350,7 @@ export default function Page() {
 					}}
 				>
 					{services.map((service, i) => {
-						const Icon = service.icon;
+						const Icon = iconMap[service.icon];
 						return (
 							<motion.div
 								key={i}
@@ -278,7 +403,7 @@ export default function Page() {
 									position: 'relative',
 									zIndex: 2
 								}}>
-									<Icon size={32} />
+									{Icon && <Icon size={32} />}
 								</div>
 
 								<div style={{position: 'relative', zIndex: 2}}>
@@ -348,7 +473,7 @@ export default function Page() {
 						textAlign: 'center'
 					}}
 				>
-					Paquetes y modalidades
+					{packagesTitle}
 				</motion.h2>
 
 				<motion.div
@@ -362,11 +487,7 @@ export default function Page() {
 						gap: '2.5rem'
 					}}
 				>
-					{[
-						{name: 'Retainer básico', price: 'MXN 6,500 / mes', desc: 'Soporte legal continuado: revisiones contractuales y consultas mensuales.'},
-						{name: 'Proyecto puntual', price: 'Desde MXN 12,000', desc: 'Contratos, políticas o auditoría legal por proyecto con entregables claros.'},
-						{name: 'Soporte completo', price: 'A cotizar', desc: 'Paquete a medida con representación, gestión de riesgos y capacitación a equipo.'}
-					].map((pkg, i) => (
+					{packages.map((pkg, i) => (
 						<motion.div
 							key={i}
 							initial={{opacity: 0, y: 30}}
@@ -439,7 +560,7 @@ export default function Page() {
 						textAlign: 'center'
 					}}
 				>
-					Cómo trabajamos
+					{timelineTitle}
 				</motion.h2>
 
 				<motion.div
@@ -453,11 +574,7 @@ export default function Page() {
 						gap: '2rem'
 					}}
 				>
-					{[
-						{step: '01', title: 'Diagnóstico', desc: 'Revisión rápida para identificar prioridades y riesgos.'},
-						{step: '02', title: 'Plan de trabajo', desc: 'Propuesta con fases, entregables y cronograma.'},
-						{step: '03', title: 'Ejecución', desc: 'Implementación, capacitación y soporte continuo.'}
-					].map((item, i) => (
+					{timeline.map((item, i) => (
 						<motion.div
 							key={i}
 							initial={{opacity: 0, y: 30}}
@@ -540,7 +657,7 @@ export default function Page() {
 						textAlign: 'center'
 					}}
 				>
-					Preguntas frecuentes
+					{faqTitle}
 				</motion.h2>
 
 				<motion.div
@@ -563,13 +680,9 @@ export default function Page() {
 							color: '#003d8f',
 							marginBottom: '2rem'
 						}}>
-							Dudas comunes
+							{faqLeftTitle}
 						</h3>
-						{[
-							{q: '¿Pueden acompañar procesos judiciales?', a: 'Sí, trabajamos con despachos asociados y coordinamos la defensa o representación según el alcance que requiera tu empresa.'},
-							{q: '¿Qué tan rápido implementan políticas internas?', a: 'Dependiendo del tamaño, en 2 a 6 semanas podemos tener políticas y procedimientos implementados con capacitación al personal clave.'},
-							{q: '¿Ofrecen servicios por proyecto o retainer?', a: 'Ambos: paquetes por proyecto y retainer mensual para soporte continuo y asesoría preventiva.'}
-						].map((faq, i) => (
+						{faqs.map((faq, i) => (
 							<FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
 						))}
 					</div>
@@ -582,7 +695,7 @@ export default function Page() {
 							color: '#003d8f',
 							marginBottom: '2rem'
 						}}>
-							Beneficios clave
+							{faqRightTitle}
 						</h3>
 						<motion.div
 							style={{
@@ -591,12 +704,8 @@ export default function Page() {
 								gap: '1.5rem'
 							}}
 						>
-							{[
-								{icon: ShieldCheck, title: 'Prevención de riesgos', desc: 'Identificación proactiva de contingencias legales antes de que escalen.'},
-								{icon: Gavel, title: 'Respuesta ágil', desc: 'Atención rápida y estratégica ante requerimientos o notificaciones.'},
-								{icon: FileText, title: 'Documentación clara', desc: 'Contratos, políticas y procedimientos formalizados y aplicables.'}
-							].map((benefit, i) => {
-								const Icon = benefit.icon;
+							{benefits.map((benefit, i) => {
+								const Icon = iconMap[benefit.icon];
 								return (
 									<motion.div
 										key={i}
@@ -651,7 +760,7 @@ export default function Page() {
 											zIndex: 2,
 											flexShrink: 0
 										}}>
-											<Icon size={28} />
+											{Icon && <Icon size={28} />}
 										</div>
 
 										<div style={{position: 'relative', zIndex: 2, flex: 1}}>
@@ -755,7 +864,7 @@ export default function Page() {
 						marginBottom: '1rem',
 						letterSpacing: '-0.02em'
 					}}>
-						¿Listo para reducir riesgos legales?
+						{ctaFinalTitle}
 					</h2>
 
 					<p style={{
@@ -764,7 +873,7 @@ export default function Page() {
 						marginBottom: '2.5rem',
 						lineHeight: 1.6
 					}}>
-						Hablemos: proponemos un plan legal inicial personalizado para tu empresa.
+						{ctaFinalDesc}
 					</p>
 
 					<div style={{
@@ -789,7 +898,7 @@ export default function Page() {
 								transition: 'all 0.3s ease',
 								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
 							}}>
-								Contactar ahora
+								{ctaContactBtn}
 							</Link>
 						</motion.div>
 
@@ -810,7 +919,7 @@ export default function Page() {
 								backdropFilter: 'blur(10px)',
 								transition: 'all 0.3s ease'
 							}}>
-								Solicitar evaluación
+								{ctaEvalBtn}
 							</Link>
 						</motion.div>
 					</div>
@@ -847,7 +956,7 @@ export default function Page() {
 							marginBottom: '1rem',
 							letterSpacing: '-0.02em'
 						}}>
-							¿Listo para proteger tu empresa?
+							{contactoTitle}
 						</h2>
 						<p style={{
 							fontSize: '1.1rem',
@@ -856,7 +965,7 @@ export default function Page() {
 							margin: '0 auto',
 							lineHeight: 1.7
 						}}>
-							Contáctanos y recibe una consultoría gratuita para diseñar la solución legal que tu empresa necesita.
+							{contactoDesc}
 						</p>
 					</motion.div>
 

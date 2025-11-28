@@ -1,22 +1,153 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../../lib/LanguageContext';
+import { translateText } from '../../lib/translate';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Clock, BookOpen, FileText, Users } from 'lucide-react';
 
 export default function NewsCards() {
+	const { lang } = useLanguage();
+
+	const defaultTexts = {
+		sectionTitle: 'Últimas Noticias',
+		sectionSubtitle: 'Mantente informado sobre tendencias, eventos y cambios legislativos importantes',
+		cards: [
+			{
+				category: 'Blog',
+				date: '14 Noviembre 2024',
+				title: 'Nuevas tendencias en atracción de talento 2025',
+				excerpt: 'Descubre cómo las empresas están transformando sus estrategias de reclutamiento con inteligencia artificial.',
+				readTime: '5 min',
+			},
+			{
+				category: 'Cambios Legislativos',
+				date: '12 Noviembre 2024',
+				title: 'Reforma fiscal 2025: Lo que tu empresa debe saber',
+				excerpt: 'Análisis completo de las nuevas disposiciones fiscales y su impacto en los servicios contables.',
+				readTime: '7 min',
+			},
+			{
+				category: 'Evento',
+				date: '10 Noviembre 2024',
+				title: 'Bechapra presente en HR Summit México 2024',
+				excerpt: 'Nuestra participación en el evento más importante de Recursos Humanos del año.',
+				readTime: '4 min',
+			}
+		],
+		readMore: 'Leer más →',
+		allNews: 'Ver todas las noticias →',
+	};
+
+	const [texts, setTexts] = useState(defaultTexts);
+
+	// Traducción optimizada
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setTexts(defaultTexts);
+				return;
+			}
+
+			// texto plano a traducir
+			const stringsToTranslate = [
+				defaultTexts.sectionTitle,
+				defaultTexts.sectionSubtitle,
+				defaultTexts.cards[0].category,
+				defaultTexts.cards[0].date,
+				defaultTexts.cards[0].title,
+				defaultTexts.cards[0].excerpt,
+				defaultTexts.cards[0].readTime,
+
+				defaultTexts.cards[1].category,
+				defaultTexts.cards[1].date,
+				defaultTexts.cards[1].title,
+				defaultTexts.cards[1].excerpt,
+				defaultTexts.cards[1].readTime,
+
+				defaultTexts.cards[2].category,
+				defaultTexts.cards[2].date,
+				defaultTexts.cards[2].title,
+				defaultTexts.cards[2].excerpt,
+				defaultTexts.cards[2].readTime,
+
+				defaultTexts.readMore,
+				defaultTexts.allNews
+			];
+
+			const translations = await Promise.all(
+				stringsToTranslate.map(str => translateText(str, lang))
+			);
+
+			let i = 0;
+
+			setTexts({
+				sectionTitle: translations[i++],
+				sectionSubtitle: translations[i++],
+				cards: [
+					{
+						category: translations[i++],
+						date: translations[i++],
+						title: translations[i++],
+						excerpt: translations[i++],
+						readTime: translations[i++],
+					},
+					{
+						category: translations[i++],
+						date: translations[i++],
+						title: translations[i++],
+						excerpt: translations[i++],
+						readTime: translations[i++],
+					},
+					{
+						category: translations[i++],
+						date: translations[i++],
+						title: translations[i++],
+						excerpt: translations[i++],
+						readTime: translations[i++],
+					}
+				],
+				readMore: translations[i++],
+				allNews: translations[i++],
+			});
+		}
+
+		fetchTranslations();
+	}, [lang]);
+
+	// 🔥 Previene error mientras se cargan traducciones
+	if (!texts.cards || texts.cards.length < 3) return null;
+
+	const cardData = [
+		{
+			icon: BookOpen,
+			color: '#003d8f',
+			bgGradient: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
+			...(texts.cards[0] || {}),
+		},
+		{
+			icon: FileText,
+			color: '#D97706',
+			bgGradient: 'linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%)',
+			...(texts.cards[1] || {}),
+		},
+		{
+			icon: Users,
+			color: '#7C3AED',
+			bgGradient: 'linear-gradient(135deg, #F0E6FF 0%, #E8D4FF 100%)',
+			...(texts.cards[2] || {}),
+		},
+	];
+
 	return (
 		<section>
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				style={{
-					textAlign: 'center',
-					marginBottom: 'clamp(1.25rem, 2.5vw, 2rem)'
-				}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
+				style={{ textAlign: 'center', marginBottom: 'clamp(1.25rem, 2.5vw, 2rem)' }}
 			>
 				<h2 style={{
 					fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
@@ -25,8 +156,9 @@ export default function NewsCards() {
 					marginBottom: '1rem',
 					letterSpacing: '-0.02em'
 				}}>
-					Últimas Noticias
+					{texts.sectionTitle}
 				</h2>
+
 				<p style={{
 					fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
 					color: '#666',
@@ -34,15 +166,15 @@ export default function NewsCards() {
 					margin: '0 auto',
 					padding: '0 1rem'
 				}}>
-					Mantente informado sobre tendencias, eventos y cambios legislativos importantes
+					{texts.sectionSubtitle}
 				</p>
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 40}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
+				initial={{ opacity: 0, y: 40 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
 				style={{
 					display: 'grid',
 					gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
@@ -50,50 +182,16 @@ export default function NewsCards() {
 					padding: '0 1rem'
 				}}
 			>
-				{[
-					{
-						category: 'Blog',
-						date: '14 Noviembre 2024',
-						title: 'Nuevas tendencias en atracción de talento 2025',
-						excerpt: 'Descubre cómo las empresas están transformando sus estrategias de reclutamiento con inteligencia artificial.',
-						readTime: '5 min',
-						type: 'blog',
-						icon: BookOpen,
-						color: '#003d8f',
-						bgGradient: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
-					},
-					{
-						category: 'Cambios Legislativos',
-						date: '12 Noviembre 2024',
-						title: 'Reforma fiscal 2025: Lo que tu empresa debe saber',
-						excerpt: 'Análisis completo de las nuevas disposiciones fiscales y su impacto en los servicios contables.',
-						readTime: '7 min',
-						type: 'legal',
-						icon: FileText,
-						color: '#D97706',
-						bgGradient: 'linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%)'
-					},
-					{
-						category: 'Evento',
-						date: '10 Noviembre 2024',
-						title: 'Bechapra presente en HR Summit México 2024',
-						excerpt: 'Nuestra participación en el evento más importante de Recursos Humanos del año.',
-						readTime: '4 min',
-						type: 'event',
-						icon: Users,
-						color: '#7C3AED',
-						bgGradient: 'linear-gradient(135deg, #F0E6FF 0%, #E8D4FF 100%)'
-					}
-				].map((item, i) => {
+				{cardData.map((item, i) => {
 					const Icon = item.icon;
 					return (
 						<motion.article
 							key={i}
-							initial={{opacity: 0, y: 30}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.5, delay: i * 0.1}}
-							whileHover={{scale: 1.03, y: -8}}
+							initial={{ opacity: 0, y: 30 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true }}
+							transition={{ duration: 0.5, delay: i * 0.1 }}
+							whileHover={{ scale: 1.03, y: -8 }}
 							style={{
 								borderRadius: '16px',
 								background: 'rgba(255, 255, 255, 0.9)',
@@ -105,7 +203,7 @@ export default function NewsCards() {
 								cursor: 'pointer'
 							}}
 						>
-							{/* Imagen con icono */}
+							{/* Imagen / Icono */}
 							<div style={{
 								width: '100%',
 								height: 'clamp(180px, 25vw, 220px)',
@@ -116,7 +214,7 @@ export default function NewsCards() {
 								alignItems: 'center',
 								justifyContent: 'center'
 							}}>
-								{/* Badge de categoría */}
+								{/* Categoría */}
 								<div style={{
 									position: 'absolute',
 									top: '1rem',
@@ -132,7 +230,6 @@ export default function NewsCards() {
 									{item.category}
 								</div>
 
-								{/* Icono central */}
 								<div style={{
 									width: 'clamp(80px, 12vw, 110px)',
 									height: 'clamp(80px, 12vw, 110px)',
@@ -144,11 +241,15 @@ export default function NewsCards() {
 									boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
 									border: `3px solid ${item.color}20`
 								}}>
-									<Icon size={50} strokeWidth={2} style={{color: item.color, width: 'clamp(40px, 6vw, 60px)', height: 'clamp(40px, 6vw, 60px)'}} />
+									<Icon size={50} strokeWidth={2} style={{
+										color: item.color,
+										width: 'clamp(40px, 6vw, 60px)',
+										height: 'clamp(40px, 6vw, 60px)'
+									}} />
 								</div>
 							</div>
 
-							<div style={{padding: 'clamp(1.25rem, 2vw, 1.75rem)'}}>
+							<div style={{ padding: 'clamp(1.25rem, 2vw, 1.75rem)' }}>
 								<div style={{
 									display: 'flex',
 									alignItems: 'center',
@@ -158,7 +259,7 @@ export default function NewsCards() {
 									color: '#666',
 									flexWrap: 'wrap'
 								}}>
-									<div style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
 										<Clock size={16} />
 										<span>{item.date}</span>
 									</div>
@@ -185,7 +286,7 @@ export default function NewsCards() {
 									{item.excerpt}
 								</p>
 
-								<Link 
+								<Link
 									href="/noticias"
 									style={{
 										display: 'inline-flex',
@@ -198,7 +299,7 @@ export default function NewsCards() {
 										transition: 'all 0.3s ease'
 									}}
 								>
-									Leer más →
+									{texts.readMore}
 								</Link>
 							</div>
 						</motion.article>
@@ -207,14 +308,11 @@ export default function NewsCards() {
 			</motion.div>
 
 			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6, delay: 0.3}}
-				style={{
-					textAlign: 'center',
-					marginTop: '1.5rem'
-				}}
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6, delay: 0.3 }}
+				style={{ textAlign: 'center', marginTop: '1.5rem' }}
 			>
 				<Link
 					href="/noticias"
@@ -233,7 +331,7 @@ export default function NewsCards() {
 						boxShadow: '0 12px 30px rgba(0,61,143,0.2)'
 					}}
 				>
-					Ver todas las noticias →
+					{texts.allNews}
 				</Link>
 			</motion.div>
 		</section>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import ContactForm from "./components/ContactForm";
@@ -10,9 +11,40 @@ import HeroSection from "./components/HeroSection";
 //import PressSection from "./components/PressSection";
 import NewsCards from "./components/NewsCards";
 import PressCards from "./components/PressCards";
+//import TranslateExample from "../components/TranslateExample";
 import Footer from "../components/Footer";
+import { useLanguage } from "../lib/LanguageContext";
+import { useEffect, useState } from "react";
+import { translateText } from "../lib/translate";
+
 
 export default function Home() {
+  const { lang } = useLanguage();
+  const [contactTexts, setContactTexts] = useState({
+    ready: "¿Listo para conectar?",
+    title: "Hablemos sobre tu proyecto",
+    desc: "Cuéntanos tus ideas, necesidades o dudas y nuestro equipo te contactará a la brevedad. ¡Estamos aquí para ayudarte a transformar tu operación!"
+  });
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setContactTexts({
+          ready: "¿Listo para conectar?",
+          title: "Hablemos sobre tu proyecto",
+          desc: "Cuéntanos tus ideas, necesidades o dudas y nuestro equipo te contactará a la brevedad. ¡Estamos aquí para ayudarte a transformar tu operación!"
+        });
+      } else {
+        setContactTexts({
+          ready: await translateText("¿Listo para conectar?", lang),
+          title: await translateText("Hablemos sobre tu proyecto", lang),
+          desc: await translateText("Cuéntanos tus ideas, necesidades o dudas y nuestro equipo te contactará a la brevedad. ¡Estamos aquí para ayudarte a transformar tu operación!", lang)
+        });
+      }
+    }
+    fetchTranslations();
+  }, [lang]);
+
   return (
     <main className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
       {/* HERO - Azul con gradiente */}
@@ -99,11 +131,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <AnimatedSection>
             <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-6 px-4">
-              <span className="inline-block text-blue-700 bg-blue-100 font-semibold text-xs sm:text-sm px-3 py-1 rounded-full mb-2 tracking-wide">¿Listo para conectar?</span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-slate-900">Hablemos sobre tu proyecto</h2>
+              <span className="inline-block text-blue-700 bg-blue-100 font-semibold text-xs sm:text-sm px-3 py-1 rounded-full mb-2 tracking-wide">{contactTexts.ready}</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 text-slate-900">{contactTexts.title}</h2>
               <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-4" />
               <p className="text-base sm:text-lg text-slate-600 font-medium">
-                Cuéntanos tus ideas, necesidades o dudas y nuestro equipo te contactará a la brevedad. ¡Estamos aquí para ayudarte a transformar tu operación!
+                {contactTexts.desc}
               </p>
             </div>
           </AnimatedSection>
@@ -113,6 +145,8 @@ export default function Home() {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* <TranslateExample /> */}
 
       {/* FOOTER */}
       <Footer />

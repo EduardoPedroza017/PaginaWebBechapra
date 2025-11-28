@@ -1,13 +1,65 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLanguage } from "../../lib/LanguageContext";
+import { translateText } from "../../lib/translate";
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
 import styles from "@/app/css/components/CtaRedes.module.css";
 
-export default function CtaRedes() {
+
+function CtaRedes() {
+  const { lang } = useLanguage();
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
+  const [texts, setTexts] = useState({
+    title: "Juntos trazamos <br />tu camino al éxito.",
+    highlight: "tu camino al éxito.",
+    subtitle: "¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!",
+    cta: "¡AGÉNDE AHORA!",
+    visit: "¡VISÍTANOS!",
+    socialLabels: [
+      "Business Services Bechapra",
+      "Business Services Bechapra",
+      "bechapra",
+      "Business Services Bechapra"
+    ]
+  });
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setTexts({
+          title: "Juntos trazamos <br />tu camino al éxito.",
+          highlight: "tu camino al éxito.",
+          subtitle: "¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!",
+          cta: "¡AGÉNDE AHORA!",
+          visit: "¡VISÍTANOS!",
+          socialLabels: [
+            "Business Services Bechapra",
+            "Business Services Bechapra",
+            "bechapra",
+            "Business Services Bechapra"
+          ]
+        });
+      } else {
+        setTexts({
+          title: await translateText("Juntos trazamos <br />tu camino al éxito.", lang),
+          highlight: await translateText("tu camino al éxito.", lang),
+          subtitle: await translateText("¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!", lang),
+          cta: await translateText("¡AGÉNDE AHORA!", lang),
+          visit: await translateText("¡VISÍTANOS!", lang),
+          socialLabels: [
+            await translateText("Business Services Bechapra", lang),
+            await translateText("Business Services Bechapra", lang),
+            await translateText("bechapra", lang),
+            await translateText("Business Services Bechapra", lang)
+          ]
+        });
+      }
+    }
+    fetchTranslations();
+  }, [lang]);
 
   const socialLinks = [
     {
@@ -15,28 +67,28 @@ export default function CtaRedes() {
       name: "LinkedIn",
       url: "https://www.linkedin.com/",
       iconPath: "/imagen/icon/Iconos_Redes/Linkedin_PositivioStroke@2x.png",
-      label: "Business Services Bechapra",
+      label: texts.socialLabels[0],
     },
     {
       id: "facebook",
       name: "Facebook",
       url: "https://www.facebook.com/",
       iconPath: "/imagen/icon/Iconos_Redes/Facebook_PositivioStroke@2x.png",
-      label: "Business Services Bechapra",
+      label: texts.socialLabels[1],
     },
     {
       id: "instagram",
       name: "Instagram",
       url: "https://www.instagram.com/bechapra",
       iconPath: "/imagen/icon/Iconos_Redes/Instagram_PositivioStroke@2x.png",
-      label: "bechapra",
+      label: texts.socialLabels[2],
     },
     {
       id: "youtube",
       name: "YouTube",
       url: "https://www.youtube.com/",
       iconPath: "/imagen/icon/Iconos_Redes/Youtube@2x.png",
-      label: "Business Services Bechapra",
+      label: texts.socialLabels[3],
     },
   ];
 
@@ -103,22 +155,22 @@ export default function CtaRedes() {
               viewport={{ once: true, amount: 0.2 }}
             >
               {/* Título */}
+
               <motion.h3
                 variants={itemVariants}
                 className={styles.title}
-              >
-                Juntos trazamos <br />
-                <span className={styles.titleHighlight}>
-                  tu camino al éxito.
-                </span>
-              </motion.h3>
+                dangerouslySetInnerHTML={{
+                  __html: texts.title.replace('<br />', '<br />')
+                }}
+              />
 
               {/* Subtítulo */}
+
               <motion.p
                 variants={itemVariants}
                 className={styles.description}
               >
-                ¿Listo para llevar tus finanzas al siguiente nivel? Reserva una reunión con nuestros especialistas y comienza a diseñar una estrategia fiscal y administrativa que impulsará tu éxito. ¡Da el primer paso hoy!
+                {texts.subtitle}
               </motion.p>
 
               {/* Botón CTA */}
@@ -130,7 +182,7 @@ export default function CtaRedes() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <div className={styles.ctaButtonContent}>
-                    <span>¡AGÉNDE AHORA!</span>
+                    <span>{texts.cta}</span>
                     <motion.svg 
                       width="20" 
                       height="20" 
@@ -164,7 +216,7 @@ export default function CtaRedes() {
                 transition={{ delay: 0.5, duration: 0.5 }}
                 className={styles.socialTitle}
               >
-                ¡VISÍTANOS!
+                {texts.visit}
               </motion.h4>
 
               <motion.div 
@@ -219,3 +271,5 @@ export default function CtaRedes() {
     </section>
   );
 }
+
+export default CtaRedes;

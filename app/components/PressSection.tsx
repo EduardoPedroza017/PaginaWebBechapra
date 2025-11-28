@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../lib/LanguageContext';
+import { translateText } from '../../lib/translate';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Award, Calendar, Newspaper } from 'lucide-react';
-
 export default function PressSection() {
+	const { lang } = useLanguage();
 	const [currentSlide, setCurrentSlide] = useState(0);
-
-	const pressItems = [
+	const defaultPressItems = [
 		{
 			type: 'award',
 			title: 'Premio a la Excelencia Empresarial 2024',
@@ -42,6 +43,33 @@ export default function PressSection() {
 			category: 'Noticia'
 		}
 	];
+	const [pressItems, setPressItems] = useState(defaultPressItems);
+	const [sectionTitle, setSectionTitle] = useState('Prensa y Reconocimientos');
+	const [sectionSubtitle, setSectionSubtitle] = useState('Conoce nuestros logros, participación en eventos y reconocimientos más recientes');
+	const [seeMoreText, setSeeMoreText] = useState('Ver más en prensa →');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setPressItems(defaultPressItems);
+				setSectionTitle('Prensa y Reconocimientos');
+				setSectionSubtitle('Conoce nuestros logros, participación en eventos y reconocimientos más recientes');
+				setSeeMoreText('Ver más en prensa →');
+			} else {
+				setSectionTitle(await translateText('Prensa y Reconocimientos', lang));
+				setSectionSubtitle(await translateText('Conoce nuestros logros, participación en eventos y reconocimientos más recientes', lang));
+				setSeeMoreText(await translateText('Ver más en prensa →', lang));
+				setPressItems(await Promise.all(defaultPressItems.map(async (item) => ({
+					...item,
+					title: await translateText(item.title, lang),
+					date: await translateText(item.date, lang),
+					description: await translateText(item.description, lang),
+					category: await translateText(item.category, lang),
+				}))));
+			}
+		}
+		fetchTranslations();
+	}, [lang]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -82,11 +110,11 @@ export default function PressSection() {
 				className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4"
 			>
 				<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-					Prensa y Reconocimientos
+					{sectionTitle}
 				</h2>
 				<div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
 				<p className="text-base sm:text-lg text-slate-600">
-					Conoce nuestros logros, participación en eventos y reconocimientos más recientes
+					{sectionSubtitle}
 				</p>
 			</motion.div>
 
@@ -161,7 +189,7 @@ export default function PressSection() {
 											href="/prensa"
 											className="inline-flex items-center gap-2 bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 hover:scale-105"
 										>
-											Ver más en prensa →
+											{seeMoreText}
 										</Link>
 									</motion.div>
 								</div>

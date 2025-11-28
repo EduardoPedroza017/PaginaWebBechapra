@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Users, ChevronDown, CheckCircle, Target, TrendingUp, UserPlus, Lightbulb, Rocket } from 'lucide-react';
-import ContactForm from '@/app/components/ContactForm';
+import ContactForm from '../../components/ContactForm';
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
+import { main } from 'framer-motion/client';
 
 interface AccordionSectionProps {
 	title: string;
@@ -105,10 +108,281 @@ const AccordionSection = ({ title, isOpen, onClick, children }: AccordionSection
 );
 
 export default function Page() {
+	const { lang } = useLanguage();
 	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
+	// Estados para textos traducidos
+	const [heroTitle, setHeroTitle] = useState('Capacitación Empresarial');
+	const [heroDesc, setHeroDesc] = useState('Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento.');
+	const [volverBtn, setVolverBtn] = useState('Volver');
+	const [solicitarBtn, setSolicitarBtn] = useState('Solicitar diagnóstico');
+	const [programasTitle, setProgramasTitle] = useState('Nuestros Programas de Capacitación');
+	const [tarjetas, setTarjetas] = useState([
+		{
+			title: 'Integración y Team Building',
+			icon: 'UserPlus',
+			desc: 'Fortalece la cohesión de tu equipo a través de actividades vivenciales.',
+			color: '#003d8f'
+		},
+		{
+			title: 'Soft Skills',
+			icon: 'Lightbulb',
+			desc: 'Desarrolla habilidades interpersonales clave para el éxito profesional.',
+			color: '#004AB7'
+		},
+		{
+			title: 'Competencias Técnicas',
+			icon: 'Rocket',
+			desc: 'Programas especializados para dominar herramientas y procesos.',
+			color: '#0056d4'
+		}
+	]);
+	const [comoTitle, setComoTitle] = useState('Cómo Trabajamos');
+	const [comoDesc, setComoDesc] = useState('Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.');
+	const [comoBullets, setComoBullets] = useState([
+		'Adaptamos cada programa con necesidades específicas',
+		'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
+	]);
+	const [beneficios, setBeneficios] = useState([
+		{title: 'Conjunto de habilidades técnicas y soft skills mejoradas', icon: 'Target'},
+		{title: 'Mayor entendimiento y aprecio por la importancia del trabajo en equipo y colaboración', icon: 'Users'},
+		{title: 'Mentalidad orientada hacia el crecimiento e innovación', icon: 'TrendingUp'}
+	]);
+	const [mejoraTitle, setMejoraTitle] = useState('Mejora el rendimiento de tu equipo');
+	const [mejoraDesc, setMejoraDesc] = useState('Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.');
+	const [mejoraCta, setMejoraCta] = useState('¡Convierte a tu equipo en un motor de éxito!');
+	const [mejoraBtn, setMejoraBtn] = useState('COMIENZA AHORA →');
+	const [acordeonTitle, setAcordeonTitle] = useState('Explora Nuestros Cursos');
+	const [acordeon, setAcordeon] = useState([
+		{
+			title: 'Competencias y habilidades técnicas',
+			desc: 'Ofrecemos cursos, talleres y seminarios enfocados en desarrollar competencias especializadas en tu equipo:',
+			items: [
+				'Estrategia y dirección.',
+				'Ventas y negociación.',
+				'Design Thinking.',
+				'Gestión de proyectos.',
+				'Innovación y modelos de negocios.',
+				'Estrategias de Contabilidad y Finanzas.',
+				'Dirección en Recursos Humanos.',
+				'Análisis de riesgos.',
+				'Programación neurolingüística.',
+				'Coaching.'
+			]
+		},
+		{
+			title: 'Soft Skills',
+			desc: 'Competencias que configuran el comportamiento individual de los profesionales:',
+			items: [
+				'Liderazgo.',
+				'Comunicación.',
+				'Creatividad.',
+				'Resolución de problemas.',
+				'Gestión de tiempo.',
+				'Manejo de estrés.',
+				'Productividad personal.',
+				'Pensamiento crítico.',
+				'Trabajo en equipo.',
+				'Inteligencia emocional.'
+			]
+		},
+		{
+			title: 'Integración y Team building',
+			desc: 'A través de ejercicios de aprendizaje vivencial desarrollados por especialistas, ayudamos a mejorar la comunicación interpersonal, la toma de decisiones y el conocimiento interior, para trabajar en equipo. Este servicio requiere de la participación activa de tu equipo y puedes elegir entre incluir actividad física fuerte, moderada o nula.',
+			items: []
+		}
+	]);
+	const [ctaTitle, setCtaTitle] = useState('Solicita tu diagnóstico formativo');
+	const [ctaDesc, setCtaDesc] = useState('Recibiras una propuesta con cronograma, metodología y ROI estimado.');
+	const [ctaBtn, setCtaBtn] = useState('Solicitar propuesta');
+	const [ctaBtn2, setCtaBtn2] = useState('Contactar ahora');
+	const [contactTitle, setContactTitle] = useState('¿Interesado en nuestros servicios?');
+	const [contactDesc, setContactDesc] = useState('Envíanos un mensaje con los detalles y estaremos encantados de ayudarte.');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setHeroTitle('Capacitación Empresarial');
+				setHeroDesc('Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento.');
+				setVolverBtn('Volver');
+				setSolicitarBtn('Solicitar diagnóstico');
+				setProgramasTitle('Nuestros Programas de Capacitación');
+				setTarjetas([
+					{
+						title: 'Integración y Team Building',
+						icon: 'UserPlus',
+						desc: 'Fortalece la cohesión de tu equipo a través de actividades vivenciales.',
+						color: '#003d8f'
+					},
+					{
+						title: 'Soft Skills',
+						icon: 'Lightbulb',
+						desc: 'Desarrolla habilidades interpersonales clave para el éxito profesional.',
+						color: '#004AB7'
+					},
+					{
+						title: 'Competencias Técnicas',
+						icon: 'Rocket',
+						desc: 'Programas especializados para dominar herramientas y procesos.',
+						color: '#0056d4'
+					}
+				]);
+				setComoTitle('Cómo Trabajamos');
+				setComoDesc('Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.');
+				setComoBullets([
+					'Adaptamos cada programa con necesidades específicas',
+					'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
+				]);
+				setBeneficios([
+					{title: 'Conjunto de habilidades técnicas y soft skills mejoradas', icon: 'Target'},
+					{title: 'Mayor entendimiento y aprecio por la importancia del trabajo en equipo y colaboración', icon: 'Users'},
+					{title: 'Mentalidad orientada hacia el crecimiento e innovación', icon: 'TrendingUp'}
+				]);
+				setMejoraTitle('Mejora el rendimiento de tu equipo');
+				setMejoraDesc('Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.');
+				setMejoraCta('¡Convierte a tu equipo en un motor de éxito!');
+				setMejoraBtn('COMIENZA AHORA →');
+				setAcordeonTitle('Explora Nuestros Cursos');
+				setAcordeon([
+					{
+						title: 'Competencias y habilidades técnicas',
+						desc: 'Ofrecemos cursos, talleres y seminarios enfocados en desarrollar competencias especializadas en tu equipo:',
+						items: [
+							'Estrategia y dirección.',
+							'Ventas y negociación.',
+							'Design Thinking.',
+							'Gestión de proyectos.',
+							'Innovación y modelos de negocios.',
+							'Estrategias de Contabilidad y Finanzas.',
+							'Dirección en Recursos Humanos.',
+							'Análisis de riesgos.',
+							'Programación neurolingüística.',
+							'Coaching.'
+						]
+					},
+					{
+						title: 'Soft Skills',
+						desc: 'Competencias que configuran el comportamiento individual de los profesionales:',
+						items: [
+							'Liderazgo.',
+							'Comunicación.',
+							'Creatividad.',
+							'Resolución de problemas.',
+							'Gestión de tiempo.',
+							'Manejo de estrés.',
+							'Productividad personal.',
+							'Pensamiento crítico.',
+							'Trabajo en equipo.',
+							'Inteligencia emocional.'
+						]
+					},
+					{
+						title: 'Integración y Team building',
+						desc: 'A través de ejercicios de aprendizaje vivencial desarrollados por especialistas, ayudamos a mejorar la comunicación interpersonal, la toma de decisiones y el conocimiento interior, para trabajar en equipo. Este servicio requiere de la participación activa de tu equipo y puedes elegir entre incluir actividad física fuerte, moderada o nula.',
+						items: []
+					}
+				]);
+				setCtaTitle('Solicita tu diagnóstico formativo');
+				setCtaDesc('Recibiras una propuesta con cronograma, metodología y ROI estimado.');
+				setCtaBtn('Solicitar propuesta');
+				setCtaBtn2('Contactar ahora');
+				setContactTitle('¿Interesado en nuestros servicios?');
+				setContactDesc('Envíanos un mensaje con los detalles y estaremos encantados de ayudarte.');
+			} else {
+				setHeroTitle(await translateText('Capacitación Empresarial', lang));
+				setHeroDesc(await translateText('Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento.', lang));
+				setVolverBtn(await translateText('Volver', lang));
+				setSolicitarBtn(await translateText('Solicitar diagnóstico', lang));
+				setProgramasTitle(await translateText('Nuestros Programas de Capacitación', lang));
+				setTarjetas(await Promise.all([
+					{
+						title: await translateText('Integración y Team Building', lang),
+						icon: 'UserPlus',
+						desc: await translateText('Fortalece la cohesión de tu equipo a través de actividades vivenciales.', lang),
+						color: '#003d8f'
+					},
+					{
+						title: await translateText('Soft Skills', lang),
+						icon: 'Lightbulb',
+						desc: await translateText('Desarrolla habilidades interpersonales clave para el éxito profesional.', lang),
+						color: '#004AB7'
+					},
+					{
+						title: await translateText('Competencias Técnicas', lang),
+						icon: 'Rocket',
+						desc: await translateText('Programas especializados para dominar herramientas y procesos.', lang),
+						color: '#0056d4'
+					}
+				]));
+				setComoTitle(await translateText('Cómo Trabajamos', lang));
+				setComoDesc(await translateText('Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional.', lang));
+				setComoBullets(await Promise.all([
+					'Adaptamos cada programa con necesidades específicas',
+					'Garantizamos experiencia de aprendizaje personalizada y efectiva.'
+				].map(async t => await translateText(t, lang))));
+				setBeneficios(await Promise.all([
+					{title: await translateText('Conjunto de habilidades técnicas y soft skills mejoradas', lang), icon: 'Target'},
+					{title: await translateText('Mayor entendimiento y aprecio por la importancia del trabajo en equipo y colaboración', lang), icon: 'Users'},
+					{title: await translateText('Mentalidad orientada hacia el crecimiento e innovación', lang), icon: 'TrendingUp'}
+				]));
+				setMejoraTitle(await translateText('Mejora el rendimiento de tu equipo', lang));
+				setMejoraDesc(await translateText('Nuestros programas están diseñados para mejorar el desempeño individual y colectivo, aumentando la productividad y eficiencia de tu empresa.', lang));
+				setMejoraCta(await translateText('¡Convierte a tu equipo en un motor de éxito!', lang));
+				setMejoraBtn(await translateText('COMIENZA AHORA →', lang));
+				setAcordeonTitle(await translateText('Explora Nuestros Cursos', lang));
+				setAcordeon(await Promise.all([
+					{
+						title: await translateText('Competencias y habilidades técnicas', lang),
+						desc: await translateText('Ofrecemos cursos, talleres y seminarios enfocados en desarrollar competencias especializadas en tu equipo:', lang),
+						items: await Promise.all([
+							'Estrategia y dirección.',
+							'Ventas y negociación.',
+							'Design Thinking.',
+							'Gestión de proyectos.',
+							'Innovación y modelos de negocios.',
+							'Estrategias de Contabilidad y Finanzas.',
+							'Dirección en Recursos Humanos.',
+							'Análisis de riesgos.',
+							'Programación neurolingüística.',
+							'Coaching.'
+						].map(async t => await translateText(t, lang)))
+					},
+					{
+						title: await translateText('Soft Skills', lang),
+						desc: await translateText('Competencias que configuran el comportamiento individual de los profesionales:', lang),
+						items: await Promise.all([
+							'Liderazgo.',
+							'Comunicación.',
+							'Creatividad.',
+							'Resolución de problemas.',
+							'Gestión de tiempo.',
+							'Manejo de estrés.',
+							'Productividad personal.',
+							'Pensamiento crítico.',
+							'Trabajo en equipo.',
+							'Inteligencia emocional.'
+						].map(async t => await translateText(t, lang)))
+					},
+					{
+						title: await translateText('Integración y Team building', lang),
+						desc: await translateText('A través de ejercicios de aprendizaje vivencial desarrollados por especialistas, ayudamos a mejorar la comunicación interpersonal, la toma de decisiones y el conocimiento interior, para trabajar en equipo. Este servicio requiere de la participación activa de tu equipo y puedes elegir entre incluir actividad física fuerte, moderada o nula.', lang),
+						items: []
+					}
+				]));
+				setCtaTitle(await translateText('Solicita tu diagnóstico formativo', lang));
+				setCtaDesc(await translateText('Recibiras una propuesta con cronograma, metodología y ROI estimado.', lang));
+				setCtaBtn(await translateText('Solicitar propuesta', lang));
+				setCtaBtn2(await translateText('Contactar ahora', lang));
+				setContactTitle(await translateText('¿Interesado en nuestros servicios?', lang));
+				setContactDesc(await translateText('Envíanos un mensaje con los detalles y estaremos encantados de ayudarte.', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
+
 	return (
-		<main>
+		<main> 
 			{/* HERO Mejorado - Full width con gradiente */}
 			<section style={{
 				width: '100vw',

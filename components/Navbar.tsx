@@ -4,13 +4,26 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+
 import { serviceGroups } from "../lib/servicesData";
 import styles from "./Navbar.module.css";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "../lib/LanguageContext";
+import { translateText } from "../lib/translate";
 
 export default function Navbar() {
   const [showLogoImg, setShowLogoImg] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { lang } = useLanguage();
+  const [navTexts, setNavTexts] = useState({
+    inicio: "Inicio",
+    servicios: "Servicios",
+    noticias: "Noticias",
+    prensa: "Prensa",
+    acerca: "Acerca de",
+    colaborador: "¿Eres colaborador?",
+    verTodos: "Ver todos"
+  });
 
   // Load logo on client
   useEffect(() => {
@@ -24,6 +37,34 @@ export default function Navbar() {
       document.body.style.overflow = "unset";
     };
   }, [mobileMenuOpen]);
+
+  // Traducción dinámica de los textos de navegación
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setNavTexts({
+          inicio: "Inicio",
+          servicios: "Servicios",
+          noticias: "Noticias",
+          prensa: "Prensa",
+          acerca: "Acerca de",
+          colaborador: "¿Eres colaborador?",
+          verTodos: "Ver todos"
+        });
+      } else {
+        setNavTexts({
+          inicio: await translateText("Inicio", lang),
+          servicios: await translateText("Servicios", lang),
+          noticias: await translateText("Noticias", lang),
+          prensa: await translateText("Prensa", lang),
+          acerca: await translateText("Acerca de", lang),
+          colaborador: await translateText("¿Eres colaborador?", lang),
+          verTodos: await translateText("Ver todos", lang)
+        });
+      }
+    }
+    fetchTranslations();
+  }, [lang]);
 
   return (
     <header className={`${styles.header} ${mobileMenuOpen ? styles.menuOpen : ""}`}>
@@ -45,9 +86,9 @@ export default function Navbar() {
 
         {/* Desktop navigation */}
         <nav className={styles.menu}>
-          <Link href="/" className={styles.navLink}>Inicio</Link>
+          <Link href="/" className={styles.navLink}>{navTexts.inicio}</Link>
           <div className={styles.navItem}>
-            <Link href="/servicios" className={styles.navLink}>Servicios</Link>
+            <Link href="/servicios" className={styles.navLink}>{navTexts.servicios}</Link>
             <div className={styles.dropdown}>
               {serviceGroups.map(group => (
                 <div key={group.slug} className={styles.dropdownColumn}>
@@ -69,16 +110,16 @@ export default function Navbar() {
                     {group.subServices.slice(0,2).map(sub => (
                       <Link key={sub.slug} href={sub.slug} className={styles.dropdownItem}>{sub.name}</Link>
                     ))}
-                    <Link href={group.slug} className={styles.dropdownItem} style={{fontWeight:'600',color:'#2563eb'}}>Ver todos</Link>
+                    <Link href={group.slug} className={styles.dropdownItem} style={{fontWeight:'600',color:'#2563eb'}}>{navTexts.verTodos}</Link>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <Link href="/noticias" className={styles.navLink}>Noticias</Link>
-          <Link href="/prensa" className={styles.navLink}>Prensa</Link>
-          <Link href="/acerca-de" className={styles.navLink}>Acerca de</Link>
-          <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.ctaButton}>¿Eres colaborador?</a>
+          <Link href="/noticias" className={styles.navLink}>{navTexts.noticias}</Link>
+          <Link href="/prensa" className={styles.navLink}>{navTexts.prensa}</Link>
+          <Link href="/acerca-de" className={styles.navLink}>{navTexts.acerca}</Link>
+          <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.ctaButton}>{navTexts.colaborador}</a>
           <div style={{ marginLeft: 24 }}>
             <LanguageSwitcher />
           </div>
@@ -124,12 +165,12 @@ export default function Navbar() {
             </button>
           </div>
           <nav className={styles.mobileMenuNav}>
-            <Link href="/" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Inicio</Link>
-            <Link href="/servicios" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Servicios</Link>
-            <Link href="/acerca-de" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Acerca de</Link>
-            <Link href="/noticias" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Noticias</Link>
-            <Link href="/prensa" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Prensa</Link>
-            <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.mobileCtaButton}>¿Eres colaborador?</a>
+            <Link href="/" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>{navTexts.inicio}</Link>
+            <Link href="/servicios" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>{navTexts.servicios}</Link>
+            <Link href="/acerca-de" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>{navTexts.acerca}</Link>
+            <Link href="/noticias" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>{navTexts.noticias}</Link>
+            <Link href="/prensa" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>{navTexts.prensa}</Link>
+            <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className={styles.mobileCtaButton}>{navTexts.colaborador}</a>
             <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center' }}>
               <LanguageSwitcher />
             </div>

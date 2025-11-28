@@ -1,11 +1,57 @@
 "use client";
 
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ContactForm = dynamic(() => import("@/app/components/ContactForm"), { ssr: false });
 import Footer from '@/components/Footer';
 import { Briefcase, Building2, Users, ShieldCheck, Globe2, Wrench, BarChart3, TrendingUp, Award, Clock, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "../../../lib/LanguageContext";
+import { translateText } from "../../../lib/translate";
+
+type IconName = 'Briefcase' | 'Building2' | 'Users' | 'ShieldCheck' | 'Globe2' | 'Wrench' | 'BarChart3' | 'TrendingUp' | 'Award' | 'Clock' | 'ChevronRight' | 'ChevronLeft';
+interface ServicioCard { icon: IconName; title: string; desc: string; color: string; }
+interface StatCard { value: string; label: string; icon: IconName; }
+interface WhyCard { icon: IconName; title: string; desc: string; }
+
+const iconMap: Record<IconName, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
+	Briefcase,
+	Building2,
+	Users,
+	ShieldCheck,
+	Globe2,
+	Wrench,
+	BarChart3,
+	TrendingUp,
+	Award,
+	Clock,
+	ChevronRight,
+	ChevronLeft,
+};
+
+const initialServicios: ServicioCard[] = [
+	{ icon: 'Briefcase', title: "Administración de personal externo", desc: "Gestión integral de talento para proyectos, outsourcing y servicios temporales.", color: "#0057D9" },
+	{ icon: 'Building2', title: "Servicios por industria", desc: "Soluciones especializadas para manufactura, retail, logística, salud, TI y más.", color: "#004AB7" },
+	{ icon: 'Users', title: "Reclutamiento especializado", desc: "Búsqueda y selección de perfiles técnicos, ejecutivos y operativos a la medida.", color: "#0057D9" },
+	{ icon: 'ShieldCheck', title: "Cumplimiento normativo", desc: "Aseguramos procesos alineados a la ley y regulaciones de cada sector.", color: "#004AB7" },
+	{ icon: 'Globe2', title: "Servicios internacionales", desc: "Gestión de personal y nómina para empresas globales o con operaciones en México.", color: "#0057D9" },
+	{ icon: 'Wrench', title: "Soluciones a la medida", desc: "Diseño de esquemas y servicios según el giro, tamaño y retos de tu empresa.", color: "#004AB7" },
+	{ icon: 'BarChart3', title: "Consultoría y optimización", desc: "Diagnóstico, mejora de procesos y asesoría en recursos humanos y nómina.", color: "#0057D9" },
+];
+
+const initialStats: StatCard[] = [
+	{ value: "20+", label: "Años de experiencia", icon: 'Award' },
+	{ value: "500+", label: "Empresas satisfechas", icon: 'TrendingUp' },
+	{ value: "24/7", label: "Soporte dedicado", icon: 'Clock' },
+	{ value: "98%", label: "Tasa de retención", icon: 'ShieldCheck' },
+];
+
+const initialWhy: WhyCard[] = [
+	{ icon: 'ShieldCheck', title: "Experiencia comprobada", desc: "Más de 20 años brindando soluciones especializadas a empresas líderes de México y el extranjero." },
+	{ icon: 'BarChart3', title: "Resultados medibles", desc: "Procesos optimizados, reducción de costos y cumplimiento total en cada proyecto." },
+	{ icon: 'Users', title: "Atención personalizada", desc: "Equipo dedicado y soporte 24/7 para cada cliente y cada industria." },
+];
 
 const cardBgColors = [
 	'linear-gradient(135deg, #e3f0ff 60%, #c7e0ff 100%)', // azul más saturado
@@ -70,7 +116,54 @@ const stats = [
 ];
 
 export default function ServiciosEspecializadosPage() {
+	const { lang } = useLanguage();
 	const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+	const [servicios, setServicios] = useState<ServicioCard[]>(initialServicios);
+	const [stats, setStats] = useState<StatCard[]>(initialStats);
+	const [why, setWhy] = useState<WhyCard[]>(initialWhy);
+	const [heroTitle, setHeroTitle] = useState('Servicios Especializados');
+	const [heroDesc, setHeroDesc] = useState('Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.');
+	const [heroBtn, setHeroBtn] = useState('Contactar a Bechapra');
+	const [backBtn, setBackBtn] = useState('Volver');
+	const [solucionesTitle, setSolucionesTitle] = useState('Nuestras soluciones');
+	const [solucionesDesc, setSolucionesDesc] = useState('Adaptamos nuestros servicios a las necesidades de tu sector y operación. Descubre cómo podemos ayudarte:');
+	const [whyTitle, setWhyTitle] = useState('¿Por qué elegir Bechapra?');
+	const [contactoTitle, setContactoTitle] = useState('¿Listo para transformar tu operación?');
+	const [contactoDesc, setContactoDesc] = useState('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setServicios(initialServicios);
+				setStats(initialStats);
+				setWhy(initialWhy);
+				setHeroTitle('Servicios Especializados');
+				setHeroDesc('Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.');
+				setHeroBtn('Contactar a Bechapra');
+				setBackBtn('Volver');
+				setSolucionesTitle('Nuestras soluciones');
+				setSolucionesDesc('Adaptamos nuestros servicios a las necesidades de tu sector y operación. Descubre cómo podemos ayudarte:');
+				setWhyTitle('¿Por qué elegir Bechapra?');
+				setContactoTitle('¿Listo para transformar tu operación?');
+				setContactoDesc('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+			} else {
+				setServicios(await Promise.all(initialServicios.map(async s => ({ ...s, title: await translateText(s.title, lang), desc: await translateText(s.desc, lang) }))));
+				setStats(await Promise.all(initialStats.map(async s => ({ ...s, label: await translateText(s.label, lang) }))));
+				setWhy(await Promise.all(initialWhy.map(async w => ({ ...w, title: await translateText(w.title, lang), desc: await translateText(w.desc, lang) }))));
+				setHeroTitle(await translateText('Servicios Especializados', lang));
+				setHeroDesc(await translateText('Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.', lang));
+				setHeroBtn(await translateText('Contactar a Bechapra', lang));
+				setBackBtn(await translateText('Volver', lang));
+				setSolucionesTitle(await translateText('Nuestras soluciones', lang));
+				setSolucionesDesc(await translateText('Adaptamos nuestros servicios a las necesidades de tu sector y operación. Descubre cómo podemos ayudarte:', lang));
+				setWhyTitle(await translateText('¿Por qué elegir Bechapra?', lang));
+				setContactoTitle(await translateText('¿Listo para transformar tu operación?', lang));
+				setContactoDesc(await translateText('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
 
 	return (
 		<div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>
@@ -128,45 +221,45 @@ export default function ServiciosEspecializadosPage() {
 							position: 'relative',
 							zIndex: 2
 						}}>
-							<ChevronLeft size={18} />
-							Volver
+							{iconMap['ChevronLeft'] && <span style={{display:'inline-flex',alignItems:'center'}}><iconMap.ChevronLeft size={18} /></span>}
+							{backBtn}
 						</a>
 						<h1 style={{
-							fontSize: '3rem',
-							fontWeight: 800,
-							lineHeight: 1.1,
-							color: '#FFFFFF',
-							margin: '0 0 1rem 0',
-							letterSpacing: '-0.02em'
+						 fontSize: '3rem',
+						 fontWeight: 800,
+						 lineHeight: 1.1,
+						 color: '#FFFFFF',
+						 margin: '0 0 1rem 0',
+						 letterSpacing: '-0.02em'
 						}}>
-							Servicios Especializados
+						 {heroTitle}
 						</h1>
 						<p style={{
-							fontSize: '1.15rem',
-							lineHeight: 1.6,
-							color: 'rgba(255,255,255,0.85)',
-							margin: '0 0 2rem 0',
-							maxWidth: '540px'
+						 fontSize: '1.15rem',
+						 lineHeight: 1.6,
+						 color: 'rgba(255,255,255,0.85)',
+						 margin: '0 0 2rem 0',
+						 maxWidth: '540px'
 						}}>
-							Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nómina y cumplimiento para que tu organización mantenga foco en el crecimiento.
+						 {heroDesc}
 						</p>
 						<a href="/contacto" style={{
-							display: 'inline-flex',
-							alignItems: 'center',
-							gap: '0.75rem',
-							padding: '0.875rem 1.75rem',
-							background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F4FF 100%)',
-							color: '#004AB7',
-							fontWeight: 700,
-							fontSize: '1rem',
-							borderRadius: '9999px',
-							textDecoration: 'none',
-							boxShadow: '0 10px 30px rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.1)',
-							transition: 'all 0.3s cubic-bezier(0.2,0.9,0.2,1)',
-							border: '2px solid rgba(255,255,255,0.3)'
+						 display: 'inline-flex',
+						 alignItems: 'center',
+						 gap: '0.75rem',
+						 padding: '0.875rem 1.75rem',
+						 background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F4FF 100%)',
+						 color: '#004AB7',
+						 fontWeight: 700,
+						 fontSize: '1rem',
+						 borderRadius: '9999px',
+						 textDecoration: 'none',
+						 boxShadow: '0 10px 30px rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.1)',
+						 transition: 'all 0.3s cubic-bezier(0.2,0.9,0.2,1)',
+						 border: '2px solid rgba(255,255,255,0.3)'
 						}}>
-							Contactar a Bechapra
-							<ChevronRight size={20} />
+						 {heroBtn}
+						 {iconMap['ChevronRight'] && <span style={{display:'inline-flex',alignItems:'center'}}><iconMap.ChevronRight size={20} /></span>}
 						</a>
 					</div>
 					{/* Columna de Imagen */}
@@ -203,31 +296,34 @@ export default function ServiciosEspecializadosPage() {
 				borderBottom: '1px solid #E5EEFF'
 			}}>
 				<div style={{ maxWidth: '1400px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem' }}>
-					{stats.map((stat, i) => (
-						<div key={i} style={{ 
-							textAlign: 'center',
-							padding: '2rem 1.5rem',
-							background: 'white',
-							borderRadius: '20px',
-							border: '2px solid #E5EEFF',
-							transition: 'all 0.3s ease',
-							cursor: 'pointer'
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.transform = 'translateY(-8px)';
-							e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,87,217,0.15)';
-							e.currentTarget.style.borderColor = '#0057D9';
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.transform = 'translateY(0)';
-							e.currentTarget.style.boxShadow = 'none';
-							e.currentTarget.style.borderColor = '#E5EEFF';
-						}}>
-							<stat.icon size={36} color="#0057D9" style={{ margin: '0 auto 1rem' }} />
-							<div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#0057D9', marginBottom: '0.5rem', letterSpacing: '-1px' }}>{stat.value}</div>
-							<div style={{ fontSize: '1rem', color: '#0A1933', fontWeight: 600 }}>{stat.label}</div>
-						</div>
-					))}
+					 {stats.map((stat, i) => {
+						 const Icon = iconMap[stat.icon];
+						 return (
+							 <div key={i} style={{
+								 textAlign: 'center',
+								 padding: '2rem 1.5rem',
+								 background: 'white',
+								 borderRadius: '20px',
+								 border: '2px solid #E5EEFF',
+								 transition: 'all 0.3s ease',
+								 cursor: 'pointer'
+							 }}
+							 onMouseEnter={(e) => {
+								 e.currentTarget.style.transform = 'translateY(-8px)';
+								 e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,87,217,0.15)';
+								 e.currentTarget.style.borderColor = '#0057D9';
+							 }}
+							 onMouseLeave={(e) => {
+								 e.currentTarget.style.transform = 'translateY(0)';
+								 e.currentTarget.style.boxShadow = 'none';
+								 e.currentTarget.style.borderColor = '#E5EEFF';
+							 }}>
+								{Icon && <div style={{ margin: '0 auto 1rem' }}><Icon size={36} color="#0057D9" /></div>}
+								 <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#0057D9', marginBottom: '0.5rem', letterSpacing: '-1px' }}>{stat.value}</div>
+								 <div style={{ fontSize: '1rem', color: '#0A1933', fontWeight: 600 }}>{stat.label}</div>
+							 </div>
+						 );
+					 })}
 				</div>
 			</section>
 
@@ -259,110 +355,114 @@ export default function ServiciosEspecializadosPage() {
 
 					{/* Cards Grid */}
 					<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-						{servicios.map((servicio, i) => (
-							<div
-								key={i}
-								onMouseEnter={() => setHoveredCard(i)}
-								onMouseLeave={() => setHoveredCard(null)}
-								style={{
-									background: hoveredCard === i
-										? cardBgColors[i % cardBgColors.length]
-										: cardBgColors[i % cardBgColors.length],
-									borderRadius: '24px',
-									padding: '2.5rem',
-									border: hoveredCard === i
-										? '2.5px solid #0057D9'
-										: '2.5px solid #D0D8F0',
-									transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-									transform: hoveredCard === i ? 'translateY(-14px) scale(1.025)' : 'translateY(0) scale(1)',
-									boxShadow: hoveredCard === i
-										? '0 12px 40px 0 rgba(0,87,217,0.18), 0 2px 8px 0 rgba(0,87,217,0.10)'
-										: '0 2px 12px 0 rgba(0,87,217,0.10)',
-									cursor: 'pointer',
-									position: 'relative',
-									overflow: 'hidden',
-									color: hoveredCard === i ? '#0A1933' : '#0A1933',
-								}}
-							>
-								{/* Background decoration */}
-								<div style={{
-									position: 'absolute',
-									top: '-50%',
-									right: '-50%',
-									width: '200%',
-									height: '200%',
-									background: `radial-gradient(circle, ${servicio.color}10 0%, transparent 70%)`,
-									transition: 'all 0.4s ease',
-									transform: hoveredCard === i ? 'scale(1.2)' : 'scale(0.8)',
-									opacity: hoveredCard === i ? 1 : 0
-								}} />
+						 {servicios.map((servicio, i) => {
+							 const Icon = iconMap[servicio.icon];
+							 return (
+								 <div
+									 key={i}
+									 onMouseEnter={() => setHoveredCard(i)}
+									 onMouseLeave={() => setHoveredCard(null)}
+									 style={{
+										 background: hoveredCard === i
+											 ? cardBgColors[i % cardBgColors.length]
+											 : cardBgColors[i % cardBgColors.length],
+										 borderRadius: '24px',
+										 padding: '2.5rem',
+										 border: hoveredCard === i
+											 ? '2.5px solid #0057D9'
+											 : '2.5px solid #D0D8F0',
+										 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+										 transform: hoveredCard === i ? 'translateY(-14px) scale(1.025)' : 'translateY(0) scale(1)',
+										 boxShadow: hoveredCard === i
+											 ? '0 12px 40px 0 rgba(0,87,217,0.18), 0 2px 8px 0 rgba(0,87,217,0.10)'
+											 : '0 2px 12px 0 rgba(0,87,217,0.10)',
+										 cursor: 'pointer',
+										 position: 'relative',
+										 overflow: 'hidden',
+										 color: hoveredCard === i ? '#0A1933' : '#0A1933',
+									 }}
+								 >
+									 {/* Background decoration */}
+									 <div style={{
+										 position: 'absolute',
+										 top: '-50%',
+										 right: '-50%',
+										 width: '200%',
+										 height: '200%',
+										 background: `radial-gradient(circle, ${servicio.color}10 0%, transparent 70%)`,
+										 transition: 'all 0.4s ease',
+										 transform: hoveredCard === i ? 'scale(1.2)' : 'scale(0.8)',
+										 opacity: hoveredCard === i ? 1 : 0
+									 }} />
 
-								{/* Icon */}
-								<div style={{
-									width: '70px',
-									height: '70px',
-									background: hoveredCard === i 
-										? `linear-gradient(135deg, ${servicio.color} 0%, ${servicio.color}DD 100%)`
-										: `${servicio.color}10`,
-									borderRadius: '18px',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									marginBottom: '1.5rem',
-									transition: 'all 0.4s ease',
-									transform: hoveredCard === i ? 'rotate(-5deg) scale(1.1)' : 'rotate(0) scale(1)',
-									position: 'relative',
-									zIndex: 1
-								}}>
-									<servicio.icon size={32} color={hoveredCard === i ? '#ffffff' : servicio.color} strokeWidth={2.5} />
-								</div>
+									 {/* Icon */}
+									 <div style={{
+										 width: '70px',
+										 height: '70px',
+										 background: hoveredCard === i
+											 ? `linear-gradient(135deg, ${servicio.color} 0%, ${servicio.color}DD 100%)`
+											 : `${servicio.color}10`,
+										 borderRadius: '18px',
+										 display: 'flex',
+										 alignItems: 'center',
+										 justifyContent: 'center',
+										 marginBottom: '1.5rem',
+										 transition: 'all 0.4s ease',
+										 transform: hoveredCard === i ? 'rotate(-5deg) scale(1.1)' : 'rotate(0) scale(1)',
+										 position: 'relative',
+										 zIndex: 1
+									 }}>
+										 {Icon && <Icon size={32} color={hoveredCard === i ? '#ffffff' : servicio.color} strokeWidth={2.5} />}
+									 </div>
 
-								{/* Content */}
-																<h3 style={{
-																	fontSize: '1.35rem',
-																	fontWeight: 800,
-																	color: hoveredCard === i ? '#004AB7' : '#0A1933',
-																	marginBottom: '1rem',
-																	transition: 'color 0.3s ease',
-																	position: 'relative',
-																	zIndex: 1,
-																	letterSpacing: '-0.3px',
-																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
-																}}>
-																	{servicio.title}
-																</h3>
-																<p style={{
-																	fontSize: '1.05rem',
-																	color: hoveredCard === i ? '#0A1933' : '#0A1933',
-																	opacity: hoveredCard === i ? 0.95 : 0.75,
-																	lineHeight: 1.6,
-																	position: 'relative',
-																	zIndex: 1,
-																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
-																}}>
-																	{servicio.desc}
-																</p>
+									 {/* Content */}
+									 <h3 style={{
+										 fontSize: '1.35rem',
+										 fontWeight: 800,
+										 color: hoveredCard === i ? '#004AB7' : '#0A1933',
+										 marginBottom: '1rem',
+										 transition: 'color 0.3s ease',
+										 position: 'relative',
+										 zIndex: 1,
+										 letterSpacing: '-0.3px',
+										 textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+									 }}>
+										 {servicio.title}
+									 </h3>
+									 <p style={{
+										 fontSize: '1.05rem',
+										 color: hoveredCard === i ? '#0A1933' : '#0A1933',
+										 opacity: hoveredCard === i ? 0.95 : 0.75,
+										 lineHeight: 1.6,
+										 position: 'relative',
+										 zIndex: 1,
+										 textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+									 }}>
+										 {servicio.desc}
+									 </p>
 
-								{/* Arrow indicator */}
-																<div style={{
-																	marginTop: '1.5rem',
-																	display: 'flex',
-																	alignItems: 'center',
-																	gap: '0.5rem',
-																	color: hoveredCard === i ? '#004AB7' : servicio.color,
-																	fontWeight: 700,
-																	fontSize: '0.95rem',
-																	opacity: hoveredCard === i ? 1 : 0,
-																	transform: hoveredCard === i ? 'translateX(0)' : 'translateX(-10px)',
-																	transition: 'all 0.3s ease',
-																	position: 'relative',
-																	zIndex: 1,
-																	textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
-																}}>
-																	Conocer más <ChevronRight size={18} />
-																</div>
-							</div>
-						))}
+									 {/* Arrow indicator */}
+									 <div style={{
+										 marginTop: '1.5rem',
+										 display: 'flex',
+										 alignItems: 'center',
+										 gap: '0.5rem',
+										 color: hoveredCard === i ? '#004AB7' : servicio.color,
+										 fontWeight: 700,
+										 fontSize: '0.95rem',
+										 opacity: hoveredCard === i ? 1 : 0,
+										 transform: hoveredCard === i ? 'translateX(0)' : 'translateX(-10px)',
+										 transition: 'all 0.3s ease',
+										 position: 'relative',
+										 zIndex: 1,
+										 textShadow: hoveredCard === i ? '0 1px 8px #fff8, 0 0px 1px #fff' : 'none'
+									 }}>
+										 {iconMap['ChevronRight'] && <span style={{display:'inline-flex',alignItems:'center'}}><iconMap.ChevronRight size={18} /> </span>}
+										 Conocer más
+									 </div>
+								 </div>
+							 );
+						 })}
 					</div>
 				</div>
 			</section>
@@ -389,33 +489,32 @@ export default function ServiciosEspecializadosPage() {
 					</h2>
 
 					<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-						{[
-							{ icon: ShieldCheck, title: "Experiencia comprobada", desc: "Más de 20 años brindando soluciones especializadas a empresas líderes de México y el extranjero." },
-							{ icon: BarChart3, title: "Resultados medibles", desc: "Procesos optimizados, reducción de costos y cumplimiento total en cada proyecto." },
-							{ icon: Users, title: "Atención personalizada", desc: "Equipo dedicado y soporte 24/7 para cada cliente y cada industria." }
-						].map((item, i) => (
-							<div key={i} style={{
-								background: 'white',
-								padding: '2.5rem',
-								borderRadius: '24px',
-								border: '2px solid #E5EEFF',
-								transition: 'all 0.3s ease'
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.transform = 'translateY(-8px)';
-								e.currentTarget.style.boxShadow = '0 20px 50px rgba(0,87,217,0.15)';
-								e.currentTarget.style.borderColor = '#0057D9';
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.transform = 'translateY(0)';
-								e.currentTarget.style.boxShadow = 'none';
-								e.currentTarget.style.borderColor = '#E5EEFF';
-							}}>
-								<item.icon size={40} color="#0057D9" style={{ marginBottom: '1.5rem' }} strokeWidth={2.5} />
-								<h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0A1933', marginBottom: '1rem', letterSpacing: '-0.5px' }}>{item.title}</h3>
-								<p style={{ fontSize: '1.05rem', color: '#0A1933', opacity: 0.75, lineHeight: 1.6 }}>{item.desc}</p>
-							</div>
-						))}
+						 {why.map((item, i) => {
+							 const Icon = iconMap[item.icon];
+							 return (
+								 <div key={i} style={{
+									 background: 'white',
+									 padding: '2.5rem',
+									 borderRadius: '24px',
+									 border: '2px solid #E5EEFF',
+									 transition: 'all 0.3s ease'
+								 }}
+								 onMouseEnter={(e) => {
+									 e.currentTarget.style.transform = 'translateY(-8px)';
+									 e.currentTarget.style.boxShadow = '0 20px 50px rgba(0,87,217,0.15)';
+									 e.currentTarget.style.borderColor = '#0057D9';
+								 }}
+								 onMouseLeave={(e) => {
+									 e.currentTarget.style.transform = 'translateY(0)';
+									 e.currentTarget.style.boxShadow = 'none';
+									 e.currentTarget.style.borderColor = '#E5EEFF';
+								 }}>
+									{Icon && <div style={{ marginBottom: '1.5rem' }}><Icon size={40} color="#0057D9" strokeWidth={2.5} /></div>}
+									 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0A1933', marginBottom: '1rem', letterSpacing: '-0.5px' }}>{item.title}</h3>
+									 <p style={{ fontSize: '1.05rem', color: '#0A1933', opacity: 0.75, lineHeight: 1.6 }}>{item.desc}</p>
+								 </div>
+							 );
+						 })}
 					</div>
 				</div>
 			</section>
@@ -439,33 +538,33 @@ export default function ServiciosEspecializadosPage() {
 						width: '100%',
 					}}
 				>
-					<h3
-						style={{
-							fontSize: '2.3rem',
-							fontWeight: 900,
-							color: '#004AB7',
-							marginBottom: '1.5rem',
-							letterSpacing: '-0.02em',
-							textAlign: 'center',
-						}}
-					>
-						¿Listo para transformar tu operación?
-					</h3>
-					<p
-						style={{
-							fontSize: '1.25rem',
-							color: '#0A1933',
-							marginBottom: '2.5rem',
-							textAlign: 'center',
-							opacity: 0.8,
-							lineHeight: 1.6,
-							maxWidth: 700,
-							marginLeft: 'auto',
-							marginRight: 'auto',
-						}}
-					>
-						Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.
-					</p>
+					 <h3
+						 style={{
+							 fontSize: '2.3rem',
+							 fontWeight: 900,
+							 color: '#004AB7',
+							 marginBottom: '1.5rem',
+							 letterSpacing: '-0.02em',
+							 textAlign: 'center',
+						 }}
+					 >
+						 {contactoTitle}
+					 </h3>
+					 <p
+						 style={{
+							 fontSize: '1.25rem',
+							 color: '#0A1933',
+							 marginBottom: '2.5rem',
+							 textAlign: 'center',
+							 opacity: 0.8,
+							 lineHeight: 1.6,
+							 maxWidth: 700,
+							 marginLeft: 'auto',
+							 marginRight: 'auto',
+						 }}
+					 >
+						 {contactoDesc}
+					 </p>
 					<div style={{ width: '100%' }}>
 						<ContactForm />
 					</div>

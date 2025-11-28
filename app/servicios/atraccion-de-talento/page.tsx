@@ -1,14 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
 import { motion } from "framer-motion";
 import { User, Clock, Target, CheckCircle, TrendingUp, Award, Users, ChevronLeft, ChevronRight, Briefcase } from "lucide-react";
 import Link from "next/link";
 import Footer from '@/components/Footer';
-import ContactForm from '@/app/components/ContactForm';
+import ContactForm from '../../components/ContactForm';
 
 export default function Page() {
-  const steps = [
+  const { lang } = useLanguage();
+
+  // Estados para textos traducidos
+  const [steps, setSteps] = useState([
     {
       n: "01",
       title: "Brief & perfil",
@@ -45,9 +50,9 @@ export default function Page() {
       desc: "Periodo de sustitución sin costo según acuerdo. Retro continua y cierre del proceso.",
       icon: <Award className="w-7 h-7" />,
     },
-  ];
+  ]);
 
-  const kpis = [
+  const [kpis, setKpis] = useState([
     { 
       label: "Tiempo de respuesta", 
       value: "< 48h", 
@@ -72,16 +77,16 @@ export default function Page() {
       note: "post–colocación",
       icon: <Award className="w-9 h-9" />,
     },
-  ];
+  ]);
 
-  const positions = [
+  const [positions, setPositions] = useState([
     "Contabilidad", "Facturación", "Cobranza", "Vinculación",
     "Administración", "TI", "Automatizaciones", "Comercial",
     "Atención a Clientes", "Tesorería", "Nómina", "Atracción de Talento",
     "Dirección General", "Asuntos Corporativos", "Seguridad", "Jurídico",
-  ];
+  ]);
 
-  const benefits = [
+  const [benefits, setBenefits] = useState([
     {
       title: "Selección Personalizada",
       subtitle: "Encuentra candidatos que se adapten a tu cultura",
@@ -94,9 +99,9 @@ export default function Page() {
       desc: "Puedes confiar en que cada candidato que te presentamos ha sido previamente entrevistado y evaluado para cumplir con tus estándares de calidad.",
       icon: <CheckCircle className="w-10 h-10" />,
     },
-  ];
+  ]);
 
-  const modalities = [
+  const [modalities, setModalities] = useState([
     {
       title: "Masivo y Operativo",
       desc: "Nos especializamos en encontrar perfiles operativos de centros de trabajo como call centers, despachos de cobranza o trabajadores de línea de producción.",
@@ -112,7 +117,246 @@ export default function Page() {
       desc: "Búsqueda de talento ejecutivo y especializado para posiciones estratégicas en tu organización.",
       icon: <Target className="w-8 h-8" />,
     },
-  ];
+  ]);
+
+  // Textos sueltos
+  const [heroTitle, setHeroTitle] = useState("Atracción de Talento");
+  const [heroDesc, setHeroDesc] = useState("Reclutamos perfiles operativos, administrativos y especializados con un proceso claro, reportes útiles y tiempos comprometidos.");
+  const [volverBtn, setVolverBtn] = useState("Volver");
+  const [contactBtn, setContactBtn] = useState("Contactar a Bechapra");
+  const [perfilesTitle, setPerfilesTitle] = useState("Perfiles que cubrimos");
+  const [perfilesDesc, setPerfilesDesc] = useState("Especialistas en múltiples áreas y niveles. Desde operativos hasta directivos.");
+  const [desliza, setDesliza] = useState("← Desliza para más perfiles →");
+  const [procesoTitle, setProcesoTitle] = useState("Nuestro proceso");
+  const [procesoDesc, setProcesoDesc] = useState("6 pasos estratégicos y comprobados para encontrar el talento perfecto para tu empresa");
+  const [ctaEtapa, setCtaEtapa] = useState("✓ Cada etapa es fundamental");
+  const [ctaProceso, setCtaProceso] = useState("Nuestro proceso garantiza que encontramos exactamente el perfil que necesitas. Transparencia, calidad y velocidad en cada paso.");
+  const [kpiTitle, setKpiTitle] = useState("Indicadores de servicio");
+  const [kpiDesc, setKpiDesc] = useState("Resultados medibles y comprobados");
+  const [modalidadTitle, setModalidadTitle] = useState("Modalidades de servicio");
+  const [modalidadDesc, setModalidadDesc] = useState("Elige la opción que mejor se adapte a tus necesidades");
+  const [ctaFinalTitle, setCtaFinalTitle] = useState("¿Listos para iniciar una búsqueda?");
+  const [ctaFinalDesc, setCtaFinalDesc] = useState("Agenda una llamada y armamos juntos el perfil ideal y los tiempos de cobertura. Nuestro equipo de expertos está listo para ayudarte.");
+  const [ctaAgendar, setCtaAgendar] = useState("Agendar llamada");
+  const [ctaPayroll, setCtaPayroll] = useState("Ver Payroll");
+  const [ctaFormTitle, setCtaFormTitle] = useState("¿Listo para transformar tu operación?");
+  const [ctaFormDesc, setCtaFormDesc] = useState("Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.");
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        // Reset a valores originales
+        setSteps([
+          {
+            n: "01",
+            title: "Brief & perfil",
+            desc: "Definimos objetivos, perfil ideal, tiempos y KPI. Acordamos el canal de comunicación y responsables.",
+            icon: <User className="w-7 h-7" />,
+          },
+          {
+            n: "02",
+            title: "Sourcing & hunting",
+            desc: "Research activo, base de candidatos, job boards y hunting directo. Priorizamos velocidad y calidad.",
+            icon: <Target className="w-7 h-7" />,
+          },
+          {
+            n: "03",
+            title: "Entrevistas & filtros",
+            desc: "Entrevista por competencias, validación de motivadores, salary match y cultura. Reporte corto por candidato.",
+            icon: <User className="w-7 h-7" />,
+          },
+          {
+            n: "04",
+            title: "Shortlist & agenda",
+            desc: "Envío de terna con comparativo. Coordinamos entrevistas con líderes y damos seguimiento.",
+            icon: <TrendingUp className="w-7 h-7" />,
+          },
+          {
+            n: "05",
+            title: "Validaciones",
+            desc: "Socioeconómico / referencias (si aplica). Cierre de oferta y fecha de ingreso con candidato.",
+            icon: <CheckCircle className="w-7 h-7" />,
+          },
+          {
+            n: "06",
+            title: "Garantía",
+            desc: "Periodo de sustitución sin costo según acuerdo. Retro continua y cierre del proceso.",
+            icon: <Award className="w-7 h-7" />,
+          },
+        ]);
+        setKpis([
+          { label: "Tiempo de respuesta", value: "< 48h", note: "presentación de primeros CVs", icon: <Clock className="w-9 h-9" /> },
+          { label: "Time To Fill", value: "7–21 días", note: "según seniority y ciudad", icon: <TrendingUp className="w-9 h-9" /> },
+          { label: "Tasa de aceptación", value: "85%+", note: "de ternas presentadas", icon: <CheckCircle className="w-9 h-9" /> },
+          { label: "Satisfacción", value: "NPS 9.0", note: "post–colocación", icon: <Award className="w-9 h-9" /> },
+        ]);
+        setPositions([
+          "Contabilidad", "Facturación", "Cobranza", "Vinculación",
+          "Administración", "TI", "Automatizaciones", "Comercial",
+          "Atención a Clientes", "Tesorería", "Nómina", "Atracción de Talento",
+          "Dirección General", "Asuntos Corporativos", "Seguridad", "Jurídico",
+        ]);
+        setBenefits([
+          {
+            title: "Selección Personalizada",
+            subtitle: "Encuentra candidatos que se adapten a tu cultura",
+            desc: "Encontrar candidatos que no solo cumplan con los criterios técnicos, sino que también se adapten a la cultura y valores de tu empresa.",
+            icon: <User className="w-10 h-10" />,
+          },
+          {
+            title: "Garantía de Calidad",
+            subtitle: "Confianza en cada candidato",
+            desc: "Puedes confiar en que cada candidato que te presentamos ha sido previamente entrevistado y evaluado para cumplir con tus estándares de calidad.",
+            icon: <CheckCircle className="w-10 h-10" />,
+          },
+        ]);
+        setModalities([
+          {
+            title: "Masivo y Operativo",
+            desc: "Nos especializamos en encontrar perfiles operativos de centros de trabajo como call centers, despachos de cobranza o trabajadores de línea de producción.",
+            icon: <Users className="w-8 h-8" />,
+          },
+          {
+            title: "Administrativo y Especializado",
+            desc: "Perfiles administrativos y especializados para áreas clave como finanzas, legal y tecnología.",
+            icon: <Briefcase className="w-8 h-8" />,
+          },
+          {
+            title: "Headhunter y Executive Search",
+            desc: "Búsqueda de talento ejecutivo y especializado para posiciones estratégicas en tu organización.",
+            icon: <Target className="w-8 h-8" />,
+          },
+        ]);
+        setHeroTitle("Atracción de Talento");
+        setHeroDesc("Reclutamos perfiles operativos, administrativos y especializados con un proceso claro, reportes útiles y tiempos comprometidos.");
+        setVolverBtn("Volver");
+        setContactBtn("Contactar a Bechapra");
+        setPerfilesTitle("Perfiles que cubrimos");
+        setPerfilesDesc("Especialistas en múltiples áreas y niveles. Desde operativos hasta directivos.");
+        setDesliza("← Desliza para más perfiles →");
+        setProcesoTitle("Nuestro proceso");
+        setProcesoDesc("6 pasos estratégicos y comprobados para encontrar el talento perfecto para tu empresa");
+        setCtaEtapa("✓ Cada etapa es fundamental");
+        setCtaProceso("Nuestro proceso garantiza que encontramos exactamente el perfil que necesitas. Transparencia, calidad y velocidad en cada paso.");
+        setKpiTitle("Indicadores de servicio");
+        setKpiDesc("Resultados medibles y comprobados");
+        setModalidadTitle("Modalidades de servicio");
+        setModalidadDesc("Elige la opción que mejor se adapte a tus necesidades");
+        setCtaFinalTitle("¿Listos para iniciar una búsqueda?");
+        setCtaFinalDesc("Agenda una llamada y armamos juntos el perfil ideal y los tiempos de cobertura. Nuestro equipo de expertos está listo para ayudarte.");
+        setCtaAgendar("Agendar llamada");
+        setCtaPayroll("Ver Payroll");
+        setCtaFormTitle("¿Listo para transformar tu operación?");
+        setCtaFormDesc("Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.");
+      } else {
+        // Traducción dinámica
+        setSteps(await Promise.all([
+          {
+            n: "01",
+            title: await translateText("Brief & perfil", lang),
+            desc: await translateText("Definimos objetivos, perfil ideal, tiempos y KPI. Acordamos el canal de comunicación y responsables.", lang),
+            icon: <User className="w-7 h-7" />,
+          },
+          {
+            n: "02",
+            title: await translateText("Sourcing & hunting", lang),
+            desc: await translateText("Research activo, base de candidatos, job boards y hunting directo. Priorizamos velocidad y calidad.", lang),
+            icon: <Target className="w-7 h-7" />,
+          },
+          {
+            n: "03",
+            title: await translateText("Entrevistas & filtros", lang),
+            desc: await translateText("Entrevista por competencias, validación de motivadores, salary match y cultura. Reporte corto por candidato.", lang),
+            icon: <User className="w-7 h-7" />,
+          },
+          {
+            n: "04",
+            title: await translateText("Shortlist & agenda", lang),
+            desc: await translateText("Envío de terna con comparativo. Coordinamos entrevistas con líderes y damos seguimiento.", lang),
+            icon: <TrendingUp className="w-7 h-7" />,
+          },
+          {
+            n: "05",
+            title: await translateText("Validaciones", lang),
+            desc: await translateText("Socioeconómico / referencias (si aplica). Cierre de oferta y fecha de ingreso con candidato.", lang),
+            icon: <CheckCircle className="w-7 h-7" />,
+          },
+          {
+            n: "06",
+            title: await translateText("Garantía", lang),
+            desc: await translateText("Periodo de sustitución sin costo según acuerdo. Retro continua y cierre del proceso.", lang),
+            icon: <Award className="w-7 h-7" />,
+          },
+        ]));
+        setKpis(await Promise.all([
+          { label: await translateText("Tiempo de respuesta", lang), value: "< 48h", note: await translateText("presentación de primeros CVs", lang), icon: <Clock className="w-9 h-9" /> },
+          { label: await translateText("Time To Fill", lang), value: await translateText("7–21 días", lang), note: await translateText("según seniority y ciudad", lang), icon: <TrendingUp className="w-9 h-9" /> },
+          { label: await translateText("Tasa de aceptación", lang), value: "85%+", note: await translateText("de ternas presentadas", lang), icon: <CheckCircle className="w-9 h-9" /> },
+          { label: await translateText("Satisfacción", lang), value: await translateText("NPS 9.0", lang), note: await translateText("post–colocación", lang), icon: <Award className="w-9 h-9" /> },
+        ]));
+        setPositions(await Promise.all([
+          "Contabilidad", "Facturación", "Cobranza", "Vinculación",
+          "Administración", "TI", "Automatizaciones", "Comercial",
+          "Atención a Clientes", "Tesorería", "Nómina", "Atracción de Talento",
+          "Dirección General", "Asuntos Corporativos", "Seguridad", "Jurídico",
+        ].map(async (p) => await translateText(p, lang))));
+        setBenefits(await Promise.all([
+          {
+            title: await translateText("Selección Personalizada", lang),
+            subtitle: await translateText("Encuentra candidatos que se adapten a tu cultura", lang),
+            desc: await translateText("Encontrar candidatos que no solo cumplan con los criterios técnicos, sino que también se adapten a la cultura y valores de tu empresa.", lang),
+            icon: <User className="w-10 h-10" />,
+          },
+          {
+            title: await translateText("Garantía de Calidad", lang),
+            subtitle: await translateText("Confianza en cada candidato", lang),
+            desc: await translateText("Puedes confiar en que cada candidato que te presentamos ha sido previamente entrevistado y evaluado para cumplir con tus estándares de calidad.", lang),
+            icon: <CheckCircle className="w-10 h-10" />,
+          },
+        ]));
+        setModalities(await Promise.all([
+          {
+            title: await translateText("Masivo y Operativo", lang),
+            desc: await translateText("Nos especializamos en encontrar perfiles operativos de centros de trabajo como call centers, despachos de cobranza o trabajadores de línea de producción.", lang),
+            icon: <Users className="w-8 h-8" />,
+          },
+          {
+            title: await translateText("Administrativo y Especializado", lang),
+            desc: await translateText("Perfiles administrativos y especializados para áreas clave como finanzas, legal y tecnología.", lang),
+            icon: <Briefcase className="w-8 h-8" />,
+          },
+          {
+            title: await translateText("Headhunter y Executive Search", lang),
+            desc: await translateText("Búsqueda de talento ejecutivo y especializado para posiciones estratégicas en tu organización.", lang),
+            icon: <Target className="w-8 h-8" />,
+          },
+        ]));
+        setHeroTitle(await translateText("Atracción de Talento", lang));
+        setHeroDesc(await translateText("Reclutamos perfiles operativos, administrativos y especializados con un proceso claro, reportes útiles y tiempos comprometidos.", lang));
+        setVolverBtn(await translateText("Volver", lang));
+        setContactBtn(await translateText("Contactar a Bechapra", lang));
+        setPerfilesTitle(await translateText("Perfiles que cubrimos", lang));
+        setPerfilesDesc(await translateText("Especialistas en múltiples áreas y niveles. Desde operativos hasta directivos.", lang));
+        setDesliza(await translateText("← Desliza para más perfiles →", lang));
+        setProcesoTitle(await translateText("Nuestro proceso", lang));
+        setProcesoDesc(await translateText("6 pasos estratégicos y comprobados para encontrar el talento perfecto para tu empresa", lang));
+        setCtaEtapa(await translateText("✓ Cada etapa es fundamental", lang));
+        setCtaProceso(await translateText("Nuestro proceso garantiza que encontramos exactamente el perfil que necesitas. Transparencia, calidad y velocidad en cada paso.", lang));
+        setKpiTitle(await translateText("Indicadores de servicio", lang));
+        setKpiDesc(await translateText("Resultados medibles y comprobados", lang));
+        setModalidadTitle(await translateText("Modalidades de servicio", lang));
+        setModalidadDesc(await translateText("Elige la opción que mejor se adapte a tus necesidades", lang));
+        setCtaFinalTitle(await translateText("¿Listos para iniciar una búsqueda?", lang));
+        setCtaFinalDesc(await translateText("Agenda una llamada y armamos juntos el perfil ideal y los tiempos de cobertura. Nuestro equipo de expertos está listo para ayudarte.", lang));
+        setCtaAgendar(await translateText("Agendar llamada", lang));
+        setCtaPayroll(await translateText("Ver Payroll", lang));
+        setCtaFormTitle(await translateText("¿Listo para transformar tu operación?", lang));
+        setCtaFormDesc(await translateText("Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.", lang));
+      }
+    }
+    fetchTranslations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>

@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { Users, TrendingUp, Briefcase } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLanguage } from '../../lib/LanguageContext';
+import { translateText } from '../../lib/translate';
 
 type ServiceCardProps = {
   title: string;
@@ -21,11 +23,38 @@ export default function ServiceCard({
   gradient,
   color = "blue",
 }: ServiceCardProps) {
+  const { lang } = useLanguage();
+  const [translatedTitle, setTranslatedTitle] = useState(title);
+  const [translatedDescription, setTranslatedDescription] = useState(description);
+  const [translatedItems, setTranslatedItems] = useState(items);
+  const [buttonText, setButtonText] = useState('Ver servicios');
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === 'es') {
+        setTranslatedTitle(title);
+        setTranslatedDescription(description);
+        setTranslatedItems(items);
+        setButtonText('Ver servicios');
+      } else {
+        setTranslatedTitle(await translateText(title, lang));
+        setButtonText(await translateText('Ver servicios', lang));
+        if (description) {
+          setTranslatedDescription(await translateText(description, lang));
+        } else {
+          setTranslatedDescription(undefined);
+        }
+        setTranslatedItems(await Promise.all(items.map(item => translateText(item, lang))));
+      }
+    }
+    fetchTranslations();
+  }, [lang, title, description, items]);
   const renderIcon = () => {
-    if (title.toLowerCase().includes("capital") || title.toLowerCase().includes("human")) {
+    const t = translatedTitle.toLowerCase();
+    if (t.includes("capital") || t.includes("human")) {
       return <Users className="w-7 h-7" />;
     }
-    if (title.toLowerCase().includes("desarrollo")) {
+    if (t.includes("desarrollo")) {
       return <TrendingUp className="w-7 h-7" />;
     }
     return <Briefcase className="w-7 h-7" />;
@@ -75,17 +104,17 @@ export default function ServiceCard({
               <div className={`flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-${color}-50 ${colorClasses[color].split(' ')[2]}`}>
                 {renderIcon()}
               </div>
-              <h3 className="text-xl font-bold text-slate-900">{title}</h3>
+              <h3 className="text-xl font-bold text-slate-900">{translatedTitle}</h3>
             </div>
 
-            {description && (
-              <p className="text-sm text-slate-600 mb-3">{description}</p>
+            {translatedDescription && (
+              <p className="text-sm text-slate-600 mb-3">{translatedDescription}</p>
             )}
 
             {/* Items as mini-cards */}
             <div className="mt-3">
               <div className={`${itemColorClasses[color].bg} border ${itemColorClasses[color].border} rounded-lg p-2 flex flex-col gap-2`}>
-                {items.map((item, index) => (
+                {translatedItems.map((item, index) => (
                   <div 
                     key={index} 
                     className="bg-white border border-slate-200/80 rounded-md px-3 py-2 shadow-sm flex items-center gap-3 transition-all duration-200 hover:shadow-md hover:scale-[1.03] hover:border-slate-300"
@@ -101,7 +130,7 @@ export default function ServiceCard({
           <div className="mt-4">
             <div className="flex justify-center">
               <span className={`${colorClasses[color].split(' ')[0]} ${colorClasses[color].split(' ')[1]} text-white px-4 py-2 rounded-lg text-sm font-semibold shadow`}>
-                Ver servicios
+                {buttonText}
               </span>
             </div>
           </div>

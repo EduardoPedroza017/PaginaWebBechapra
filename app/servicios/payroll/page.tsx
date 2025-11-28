@@ -1,58 +1,124 @@
 "use client";
-import React from "react";
-import { FileText, Calendar, Banknote, Users, Shield, CheckCircle, Briefcase, ChevronLeft, ChevronRight, ClipboardList, BarChart3 } from "lucide-react";
+
+import React, { useEffect, useState } from "react";
+import {
+  FileText,
+  Calendar,
+  Banknote,
+  Users,
+  Shield,
+  CheckCircle,
+  Briefcase,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles.module.css";
-import Footer from '@/components/Footer';
-import ContactForm from '@/app/components/ContactForm';
+import Footer from "../../../components/Footer";
+import ContactForm from "../../../app/components/ContactForm";
+import { useLanguage } from "../../../lib/LanguageContext";
+import { translateText } from "../../../lib/translate";
 
-const benefits = [
-    {
-        icon: <Shield className={styles.payrollCardIcon} />, 
-        title: "Precisión y Fiabilidad",
-        desc: "Contamos con un equipo de expertos en nómina que garantizan la exactitud en cada pago de empleado."
-    },
-    {
-        icon: <Calendar className={styles.payrollCardIcon} />,
-        title: "Cumplimiento Normativo",
-        desc: "Nuestra gestión de nómina está diseñada para cumplir con todas las regulaciones fiscales y laborales vigentes."
-    },
-    {
-        icon: <Banknote className={styles.payrollCardIcon} />,
-        title: "Seguridad de los Datos",
-        desc: "Implementamos medidas robustas de seguridad para proteger la información confidencial de tu empresa."
-    },
-    {
-        icon: <Users className={styles.payrollCardIcon} />,
-        title: "Costo-Efectividad",
-        desc: "Ofrecemos soluciones de nómina de alta calidad a precios competitivos."
-    },
+type IconName = 'Shield' | 'Calendar' | 'Banknote' | 'Users' | 'FileText' | 'Briefcase' | 'CheckCircle';
+interface BenefitCard { icon: IconName; title: string; desc: string; }
+interface StepCard { icon: IconName; title: string; desc: string; }
+
+const iconMap: Record<IconName, typeof Shield> = {
+    Shield,
+    Calendar,
+    Banknote,
+    Users,
+    FileText,
+    Briefcase,
+    CheckCircle,
+};
+
+const initialBenefits: BenefitCard[] = [
+    { icon: 'Shield', title: 'Precisión y Fiabilidad', desc: 'Contamos con un equipo de expertos en nómina que garantizan la exactitud en cada pago de empleado.' },
+    { icon: 'Calendar', title: 'Cumplimiento Normativo', desc: 'Nuestra gestión de nómina está diseñada para cumplir con todas las regulaciones fiscales y laborales vigentes.' },
+    { icon: 'Banknote', title: 'Seguridad de los Datos', desc: 'Implementamos medidas robustas de seguridad para proteger la información confidencial de tu empresa.' },
+    { icon: 'Users', title: 'Costo-Efectividad', desc: 'Ofrecemos soluciones de nómina de alta calidad a precios competitivos.' },
 ];
 
-const processSteps = [
-    {
-        icon: <FileText className={styles.payrollCardIcon} />,
-        title: "Recepción de información",
-        desc: "Recibimos y validamos los datos de empleados, incidencias y percepciones."
-    },
-    {
-        icon: <Briefcase className={styles.payrollCardIcon} />,
-        title: "Cálculo y timbrado",
-        desc: "Realizamos el cálculo de nómina, deducciones, impuestos y timbrado de recibos."
-    },
-    {
-        icon: <CheckCircle className={styles.payrollCardIcon} />,
-        title: "Pago y reportes",
-        desc: "Gestionamos la dispersión de pagos y generamos reportes para la empresa y empleados."
-    },
+const initialProcessSteps: StepCard[] = [
+    { icon: 'FileText', title: 'Recepción de información', desc: 'Recibimos y validamos los datos de empleados, incidencias y percepciones.' },
+    { icon: 'Briefcase', title: 'Cálculo y timbrado', desc: 'Realizamos el cálculo de nómina, deducciones, impuestos y timbrado de recibos.' },
+    { icon: 'CheckCircle', title: 'Pago y reportes', desc: 'Gestionamos la dispersión de pagos y generamos reportes para la empresa y empleados.' },
 ];
 
 export default function PayrollPage() {
-    const textStyle: React.CSSProperties = {
-        textAlign: 'justify',
-    };
+        const { lang } = useLanguage();
+
+        const [benefits, setBenefits] = useState<BenefitCard[]>(initialBenefits);
+        const [processSteps, setProcessSteps] = useState<StepCard[]>(initialProcessSteps);
+        const [heroTitle, setHeroTitle] = useState('Payroll & Nómina Empresarial');
+        const [heroDesc, setHeroDesc] = useState('Gestiona tu nómina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tú te enfoques en hacer crecer tu empresa. Payroll Bechapra es tranquilidad y eficiencia para tu negocio y tus colaboradores.');
+        const [heroBtn, setHeroBtn] = useState('Contactar a Bechapra');
+        const [backBtn, setBackBtn] = useState('Volver');
+        const [benefitsTitle, setBenefitsTitle] = useState('Beneficios de externalizar tu nómina');
+        const [processTitle, setProcessTitle] = useState('¿Cómo funciona nuestro proceso?');
+        const [whatIsTitle, setWhatIsTitle] = useState('¿Qué es el servicio de payroll?');
+        const [whatIsDesc, setWhatIsDesc] = useState('Ideal para empresas que buscan eficiencia, seguridad y cumplimiento normativo en su gestión de recursos humanos y nómina.');
+        const [includesTitle, setIncludesTitle] = useState('¿Qué incluye nuestro servicio de nómina?');
+        const [includesDesc, setIncludesDesc] = useState('Nuestro servicio de nómina es integral y cubre todos los aspectos clave para la tranquilidad de tu empresa y colaboradores.');
+        const [ctaTitle, setCtaTitle] = useState('¿Listo para transformar tu operación?');
+        const [ctaDesc, setCtaDesc] = useState('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+        const [ctaBtn, setCtaBtn] = useState('Solicitar consultoría gratuita');
+    
+
+        useEffect(() => {
+            async function fetchTranslations() {
+                if (lang === 'es') {
+                    setBenefits(initialBenefits);
+                    setProcessSteps(initialProcessSteps);
+                    setHeroTitle('Payroll & Nómina Empresarial');
+                    setHeroDesc('Gestiona tu nómina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tú te enfoques en hacer crecer tu empresa. Payroll Bechapra es tranquilidad y eficiencia para tu negocio y tus colaboradores.');
+                    setHeroBtn('Contactar a Bechapra');
+                    setBackBtn('Volver');
+                    setBenefitsTitle('Beneficios de externalizar tu nómina');
+                    setProcessTitle('¿Cómo funciona nuestro proceso?');
+                    setWhatIsTitle('¿Qué es el servicio de payroll?');
+                    setWhatIsDesc('Ideal para empresas que buscan eficiencia, seguridad y cumplimiento normativo en su gestión de recursos humanos y nómina.');
+                    setIncludesTitle('¿Qué incluye nuestro servicio de nómina?');
+                    setIncludesDesc('Nuestro servicio de nómina es integral y cubre todos los aspectos clave para la tranquilidad de tu empresa y colaboradores.');
+                    setCtaTitle('¿Listo para transformar tu operación?');
+                    setCtaDesc('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.');
+                    setCtaBtn('Solicitar consultoría gratuita');
+                } else {
+                    setBenefits(await Promise.all(initialBenefits.map(async b => ({
+                        ...b,
+                        title: await translateText(b.title, lang),
+                        desc: await translateText(b.desc, lang)
+                    }))));
+                    setProcessSteps(await Promise.all(initialProcessSteps.map(async s => ({
+                        ...s,
+                        title: await translateText(s.title, lang),
+                        desc: await translateText(s.desc, lang)
+                    }))));
+                    setHeroTitle(await translateText('Payroll & Nómina Empresarial', lang));
+                    setHeroDesc(await translateText('Gestiona tu nómina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tú te enfoques en hacer crecer tu empresa. Payroll Bechapra es tranquilidad y eficiencia para tu negocio y tus colaboradores.', lang));
+                    setHeroBtn(await translateText('Contactar a Bechapra', lang));
+                    setBackBtn(await translateText('Volver', lang));
+                    setBenefitsTitle(await translateText('Beneficios de externalizar tu nómina', lang));
+                    setProcessTitle(await translateText('¿Cómo funciona nuestro proceso?', lang));
+                    setWhatIsTitle(await translateText('¿Qué es el servicio de payroll?', lang));
+                    setWhatIsDesc(await translateText('Ideal para empresas que buscan eficiencia, seguridad y cumplimiento normativo en su gestión de recursos humanos y nómina.', lang));
+                    setIncludesTitle(await translateText('¿Qué incluye nuestro servicio de nómina?', lang));
+                    setIncludesDesc(await translateText('Nuestro servicio de nómina es integral y cubre todos los aspectos clave para la tranquilidad de tu empresa y colaboradores.', lang));
+                    setCtaTitle(await translateText('¿Listo para transformar tu operación?', lang));
+                    setCtaDesc(await translateText('Contáctanos y recibe una consultoría gratuita para diseñar la solución especializada que tu empresa necesita.', lang));
+                    setCtaBtn(await translateText('Solicitar consultoría gratuita', lang));
+                }
+            }
+            fetchTranslations();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [lang]);
+
+        const textStyle: React.CSSProperties = {
+                textAlign: 'justify',
+        };
 
     return (
         <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}>
@@ -111,7 +177,7 @@ export default function PayrollPage() {
                             zIndex: 2
                         }}>
                             <ChevronLeft size={18} />
-                            Volver
+                            {backBtn}
                         </Link>
                         <h1 style={{
                             fontSize: '3rem',
@@ -121,7 +187,7 @@ export default function PayrollPage() {
                             margin: '0 0 1rem 0',
                             letterSpacing: '-0.02em'
                         }}>
-                            Payroll & Nómina Empresarial
+                            {heroTitle}
                         </h1>
                         <p style={{
                             fontSize: '1.15rem',
@@ -131,7 +197,7 @@ export default function PayrollPage() {
                             maxWidth: '540px',
                             textAlign: 'justify'
                         }}>
-                            Gestiona tu nómina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tú te enfoques en hacer crecer tu empresa. Payroll Bechapra es tranquilidad y eficiencia para tu negocio y tus colaboradores.
+                            {heroDesc}
                         </p>
                         <Link href="/contacto" style={{
                             display: 'inline-flex',
@@ -148,7 +214,7 @@ export default function PayrollPage() {
                             transition: 'all 0.3s cubic-bezier(0.2,0.9,0.2,1)',
                             border: '2px solid rgba(255,255,255,0.3)'
                         }}>
-                            Contactar a Bechapra
+                            {heroBtn}
                             <ChevronRight size={20} />
                         </Link>
                     </div>
@@ -198,7 +264,7 @@ export default function PayrollPage() {
                     letterSpacing: '-0.02em',
                     lineHeight: 1.1
                 }} initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.6}}>
-                    ¿Qué es el servicio de payroll?
+                    {whatIsTitle}
                 </motion.h2>
                 <motion.div initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:0.1, duration:0.6}}>
                     <p style={{
@@ -210,7 +276,7 @@ export default function PayrollPage() {
                         margin: '3rem auto 0',
                         textAlign: 'justify'
                     }}>
-                        <strong style={{color: '#003d8f'}}>Ideal para empresas</strong> que buscan eficiencia, seguridad y <strong style={{color: '#003d8f'}}>cumplimiento normativo</strong> en su gestión de recursos humanos y nómina.
+                        {whatIsDesc}
                     </p>
                 </motion.div>
                 </div>
@@ -235,20 +301,21 @@ export default function PayrollPage() {
                     lineHeight: 1.1,
                     textAlign: 'center'
                 }} initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.6}}>
-                    Beneficios de externalizar tu nómina
+                    {benefitsTitle}
                 </motion.h2>
                 <motion.div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
                     gap: '2rem'
                 }} initial="hidden" whileInView="visible" viewport={{once:true}} variants={{hidden:{},visible:{transition:{staggerChildren:0.1}}}}>
-                    {benefits.map((b, i) => {
+                    {benefits.map((b: BenefitCard, i: number) => {
                         const pastelBg = [
                             'linear-gradient(135deg, #e3f0ff 60%, #c7e0ff 100%)',
                             'linear-gradient(135deg, #f3f7ff 60%, #e6eaff 100%)',
                             'linear-gradient(135deg, #e0f7fa 60%, #b2ebf2 100%)',
                             'linear-gradient(135deg, #f0f7ff 60%, #e3f0ff 100%)'
                         ];
+                        const Icon = iconMap[b.icon];
                         return (
                         <motion.div
                             key={i}
@@ -290,7 +357,7 @@ export default function PayrollPage() {
                                     marginBottom: '1rem',
                                     filter: 'drop-shadow(0 2px 4px rgba(0,61,143,0.15))'
                                 }}>
-                                    {b.icon}
+                                    <Icon className={styles.payrollCardIcon} />
                                 </div>
                                 <h3 style={{
                                     fontSize: '1.2rem',
@@ -350,12 +417,13 @@ export default function PayrollPage() {
                     justifyContent: 'center',
                     alignItems: 'stretch',
                 }}>
-                    {processSteps.map((step, i) => {
+                    {processSteps.map((step: StepCard, i: number) => {
                         const pastelBg = [
                             'linear-gradient(135deg, #e3f0ff 60%, #c7e0ff 100%)',
                             'linear-gradient(135deg, #f3f7ff 60%, #e6eaff 100%)',
                             'linear-gradient(135deg, #e0f7fa 60%, #b2ebf2 100%)',
                         ];
+                        const Icon = iconMap[step.icon];
                         return (
                             <motion.div
                                 key={i}
@@ -415,7 +483,7 @@ export default function PayrollPage() {
                                     filter: 'drop-shadow(0 2px 8px #b3d0f7)',
                                     marginTop: '0.2rem',
                                 }}>
-                                    {step.icon}
+                                    <Icon className={styles.payrollCardIcon} />
                                 </div>
                                 {/* Título */}
                                 <h3 style={{
@@ -941,3 +1009,4 @@ export default function PayrollPage() {
         </div>
     );
 }
+

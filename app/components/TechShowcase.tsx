@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLanguage } from '../../lib/LanguageContext';
+import { translateText } from '../../lib/translate';
 import dynamic from "next/dynamic";
 
 const ThreeScene = dynamic(() => import("./ThreeScene"), { ssr: false });
 
+/* ---------------- BADGE SVG ---------------- */
 function SvgBadge() {
   return (
     <div className="flex items-center justify-center w-24 h-24 rounded-xl bg-gradient-to-br from-blue-50 to-white/60">
@@ -17,14 +20,17 @@ function SvgBadge() {
   );
 }
 
+/* ---------------- BADGE CANVAS 2D ---------------- */
 function Canvas2DBadge() {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-  const ctx = canvas.getContext("2d")!;
+
+    const ctx = canvas.getContext("2d")!;
     let raf = 0;
+
     const w = (canvas.width = 96);
     const h = (canvas.height = 96);
 
@@ -42,10 +48,11 @@ function Canvas2DBadge() {
         const x = Math.cos(ang) * 28 + w / 2;
         const y = Math.sin(ang) * 28 + h / 2;
         ctx.beginPath();
-        ctx.fillStyle = `hsl(${(i * 40) % 360}deg 70% 50%)`;
+        ctx.fillStyle = `hsl(${(i * 40) % 360} 70% 50%)`;
         ctx.arc(x, y, d.r, 0, Math.PI * 2);
         ctx.fill();
       });
+
       raf = requestAnimationFrame(draw);
     }
 
@@ -56,47 +63,114 @@ function Canvas2DBadge() {
   return <canvas ref={ref} className="w-24 h-24 rounded-xl bg-white/60" />;
 }
 
-export default function TechShowcase() {
+/* ---------------- COMPONENTE PRINCIPAL ---------------- */
+export default function TechBadges() {
+  const { lang } = useLanguage();
+
+  const [texts, setTexts] = useState({
+    title: 'Bechapra',
+    subtitle: 'Innovación en Capital Humano, Tecnología y Servicios.',
+    svgLabel: 'SVG',
+    canvasLabel: 'Canvas 2D',
+    webglLabel: 'WebGL',
+    svgDesc: 'Animaciones vectoriales ligeras',
+    canvasDesc: 'Gráficos y visualizaciones rápidas',
+    webglDesc: 'Experiencias 3D interactivas',
+  });
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setTexts({
+          title: 'Bechapra',
+          subtitle: 'Innovación en Capital Humano, Tecnología y Servicios.',
+          svgLabel: 'SVG',
+          canvasLabel: 'Canvas 2D',
+          webglLabel: 'WebGL',
+          svgDesc: 'Animaciones vectoriales ligeras',
+          canvasDesc: 'Gráficos y visualizaciones rápidas',
+          webglDesc: 'Experiencias 3D interactivas',
+        });
+        return;
+      }
+
+      const items = [
+        'Bechapra',
+        'Innovación en Capital Humano, Tecnología y Servicios.',
+        'SVG',
+        'Canvas 2D',
+        'WebGL',
+        'Animaciones vectoriales ligeras',
+        'Gráficos y visualizaciones rápidas',
+        'Experiencias 3D interactivas',
+      ];
+
+      const translated = await Promise.all(items.map(t => translateText(t, lang)));
+
+      setTexts({
+        title: translated[0],
+        subtitle: translated[1],
+        svgLabel: translated[2],
+        canvasLabel: translated[3],
+        webglLabel: translated[4],
+        svgDesc: translated[5],
+        canvasDesc: translated[6],
+        webglDesc: translated[7],
+      });
+    }
+
+    fetchTranslations();
+  }, [lang]);
+
   return (
     <section className="mb-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="rounded-3xl bg-gradient-to-br from-white/60 to-blue-50 p-8 md:p-10 shadow-lg border border-slate-100">
+
+          {/* GRID GENERAL */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+
+            {/* TEXTOS */}
             <div className="md:col-span-1 flex flex-col items-start gap-3">
-              <h2 className="text-4xl font-extrabold">Bechapra</h2>
-              <p className="text-slate-600">Innovación en Capital Humano, Tecnología y Servicios.</p>
+              <h2 className="text-4xl font-extrabold">{texts.title}</h2>
+              <p className="text-slate-600">{texts.subtitle}</p>
+
               <div className="mt-4 flex gap-3">
-                <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">SVG</span>
-                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-sm">Canvas 2D</span>
-                <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-sm">WebGL</span>
+                <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">{texts.svgLabel}</span>
+                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-sm">{texts.canvasLabel}</span>
+                <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-sm">{texts.webglLabel}</span>
               </div>
             </div>
 
+            {/* TARJETAS */}
             <div className="md:col-span-2 grid grid-cols-3 gap-4">
+
+              {/* --- SVG CARD --- */}
               <div className="flex flex-col items-center gap-3 p-4 bg-white/60 rounded-2xl border border-slate-100">
                 <SvgBadge />
-                <div className="text-sm font-semibold">SVG</div>
-                <div className="text-xs text-slate-500">Animaciones vectoriales ligeras</div>
+                <div className="text-sm font-semibold">{texts.svgLabel}</div>
+                <div className="text-xs text-slate-500">{texts.svgDesc}</div>
               </div>
 
+              {/* --- CANVAS 2D CARD --- */}
               <div className="flex flex-col items-center gap-3 p-4 bg-white/60 rounded-2xl border border-slate-100">
                 <Canvas2DBadge />
-                <div className="text-sm font-semibold">Canvas 2D</div>
-                <div className="text-xs text-slate-500">Gráficos y visualizaciones rápidas</div>
+                <div className="text-sm font-semibold">{texts.canvasLabel}</div>
+                <div className="text-xs text-slate-500">{texts.canvasDesc}</div>
               </div>
 
+              {/* --- WEBGL CARD --- */}
               <div className="flex flex-col items-center gap-3 p-4 bg-white/60 rounded-2xl border border-slate-100">
                 <div className="w-24 h-24 rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-white/60 flex items-center justify-center">
-                  {/* Load small ThreeScene thumbnail (dynamic, client-only) */}
-                  <div className="w-full h-full">
-                    <ThreeScene className="w-full h-full" />
-                  </div>
+                  <ThreeScene className="w-full h-full" />
                 </div>
-                <div className="text-sm font-semibold">WebGL</div>
-                <div className="text-xs text-slate-500">Experiencias 3D interactivas</div>
+                <div className="text-sm font-semibold">{texts.webglLabel}</div>
+                <div className="text-xs text-slate-500">{texts.webglDesc}</div>
               </div>
+
             </div>
           </div>
+
         </div>
       </div>
     </section>

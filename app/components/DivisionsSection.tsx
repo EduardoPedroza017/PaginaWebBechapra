@@ -1,149 +1,308 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../../lib/LanguageContext";
+import { translateText } from "../../lib/translate";
 import { FiCpu, FiMonitor, FiBriefcase } from "react-icons/fi";
 import AnimatedSection from "./AnimatedSection";
 import DivisionButton from "./DivisionButton";
 import carouselStyles from "../css/components/DivisionsCarousel.module.css";
 
-export default function DivisionsSection() {
+
+  const { lang } = useLanguage();
+  const [texts, setTexts] = useState({
+    title: "Divisiones de Bechapra",
+    subtitle: "Especializadas en diferentes áreas para ofrecerte soluciones a medida",
+    button: "Conoce la división",
+    divisions: [
+      {
+        label: "BTC",
+        description: "Soluciones tecnológicas y transformación digital",
+      },
+      {
+        label: "Bechapra Studio",
+        description: "Diseño y desarrollo de experiencias digitales",
+      },
+      {
+        label: "Bechapra Consultores",
+        description: "Asesoría estratégica y consultoría empresarial",
+      }
+    ]
+  });
+
+  useEffect(() => {
+    async function fetchTranslations() {
+      if (lang === "es") {
+        setTexts({
+          title: "Divisiones de Bechapra",
+          subtitle: "Especializadas en diferentes áreas para ofrecerte soluciones a medida",
+          button: "Conoce la división",
+          divisions: [
+            {
+              label: "BTC",
+              description: "Soluciones tecnológicas y transformación digital",
+            },
+            {
+              label: "Bechapra Studio",
+              description: "Diseño y desarrollo de experiencias digitales",
+            },
+            {
+              label: "Bechapra Consultores",
+              description: "Asesoría estratégica y consultoría empresarial",
+            }
+          ]
+        });
+      } else {
+        setTexts({
+          title: await translateText("Divisiones de Bechapra", lang),
+          subtitle: await translateText("Especializadas en diferentes áreas para ofrecerte soluciones a medida", lang),
+          button: await translateText("Conoce la división", lang),
+          divisions: [
+            {
+              label: "BTC",
+              description: await translateText("Soluciones tecnológicas y transformación digital", lang),
+            },
+            {
+              label: await translateText("Bechapra Studio", lang),
+              description: await translateText("Diseño y desarrollo de experiencias digitales", lang),
+            },
+            {
+              label: await translateText("Bechapra Consultores", lang),
+              description: await translateText("Asesoría estratégica y consultoría empresarial", lang),
+            }
+          ]
+        });
+      }
+    }
+    fetchTranslations();
+  }, [lang]);
+
   const divisions = [
     {
-      label: "BTC",
-      description: "Soluciones tecnológicas y transformación digital",
+      label: texts.divisions[0].label,
+      description: texts.divisions[0].description,
       image: "/imagen/division-btc.jpg",
       icon: <FiCpu size={44} color="#fff" />
     },
     {
-      label: "Bechapra Studio",
-      description: "Diseño y desarrollo de experiencias digitales",
+      label: texts.divisions[1].label,
+      description: texts.divisions[1].description,
       image: "/imagen/division-studio.jpg",
       icon: <FiMonitor size={44} color="#fff" />
     },
     {
-      label: "Bechapra Consultores",
-      description: "Asesoría estratégica y consultoría empresarial",
+      label: texts.divisions[2].label,
+      description: texts.divisions[2].description,
       image: "/imagen/division-consultores.jpg",
       icon: <FiBriefcase size={44} color="#fff" />
     }
   ];
 
-  const [active, setActive] = useState(0);
-  const intervalRef = useRef<number | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  export default function DivisionsSection() {
+    const { lang } = useLanguage();
+    const [texts, setTexts] = useState({
+      title: "Divisiones de Bechapra",
+      subtitle: "Especializadas en diferentes áreas para ofrecerte soluciones a medida",
+      button: "Conoce la división",
+      divisions: [
+        {
+          label: "BTC",
+          description: "Soluciones tecnológicas y transformación digital",
+        },
+        {
+          label: "Bechapra Studio",
+          description: "Diseño y desarrollo de experiencias digitales",
+        },
+        {
+          label: "Bechapra Consultores",
+          description: "Asesoría estratégica y consultoría empresarial",
+        }
+      ]
+    });
 
-  useEffect(() => {
-    // Iniciar autoplay al montar el componente
-    const id = window.setInterval(() => {
-      setActive((s) => (s + 1) % divisions.length);
-    }, 5000);
+    useEffect(() => {
+      async function fetchTranslations() {
+        if (lang === "es") {
+          setTexts({
+            title: "Divisiones de Bechapra",
+            subtitle: "Especializadas en diferentes áreas para ofrecerte soluciones a medida",
+            button: "Conoce la división",
+            divisions: [
+              {
+                label: "BTC",
+                description: "Soluciones tecnológicas y transformación digital",
+              },
+              {
+                label: "Bechapra Studio",
+                description: "Diseño y desarrollo de experiencias digitales",
+              },
+              {
+                label: "Bechapra Consultores",
+                description: "Asesoría estratégica y consultoría empresarial",
+              }
+            ]
+          });
+        } else {
+          setTexts({
+            title: await translateText("Divisiones de Bechapra", lang),
+            subtitle: await translateText("Especializadas en diferentes áreas para ofrecerte soluciones a medida", lang),
+            button: await translateText("Conoce la división", lang),
+            divisions: [
+              {
+                label: "BTC",
+                description: await translateText("Soluciones tecnológicas y transformación digital", lang),
+              },
+              {
+                label: await translateText("Bechapra Studio", lang),
+                description: await translateText("Diseño y desarrollo de experiencias digitales", lang),
+              },
+              {
+                label: await translateText("Bechapra Consultores", lang),
+                description: await translateText("Asesoría estratégica y consultoría empresarial", lang),
+              }
+            ]
+          });
+        }
+      }
+      fetchTranslations();
+    }, [lang]);
 
-    return () => clearInterval(id);
-  }, [divisions.length]);
+    const divisions = [
+      {
+        label: texts.divisions[0].label,
+        description: texts.divisions[0].description,
+        image: "/imagen/division-btc.jpg",
+        icon: <FiCpu size={44} color="#fff" />
+      },
+      {
+        label: texts.divisions[1].label,
+        description: texts.divisions[1].description,
+        image: "/imagen/division-studio.jpg",
+        icon: <FiMonitor size={44} color="#fff" />
+      },
+      {
+        label: texts.divisions[2].label,
+        description: texts.divisions[2].description,
+        image: "/imagen/division-consultores.jpg",
+        icon: <FiBriefcase size={44} color="#fff" />
+      }
+    ];
 
-  function startAutoplay() {
-    stopAutoplay();
-    intervalRef.current = window.setInterval(() => {
-      setActive((s) => (s + 1) % divisions.length);
-    }, 5000);
-  }
+    const [active, setActive] = useState(0);
+    const intervalRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
-  function stopAutoplay() {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    useEffect(() => {
+      // Iniciar autoplay al montar el componente
+      const id = window.setInterval(() => {
+        setActive((s) => (s + 1) % divisions.length);
+      }, 5000);
+
+      return () => clearInterval(id);
+    }, [divisions.length]);
+
+    function startAutoplay() {
+      stopAutoplay();
+      intervalRef.current = window.setInterval(() => {
+        setActive((s) => (s + 1) % divisions.length);
+      }, 5000);
     }
-  }
 
-  return (
-    <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
-      <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Divisiones de Bechapra</h2>
-          <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-base sm:text-lg text-slate-600">
-            Especializadas en diferentes áreas para ofrecerte soluciones a medida
-          </p>
-        </div>
-      </AnimatedSection>
+    function stopAutoplay() {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
 
-      {/* Visual showcase (overlapping cards) + fondo animado */}
-      <div className="relative max-w-5xl mx-auto px-4">
-        {/* Fondo animado mejorado con CSS */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: 'none',
-          borderRadius: '28px',
-          overflow: 'hidden',
-          background: 'radial-gradient(ellipse 70% 40% at 50% 20%, #2563eb22 0%, #fff0 100%)',
-          animation: 'fadeWaveBg 8s ease-in-out infinite alternate',
-        }} />
-        <div className={carouselStyles.carouselWrapper} style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            ref={containerRef}
-            className={carouselStyles.stackRow}
-            onMouseEnter={stopAutoplay}
-            onMouseLeave={startAutoplay}
-          >
-          {divisions.map((d, i) => {
-            const isActive = i === active;
-            const isRight = i === (active + 1) % divisions.length;
-            const isLeft = i === (active - 1 + divisions.length) % divisions.length;
+    return (
+      <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
+        <AnimatedSection>
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">{texts.title}</h2>
+            <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
+            <p className="text-base sm:text-lg text-slate-600">
+              {texts.subtitle}
+            </p>
+          </div>
+        </AnimatedSection>
+        {/* Visual showcase (overlapping cards) + fondo animado */}
+        <div className="relative max-w-5xl mx-auto px-4">
+          {/* Fondo animado mejorado con CSS */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 0,
+            pointerEvents: 'none',
+            borderRadius: '28px',
+            overflow: 'hidden',
+            background: 'radial-gradient(ellipse 70% 40% at 50% 20%, #2563eb22 0%, #fff0 100%)',
+            animation: 'fadeWaveBg 8s ease-in-out infinite alternate',
+          }} />
+          <div className={carouselStyles.carouselWrapper} style={{ position: 'relative', zIndex: 1 }}>
+            <div
+              ref={containerRef}
+              className={carouselStyles.stackRow}
+              onMouseEnter={stopAutoplay}
+              onMouseLeave={startAutoplay}
+            >
+            {divisions.map((d, i) => {
+              const isActive = i === active;
+              const isRight = i === (active + 1) % divisions.length;
+              const isLeft = i === (active - 1 + divisions.length) % divisions.length;
 
-            const cls = `${carouselStyles.card} ${
-              isActive ? carouselStyles.highlight : isLeft ? carouselStyles.left : isRight ? carouselStyles.right : carouselStyles.hidden
-            }`;
+              const cls = `${carouselStyles.card} ${
+                isActive ? carouselStyles.highlight : isLeft ? carouselStyles.left : isRight ? carouselStyles.right : carouselStyles.hidden
+              }`;
 
-            return (
-              <div
-                key={d.label}
-                className={cls}
-                aria-hidden={!isActive && !isLeft && !isRight}
-              >
-                <div className={carouselStyles.cardInner}>
-                  <div className={carouselStyles.cardText}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                      <span style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '1rem', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {d.icon}
-                      </span>
-                      <h3 className={isActive ? "text-2xl sm:text-3xl md:text-4xl font-extrabold text-white" : "text-xl sm:text-2xl font-semibold text-white"}>
-                        {d.label}
-                      </h3>
+              return (
+                <div
+                  key={d.label}
+                  className={cls}
+                  aria-hidden={!isActive && !isLeft && !isRight}
+                >
+                  <div className={carouselStyles.cardInner}>
+                    <div className={carouselStyles.cardText}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                        <span style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '1rem', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {d.icon}
+                        </span>
+                        <h3 className={isActive ? "text-2xl sm:text-3xl md:text-4xl font-extrabold text-white" : "text-xl sm:text-2xl font-semibold text-white"}>
+                          {d.label}
+                        </h3>
+                      </div>
+                      <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4" style={{ color: '#ffffff' }}>{d.description}</p>
+
+                      <div className={carouselStyles.itemsBox}>
+                        <button className={isActive ? carouselStyles.btnPrimaryActive : carouselStyles.btnPrimary}>
+                          {texts.button}
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4" style={{ color: '#ffffff' }}>{d.description}</p>
 
-                    <div className={carouselStyles.itemsBox}>
-                      <button className={isActive ? carouselStyles.btnPrimaryActive : carouselStyles.btnPrimary}>
-                        Conoce la división
-                      </button>
-                    </div>
+                    <div
+                      className={carouselStyles.cardImageCrop}
+                      style={{ backgroundImage: `url(${d.image})` }}
+                      aria-hidden
+                    />
                   </div>
-
-                  <div
-                    className={carouselStyles.cardImageCrop}
-                    style={{ backgroundImage: `url(${d.image})` }}
-                    aria-hidden
-                  />
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Accessible grid for screen readers / keyboard users */}
-      <div className="sr-only">
-        <div className="space-y-4 max-w-4xl mx-auto">
-          {divisions.map((division, idx) => (
-            <AnimatedSection key={division.label} delay={idx * 0.1}>
-              <DivisionButton label={division.label} description={division.description} />
-            </AnimatedSection>
-          ))}
+        {/* Accessible grid for screen readers / keyboard users */}
+        <div className="sr-only">
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {divisions.map((division, idx) => (
+              <AnimatedSection key={division.label} delay={idx * 0.1}>
+                <DivisionButton label={division.label} description={division.description} />
+              </AnimatedSection>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }

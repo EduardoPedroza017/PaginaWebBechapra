@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,7 +15,8 @@ import styles from "./styles.module.css";
 import ContactForm from "@/app/components/ContactForm";
 import Footer from "@/components/Footer";
 
-const services = [
+
+const initialServices = [
 	{
 		icon: <Users />,
 		title: "Servicios Especializados",
@@ -30,14 +33,47 @@ const services = [
 		desc: "Utilizamos estrategias selectivas y entrevistas exhaustivas para presentarte a los candidatos correctos.",
 	}
 ];
+// Beneficios y textos iniciales
+const initialBenefits = [
+	{
+		title: 'Acceso Exclusivo BTC',
+		desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos de la Ciudad de México.'
+	},
+	{
+		title: 'Reducción de Costos',
+		desc: 'Optimiza los procesos de reclutamiento, selección y gestión de nómina.'
+	},
+	{
+		title: 'Asesoramiento Personalizado',
+		desc: 'Sesiones de asesoramiento personalizado con expertos en Capital Humano.'
+	}
+];
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
 };
 
+
 export default function Page() {
 	const heroRef = useRef<HTMLElement | null>(null);
+	const { lang } = useLanguage();
+
+	// Estados para textos traducidos
+	const [heroTitle, setHeroTitle] = useState('Capital Humano');
+	const [heroLead, setHeroLead] = useState('Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!');
+	const [heroBtn, setHeroBtn] = useState('Contactar a Bechapra');
+	const [backText, setBackText] = useState('Volver');
+	const [servicesTitle, setServicesTitle] = useState('Servicios Capital Humano');
+	const [services, setServices] = useState(initialServices);
+	const [verMas, setVerMas] = useState('Ver más');
+	const [benefitsTitle, setBenefitsTitle] = useState('Beneficios de Capital Humano');
+	const [benefits, setBenefits] = useState(initialBenefits);
+	const [ctaTitle, setCtaTitle] = useState('Todos los servicios en un solo lugar');
+	const [ctaSubtitle, setCtaSubtitle] = useState('Solicita una reunión para más información');
+	const [ctaBtn, setCtaBtn] = useState('Agenda una cita');
+	const [ctaBtn2, setCtaBtn2] = useState('Ver casos de éxito');
+	const [contactTitle, setContactTitle] = useState('Contáctanos');
 
 	useEffect(() => {
 		const backEl = document.getElementById('backLink');
@@ -60,19 +96,62 @@ export default function Page() {
 		};
 	}, []);
 
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setHeroTitle('Capital Humano');
+				setHeroLead('Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!');
+				setHeroBtn('Contactar a Bechapra');
+				setBackText('Volver');
+				setServicesTitle('Servicios Capital Humano');
+				setServices(initialServices);
+				setVerMas('Ver más');
+				setBenefitsTitle('Beneficios de Capital Humano');
+				setBenefits(initialBenefits);
+				setCtaTitle('Todos los servicios en un solo lugar');
+				setCtaSubtitle('Solicita una reunión para más información');
+				setCtaBtn('Agenda una cita');
+				setCtaBtn2('Ver casos de éxito');
+				setContactTitle('Contáctanos');
+			} else {
+				setHeroTitle(await translateText('Capital Humano', lang));
+				setHeroLead(await translateText('Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!', lang));
+				setHeroBtn(await translateText('Contactar a Bechapra', lang));
+				setBackText(await translateText('Volver', lang));
+				setServicesTitle(await translateText('Servicios Capital Humano', lang));
+				setServices(await Promise.all(initialServices.map(async s => ({
+					...s,
+					title: await translateText(s.title, lang),
+					desc: await translateText(s.desc, lang)
+				}))));
+				setVerMas(await translateText('Ver más', lang));
+				setBenefitsTitle(await translateText('Beneficios de Capital Humano', lang));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({
+					...b,
+					title: await translateText(b.title, lang),
+					desc: await translateText(b.desc, lang)
+				}))));
+				setCtaTitle(await translateText('Todos los servicios en un solo lugar', lang));
+				setCtaSubtitle(await translateText('Solicita una reunión para más información', lang));
+				setCtaBtn(await translateText('Agenda una cita', lang));
+				setCtaBtn2(await translateText('Ver casos de éxito', lang));
+				setContactTitle(await translateText('Contáctanos', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
+
 	return (
 		<main className={styles.main}>
-
 			{/* HERO SECTION */}
 			<section className={styles.hero} ref={heroRef}>
-
 				<div className={styles.heroInner}>
-					{/* Back link sits over the hero; will become fixed when scrolling */}
-					<Link href="/servicios" id="backLink" className={styles.backLink} aria-label="Volver a Servicios">
+					<Link href="/servicios" id="backLink" className={styles.backLink} aria-label={backText}>
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 							<path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 						</svg>
-						<span>Volver</span>
+						<span>{backText}</span>
 					</Link>
 					<div className={styles.heroContent}>
 						<motion.h1 
@@ -81,29 +160,25 @@ export default function Page() {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.7, delay: 0.1 }}
 						>
-							Capital Humano
+							{heroTitle}
 						</motion.h1>
-
 						<motion.p 
 							className={styles.lead}
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.7, delay: 0.2 }}
 						>
-							Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano.
-							¡Transforma tu empresa con nuestro enfoque estratégico!
+							{heroLead}
 						</motion.p>
-
 						<div style={{ marginTop: '1.75rem' }}>
 							<Link href="#contacto" className={styles.heroButton}>
-								Contactar a Bechapra
+								{heroBtn}
 								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 								</svg>
 							</Link>
 						</div>
 					</div>
-
 					<div className={styles.heroVisual} aria-hidden="true">
 						<div className={styles.heroImageWrap}>
 							<Image
@@ -117,24 +192,23 @@ export default function Page() {
 					</div>
 				</div>
 			</section>
-
 			{/* SEPARATOR */}
 			<div className={styles.separator}>
 				<span></span>
 			</div>
-
 			{/* SERVICES SECTION */}
 			<section className={styles.servicesSection}>
 				<div className={styles.container}>
-				<motion.h2 
-					className={styles.sectionTitle}
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true }}
-					transition={{ duration: 0.6 }}
-				>
-					Servicios Capital Humano
-				</motion.h2>					<motion.div 
+					<motion.h2 
+						className={styles.sectionTitle}
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ duration: 0.6 }}
+					>
+						{servicesTitle}
+					</motion.h2>
+					<motion.div 
 						className={styles.servicesGrid}
 						variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.14 } } }}
 						initial="hidden"
@@ -153,17 +227,16 @@ export default function Page() {
 								</div>
 								<h3 className={styles.serviceTitle}>{service.title}</h3>
 								<p className={styles.serviceDesc}>{service.desc}</p>
-
 								<div className={styles.cardFooter}>
 									<Link 
 										href={
-											service.title === "Atracción de Talento" ? "/servicios/atraccion-de-talento" :
-											service.title === "Payrolling" ? "/servicios/payroll" :
-											service.title === "Servicios Especializados" ? "/servicios/servicios-especializados" : "#"
+											service.title === (lang === 'es' ? "Atracción de Talento" : services[2]?.title) ? "/servicios/atraccion-de-talento" :
+											service.title === (lang === 'es' ? "Payrolling" : services[1]?.title) ? "/servicios/payroll" :
+											service.title === (lang === 'es' ? "Servicios Especializados" : services[0]?.title) ? "/servicios/servicios-especializados" : "#"
 										}
 										className={styles.exploreButton}
 									>
-										Ver más
+										{verMas}
 										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 											<path d="M13 7l5 5-5 5M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 										</svg>
@@ -174,51 +247,41 @@ export default function Page() {
 					</motion.div>
 				</div>
 			</section>
-
 			{/* BENEFICIOS HUMAN CAPITAL */}
 			<section className={styles.benefitsSection}>
-  <div className={styles.container}>
-    <div className={styles.benefitsGrid}>
-      <div className={styles.benefitsImageWrap}>
-        <Image
-          src="/imagen/capital-humano/cap-hum.webp"
-          alt="Equipo colaborando en oficina"
-          width={500}
-          height={400}
-          className={styles.benefitsImage}
-        />
-      </div>
-
-	  
-      <div className={styles.benefitsContent}>
-		<motion.h2 
-			className={styles.benefitsTitle}
-			initial={{ opacity: 0, y: 20 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true }}
-			transition={{ duration: 0.6 }}
-		>
-			Beneficios de Capital Humano
-		</motion.h2>
-        <div className={styles.benefitsCards}>
-          <div className={styles.benefitCard}>
-            <h3 className={styles.benefitTitle}>Acceso Exclusivo BTC</h3>
-            <p className={styles.benefitDesc}>Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos de la Ciudad de México.</p>
-          </div>
-          <div className={styles.benefitCard}>
-            <h3 className={styles.benefitTitle}>Reducción de Costos</h3>
-            <p className={styles.benefitDesc}>Optimiza los procesos de reclutamiento, selección y gestión de nómina.</p>
-          </div>
-          <div className={styles.benefitCard}>
-            <h3 className={styles.benefitTitle}>Asesoramiento Personalizado</h3>
-            <p className={styles.benefitDesc}>Sesiones de asesoramiento personalizado con expertos en Capital Humano.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+				<div className={styles.container}>
+					<div className={styles.benefitsGrid}>
+						<div className={styles.benefitsImageWrap}>
+							<Image
+								src="/imagen/capital-humano/cap-hum.webp"
+								alt="Equipo colaborando en oficina"
+								width={500}
+								height={400}
+								className={styles.benefitsImage}
+							/>
+						</div>
+						<div className={styles.benefitsContent}>
+							<motion.h2 
+								className={styles.benefitsTitle}
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true }}
+								transition={{ duration: 0.6 }}
+							>
+								{benefitsTitle}
+							</motion.h2>
+							<div className={styles.benefitsCards}>
+								{benefits.map((b, i) => (
+									<div className={styles.benefitCard} key={i}>
+										<h3 className={styles.benefitTitle}>{b.title}</h3>
+										<p className={styles.benefitDesc}>{b.desc}</p>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 			{/* CTA SECTION MEJORADA */}
 			<motion.section 
 				className={styles.ctaSectionModern}
@@ -226,28 +289,27 @@ export default function Page() {
 				whileInView={{ opacity: 1, y: 0 }}
 				viewport={{ once: true }}
 				transition={{ duration: 0.8 }}
-				>
-  <div className={styles.ctaModernContainer}>
-    <div className={styles.ctaModernContent}>
-      <h2 className={styles.ctaModernTitle}>Todos los servicios en un solo lugar</h2>
-      <p className={styles.ctaModernSubtitle}>Solicita una reunión para más información</p>
-      <div className={styles.ctaModernButtons}>
-        <a href="#contacto" className={styles.ctaModernPrimaryBtn}>Agenda una cita</a>
-        <a href="#" className={styles.ctaModernSecondaryBtn}>Ver casos de éxito</a>
-      </div>
-    </div>
-    <div className={styles.ctaModernImageWrap}>
-      <Image
-        src="/imagen/contacto/contacto-men.avif"
-        alt="Reunión de negocios Bechapra"
-        width={520}
-        height={340}
-        className={styles.ctaModernImage}
-      />
-    </div>
-  </div>
-</motion.section>
-
+			>
+				<div className={styles.ctaModernContainer}>
+					<div className={styles.ctaModernContent}>
+						<h2 className={styles.ctaModernTitle}>{ctaTitle}</h2>
+						<p className={styles.ctaModernSubtitle}>{ctaSubtitle}</p>
+						<div className={styles.ctaModernButtons}>
+							<a href="#contacto" className={styles.ctaModernPrimaryBtn}>{ctaBtn}</a>
+							<a href="#" className={styles.ctaModernSecondaryBtn}>{ctaBtn2}</a>
+						</div>
+					</div>
+					<div className={styles.ctaModernImageWrap}>
+						<Image
+							src="/imagen/contacto/contacto-men.avif"
+							alt="Reunión de negocios Bechapra"
+							width={520}
+							height={340}
+							className={styles.ctaModernImage}
+						/>
+					</div>
+				</div>
+			</motion.section>
 			{/* CONTACT SECTION */}
 			<section id="contacto" className={styles.contactSection}>
 				<div className={styles.container}>
@@ -258,12 +320,11 @@ export default function Page() {
 						viewport={{ once: true }}
 						transition={{ duration: 0.6 }}
 					>
-						Contáctanos
+						{contactTitle}
 					</motion.h2>
 					<ContactForm />
 				</div>
 			</section>
-
 			{/* FOOTER */}
 			<Footer />
 		</main>

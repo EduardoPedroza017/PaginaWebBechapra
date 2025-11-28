@@ -1,36 +1,98 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from 'next/image';
 import { Briefcase, Settings, Users } from 'lucide-react';
-import Footer from '@/components/Footer';
-import ContactForm from '@/app/components/ContactForm';
+import Footer from '../../../components/Footer';
+import ContactForm from '../../../app/components/ContactForm';
+import { useLanguage } from '../../../lib/LanguageContext';
+import { translateText } from '../../../lib/translate';
 
-const SERVICES = [
-  { 
-    icon: Briefcase, 
-    title: 'Servicios Contables', 
-    desc: 'Ten una visión clara del presente y futuro contable-fiscal de tu empresa',
-    href: '/servicios/servicios-contables'
-  },
-  { 
-    icon: Settings, 
-    title: 'Servicios Legales', 
-    desc: 'Desde la redacción de contratos sólidos hasta la protección ante cualquier desafío legal',
-    href: '/servicios/servicios-legales'
-  },
-  { 
-    icon: Users, 
-    title: 'Servicios PyME', 
-    desc: 'Confía en nosotros para brindarte el apoyo y la orientación que necesitas para hacer crecer tu pyme de manera segura y exitosa',
-    href: '/servicios/servicios-pyme'
-  },
+type IconName = 'Briefcase' | 'Settings' | 'Users';
+interface ServiceCard { icon: IconName; title: string; desc: string; href: string; }
+interface BenefitCard { icon: IconName; title: string; desc: string; }
+
+const iconMap: Record<IconName, typeof Briefcase> = {
+	Briefcase,
+	Settings,
+	Users,
+};
+
+const initialServices: ServiceCard[] = [
+	{ icon: 'Briefcase', title: 'Servicios Contables', desc: 'Ten una visión clara del presente y futuro contable-fiscal de tu empresa', href: '/servicios/servicios-contables' },
+	{ icon: 'Settings', title: 'Servicios Legales', desc: 'Desde la redacción de contratos sólidos hasta la protección ante cualquier desafío legal', href: '/servicios/servicios-legales' },
+	{ icon: 'Users', title: 'Servicios PyME', desc: 'Confía en nosotros para brindarte el apoyo y la orientación que necesitas para hacer crecer tu pyme de manera segura y exitosa', href: '/servicios/servicios-pyme' },
+];
+
+const initialBenefits: BenefitCard[] = [
+	{ icon: 'Briefcase', title: 'Acceso Exclusivo BTC', desc: 'Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.' },
+	{ icon: 'Users', title: 'Asesoramiento Personalizado', desc: 'Sesiones de asesoramiento personalizado con expertos en contabilidad, legal y/o PyME' },
 ];
 
 export default function ManagementServicesPage() {
-	const [hoveredBenefit, setHoveredBenefit] = React.useState<number | null>(null);
+	const { lang } = useLanguage();
+	const [hoveredBenefit, setHoveredBenefit] = useState<number | null>(null);
+	// HERO
+	const [heroTitle, setHeroTitle] = useState('Soluciones integrales para gestionar y hacer crecer tu negocio');
+	const [heroDesc, setHeroDesc] = useState('¡Desde el manejo de tus finanzas hasta la protección legal de tu empresa!');
+	const [heroBtn, setHeroBtn] = useState('Solicitar asesoría →');
+	// Services
+	const [services, setServices] = useState<ServiceCard[]>(initialServices);
+	const [servicesTitle, setServicesTitle] = useState('Servicios Management Services');
+	// Benefits
+	const [benefits, setBenefits] = useState<BenefitCard[]>(initialBenefits);
+	const [benefitsTitle, setBenefitsTitle] = useState('Beneficios Management Services');
+	// CTA
+	const [ctaTitle, setCtaTitle] = useState('Todos los servicios en un solo lugar');
+	const [ctaDesc, setCtaDesc] = useState('Solicita una reunión para más información');
+	const [ctaBtn, setCtaBtn] = useState('Solicitar reunión');
+	const [ctaBtn2, setCtaBtn2] = useState('Ver servicios');
+	// Contact
+	const [contactTitle, setContactTitle] = useState('Contáctanos');
+
+	useEffect(() => {
+		async function fetchTranslations() {
+			if (lang === 'es') {
+				setHeroTitle('Soluciones integrales para gestionar y hacer crecer tu negocio');
+				setHeroDesc('¡Desde el manejo de tus finanzas hasta la protección legal de tu empresa!');
+				setHeroBtn('Solicitar asesoría →');
+				setServices(initialServices);
+				setServicesTitle('Servicios Management Services');
+				setBenefits(initialBenefits);
+				setBenefitsTitle('Beneficios Management Services');
+				setCtaTitle('Todos los servicios en un solo lugar');
+				setCtaDesc('Solicita una reunión para más información');
+				setCtaBtn('Solicitar reunión');
+				setCtaBtn2('Ver servicios');
+				setContactTitle('Contáctanos');
+			} else {
+				setHeroTitle(await translateText('Soluciones integrales para gestionar y hacer crecer tu negocio', lang));
+				setHeroDesc(await translateText('¡Desde el manejo de tus finanzas hasta la protección legal de tu empresa!', lang));
+				setHeroBtn(await translateText('Solicitar asesoría →', lang));
+				setServices(await Promise.all(initialServices.map(async s => ({
+					...s,
+					title: await translateText(s.title, lang),
+					desc: await translateText(s.desc, lang)
+				}))));
+				setServicesTitle(await translateText('Servicios Management Services', lang));
+				setBenefits(await Promise.all(initialBenefits.map(async b => ({
+					...b,
+					title: await translateText(b.title, lang),
+					desc: await translateText(b.desc, lang)
+				}))));
+				setBenefitsTitle(await translateText('Beneficios Management Services', lang));
+				setCtaTitle(await translateText('Todos los servicios en un solo lugar', lang));
+				setCtaDesc(await translateText('Solicita una reunión para más información', lang));
+				setCtaBtn(await translateText('Solicitar reunión', lang));
+				setCtaBtn2(await translateText('Ver servicios', lang));
+				setContactTitle(await translateText('Contáctanos', lang));
+			}
+		}
+		fetchTranslations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lang]);
 
 	return (
 		<main>
@@ -205,9 +267,9 @@ export default function ManagementServicesPage() {
 						gap: '2.5rem'
 					}}
 				>
-					{SERVICES.map((service, i) => {
-						const Icon = service.icon;
-						return (
+					   {services.map((service: ServiceCard, i: number) => {
+						   const Icon = iconMap[service.icon];
+						   return (
 							<motion.div
 								key={i}
 								initial={{opacity: 0, y: 30}}

@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
+import { LanguageProvider } from "../lib/LanguageContext";
 import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
@@ -32,12 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://use.typekit.net/abc1def.css"></link>
       </head>
       <body>
-        <Navbar />
-        <main className="container">
-          {children}
-        </main>
-        <Analytics />
-        <CookieConsent />
+        <LanguageProvider>
+          <Navbar />
+          <main className="container">
+            {children}
+          </main>
+          <Analytics />
+          <CookieConsent />
+        </LanguageProvider>
       </body>
     </html>
   );
