@@ -1,0 +1,78 @@
+/* Estilos para NOM-035 - paleta azul/blanco */
+:root{
+  --nom-blue: var(--brand-primary, #0057D9);
+  --nom-dark: #07203a;
+  --nom-light: #f6fbff;
+}
+
+.nomHero{
+  margin: 1.2rem auto 0 auto;
+  max-width: 1100px;
+  background: linear-gradient(180deg, rgba(245,252,255,0.98), rgba(240,248,255,0.9));
+  border-radius: 14px;
+  padding: 1.2rem;
+  box-shadow: 0 18px 40px rgba(43,124,240,0.04);
+  border: 1px solid rgba(43,124,240,0.06);
+}
+.nomInner{ display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap }
+.nomLeft{ flex:1 1 560px; min-width:260px }
+.nomRight{ flex:0 0 240px; display:flex; flex-direction:column; gap:12px; align-items:flex-end }
+.nomBadge{ width:64px; height:64px; border-radius:12px; display:grid; place-items:center; background: linear-gradient(135deg, rgba(79,143,255,0.12), rgba(43,124,240,0.06)); box-shadow: 0 8px 26px rgba(43,124,240,0.04) }
+.nomTitle{ margin:0; font-size:1.5rem; color:var(--nom-dark); font-weight:900 }
+.nomLead{ margin:0.6rem 0 0 0; color:#12334a; max-width:680px }
+.nomBullets{ margin:0.8rem 0 0 0; padding-left:1.1rem }
+.nomBullets li{ margin:0.48rem 0; color:#234a66 }
+.nomPrimary{ display:inline-block; background: linear-gradient(90deg,#2b7cf0,#6fb3ff); color:#fff; padding:0.56rem 0.95rem; border-radius:999px; font-weight:800; text-decoration:none }
+
+.nomStats{ display:flex; gap:0.8rem; align-items:center }
+.nomStat{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.6rem 0.9rem; border-radius:10px; text-align:right; box-shadow:0 8px 22px rgba(2,82,180,0.04); min-width:120px }
+.nomStat strong{ display:block; font-size:1.06rem; font-weight:900; color:var(--nom-blue) }
+.nomStat span{ display:block; font-size:0.86rem; color:#274a66 }
+
+.nomContainer{ padding:2rem 1rem 3.2rem 1rem; max-width:1100px; margin:0 auto }
+.sectionTitle{ margin: 1.4rem 0 0.6rem 0; font-size:1.15rem; color:var(--nom-dark); font-weight:900 }
+.nomSteps{ display:flex; gap:1rem; margin-top:1rem; flex-wrap:wrap }
+.nomCard{ background: linear-gradient(180deg,#fff,#f7fbff); padding:1rem; border-radius:12px; flex:1 1 220px; box-shadow: 0 10px 30px rgba(43,124,240,0.04) }
+.nomStepNum{ width:36px; height:36px; border-radius:8px; background: linear-gradient(90deg,#6fb3ff,#2b7cf0); color:#fff; display:grid; place-items:center; font-weight:900; margin-bottom:0.5rem }
+.nomCard h4{ margin:0 0 0.35rem 0; color:var(--nom-dark) }
+.nomCard p{ margin:0; color:#274a66 }
+
+.nomCTA{ margin-top:1.6rem }
+.nomCTABox{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.9rem; border-radius:12px; background: linear-gradient(180deg,#f8fcff,#f2f9ff); border:1px solid rgba(43,124,240,0.04); box-shadow:0 12px 36px rgba(43,124,240,0.04) }
+.nomButton{ background: linear-gradient(90deg,#2b7cf0,#6fb3ff); color:#fff; padding:0.6rem 1rem; border-radius:999px; font-weight:800; text-decoration:none }
+
+/* Extras: timeline, FAQ, testimonial, resources */
+.nomExtras{ display:grid; grid-template-columns: 1fr; gap:1rem; margin-top:1.4rem }
+.nomTimeline{ display:flex; gap:0.8rem; flex-wrap:wrap }
+.nomTimelineItem{ display:flex; gap:0.8rem; align-items:flex-start; background: linear-gradient(180deg,#fff,#f7fbff); padding:0.6rem; border-radius:10px; box-shadow:0 8px 22px rgba(43,124,240,0.04); flex:1 1 220px }
+.nomTimelineIcon{ width:40px; height:40px; display:grid; place-items:center; border-radius:8px; background: linear-gradient(135deg, rgba(79,143,255,0.08), rgba(43,124,240,0.04)); color:var(--nom-blue) }
+.nomTimelineDesc{ font-size:0.92rem; color:#234a66 }
+
+.nomFaqWrap{ margin-top:0.6rem }
+.nomFAQ{ display:flex; flex-direction:column; gap:0.6rem }
+.nomFaqItem{ border-radius:10px; overflow:hidden }
+.faqQuestion{ width:100%; text-align:left; background:linear-gradient(180deg,#fff,#f7fbff); padding:0.7rem 0.9rem; border:1px solid rgba(43,124,240,0.04); display:flex; justify-content:space-between; align-items:center; cursor:pointer }
+.faqChevron{ margin-left:12px; color:var(--nom-blue); font-weight:900 }
+.faqAnswer{ padding:0.6rem 0.9rem; background:rgba(245,250,255,0.6); border-left:3px solid rgba(43,124,240,0.08) }
+
+.testimonial{ background: linear-gradient(180deg,#fff,#f7fbff); padding:0.8rem; border-radius:12px; box-shadow:0 10px 30px rgba(43,124,240,0.04); display:flex; flex-direction:column; gap:0.6rem }
+.testAvatar{ width:48px; height:48px; border-radius:10px; background:linear-gradient(90deg,#2b7cf0,#6fb3ff); color:white; display:grid; place-items:center; font-weight:900 }
+.testimonial blockquote{ margin:0; font-style:italic; color:#12334a }
+.testimonial cite{ display:block; margin-top:0.35rem; font-weight:700; color:#234a66 }
+
+.resourceBox{ margin-top:0.6rem; display:flex; justify-content:space-between; align-items:center; gap:0.6rem; padding:0.6rem; border-radius:10px; background:linear-gradient(180deg,#f8fcff,#f2f9ff); border:1px solid rgba(43,124,240,0.03) }
+.resourceLeft{ display:flex; gap:0.6rem; align-items:center }
+.secondaryButton{ background:transparent; color:var(--nom-blue); padding:0.45rem 0.8rem; border-radius:999px; border:1px solid rgba(43,124,240,0.12); text-decoration:none; font-weight:800 }
+
+.faqQuestion:focus, .nomButton:focus, .secondaryButton:focus, .nomPrimary:focus { outline: 3px solid rgba(43,124,240,0.12); outline-offset:3px }
+
+.muted{ color:#4b6b84 }
+
+@media(min-width:860px){
+  .nomRight{ align-items:flex-end }
+  .nomInner{ gap:1.6rem }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nomHero, .nomCard, .nomCTABox { transition: none !important; animation: none !important }
+}
