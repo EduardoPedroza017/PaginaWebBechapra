@@ -10,38 +10,15 @@
 import { canUseAnalytics } from './cookieConsent';
 
 // Tu Project ID de Microsoft Clarity
-const CLARITY_PROJECT_ID = 'XXXXXXXXXX'; // Reemplaza con tu ID real de Clarity
+// const CLARITY_PROJECT_ID = 'XXXXXXXXXX'; // Reemplaza con tu ID real de Clarity
 
 /**
  * Inicializa Microsoft Clarity solo si el usuario aceptó cookies
  */
 export const initMicrosoftClarity = () => {
-	if (typeof window === 'undefined') return;
-
-	// Solo inicializar si el usuario aceptó cookies de analytics
-	if (!canUseAnalytics()) {
-		console.log('📊 Microsoft Clarity deshabilitado - Usuario rechazó cookies');
-		return;
-	}
-
-	// Inyectar script de Microsoft Clarity
-	(function(c: unknown, l: Document, a: string, r: string, i: string, t?: HTMLScriptElement, y?: Element | null) {
-		const win = c as Record<string, unknown>;
-		win[a] = win[a] || function(...args: unknown[]) { 
-			const clarityObj = win[a] as { q?: unknown[] };
-			clarityObj.q = clarityObj.q || [];
-			clarityObj.q.push(args); 
-		};
-		t = l.createElement(r) as HTMLScriptElement;
-		t.async = true;
-		t.src = "https://www.clarity.ms/tag/" + i;
-		y = l.getElementsByTagName(r)[0];
-		if (y && y.parentNode) {
-			y.parentNode.insertBefore(t, y);
-		}
-	})(window, document, "clarity", "script", CLARITY_PROJECT_ID);
-
-	console.log('✅ Microsoft Clarity inicializado');
+  // Integración de Microsoft Clarity desactivada temporalmente
+  // Para reactivar, descomenta la constante CLARITY_PROJECT_ID y el código de inicialización
+  console.log('ℹ️ Microsoft Clarity está desactivado');
 };
 
 /**

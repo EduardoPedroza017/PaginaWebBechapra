@@ -1,4 +1,20 @@
+"use client";
+
+import { useMemo } from "react";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend
+} from "chart.js";
+import { TranslateText } from "@/components/TranslateText";
+import { BarChart3 } from "lucide-react";
 import { NewsItem } from "./NewsFilter";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface Props {
   data: NewsItem[];
@@ -6,34 +22,86 @@ interface Props {
 }
 
 export default function NewsChart({ data, theme }: Props) {
-  // Agrupar noticias por día
-  const counts: Record<string, number> = {};
-  data.forEach(n => {
-    const d = n.date.slice(0, 10);
-    counts[d] = (counts[d] || 0) + 1;
-  });
-  const labels = Object.keys(counts).sort();
-  const values = labels.map(l => counts[l]);
+  const grouped = useMemo(() => {
+    const counts: Record<string, number> = {};
+    data.forEach(n => {
+      const d = n.date.slice(0, 10);
+      counts[d] = (counts[d] || 0) + 1;
+    });
+    return counts;
+  }, [data]);
 
-  // Simple bar chart SVG
+  const labels = Object.keys(grouped).sort().slice(-10);
+  const values = labels.map(l => grouped[l]);
+
+  const chartData = {
+    labels: labels.map(l => l.slice(5)),
+    datasets: [
+      {
+        label: "Noticias",
+        data: values,
+        backgroundColor: theme === 'dark' ? 'rgba(139, 92, 246, 0.8)' : 'rgba(139, 92, 246, 0.7)',
+        borderColor: 'rgba(139, 92, 246, 1)',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false,
+      }
+    ]
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: theme === 'dark' ? '#1f2937' : '#fff',
+        titleColor: theme === 'dark' ? '#fff' : '#111827',
+        bodyColor: theme === 'dark' ? '#9ca3af' : '#4b5563',
+        borderColor: theme === 'dark' ? '#374151' : '#e5e7eb',
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: theme === 'dark' ? '#9ca3af' : '#6b7280' }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: theme === 'dark' ? '#374151' : '#f3f4f6' },
+        ticks: { 
+          color: theme === 'dark' ? '#9ca3af' : '#6b7280',
+          stepSize: 1
+        }
+      }
+    }
+  };
+
   return (
-    <div className={`rounded-xl p-4 shadow mb-8 ${theme === 'dark' ? 'bg-[#10192b]' : 'bg-white'}`}>
-      <div className={`font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Noticias por día</div>
-      <svg width={Math.max(300, labels.length * 60)} height={180}>
-        {values.map((v, i) => (
-          <g key={i}>
-            <rect
-              x={40 + i * 60}
-              y={150 - v * 30}
-              width={30}
-              height={v * 30}
-              fill={theme === 'dark' ? '#60a5fa' : '#2563eb'}
-            />
-            <text x={55 + i * 60} y={145} textAnchor="middle" fontSize={14} fill={theme === 'dark' ? '#fff' : '#222'}>{v}</text>
-            <text x={55 + i * 60} y={170} textAnchor="middle" fontSize={12} fill={theme === 'dark' ? '#fff' : '#222'}>{labels[i].slice(5)}</text>
-          </g>
-        ))}
-      </svg>
+    <div className={`rounded-2xl p-5 border ${
+      theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+    }`}>
+      <div className="flex items-center gap-2 mb-4">
+        <BarChart3 className={`w-5 h-5 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`} />
+        <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+          <TranslateText text="Noticias por día" />
+        </h3>
+      </div>
+      
+      {labels.length === 0 ? (
+        <div className="flex items-center justify-center h-48">
+          <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
+            <TranslateText text="Sin datos para graficar" />
+          </p>
+        </div>
+      ) : (
+        <div className="h-48">
+          <Bar data={chartData} options={options} />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,19 @@
+"use client";
+
 import { useMemo } from "react";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend
+} from "chart.js";
+import { TranslateText } from "@/components/TranslateText";
+import { BarChart3 } from "lucide-react";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface ContactMessage {
   name: string;
@@ -9,10 +24,10 @@ interface ContactMessage {
 
 interface Props {
   data: ContactMessage[];
+  theme: 'light' | 'dark';
 }
 
-export default function ContactChart({ data }: Props) {
-  // Agrupar por día
+export default function ContactChart({ data, theme }: Props) {
   const grouped = useMemo(() => {
     const map: { [date: string]: number } = {};
     data.forEach(msg => {
@@ -22,35 +37,77 @@ export default function ContactChart({ data }: Props) {
     return map;
   }, [data]);
 
-  const labels = Object.keys(grouped).sort();
+  const labels = Object.keys(grouped).sort().slice(-10); // Últimos 10 días
   const values = labels.map(l => grouped[l]);
 
+  const chartData = {
+    labels: labels.map(l => l.slice(5)), // MM-DD
+    datasets: [
+      {
+        label: "Mensajes",
+        data: values,
+        backgroundColor: theme === 'dark' ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 0.7)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false,
+      }
+    ]
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: theme === 'dark' ? '#1f2937' : '#fff',
+        titleColor: theme === 'dark' ? '#fff' : '#111827',
+        bodyColor: theme === 'dark' ? '#9ca3af' : '#4b5563',
+        borderColor: theme === 'dark' ? '#374151' : '#e5e7eb',
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: theme === 'dark' ? '#9ca3af' : '#6b7280' }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: theme === 'dark' ? '#374151' : '#f3f4f6' },
+        ticks: { 
+          color: theme === 'dark' ? '#9ca3af' : '#6b7280',
+          stepSize: 1
+        }
+      }
+    }
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto mb-8">
-      <h2 className="text-lg font-semibold mb-2">Mensajes por día</h2>
-      <div className="bg-white rounded-xl shadow p-4">
-        {labels.length === 0 ? (
-          <div className="text-center text-gray-400 py-8">Sin datos para graficar</div>
-        ) : (
-          <svg width="100%" height="180" viewBox={`0 0 400 180`}>
-            {/* Ejes */}
-            <line x1="40" y1="20" x2="40" y2="160" stroke="#64748b" strokeWidth="2" />
-            <line x1="40" y1="160" x2="380" y2="160" stroke="#64748b" strokeWidth="2" />
-            {/* Barras */}
-            {values.map((v, i) => (
-              <rect key={i} x={50 + i * 40} y={160 - v * 20} width="28" height={v * 20} fill="#2563eb" rx="6" />
-            ))}
-            {/* Etiquetas de valor */}
-            {values.map((v, i) => (
-              <text key={i} x={64 + i * 40} y={150 - v * 20} fontSize="13" fill="#2563eb" fontWeight="bold" textAnchor="middle">{v}</text>
-            ))}
-            {/* Etiquetas de fecha */}
-            {labels.map((l, i) => (
-              <text key={i} x={64 + i * 40} y={175} fontSize="12" fill="#334155" textAnchor="middle">{l.slice(5)}</text>
-            ))}
-          </svg>
-        )}
+    <div className={`rounded-2xl p-5 border ${
+      theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+    }`}>
+      <div className="flex items-center gap-2 mb-4">
+        <BarChart3 className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+        <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+          <TranslateText text="Mensajes por día" />
+        </h3>
       </div>
+      
+      {labels.length === 0 ? (
+        <div className="flex items-center justify-center h-48">
+          <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
+            <TranslateText text="Sin datos para graficar" />
+          </p>
+        </div>
+      ) : (
+        <div className="h-48">
+          <Bar data={chartData} options={options} />
+        </div>
+      )}
     </div>
   );
 }

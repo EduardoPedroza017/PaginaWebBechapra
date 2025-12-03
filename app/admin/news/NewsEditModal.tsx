@@ -1,4 +1,8 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { X, Save, Upload, Pencil } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 import { NewsItem } from "./NewsFilter";
 
 interface Props {
@@ -14,8 +18,10 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
   const [subtitle, setSubtitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (item) {
@@ -23,8 +29,18 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
       setSubtitle(item.subtitle);
       setDescription(item.description);
       setImage(null);
+      setPreview(item.image_url ? `http://localhost:5000${item.image_url}` : null);
     }
   }, [item]);
+
+  const handleImageChange = (file: File | null) => {
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => setPreview(e.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
 
   if (!open || !item) return null;
 
@@ -33,15 +49,22 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
     if (!item) return;
     setLoading(true);
     setError("");
+    
     const form = new FormData();
     form.append("title", title);
     form.append("subtitle", subtitle);
     form.append("description", description);
     if (image) form.append("image", image);
+    
     try {
+      const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
       const res = await fetch(`http://localhost:5000/api/news/${encodeURIComponent(item!.title)}`, {
         method: "PUT",
         body: form,
+        headers: {
+          ...(userEmail ? { "X-User": userEmail } : {})
+        },
+        credentials: 'include',
       });
       if (!res.ok) throw new Error("Error al actualizar noticia");
       const data = await res.json();
@@ -55,34 +78,133 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
     }
   }
 
+  const inputClass = `w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
+    theme === 'dark' 
+      ? 'bg-gray-800 text-white border-gray-700 placeholder:text-gray-500' 
+      : 'bg-gray-50 text-gray-900 border-gray-200 placeholder:text-gray-400'
+  }`;
+
+  const labelClass = `block text-xs font-semibold mb-1.5 ${
+    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+  }`;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <form onSubmit={handleSubmit} className={`w-full max-w-lg rounded-xl shadow p-6 ${theme === 'dark' ? 'bg-[#10192b]' : 'bg-white'}`}>
-        <div className="font-bold mb-4 text-lg">Editar Noticia</div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className={`block mb-1 font-medium ${theme === 'dark' ? 'text-blue-200' : 'text-black'}`}>Título</label>
-            <input className={`w-full rounded-lg border px-3 py-2 text-sm shadow focus:border-blue-400 ${theme === 'dark' ? 'bg-[#10192b] text-white border-[#22304a]' : 'bg-white text-black border-blue-200'}`} value={title} onChange={e => setTitle(e.target.value)} required />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className={`w-full max-w-lg rounded-2xl shadow-2xl border ${
+        theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+      }`}>
+        {/* Header */}
+        <div className={`flex items-center justify-between px-6 py-4 border-b ${
+          theme === 'dark' ? 'border-gray-800' : 'border-gray-100'
+        }`}>
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-xl ${theme === 'dark' ? 'bg-amber-600' : 'bg-amber-500'}`}>
+              <Pencil className="w-5 h-5 text-white" />
+            </div>
+            <h3 className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <TranslateText text="Editar Noticia" />
+            </h3>
           </div>
-          <div>
-            <label className={`block mb-1 font-medium ${theme === 'dark' ? 'text-blue-200' : 'text-black'}`}>Subtítulo</label>
-            <input className={`w-full rounded-lg border px-3 py-2 text-sm shadow focus:border-blue-400 ${theme === 'dark' ? 'bg-[#10192b] text-white border-[#22304a]' : 'bg-white text-black border-blue-200'}`} value={subtitle} onChange={e => setSubtitle(e.target.value)} required />
-          </div>
-          <div className="md:col-span-2">
-            <label className={`block mb-1 font-medium ${theme === 'dark' ? 'text-blue-200' : 'text-black'}`}>Descripción</label>
-            <textarea className={`w-full rounded-lg border px-3 py-2 text-sm shadow focus:border-blue-400 ${theme === 'dark' ? 'bg-[#10192b] text-white border-[#22304a]' : 'bg-white text-black border-blue-200'}`} value={description} onChange={e => setDescription(e.target.value)} required rows={3} />
-          </div>
-          <div className="md:col-span-2">
-            <label className={`block mb-1 font-medium ${theme === 'dark' ? 'text-blue-200' : 'text-black'}`}>Imagen (opcional)</label>
-            <input type="file" accept="image/*" className="w-full" onChange={e => setImage(e.target.files?.[0] || null)} />
-          </div>
+          <button
+            onClick={onClose}
+            className={`p-2 rounded-lg transition-colors ${
+              theme === 'dark' ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+            }`}
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-        {error && <div className="text-red-500 mt-2">{error}</div>}
-        <div className="flex justify-end gap-2 mt-4">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg font-semibold bg-gray-300 text-black hover:bg-gray-400">Cancelar</button>
-          <button type="submit" disabled={loading} className="px-6 py-2 rounded-lg font-semibold shadow bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-60">{loading ? "Guardando..." : "Guardar Cambios"}</button>
-        </div>
-      </form>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}><TranslateText text="Título" /></label>
+              <input className={inputClass} value={title} onChange={e => setTitle(e.target.value)} required />
+            </div>
+            <div>
+              <label className={labelClass}><TranslateText text="Subtítulo" /></label>
+              <input className={inputClass} value={subtitle} onChange={e => setSubtitle(e.target.value)} required />
+            </div>
+            <div className="md:col-span-2">
+              <label className={labelClass}><TranslateText text="Descripción" /></label>
+              <textarea className={`${inputClass} resize-none`} value={description} onChange={e => setDescription(e.target.value)} required rows={4} />
+            </div>
+            <div className="md:col-span-2">
+              <label className={labelClass}><TranslateText text="Imagen" /></label>
+              <div className="flex gap-4">
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`flex-1 border-2 border-dashed rounded-xl p-4 cursor-pointer transition-all ${
+                    theme === 'dark' 
+                      ? 'border-gray-700 hover:border-amber-500 hover:bg-gray-800/50' 
+                      : 'border-gray-200 hover:border-amber-400 hover:bg-amber-50/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-3">
+                    <Upload className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`} />
+                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {image ? image.name : <TranslateText text="Cambiar imagen..." />}
+                    </span>
+                  </div>
+                  <input 
+                    ref={fileInputRef}
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={e => handleImageChange(e.target.files?.[0] || null)} 
+                  />
+                </div>
+                {preview && (
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0">
+                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {error && (
+            <div className={`mt-4 p-3 rounded-xl text-sm ${
+              theme === 'dark' ? 'bg-red-900/30 text-red-400' : 'bg-red-50 text-red-600'
+            }`}>
+              {error}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3 mt-6">
+            <button 
+              type="button" 
+              onClick={onClose}
+              className={`flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
+                theme === 'dark'
+                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <TranslateText text="Cancelar" />
+            </button>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm bg-amber-600 text-white hover:bg-amber-700 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <TranslateText text="Guardando..." />
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <TranslateText text="Guardar Cambios" />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

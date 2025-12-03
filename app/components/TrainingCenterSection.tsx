@@ -1,130 +1,161 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { GraduationCap, Users, Video, Award } from "lucide-react";
-import AnimatedSection from "./AnimatedSection";
-import { motion } from "framer-motion";
+import { GraduationCap, Users, Video, Award, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { trainingFeatures } from "./data/homeData";
+
+const iconMap = {
+  users: Users,
+  video: Video,
+  award: Award,
+};
 
 export default function TrainingCenterSection() {
-  const features = [
-    {
-      label: "Ferias de Empleo",
-      description: "Participación activa en ferias de empleo con escuelas y universidades",
-      image: "/image/training-ferias.jpg",
-      icon: <Users size={44} color="#fff" />
-    },
-    {
-      label: "Webinars Institucionales",
-      description: "Capacitaciones y webinars especializados con instituciones educativas",
-      image: "/image/training-webinars.jpg",
-      icon: <Video size={44} color="#fff" />
-    },
-    {
-      label: "Sistema de Becarios",
-      description: "Programa integral de formación y desarrollo de talento joven",
-      image: "/image/training-becarios.jpg",
-      icon: <Award size={44} color="#fff" />
-    }
-  ];
-
   const [active, setActive] = useState(0);
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAutoplay = () => {
+    stopAutoplay();
+    intervalRef.current = setInterval(() => {
+      setActive((s) => (s + 1) % trainingFeatures.length);
+    }, 5000);
+  };
+
+  const stopAutoplay = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setActive((s) => (s + 1) % features.length);
-    }, 5000);
+    startAutoplay();
+    return stopAutoplay;
+  }, []);
 
-    return () => clearInterval(id);
-  }, [features.length]);
-
-  function startAutoplay() {
-    stopAutoplay();
-    intervalRef.current = window.setInterval(() => {
-      setActive((s) => (s + 1) % features.length);
-    }, 5000);
-  }
-
-  function stopAutoplay() {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }
+  const ActiveIcon = iconMap[trainingFeatures[active].icon];
 
   return (
     <section id="training-center">
-      <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-6 px-6">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <GraduationCap size={40} style={{color: '#003d8f'}} />
-            <h2 className="text-[clamp(2rem,4vw,2.8rem)] font-black text-[#003d8f] tracking-tight m-0">Bechapra Training Center</h2>
-          </div>
-          <div className="w-20 h-1 rounded bg-gradient-to-r from-[#003d8f] to-[#0056d4] mx-auto mb-6" />
-          <p className="text-[clamp(1rem,2vw,1.2rem)] text-[#666] leading-relaxed">Formamos y conectamos el talento del futuro con las mejores oportunidades</p>
-        </div>
-      </AnimatedSection>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-center max-w-3xl mx-auto mb-12"
+      >
+        <span className="inline-flex items-center gap-2 text-blue-700 bg-blue-100 font-semibold text-sm px-4 py-2 rounded-full mb-4">
+          <GraduationCap className="w-4 h-4" />
+          Formación de talento
+        </span>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          Bechapra Training Center
+        </h2>
+        <p className="text-lg text-slate-600 max-w-xl mx-auto">
+          Formamos y conectamos el talento del futuro con las mejores oportunidades
+        </p>
+      </motion.div>
 
-      {/* Visual showcase with rotating features */}
-      <div className="relative max-w-5xl mx-auto px-6">
-        {/* Background gradient */}
-        <div className="absolute inset-0 z-0 pointer-events-none rounded-3xl overflow-hidden" style={{background: 'radial-gradient(ellipse 70% 40% at 50% 20%, rgba(37,99,235,0.08) 0%, transparent 100%)'}} />
+      <div className="max-w-6xl mx-auto">
+        <div
+          className="relative bg-white rounded-3xl overflow-hidden shadow-xl"
+          onMouseEnter={stopAutoplay}
+          onMouseLeave={startAutoplay}
+        >
+          <div className="grid lg:grid-cols-2">
+            {/* Left: Image/Visual */}
+            <div className="relative min-h-[300px] lg:min-h-[500px] bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/image/pattern.svg')] opacity-10" />
+              
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-8"
+                >
+                  <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6">
+                    <ActiveIcon className="w-12 h-12" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-center">
+                    {trainingFeatures[active].label}
+                  </h3>
+                </motion.div>
+              </AnimatePresence>
 
-        <div className="relative z-10 bg-white/90 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-xl border-0" onMouseEnter={stopAutoplay} onMouseLeave={startAutoplay}>
-          {/* Tabs/Indicators */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {features.map((feature, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className={`px-6 py-3 rounded-xl text-[0.95rem] font-bold flex items-center gap-2 transition-all duration-300 border ${active === i ? 'bg-gradient-to-br from-[#003d8f] to-[#004AB7] text-white shadow-lg border-0' : 'bg-[#003d8f0d] text-[#003d8f] border-[#003d8f26] hover:bg-[#003d8f1a]'}`}
-              >
-                {feature.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Content Display */}
-          <motion.div
-            key={active}
-            initial={{opacity: 0, y: 20}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.5}}
-            className="grid gap-12 md:grid-cols-2 items-center"
-          >
-            {/* Text Content */}
-            <div className="p-6">
-              <div className="w-[70px] h-[70px] bg-gradient-to-br from-[#003d8f] to-[#004AB7] rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                {features[active].icon}
+              {/* Progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                <motion.div
+                  key={active}
+                  className="h-full bg-white"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 5, ease: "linear" }}
+                />
               </div>
-              <h3 className="text-[clamp(1.8rem,3vw,2.5rem)] font-black text-[#003d8f] mb-4 tracking-tight">{features[active].label}</h3>
-              <p className="text-[1.1rem] text-[#666] leading-relaxed mb-8">{features[active].description}</p>
-              <button className="px-8 py-4 rounded-xl bg-gradient-to-br from-[#003d8f] to-[#004AB7] text-white font-bold text-base shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">Conoce más →</button>
             </div>
-            {/* Image Display */}
-            <div className="relative rounded-2xl overflow-hidden min-h-[300px] md:min-h-[400px] bg-gradient-to-br from-[#E8F4FF] to-[#D0E8FF] flex items-center justify-center border border-[#003d8f1a]">
-              {/* Placeholder for image */}
-              <div className="text-center text-[#003d8f] opacity-60">
-                <div className="text-5xl mb-4 flex items-center justify-center">{features[active].icon}</div>
-                <p className="text-xs font-semibold">Imagen: {features[active].label}</p>
+
+            {/* Right: Content */}
+            <div className="p-8 lg:p-12 flex flex-col justify-center">
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-2 mb-8">
+                {trainingFeatures.map((feature, i) => {
+                  const Icon = iconMap[feature.icon];
+                  return (
+                    <button
+                      key={feature.id}
+                      onClick={() => setActive(i)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                        active === i
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {feature.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Content */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+                    {trainingFeatures[active].label}
+                  </h3>
+                  <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+                    {trainingFeatures[active].description}
+                  </p>
+                  <button className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all">
+                    Más información
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Dots */}
+              <div className="flex gap-2 mt-8">
+                {trainingFeatures.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    className={`h-2 rounded-full transition-all ${
+                      active === i ? "bg-blue-600 w-8" : "bg-slate-200 w-2 hover:bg-slate-300"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
-          </motion.div>
-
-          {/* Progress indicators */}
-          <div className="flex justify-center gap-3 mt-12">
-            {features.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className={`transition-all duration-300 rounded-full h-3 ${active === i ? 'bg-gradient-to-r from-[#003d8f] to-[#0056d4] w-10' : 'bg-[#003d8f33] w-3 hover:bg-[#003d8f66]'}`}
-              />
-            ))}
           </div>
         </div>
       </div>
-
-      {/* Grilla de cards eliminada para evitar duplicidad */}
     </section>
   );
 }

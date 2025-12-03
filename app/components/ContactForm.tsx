@@ -1,122 +1,199 @@
-"use client"
+"use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare } from "lucide-react";
 
+type Status = "idle" | "sending" | "success" | "error";
 
-export default function ContactForm(){
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<{[k:string]:string}>({});
-  const [status, setStatus] = useState<"idle"|"sending"|"success"|"error">("idle");
-  // reduced motion preference removed (not used) to avoid unused variable warnings
+const fields = [
+  { name: "name", type: "text", placeholder: "Tu nombre completo", icon: User },
+  { name: "email", type: "email", placeholder: "tu@email.com", icon: Mail },
+] as const;
 
+export default function ContactForm() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<Status>("idle");
+  const [focused, setFocused] = useState<string | null>(null);
 
-  function validate(){
-    const e: {[k:string]:string} = {};
-    if(!name.trim()) e.name = "El nombre es requerido";
-    if(!email.trim()) e.email = "El email es requerido";
-    else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) e.email = "Email inválido";
-    if(!message.trim()) e.message = "El mensaje es requerido";
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = "El nombre es requerido";
+    if (!form.email.trim()) e.email = "El email es requerido";
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) e.email = "Email inválido";
+    if (!form.message.trim()) e.message = "El mensaje es requerido";
     setErrors(e);
     return Object.keys(e).length === 0;
-  }
+  };
 
-  async function handleSubmit(e: React.FormEvent){
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!validate()) return;
+    if (!validate()) return;
+    
     setStatus("sending");
-    try{
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api/contact` : "http://localhost:5000/api/contact";
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message })
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiUrl}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
-      if(res.ok){
-        setStatus('success');
-        setName(''); setEmail(''); setMessage('');
+      
+      if (res.ok) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
         setErrors({});
       } else {
-        setStatus('error');
+        setStatus("error");
       }
-    }catch(err){
-      setStatus('error');
-      console.error(err);
+    } catch {
+      setStatus("error");
     }
-  }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: "" });
+    if (status !== "idle") setStatus("idle");
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full px-4 sm:px-6 md:px-0" aria-live="polite">
-      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
-        <div className="flex flex-col">
-          <label htmlFor="cf-name" className="sr-only">Nombre</label>
-          <input
-            id="cf-name"
-            name="name"
-            value={name}
-            onChange={e=>setName(e.target.value)}
-            placeholder="Nombre"
-            className={`w-full rounded-[0.9rem] border border-[rgba(10,25,51,0.08)] bg-white shadow-[0_6px_18px_-10px_rgba(9,25,51,0.08)] text-[#0A1933] text-[clamp(0.9rem,1.2vw,1.05rem)] outline-none transition-all duration-200 px-[clamp(0.9rem,1.5vw,1.2rem)] py-[clamp(0.75rem,1.2vw,1rem)] focus:shadow-[0_12px_30px_-12px_rgba(0,87,217,0.18)] focus:border-[rgba(0,87,217,0.35)] focus:-translate-y-0.5 ${errors.name ? 'border-[#e11d48]' : ''}`}
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? 'err-name' : undefined}
-          />
-          {errors.name && <p id="err-name" className="mt-2 text-[#e11d48] text-sm">{errors.name}</p>}
-        </div>
-
-        <div className="flex flex-col">
-          <label htmlFor="cf-email" className="sr-only">Email</label>
-          <input
-            id="cf-email"
-            name="email"
-            type="email"
-            value={email}
-            onChange={e=>setEmail(e.target.value)}
-            placeholder="Email"
-            className={`w-full rounded-[0.9rem] border border-[rgba(10,25,51,0.08)] bg-white shadow-[0_6px_18px_-10px_rgba(9,25,51,0.08)] text-[#0A1933] text-[clamp(0.9rem,1.2vw,1.05rem)] outline-none transition-all duration-200 px-[clamp(0.9rem,1.5vw,1.2rem)] py-[clamp(0.75rem,1.2vw,1rem)] focus:shadow-[0_12px_30px_-12px_rgba(0,87,217,0.18)] focus:border-[rgba(0,87,217,0.35)] focus:-translate-y-0.5 ${errors.email ? 'border-[#e11d48]' : ''}`}
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? 'err-email' : undefined}
-          />
-          {errors.email && <p id="err-email" className="mt-2 text-[#e11d48] text-sm">{errors.email}</p>}
-        </div>
-
-        <div className="flex flex-col md:col-span-2">
-          <label htmlFor="cf-message" className="sr-only">Mensaje</label>
-          <textarea
-            id="cf-message"
-            name="message"
-            rows={5}
-            value={message}
-            onChange={e=>setMessage(e.target.value)}
-            placeholder="Mensaje"
-            className={`w-full min-h-[120px] sm:min-h-[140px] rounded-[0.9rem] border border-[rgba(10,25,51,0.08)] bg-white shadow-[0_6px_18px_-10px_rgba(9,25,51,0.08)] text-[#0A1933] text-[clamp(0.9rem,1.2vw,1.05rem)] outline-none transition-all duration-200 px-[clamp(0.9rem,1.5vw,1.2rem)] py-[clamp(0.75rem,1.2vw,1rem)] focus:shadow-[0_12px_30px_-12px_rgba(0,87,217,0.18)] focus:border-[rgba(0,87,217,0.35)] focus:-translate-y-0.5 resize-vertical ${errors.message ? 'border-[#e11d48]' : ''}`}
-            aria-invalid={!!errors.message}
-            aria-describedby={errors.message ? 'err-message' : undefined}
-          />
-          {errors.message && <p id="err-message" className="mt-2 text-[#e11d48] text-sm">{errors.message}</p>}
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 md:col-span-2">
-          <button
-            type="submit"
-            className="bg-gradient-to-br from-[#0057D9] to-[#004AB7] text-white px-[clamp(1.2rem,2vw,1.6rem)] py-[clamp(0.75rem,1.2vw,0.95rem)] rounded-[1.25rem] font-extrabold tracking-wide shadow-[0_18px_36px_-12px_rgba(0,87,217,0.35)] transition-all duration-200 w-full sm:w-auto text-[clamp(0.9rem,1.2vw,1.05rem)] hover:translate-y-[-4px] hover:shadow-[0_28px_56px_-18px_rgba(0,87,217,0.35)] disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none"
-            disabled={status==='sending'}
-            aria-busy={status==='sending'}
-          >
-            {status === 'sending' ? 'Enviando...' : 'Enviar'}
-          </button>
-
-          <div aria-live="polite" className="flex items-center gap-2 text-[#0A1933] text-[0.95rem]">
-            {status === 'success' && (
-              <div className="text-[#059669] font-semibold flex items-center">
-                <svg className="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                <span>¡Mensaje enviado! Te contactaremos pronto.</span>
-              </div>
-            )}
-
-            {status === 'error' && <span className="text-[#e11d48] font-semibold">{'Ocurrió un error. Intenta de nuevo más tarde.'}</span>}
+    <form onSubmit={handleSubmit} aria-live="polite" className="space-y-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        {fields.map((field) => (
+          <div key={field.name} className="relative">
+            <div className={`relative rounded-xl transition-all duration-200 ${
+              focused === field.name ? "ring-2 ring-blue-500/20" : ""
+            }`}>
+              <field.icon className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${
+                focused === field.name ? "text-blue-600" : "text-slate-400"
+              }`} />
+              <input
+                name={field.name}
+                type={field.type}
+                value={form[field.name as keyof typeof form]}
+                onChange={handleChange}
+                onFocus={() => setFocused(field.name)}
+                onBlur={() => setFocused(null)}
+                placeholder={field.placeholder}
+                className={`w-full pl-12 pr-4 py-4 rounded-xl border bg-slate-50 text-slate-900 placeholder-slate-400 outline-none transition-all
+                  ${errors[field.name] 
+                    ? "border-red-400 bg-red-50/50" 
+                    : focused === field.name 
+                      ? "border-blue-500 bg-white" 
+                      : "border-slate-200 hover:border-slate-300"
+                  }`}
+                aria-invalid={!!errors[field.name]}
+              />
+            </div>
+            <AnimatePresence>
+              {errors[field.name] && (
+                <motion.p
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="mt-2 text-sm text-red-500 flex items-center gap-1"
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  {errors[field.name]}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
+        ))}
+
+        <div className="sm:col-span-2 relative">
+          <div className={`relative rounded-xl transition-all duration-200 ${
+            focused === "message" ? "ring-2 ring-blue-500/20" : ""
+          }`}>
+            <MessageSquare className={`absolute left-4 top-4 w-5 h-5 transition-colors ${
+              focused === "message" ? "text-blue-600" : "text-slate-400"
+            }`} />
+            <textarea
+              name="message"
+              rows={5}
+              value={form.message}
+              onChange={handleChange}
+              onFocus={() => setFocused("message")}
+              onBlur={() => setFocused(null)}
+              placeholder="¿En qué podemos ayudarte?"
+              className={`w-full pl-12 pr-4 py-4 rounded-xl border bg-slate-50 text-slate-900 placeholder-slate-400 outline-none transition-all resize-y min-h-[140px]
+                ${errors.message 
+                  ? "border-red-400 bg-red-50/50" 
+                  : focused === "message" 
+                    ? "border-blue-500 bg-white" 
+                    : "border-slate-200 hover:border-slate-300"
+                }`}
+              aria-invalid={!!errors.message}
+            />
+          </div>
+          <AnimatePresence>
+            {errors.message && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="mt-2 text-sm text-red-500 flex items-center gap-1"
+              >
+                <AlertCircle className="w-4 h-4" />
+                {errors.message}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
+      </div>
+
+      {/* Submit and Status */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+        <motion.button
+          type="submit"
+          disabled={status === "sending"}
+          whileHover={{ scale: status === "sending" ? 1 : 1.02 }}
+          whileTap={{ scale: status === "sending" ? 1 : 0.98 }}
+          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
+        >
+          <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <span className="relative flex items-center gap-2">
+            {status === "sending" ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Enviando...
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                Enviar mensaje
+              </>
+            )}
+          </span>
+        </motion.button>
+
+        <AnimatePresence mode="wait">
+          {status === "success" && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 font-medium rounded-xl"
+            >
+              <CheckCircle className="w-5 h-5" />
+              ¡Mensaje enviado! Te contactaremos pronto.
+            </motion.div>
+          )}
+
+          {status === "error" && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-500 font-medium rounded-xl"
+            >
+              <AlertCircle className="w-5 h-5" />
+              Ocurrió un error. Intenta de nuevo.
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </form>
   );

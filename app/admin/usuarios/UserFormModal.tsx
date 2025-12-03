@@ -129,7 +129,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
                 handleAddRole(e.target.value);
               }}
             >
-              <option value="" disabled><TranslateText text="Seleccionar rol" /></option>
+              <option value="" disabled><TranslateText text="Seleccionar rol" asOption={true} /></option>
               {availableRoles.filter(r => !roles.includes(r)).map(r => (
                 <option key={r} value={r}>{r}</option>
               ))}
@@ -154,7 +154,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
                 handleAddPerm(e.target.value);
               }}
             >
-              <option value="" disabled><TranslateText text="Seleccionar permiso" /></option>
+              <option value="" disabled><TranslateText text="Seleccionar permiso" asOption={true} /></option>
               {availablePermissions.filter(p => !permissions.includes(p)).map(p => (
                 <option key={p} value={p}>{p}</option>
               ))}

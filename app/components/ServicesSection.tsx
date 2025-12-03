@@ -1,117 +1,88 @@
 "use client";
 
-import AnimatedSection from "./AnimatedSection";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { services } from "./data/homeData";
+import { ArrowUpRight } from "lucide-react";
 
+function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+  return (
+    <motion.a
+      href={service.href}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      className="group relative flex flex-col rounded-3xl bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+    >
+      {/* Image Container */}
+      <div className="relative h-56 overflow-hidden">
+        <Image
+          src={service.image}
+          alt={service.title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          priority={index === 0}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent" />
+        
+        {/* Icon Badge */}
+        <div className="absolute top-4 left-4 w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
+          <Image src={service.icon} alt="" width={36} height={36} className="object-contain" />
+        </div>
+        
+        {/* Arrow */}
+        <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+          <ArrowUpRight className="w-5 h-5 text-white" />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 p-6 flex flex-col">
+        <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+          {service.title}
+        </h3>
+        <p className="text-slate-500 text-sm leading-relaxed flex-1">
+          {service.description}
+        </p>
+        <div className="mt-4 pt-4 border-t border-slate-100">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+            Conocer más
+            <ArrowUpRight className="w-4 h-4" />
+          </span>
+        </div>
+      </div>
+    </motion.a>
+  );
+}
 
 export default function ServicesSection() {
   return (
     <section id="servicios">
-      <AnimatedSection>
-        <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-5 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">Nuestros Servicios</h2>
-          <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-4" />
-          <p className="text-base sm:text-lg md:text-xl text-slate-600">
-            Soluciones integrales diseñadas para optimizar cada aspecto de tu organización
-          </p>
-        </div>
-      </AnimatedSection>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-center max-w-3xl mx-auto mb-16"
+      >
+        <span className="inline-block text-blue-600 bg-blue-50 font-semibold text-sm px-4 py-2 rounded-full mb-4">
+          Lo que hacemos
+        </span>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          Nuestros Servicios
+        </h2>
+        <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full mx-auto mb-6" />
+        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          Soluciones integrales diseñadas para optimizar cada aspecto de tu organización
+        </p>
+      </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12 justify-center items-stretch relative z-10">
-          {/* Card 1: Capital humano */}
-          <a href="/servicios/capital-humano" className="group flex-1 min-w-[280px] max-w-md rounded-2xl shadow-lg bg-white/90 border border-slate-200 overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl relative">
-            <div className="relative h-40 w-full overflow-hidden">
-              <Image 
-                src="/image/servicios/Capital_Humano_FInal.jpg" 
-                alt="Capital humano" 
-                fill
-                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                priority
-              />
-            </div>
-            <div className="flex gap-4 items-center p-6">
-              <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow-md">
-                <Image 
-                  src="/image/icon/Capital Humano_Icon_Color@2x.png" 
-                  alt="Capital humano icon" 
-                  width={64} 
-                  height={64}
-                  className="object-contain w-12 h-12"
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-blue-900 mb-1">Capital humano</h3>
-                <p className="text-sm text-slate-600 mb-2">Aumenta la eficiencia y resultados de tu negocio.</p>
-                <button className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs shadow hover:bg-blue-200 transition" onClick={e => e.stopPropagation()}>
-                  Conoce más
-                </button>
-              </div>
-            </div>
-          </a>
-          {/* Card 2: Servicios especializados */}
-          <a href="/servicios/desarrollo-organizacional" className="group flex-1 min-w-[280px] max-w-md rounded-2xl shadow-lg bg-white/90 border border-slate-200 overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl relative">
-            <div className="relative h-40 w-full overflow-hidden">
-              <Image 
-                src="/image/servicios/servicios-especializados.jpg" 
-                alt="Servicios especializados" 
-                fill
-                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                priority
-              />
-            </div>
-            <div className="flex gap-4 items-center p-6">
-              <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow-md">
-                <Image 
-                  src="/image/icon/ServiciosEspecializados_Icon_Color@2x.png" 
-                  alt="Servicios especializados icon" 
-                  width={64} 
-                  height={64}
-                  className="object-contain w-12 h-12"
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-blue-900 mb-1">Servicios especializados</h3>
-                <p className="text-sm text-slate-600 mb-2">Aumenta la eficiencia y resultados de tu negocio.</p>
-                <button className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs shadow hover:bg-blue-200 transition" onClick={e => e.stopPropagation()}>
-                  Conoce más
-                </button>
-              </div>
-            </div>
-          </a>
-          {/* Card 3: Servicios de Impuestos (destacada) */}
-          <a href="/servicios/management-services" className="group flex-1 min-w-[280px] max-w-md rounded-2xl shadow-lg bg-white/90 border border-slate-200 overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl relative">
-            <div className="relative h-40 w-full overflow-hidden">
-              <Image 
-                src="/image/servicios/servicios-impuestos.jpg" 
-                alt="Servicios de Impuestos" 
-                fill
-                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                priority
-              />
-            </div>
-            <div className="flex gap-4 items-center p-6">
-              <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow-md">
-                <Image 
-                  src="/image/icon/ServiciosdeImpuestos_Icon_Color@2x.png" 
-                  alt="Servicios de Impuestos icon" 
-                  width={64} 
-                  height={64}
-                  className="object-contain w-12 h-12"
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-blue-900 mb-1">Servicios de Impuestos</h3>
-                <p className="text-sm text-slate-600 mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam</p>
-                <button className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs shadow hover:bg-blue-200 transition" onClick={e => e.stopPropagation()}>
-                  Conoce más
-                </button>
-              </div>
-            </div>
-          </a>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.map((service, i) => (
+          <ServiceCard key={service.id} service={service} index={i} />
+        ))}
       </div>
-      
     </section>
   );
 }

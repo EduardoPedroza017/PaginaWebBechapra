@@ -24,7 +24,8 @@ export default function AdminLogin() {
         if (data && !data.error) {
           // Sincroniza usuario OAuth en sessionStorage
           sessionStorage.setItem('admin', 'true');
-          sessionStorage.setItem('role', data.email || data.name || 'oauth');
+          // Usa el campo 'role' si existe, si no, fallback a 'admin'
+          sessionStorage.setItem('role', data.role || 'admin');
           sessionStorage.setItem('admin_token', 'true');
           sessionStorage.setItem('user_email', data.email || '');
           sessionStorage.setItem('user_name', data.name || '');
@@ -61,6 +62,8 @@ export default function AdminLogin() {
         sessionStorage.setItem('admin', String(data.admin));
         sessionStorage.setItem('role', data.role);
         sessionStorage.setItem('admin_token', 'true');
+        sessionStorage.setItem('user_email', data.email || usuario);
+        sessionStorage.setItem('user_name', data.name || '');
 
         setLogueado(true);
         setTimeout(() => router.push('/admin/dashboard'), 800);

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TranslateText } from "@/components/TranslateText";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, Shield, User, Globe, Monitor, Clock, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 
 type AuditLogEntry = {
   user_id?: string | Record<string, unknown>;
@@ -13,102 +13,266 @@ type AuditLogEntry = {
   reason?: string | Record<string, unknown>;
 };
 
-export default function AuditLog() {
+interface AuditLogProps {
+  theme?: 'light' | 'dark';
+}
+
+export default function AuditLog({ theme = 'light' }: AuditLogProps) {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
+  const pageSize = 10;
+
+  const fetchLogs = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const admin = sessionStorage.getItem("admin") === "true";
+      const role = sessionStorage.getItem("role") || "";
+      const res = await fetch('http://localhost:5000/admin/audit', {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin": String(admin),
+          "X-Role": role,
+        },
+      });
+      if (!res.ok) throw new Error("No autorizado");
+      const data = await res.json();
+      setLogs(data.logs || []);
+      setError("");
+    } catch {
+      setError("No autorizado o error de servidor");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    const admin = sessionStorage.getItem("admin") === "true";
-    const role = sessionStorage.getItem("role") || "";
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/audit`, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-Admin": String(admin),
-        "X-Role": role,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) throw new Error("No autorizado");
-        const data = await res.json();
-        setLogs(data.logs || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("No autorizado o error de servidor");
-        setLoading(false);
-      });
+    fetchLogs();
   }, []);
-
-  if (loading) return <div className="p-4"><TranslateText text="Cargando auditoría..." /></div>;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-
-  // Detectar modo oscuro
-  const isDark = typeof window !== 'undefined' ? document.documentElement.classList.contains('dark') : false;
 
   const formatCell = (value?: string | Record<string, unknown>) => {
     if (value === undefined || value === null) return "-";
     if (typeof value === "object") {
       try {
         return JSON.stringify(value);
-      } catch (err) {
-        return "{";
+      } catch {
+        return "-";
       }
     }
     return value;
   };
 
+  const totalPages = Math.ceil(logs.length / pageSize);
+  const paginatedLogs = logs.slice((page - 1) * pageSize, page * pageSize);
+  const successCount = logs.filter(l => l.success).length;
+  const failCount = logs.filter(l => !l.success).length;
+
+  if (loading) {
+    return (
+      <div className={`rounded-2xl border p-8 ${
+        theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-gray-50 border-gray-200'
+      }`}>
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-blue-600 mb-3"></div>
+            <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              <TranslateText text="Cargando auditoría..." />
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`rounded-2xl border p-6 ${
+        theme === 'dark' ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'
+      }`}>
+        <p className={`text-sm ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-8">
-      <h2 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-black'}`}><TranslateText text="Auditoría de inicios de sesión" /></h2>
-      <div className="overflow-x-auto">
-        <table className={`min-w-full text-sm border rounded-xl overflow-hidden ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
-          <thead>
-            <tr className={isDark ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-800'}>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="Usuario" /></th>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="Fecha/Hora" /></th>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="IP" /></th>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="User Agent" /></th>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="Éxito" /></th>
-              <th className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}><TranslateText text="Motivo" /></th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((log, i) => (
-              <tr
-                key={i}
-                className={
-                  log.success
-                    ? isDark
-                      ? 'bg-green-900/20 text-green-200'
-                      : 'bg-green-50 text-green-900'
-                    : isDark
-                      ? 'bg-red-900/20 text-red-200'
-                      : 'bg-red-50 text-red-900'
-                }
-              >
-                <td className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>{formatCell(log.user_id)}</td>
-                <td className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>{log.timestamp ? new Date(log.timestamp).toLocaleString() : "-"}</td>
-                <td className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>{formatCell(log.ip)}</td>
-                <td className={`px-3 py-2 border max-w-xs truncate ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>{formatCell(log.user_agent)}</td>
-                <td className={`px-3 py-2 border text-center ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                  {log.success ? (
-                    <span className="inline-flex items-center justify-center">
-                      <CheckCircle className="inline w-5 h-5 text-green-500" />
-                      <span className="sr-only"><TranslateText text="Exitoso" /></span>
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center justify-center">
-                      <XCircle className="inline w-5 h-5 text-red-500" />
-                      <span className="sr-only"><TranslateText text="Fallido" /></span>
-                    </span>
-                  )}
-                </td>
-                <td className={`px-3 py-2 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>{formatCell(log.reason)}</td>
+    <div className="space-y-4">
+      {/* Header with stats */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className={`p-2.5 rounded-xl ${theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'}`}>
+            <Shield className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+          </div>
+          <div>
+            <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <TranslateText text="Auditoría de Sesiones" />
+            </h3>
+            <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+              {logs.length} <TranslateText text="registros totales" />
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Quick stats */}
+          <div className="flex items-center gap-2">
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
+              theme === 'dark' ? 'bg-green-600/20 text-green-400' : 'bg-green-100 text-green-700'
+            }`}>
+              <CheckCircle className="w-3.5 h-3.5" />
+              {successCount}
+            </span>
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
+              theme === 'dark' ? 'bg-red-600/20 text-red-400' : 'bg-red-100 text-red-700'
+            }`}>
+              <XCircle className="w-3.5 h-3.5" />
+              {failCount}
+            </span>
+          </div>
+
+          <button
+            onClick={() => fetchLogs(true)}
+            disabled={refreshing}
+            className={`p-2 rounded-lg transition-all ${
+              refreshing ? 'opacity-50' : ''
+            } ${
+              theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''} ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+            }`} />
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className={`rounded-xl border overflow-hidden ${
+        theme === 'dark' ? 'bg-gray-800/30 border-gray-700' : 'bg-white border-gray-200'
+      }`}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className={theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}>
+                <th className={`px-4 py-3 text-left font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    <TranslateText text="Usuario" />
+                  </div>
+                </th>
+                <th className={`px-4 py-3 text-left font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <TranslateText text="Fecha" />
+                  </div>
+                </th>
+                <th className={`px-4 py-3 text-left font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    <TranslateText text="IP" />
+                  </div>
+                </th>
+                <th className={`px-4 py-3 text-left font-semibold hidden lg:table-cell ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="flex items-center gap-2">
+                    <Monitor className="w-4 h-4" />
+                    <TranslateText text="Dispositivo" />
+                  </div>
+                </th>
+                <th className={`px-4 py-3 text-center font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <TranslateText text="Estado" />
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-700' : 'divide-gray-100'}`}>
+              {paginatedLogs.map((log, i) => (
+                <tr
+                  key={i}
+                  className={`transition-colors ${
+                    theme === 'dark' ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'
+                  }`}
+                >
+                  <td className={`px-4 py-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <span className="font-medium">{formatCell(log.user_id)}</span>
+                  </td>
+                  <td className={`px-4 py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {log.timestamp ? new Date(log.timestamp).toLocaleString('es-ES', {
+                      day: '2-digit',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) : "-"}
+                  </td>
+                  <td className={`px-4 py-3`}>
+                    <span className={`px-2 py-1 rounded-md text-xs font-mono ${
+                      theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+                    }`}>
+                      {formatCell(log.ip)}
+                    </span>
+                  </td>
+                  <td className={`px-4 py-3 hidden lg:table-cell max-w-[200px] truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {formatCell(log.user_agent)}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {log.success ? (
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                        theme === 'dark' ? 'bg-green-600/20 text-green-400' : 'bg-green-100 text-green-700'
+                      }`}>
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        <TranslateText text="Éxito" />
+                      </span>
+                    ) : (
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                        theme === 'dark' ? 'bg-red-600/20 text-red-400' : 'bg-red-100 text-red-700'
+                      }`}>
+                        <XCircle className="w-3.5 h-3.5" />
+                        <TranslateText text="Fallido" />
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className={`px-4 py-3 border-t flex items-center justify-between ${
+            theme === 'dark' ? 'border-gray-700' : 'border-gray-100'
+          }`}>
+            <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              <TranslateText text="Página" /> {page} <TranslateText text="de" /> {totalPages}
+            </span>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                disabled={page === 1}
+                className={`p-2 rounded-lg transition-all disabled:opacity-40 ${
+                  theme === 'dark' 
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))} 
+                disabled={page === totalPages}
+                className={`p-2 rounded-lg transition-all disabled:opacity-40 ${
+                  theme === 'dark' 
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

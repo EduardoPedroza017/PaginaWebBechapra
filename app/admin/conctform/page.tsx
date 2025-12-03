@@ -1,10 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import ContactFilter from "./ContactFilter";
 import ContactChart from "./ContactChart";
+import { ContactTable } from "./ContactTable";
+import { ContactStats } from "./ContactStats";
 import { TranslateText } from "@/components/TranslateText";
+import { MessageSquareText, RefreshCw } from "lucide-react";
 
 interface ContactMessage {
   name: string;
@@ -17,77 +21,135 @@ export default function AdminContactPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [filtered, setFiltered] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState<'light'|'dark'>('light');
+  const [refreshing, setRefreshing] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Sincronizar theme solo en cliente para evitar hydration mismatch
   useEffect(() => {
-    // Usar requestAnimationFrame para evitar warning de setState
-    requestAnimationFrame(() => setMounted(true));
+    setMounted(true);
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark' || savedTheme === 'light') {
-        requestAnimationFrame(() => setTheme(savedTheme));
+        setTheme(savedTheme);
       }
     }
   }, []);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/contact")
-      .then(res => res.json())
-      .then(data => {
-        setMessages(data);
-        setFiltered(data);
-      })
-      .finally(() => setLoading(false));
+  const fetchMessages = useCallback(async (showRefresh = false) => {
+    if (showRefresh) setRefreshing(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/contact");
+      const data = await res.json();
+      setMessages(data);
+      setFiltered(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
 
   function handleFilter(filtered: ContactMessage[]) {
     setFiltered(filtered);
   }
 
-  // Dummy handlers para Header
-  const handleLogout = () => {};
-  const handleToggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin");
+    sessionStorage.removeItem("role");
+    window.location.href = "/admin";
+  };
+
+  const handleToggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
+  };
 
   if (!mounted) return null;
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-blue-50 to-indigo-100'}`}>
+    <div className={`flex min-h-screen ${
+      theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+    }`}>
       <Sidebar selected="/admin/conctform" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header theme={theme} onLogout={handleLogout} onToggleTheme={handleToggleTheme} />
-        <main className="flex-1 p-8">
-          <h1 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}><TranslateText text="Registros de Contacto" /></h1>
-          <div className="mb-6">
-            <ContactFilter messages={messages} onFilter={handleFilter} theme={theme} />
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
+          {/* Header */}
+          <div className="mb-6 md:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-2xl ${
+                  theme === "dark" ? "bg-blue-600 shadow-lg shadow-blue-500/30" : "bg-blue-600 shadow-lg shadow-blue-500/20"
+                }`}>
+                  <MessageSquareText className="text-white" size={28} />
+                </div>
+                <div>
+                  <h1 className={`text-2xl md:text-3xl font-bold ${
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  }`}>
+                    <TranslateText text="Registros de Contacto" />
+                  </h1>
+                  <p className={`text-sm ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}>
+                    <TranslateText text="Mensajes recibidos del formulario" />
+                  </p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => fetchMessages(true)}
+                disabled={refreshing}
+                className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  theme === "dark"
+                    ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                    : "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+                }`}
+                title="Refrescar"
+              >
+                <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
           </div>
-          <ContactChart data={filtered} />
-          <div className={`overflow-x-auto mt-8 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-[#10192b]' : 'bg-white'}`}>
-            <table className="min-w-full">
-              <thead>
-                <tr className={theme === 'dark' ? 'bg-[#1e293b] text-blue-200' : 'bg-blue-100 text-black'}>
-                  <th className="px-4 py-2"><TranslateText text="Fecha" /></th>
-                  <th className="px-4 py-2"><TranslateText text="Nombre" /></th>
-                  <th className="px-4 py-2"><TranslateText text="Email" /></th>
-                  <th className="px-4 py-2"><TranslateText text="Mensaje" /></th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={4} className="text-center py-8 text-blue-400"><TranslateText text="Cargando..." /></td></tr>
-                ) : filtered.length === 0 ? (
-                  <tr><td colSpan={4} className="text-center py-8 text-blue-400"><TranslateText text="Sin registros" /></td></tr>
-                ) : filtered.map((msg, i) => (
-                  <tr key={i} className={theme === 'dark' ? 'border-b border-[#22304a] last:border-none hover:bg-blue-900/20' : 'border-b last:border-none hover:bg-blue-50/60'}>
-                    <td className={theme === 'dark' ? 'px-4 py-2 whitespace-nowrap text-blue-100' : 'px-4 py-2 whitespace-nowrap text-black'}>{new Date(msg.timestamp).toLocaleString()}</td>
-                    <td className={theme === 'dark' ? 'px-4 py-2 font-semibold text-white' : 'px-4 py-2 font-semibold text-black'}>{msg.name}</td>
-                    <td className={theme === 'dark' ? 'px-4 py-2 text-blue-200' : 'px-4 py-2 text-black'}>{msg.email}</td>
-                    <td className={theme === 'dark' ? 'px-4 py-2 max-w-xs break-words text-blue-100' : 'px-4 py-2 max-w-xs break-words text-black'}>{msg.message}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Stats */}
+          <div className="mb-6">
+            <ContactStats messages={messages} filtered={filtered} theme={theme} />
+          </div>
+
+          {/* Filtros y Gráfico */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <ContactFilter messages={messages} onFilter={handleFilter} theme={theme} />
+            <ContactChart data={filtered} theme={theme} />
+          </div>
+
+          {/* Tabla */}
+          <div className={`rounded-2xl border overflow-hidden ${
+            theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+          }`}>
+            <div className={`px-5 py-4 border-b ${
+              theme === 'dark' ? 'border-gray-800' : 'border-gray-100'
+            }`}>
+              <div className="flex items-center justify-between">
+                <h2 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  <TranslateText text="Mensajes" />
+                </h2>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  theme === 'dark' 
+                    ? 'bg-blue-600/20 text-blue-400' 
+                    : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {filtered.length} <TranslateText text="de" /> {messages.length}
+                </span>
+              </div>
+            </div>
+            <ContactTable messages={filtered} loading={loading} theme={theme} />
           </div>
         </main>
       </div>
