@@ -1,298 +1,279 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from 'react';
-import PressFilter from './PressFilter';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ExternalLink, Calendar } from 'lucide-react';
-import Footer from '@/components/Footer';
+import React, { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import Footer from "@/components/Footer";
+import {
+  PressHero,
+  PressCard,
+  PressFilter,
+  PressSkeleton,
+  EmptyState,
+} from "./components";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 interface PressItem {
-	id: string;
-	title: string;
-	date: string;
-	excerpt: string;
-	link?: string;
+  id: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  link?: string;
 }
 
 export default function PrensaPage() {
-	const [press, setPress] = useState<PressItem[]>([]);
-	const [filtered, setFiltered] = useState<PressItem[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [visibleCount, setVisibleCount] = useState(6);
+  const [press, setPress] = useState<PressItem[]>([]);
+  const [filtered, setFiltered] = useState<PressItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-	useEffect(() => {
-		fetch("http://localhost:5000/api/press")
-			.then(res => res.json())
-			.then((data: PressItem[]) => {
-				// Ordenar por fecha descendente
-				const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-				setPress(sorted);
-				setFiltered(sorted);
-			})
-			.finally(() => setLoading(false));
-	}, []);
+  useEffect(() => {
+    fetch("http://localhost:5000/api/press")
+      .then((res) => res.json())
+      .then((data: PressItem[]) => {
+        // Sort by date descending
+        const sorted = data.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setPress(sorted);
+        setFiltered(sorted);
+      })
+      .catch((err) => {
+        console.error("Error fetching press:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-	// Reset paginación al filtrar
-	const handleFilter = useCallback((filteredList: PressItem[]) => {
-		setFiltered(filteredList);
-		setVisibleCount(6);
-	}, []);
+  // Reset pagination on filter
+  const handleFilter = useCallback((filteredList: PressItem[]) => {
+    setFiltered(filteredList);
+    setVisibleCount(8);
+  }, []);
 
-	return (
-		<main>
-			{/* Hero Section */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 1.5rem 8rem',
-				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-				position: 'relative',
-				overflow: 'hidden'
-			}}>
-				{/* Decorative circles */}
-				<motion.div
-					animate={{scale: [1, 1.2, 1]}}
-					transition={{duration: 5, repeat: Infinity}}
-					style={{
-						position: 'absolute',
-						width: '500px',
-						height: '500px',
-						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						top: '-200px',
-						right: '-200px',
-						pointerEvents: 'none'
-					}}
-				/>
-				<motion.div
-					animate={{scale: [1, 1.1, 1]}}
-					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
-					style={{
-						position: 'absolute',
-						width: '400px',
-						height: '400px',
-						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						bottom: '-150px',
-						left: '-150px',
-						pointerEvents: 'none'
-					}}
-				/>
+  // Load more with animation
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    setTimeout(() => {
+      setVisibleCount((c) => c + 6);
+      setLoadingMore(false);
+    }, 300);
+  };
 
-				<div style={{
-					maxWidth: '1280px',
-					margin: '0 auto',
-					position: 'relative',
-					zIndex: 2
-				}}>
-					<motion.div
-						initial={{opacity: 0, y: 30}}
-						animate={{opacity: 1, y: 0}}
-						transition={{duration: 0.6}}
-					>
-						<h1 style={{
-							fontSize: 'clamp(2.5rem, 5vw, 3.8rem)',
-							fontWeight: 900,
-							color: 'white',
-							marginBottom: '1rem',
-							letterSpacing: '-0.02em',
-							lineHeight: 1.2
-						}}>
-							<span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Sala de</span> Prensa
-						</h1>
+  // Split items: first 2 featured, rest regular
+  const featuredItems = filtered.slice(0, 2);
+  const regularItems = filtered.slice(2, visibleCount);
+  const hasMore = filtered.length > visibleCount;
 
-						<p style={{
-							fontSize: '1.2rem',
-							color: 'rgba(255,255,255,0.9)',
-							lineHeight: 1.7,
-							marginBottom: '3rem',
-							maxWidth: '700px'
-						}}>
-							Mantente informado sobre nuestros comunicados oficiales, reconocimientos y apariciones en medios.
-						</p>
+  return (
+    <main className="bg-gray-50 min-h-screen">
+      {/* Hero Section */}
+      <PressHero />
 
-						<motion.div
-							whileHover={{scale: 1.05}}
-							whileTap={{scale: 0.95}}
-						>
-							<Link href="/#contacto" style={{
-								display: 'inline-flex',
-								alignItems: 'center',
-								gap: '0.5rem',
-								padding: '1rem 2rem',
-								background: 'white',
-								color: '#003d8f',
-								borderRadius: '12px',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								transition: 'all 0.3s ease',
-								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
-							}}>
-								Contacto de prensa →
-							</Link>
-						</motion.div>
-					</motion.div>
-				</div>
-			</section>
+      {/* Press Releases Section */}
+      <section id="comunicados" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+              Comunicados Oficiales
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+              Nuestros{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Comunicados
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Información oficial sobre nuestras actividades, logros y
+              novedades.
+            </p>
+          </motion.div>
 
-			{/* Comunicados de Prensa Section */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 0',
-				background: '#fff',
-			}}>
+          {/* Filter */}
+          <PressFilter
+            press={press}
+            onFilter={handleFilter}
+            totalCount={press.length}
+            filteredCount={filtered.length}
+          />
 
-				<motion.h2
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '2.5rem',
-						letterSpacing: '-0.02em',
-						textAlign: 'center'
-					}}
-				>
-					Comunicados de Prensa
-				</motion.h2>
+          {/* Content */}
+          {loading ? (
+            <PressSkeleton />
+          ) : filtered.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="space-y-8">
+              {/* Featured Press Items */}
+              {featuredItems.length > 0 && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {featuredItems.map((item, i) => (
+                    <PressCard
+                      key={item.id}
+                      item={item}
+                      index={i}
+                      isFeatured={true}
+                    />
+                  ))}
+                </div>
+              )}
 
-				{/* Filtro de búsqueda y año */}
-				<PressFilter press={press} onFilter={handleFilter} />
+              {/* Regular Press Items */}
+              {regularItems.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {regularItems.map((item, i) => (
+                    <PressCard
+                      key={item.id}
+                      item={item}
+                      index={i + 2}
+                      isFeatured={false}
+                    />
+                  ))}
+                </motion.div>
+              )}
 
-				<div style={{display: 'flex', justifyContent: 'center'}}>
-					<motion.div
-						initial={{opacity: 0, y: 40}}
-						whileInView={{opacity: 1, y: 0}}
-						viewport={{once: true}}
-						transition={{duration: 0.6}}
-						style={{
-							display: 'grid',
-							gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-							gap: '2.5rem',
-							marginBottom: '5rem',
-							maxWidth: '1100px',
-							width: '100%',
-						}}
-					>
-						{loading ? (
-							<div style={{gridColumn: '1/-1', textAlign: 'center', padding: '4rem 0', color: '#003d8f', fontSize: '1.3rem'}}>Cargando comunicados...</div>
-						) : filtered.length === 0 ? (
-							<div style={{gridColumn: '1/-1', textAlign: 'center', padding: '4rem 0', color: '#666', fontSize: '1.3rem'}}>No hay comunicados disponibles</div>
-						) : (
-							filtered.slice(0, visibleCount).map((item, i) => (
-								<Link
-									key={item.id}
-									href={`/prensa/${item.id}`}
-									style={{display: 'block', textDecoration: 'none'}}
-								>
-									<motion.article
-										initial={{opacity: 0, y: 30}}
-										whileInView={{opacity: 1, y: 0}}
-										viewport={{once: true}}
-										transition={{duration: 0.5, delay: i * 0.1}}
-										whileHover={{scale: 1.03, y: -8}}
-										style={{
-											padding: '2.5rem 2rem',
-											borderRadius: '16px',
-											background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-											border: '2px solid rgba(0,61,143,0.12)',
-											transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-											boxShadow: '0 12px 35px rgba(0,61,143,0.08)',
-											position: 'relative',
-											overflow: 'hidden',
-											cursor: 'pointer'
-										}}
-									>
-										{/* Borde superior decorativo */}
-										<motion.div
-											animate={{opacity: [0.6, 1, 0.6]}}
-											transition={{duration: 3, repeat: Infinity, delay: i * 0.3}}
-											style={{
-												position: 'absolute',
-												top: 0,
-												left: 0,
-												right: 0,
-												height: '4px',
-												background: `linear-gradient(90deg, #003d8f 0%, #004AB7 50%, #0056d4 100%)`
-											}}
-										/>
+              {/* Load More Button */}
+              {hasMore && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex justify-center pt-8"
+                >
+                  <motion.button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" />
+                        <span>Cargando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Ver más comunicados</span>
+                        <ChevronDown
+                          size={20}
+                          className="group-hover:translate-y-1 transition-transform duration-300"
+                        />
+                      </>
+                    )}
+                  </motion.button>
+                </motion.div>
+              )}
 
-										<div style={{
-											display: 'flex',
-											alignItems: 'center',
-											gap: '0.75rem',
-											marginBottom: '1.5rem',
-											color: '#003d8f'
-										}}>
-											<Calendar size={18} />
-											<span style={{fontSize: '0.9rem', fontWeight: 600}}>{new Date(item.date).toLocaleDateString('es-MX', {day: 'numeric', month: 'long', year: 'numeric'})}</span>
-										</div>
+              {/* Results Summary */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-gray-500 text-sm pt-4"
+              >
+                Mostrando {Math.min(visibleCount, filtered.length)} de{" "}
+                {filtered.length} comunicados
+              </motion.div>
+            </div>
+          )}
+        </div>
+      </section>
 
-										<h3 style={{
-											fontSize: '1.35rem',
-											fontWeight: 800,
-											color: '#003d8f',
-											marginBottom: '1rem',
-											lineHeight: 1.3
-										}}>
-											{item.title}
-										</h3>
+      {/* CTA Section */}
+      <section className="py-20 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-1/2 -left-1/4 w-full h-full bg-gradient-to-br from-white/5 to-transparent rounded-full"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-1/2 -right-1/4 w-full h-full bg-gradient-to-tl from-amber-400/10 to-transparent rounded-full"
+          />
+        </div>
 
-										<p style={{
-											fontSize: '0.95rem',
-											color: '#666',
-											lineHeight: 1.6,
-											marginBottom: '1.5rem'
-										}}>
-											{item.excerpt}
-										</p>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+              ¿Eres medio de{" "}
+              <span className="bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">
+                comunicación
+              </span>
+              ?
+            </h2>
+            <p className="text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Contáctanos para solicitar información, entrevistas o material de
+              prensa. Nuestro equipo de comunicación está disponible para
+              atenderte.
+            </p>
 
-										{item.link ? (
-											<span style={{display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#003d8f', fontWeight: 700, fontSize: '0.95rem', textDecoration: 'none', transition: 'all 0.3s ease'}}>
-												Leer más <ExternalLink size={16} />
-											</span>
-										) : null}
-									</motion.article>
-								</Link>
-							))
-						)}
-					</motion.div>
-				</div>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <motion.a
+                href="/#contacto"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+              >
+                Contacto de Prensa
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </motion.a>
+              <motion.a
+                href="mailto:prensa@bechapra.com"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                prensa@bechapra.com
+              </motion.a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
-				{/* Botón cargar más */}
-				{filtered.length > visibleCount && (
-					<div style={{textAlign: 'center', marginTop: '-2rem'}}>
-						<button
-							onClick={() => setVisibleCount(c => c + 3)}
-							style={{
-								display: 'inline-block',
-								padding: '1rem 2.5rem',
-								background: '#003d8f',
-								color: 'white',
-								borderRadius: '12px',
-								fontWeight: 800,
-								fontSize: '1.1rem',
-								border: 'none',
-								boxShadow: '0 8px 24px rgba(0,61,143,0.13)',
-								cursor: 'pointer',
-								transition: 'background 0.2s',
-								margin: '0 auto',
-								marginBottom: '2.5rem'
-							}}
-						>
-							Cargar más comunicados
-						</button>
-					</div>
-				)}
-			</section>
-
-			<Footer />
-		</main>
-	);
+      <Footer />
+    </main>
+  );
 }

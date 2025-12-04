@@ -10,7 +10,7 @@ export const serviceGroups: ServiceGroup[] = [
     {
         name: 'Capital Humano',
         slug: '/servicios/capital-humano',
-        icon: "/imagen/icon/Capital Humano_Icon_Color@2x.png",
+        icon: "/image/icon/Capital Humano_Icon_Color@2x.png",
         description: "Gestionamos talento, nómina y soluciones humanas que permiten a tu empresa crecer.",
         subServices: [
             { name: 'Servicios especializados', slug: '/servicios/servicios-especializados' },
@@ -21,7 +21,7 @@ export const serviceGroups: ServiceGroup[] = [
     {
         name: 'Desarrollo Organizacional',
         slug: '/servicios/desarrollo-organizacional',
-        icon: "/imagen/icon/Iconos_Redes/Chat_NegativoStroke@2x.png",
+        icon: "/image/icon/Iconos_Redes/Chat_NegativoStroke@2x.png",
         description: "Mejoramos procesos, cultura y capacidades para que la organización sea más ágil y productiva.",
         subServices: [
             { name: 'Capacitación Empresarial', slug: '/servicios/capacitacion-empresarial' },
@@ -32,7 +32,7 @@ export const serviceGroups: ServiceGroup[] = [
     {
         name: 'Management Services',
         slug: '/servicios/management-services',
-        icon: "/imagen/icon/Servicios Administrativos_Icon_Color@2x.png",
+        icon: "/image/icon/Servicios Administrativos_Icon_Color@2x.png",
         description: "Servicios contables, legales y administrativos bajo un solo proveedor confiable.",
         subServices: [
             { name: 'Servicios Contables', slug: '/servicios/servicios-contables' },

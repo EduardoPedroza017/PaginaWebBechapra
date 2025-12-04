@@ -1,484 +1,412 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { Newspaper, TrendingUp, Calendar, Clock } from 'lucide-react';
-import Footer from '@/components/Footer';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Newspaper, TrendingUp, Calendar, Clock, ArrowRight, Search } from "lucide-react";
+import Footer from "@/components/Footer";
 
 interface NewsItem {
-	title: string;
-	subtitle: string;
-	description: string;
-	date: string;
-	image_url?: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  date: string;
+  image_url?: string;
 }
 
 export default function NoticiasPage() {
-	const [news, setNews] = useState<NewsItem[]>([]);
-	const [loading, setLoading] = useState(true);
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		fetch("http://localhost:5000/api/news")
-			.then(res => res.json())
-			.then(data => {
-				// Ordenar por fecha más reciente primero
-				const sorted = data.sort((a: NewsItem, b: NewsItem) => 
-					new Date(b.date).getTime() - new Date(a.date).getTime()
-				);
-				setNews(sorted);
-			})
-			.finally(() => setLoading(false));
-	}, []);
-	return (
-		<main style={{background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)'}}>
-			{/* Hero Section */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 1.5rem 8rem',
-				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-				position: 'relative',
-				overflow: 'hidden'
-			}}>
-				{/* Decorative circles */}
-				<motion.div
-					animate={{scale: [1, 1.2, 1]}}
-					transition={{duration: 5, repeat: Infinity}}
-					style={{
-						position: 'absolute',
-						width: '500px',
-						height: '500px',
-						background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						top: '-200px',
-						right: '-200px',
-						pointerEvents: 'none'
-					}}
-				/>
-				<motion.div
-					animate={{scale: [1, 1.1, 1]}}
-					transition={{duration: 6, repeat: Infinity, delay: 0.5}}
-					style={{
-						position: 'absolute',
-						width: '400px',
-						height: '400px',
-						background: 'radial-gradient(circle, rgba(0,172,183,0.1) 0%, transparent 70%)',
-						borderRadius: '50%',
-						bottom: '-150px',
-						left: '-150px',
-						pointerEvents: 'none'
-					}}
-				/>
+  useEffect(() => {
+    fetch("http://localhost:5000/api/news")
+      .then((res) => res.json())
+      .then((data) => {
+        const sorted = data.sort(
+          (a: NewsItem, b: NewsItem) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setNews(sorted);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-				<div style={{
-					maxWidth: '1280px',
-					margin: '0 auto',
-					position: 'relative',
-					zIndex: 2
-				}}>
-					<motion.div
-						initial={{opacity: 0, y: 30}}
-						animate={{opacity: 1, y: 0}}
-						transition={{duration: 0.6}}
-					>
-						<h1 style={{
-							fontSize: 'clamp(2.5rem, 5vw, 3.8rem)',
-							fontWeight: 900,
-							color: 'white',
-							marginBottom: '1rem',
-							letterSpacing: '-0.02em',
-							lineHeight: 1.2
-						}}>
-							<span style={{background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Noticias</span> y Actualidad
-						</h1>
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-700 to-blue-900 py-20 lg:py-28 px-6">
+        {/* Background decorations */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-3xl" />
+        </div>
 
-						<p style={{
-							fontSize: '1.2rem',
-							color: 'rgba(255,255,255,0.9)',
-							lineHeight: 1.7,
-							marginBottom: '3rem',
-							maxWidth: '700px'
-						}}>
-							Blog corporativo, eventos destacados y actualizaciones sobre cambios legislativos que impactan tus operaciones empresariales.
-						</p>
+        <div className="relative max-w-6xl mx-auto text-center z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-blue-100 text-sm font-semibold mb-6"
+            >
+              <Newspaper className="w-4 h-4" />
+              Blog & Actualidad
+            </motion.div>
 
-						<motion.div
-							whileHover={{scale: 1.05}}
-							whileTap={{scale: 0.95}}
-						>
-							<Link href="/#contacto" style={{
-								display: 'inline-flex',
-								alignItems: 'center',
-								gap: '0.5rem',
-								padding: '1rem 2rem',
-								background: 'white',
-								color: '#003d8f',
-								borderRadius: '12px',
-								fontWeight: 700,
-								fontSize: '1rem',
-								textDecoration: 'none',
-								transition: 'all 0.3s ease',
-								boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
-							}}>
-								Suscríbete →
-							</Link>
-						</motion.div>
-					</motion.div>
-				</div>
-			</section>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                Noticias
+              </span>{" "}
+              y Actualidad
+            </h1>
 
-			{/* Buscador y Noticias Más Recientes */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 0',
-				background: '#E0F0FF',
-			}}>
-				{/* Buscador */}
-				<div style={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					marginBottom: '4.5rem',
-				}}>
-					<div style={{display: 'flex', width: '100%', maxWidth: '600px'}}>
-						<input
-							type="text"
-							placeholder="Buscar noticias, temas o palabras clave..."
-							style={{
-								width: '100%',
-								maxWidth: '500px',
-								padding: '1rem 1.5rem',
-								borderRadius: '30px',
-								border: '1.5px solid #b3d0f7',
-								fontSize: '1.05rem',
-								outline: 'none',
-								boxShadow: '0 2px 12px rgba(0,61,143,0.04)',
-								marginRight: '0.5rem',
-								background: 'white',
-							}}
-							disabled
-						/>
-						<button style={{
-							padding: '1rem 2rem',
-							borderRadius: '30px',
-							background: 'linear-gradient(90deg, #003d8f 0%, #0056d4 100%)',
-							color: 'white',
-							fontWeight: 700,
-							fontSize: '1rem',
-							border: 'none',
-							cursor: 'not-allowed',
-							boxShadow: '0 2px 12px rgba(0,61,143,0.08)'
-						}}
-						disabled
-						>
-							Buscar
-						</button>
-					</div>
-					<span style={{color: '#888', fontSize: '0.98rem', marginTop: '0.7rem'}}>Buscador próximamente disponible</span>
-				</div>
-				<motion.h2
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '4rem',
-						letterSpacing: '-0.02em',
-						textAlign: 'center'
-					}}
-				>
-					Noticias Más Recientes
-				</motion.h2>
+            <p className="text-lg sm:text-xl text-blue-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Blog corporativo, eventos destacados y actualizaciones sobre
+              cambios legislativos que impactan tus operaciones empresariales.
+            </p>
 
-				<motion.div
-					initial={{opacity: 0, y: 40}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						display: 'grid',
-						gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-						gap: '2.8rem',
-						padding: '0 0.5rem',
-						maxWidth: '1200px',
-						width: '100%',
-						margin: '0 auto',
-					}}
-				>
-					{loading ? (
-						<div style={{textAlign: 'center', padding: '4rem', color: '#003d8f', fontSize: '1.2rem'}}>Cargando noticias...</div>
-					) : news.length === 0 ? (
-						<div style={{textAlign: 'center', padding: '4rem', color: '#666', fontSize: '1.2rem'}}>No hay noticias disponibles</div>
-					) : news.slice(0, 6).map((item, i) => (
-						<Link href={`/noticias/${encodeURIComponent(item.title)}`} key={i} style={{textDecoration: 'none', color: 'inherit'}}>
-						<motion.article
-							initial={{opacity: 0, y: 30}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.5, delay: i * 0.1}}
-							whileHover={{scale: 1.03, y: -8}}
-							style={{
-								borderRadius: '18px',
-								background: 'white',
-								border: i < 2 ? '2px solid #003d8f' : '2px solid rgba(0,61,143,0.10)',
-								transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-								boxShadow: '0 8px 32px rgba(0,61,143,0.10)',
-								position: 'relative',
-								overflow: 'hidden',
-								cursor: 'pointer',
-								minHeight: '420px',
-								display: 'flex',
-								flexDirection: 'column',
-								justifyContent: 'space-between',
-							}}
-						>
-							{i < 2 && (
-								<div style={{
-									position: 'absolute',
-									top: '1rem',
-									right: '1rem',
-									background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-									color: '#003d8f',
-									padding: '0.4rem 0.8rem',
-									borderRadius: '6px',
-									fontSize: '0.75rem',
-									fontWeight: 800,
-									zIndex: 3,
-									textTransform: 'uppercase',
-									letterSpacing: '0.5px'
-								}}>
-									Destacado
-								</div>
-							)}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Link
+                href="/#contacto"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+              >
+                Suscríbete al newsletter
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
 
-							{/* Imagen */}
-							<div style={{
-								width: '100%',
-								height: '220px',
-								background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-								position: 'relative',
-								overflow: 'hidden'
-							}}>
-								{item.image_url && (
-									<img 
-										src={`http://localhost:5000${item.image_url}`} 
-										alt={item.title}
-										style={{
-											width: '100%',
-											height: '100%',
-											objectFit: 'cover'
-										}}
-									/>
-								)}
-								<div style={{
-									position: 'absolute',
-									top: '1rem',
-									left: '1rem',
-									background: '#003d8f',
-									color: 'white',
-									padding: '0.5rem 1rem',
-									borderRadius: '8px',
-									fontSize: '0.85rem',
-									fontWeight: 700,
-									zIndex: 2
-								}}>
-									{item.subtitle || 'Noticia'}
-								</div>
-							</div>
+        {/* Wave decoration */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-auto"
+          >
+            <path
+              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+              fill="rgb(248 250 252)"
+            />
+          </svg>
+        </div>
+      </section>
 
-							<div style={{padding: '2rem'}}>
-								<div style={{
-									display: 'flex',
-									alignItems: 'center',
-									gap: '1rem',
-									marginBottom: '1rem',
-									fontSize: '0.85rem',
-									color: '#666'
-								}}>
-									<div style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
-										<Clock size={16} />
-										<span>{new Date(item.date).toLocaleDateString('es-MX', {day: 'numeric', month: 'long', year: 'numeric'})}</span>
-									</div>
-								</div>
+      {/* Search Section */}
+      <section className="py-12 bg-slate-50">
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="relative">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar noticias, temas o palabras clave..."
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  disabled
+                />
+              </div>
+              <button
+                className="px-6 py-4 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 opacity-50 cursor-not-allowed"
+                disabled
+              >
+                Buscar
+              </button>
+            </div>
+            <p className="text-center text-slate-400 text-sm mt-3">
+              Buscador próximamente disponible
+            </p>
+          </div>
+        </div>
+      </section>
 
-								<h3 style={{
-									fontSize: '1.35rem',
-									fontWeight: 800,
-									color: '#003d8f',
-									marginBottom: '1rem',
-									lineHeight: 1.3
-								}}>
-									{item.title}
-								</h3>
+      {/* News Grid Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-4">
+              Noticias{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Más Recientes
+              </span>
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Mantente informado con las últimas novedades del sector
+            </p>
+            <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full mx-auto mt-6" />
+          </motion.div>
 
-								<p style={{
-									fontSize: '0.95rem',
-									color: '#666',
-									lineHeight: 1.6,
-									marginBottom: '1.5rem'
-								}}>
-									{item.description.slice(0, 120)}...
-								</p>
+          {/* News Grid */}
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-slate-100 rounded-2xl h-[420px] animate-pulse"
+                />
+              ))}
+            </div>
+          ) : news.length === 0 ? (
+            <div className="text-center py-16">
+              <Newspaper className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-500 text-lg">
+                No hay noticias disponibles
+              </p>
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {news.slice(0, 6).map((item, i) => (
+                <NewsCard key={i} item={item} index={i} />
+              ))}
+            </motion.div>
+          )}
 
-								<Link 
-									href="#"
-									style={{
-										display: 'inline-flex',
-										alignItems: 'center',
-										gap: '0.5rem',
-										color: '#003d8f',
-										fontWeight: 700,
-										fontSize: '0.95rem',
-										textDecoration: 'none',
-										transition: 'all 0.3s ease'
-									}}
-								>
-									Leer artículo completo →
-								</Link>
-							</div>
-						</motion.article>
-						</Link>
-					))}
-				</motion.div>
-				{/* Paginación simple */}
-				<div style={{
-					display: 'flex',
-					justifyContent: 'center',
-					marginTop: '4.5rem',
-					marginBottom: '1.5rem',
-				}}>
-					<button style={{
-						padding: '1.1rem 2.8rem',
-						borderRadius: '30px',
-						background: 'linear-gradient(90deg, #003d8f 0%, #0056d4 100%)',
-						color: 'white',
-						fontWeight: 700,
-						fontSize: '1.08rem',
-						border: 'none',
-						cursor: 'pointer',
-						boxShadow: '0 2px 12px rgba(0,61,143,0.10)'
-					}}>
-						Ver más noticias
-					</button>
-				</div>
-			</section>
+          {/* Load More Button */}
+          {news.length > 6 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mt-16"
+            >
+              <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:-translate-y-1 transition-all">
+                Ver más noticias
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </motion.div>
+          )}
+        </div>
+      </section>
 
-			{/* Categorías Section */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '6rem 0',
-				background: '#E0F0FF',
-			}}>
-				<motion.h2
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-						fontWeight: 900,
-						color: '#003d8f',
-						marginBottom: '4rem',
-						letterSpacing: '-0.02em',
-						textAlign: 'center'
-					}}
-				>
-					Explora por categoría
-				</motion.h2>
+      {/* Categories Section */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
+              Explora por{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                Categoría
+              </span>
+            </h2>
+            <p className="text-lg text-slate-600">
+              Encuentra el contenido que más te interesa
+            </p>
+          </motion.div>
 
-				<motion.div
-					initial={{opacity: 0, y: 40}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						display: 'grid',
-						gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-						gap: '2rem',
-						maxWidth: '1000px',
-						width: '100%',
-						margin: '0 auto',
-					}}
-				>
-					{[
-						{icon: Newspaper, title: 'Blog Corporativo', count: '42 artículos', color: '#003d8f', description: 'Tendencias, insights y mejores prácticas'},
-						{icon: Calendar, title: 'Eventos', count: '18 eventos', color: '#7C3AED', description: 'Webinars, conferencias y capacitaciones'},
-						{icon: TrendingUp, title: 'Cambios Legislativos', count: '27 actualizaciones', color: '#D97706', description: 'Reformas fiscales, laborales y normativas'}
-					].map((item, i) => {
-						const Icon = item.icon;
-						return (
-							<motion.div
-								key={i}
-								initial={{opacity: 0, scale: 0.9}}
-								whileInView={{opacity: 1, scale: 1}}
-								viewport={{once: true}}
-								transition={{duration: 0.4, delay: i * 0.1}}
-								whileHover={{scale: 1.05, y: -8}}
-								style={{
-									padding: '2.5rem 2rem',
-									borderRadius: '16px',
-									background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)',
-									border: '2px solid rgba(0,61,143,0.12)',
-									transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-									boxShadow: '0 12px 35px rgba(0,61,143,0.08)',
-									cursor: 'pointer',
-									textAlign: 'center'
-								}}
-							>
-								<div style={{
-									width: '70px',
-									height: '70px',
-									background: 'white',
-									borderRadius: '16px',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									margin: '0 auto 1.5rem',
-									border: '1.5px solid rgba(0,61,143,0.15)',
-									color: item.color
-								}}>
-									<Icon size={36} />
-								</div>
+          {/* Categories Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {[
+              {
+                icon: Newspaper,
+                title: "Blog Corporativo",
+                count: "42 artículos",
+                color: "blue",
+                description: "Tendencias, insights y mejores prácticas",
+              },
+              {
+                icon: Calendar,
+                title: "Eventos",
+                count: "18 eventos",
+                color: "indigo",
+                description: "Webinars, conferencias y capacitaciones",
+              },
+              {
+                icon: TrendingUp,
+                title: "Cambios Legislativos",
+                count: "27 actualizaciones",
+                color: "amber",
+                description: "Reformas fiscales, laborales y normativas",
+              },
+            ].map((category, i) => (
+              <CategoryCard key={i} category={category} index={i} />
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
-								<h3 style={{
-									fontSize: '1.25rem',
-									fontWeight: 800,
-									color: '#003d8f',
-									marginBottom: '0.5rem'
-								}}>
-									{item.title}
-								</h3>
+      <Footer />
+    </main>
+  );
+}
 
-								<p style={{
-									fontSize: '0.85rem',
-									color: '#666',
-									marginBottom: '0.75rem',
-									lineHeight: 1.4
-								}}>
-									{item.description}
-								</p>
+// News Card Component
+function NewsCard({ item, index }: { item: NewsItem; index: number }) {
+  const isFeatured = index < 2;
 
-								<p style={{
-									fontSize: '0.95rem',
-									color: '#003d8f',
-									margin: 0,
-									fontWeight: 700
-								}}>
-									{item.count}
-								</p>
-							</motion.div>
-						);
-					})}
-				</motion.div>
-			</section>
+  return (
+    <Link href={`/noticias/${encodeURIComponent(item.title)}`}>
+      <motion.article
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+        whileHover={{ y: -8 }}
+        className={`group relative bg-white rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 h-full flex flex-col ${
+          isFeatured
+            ? "border-blue-600 shadow-xl shadow-blue-600/10"
+            : "border-slate-100 shadow-lg hover:border-blue-300 hover:shadow-xl"
+        }`}
+      >
+        {/* Featured Badge */}
+        {isFeatured && (
+          <div className="absolute top-4 right-4 z-10 bg-gradient-to-r from-amber-400 to-orange-400 text-slate-900 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide shadow-lg">
+            Destacado
+          </div>
+        )}
 
-			<Footer />
-		</main>
-	);
+        {/* Image */}
+        <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
+          {item.image_url ? (
+            <img
+              src={`http://localhost:5000${item.image_url}`}
+              alt={item.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Newspaper className="w-16 h-16 text-blue-200" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+          {/* Category Tag */}
+          <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">
+            {item.subtitle || "Noticia"}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 flex flex-col flex-1">
+          {/* Date */}
+          <div className="flex items-center gap-2 text-slate-500 text-sm mb-3">
+            <Clock className="w-4 h-4" />
+            <span>
+              {new Date(item.date).toLocaleDateString("es-MX", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3 className="text-lg font-bold text-slate-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
+            {item.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-sm text-slate-600 leading-relaxed flex-1 line-clamp-3">
+            {item.description}
+          </p>
+
+          {/* Read More */}
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <span className="inline-flex items-center gap-2 text-blue-600 font-bold text-sm group-hover:gap-3 transition-all">
+              Leer artículo completo
+              <ArrowRight className="w-4 h-4" />
+            </span>
+          </div>
+        </div>
+      </motion.article>
+    </Link>
+  );
+}
+
+// Category Card Component
+function CategoryCard({
+  category,
+  index,
+}: {
+  category: {
+    icon: React.ElementType;
+    title: string;
+    count: string;
+    color: string;
+    description: string;
+  };
+  index: number;
+}) {
+  const Icon = category.icon;
+
+  const colorStyles = {
+    blue: {
+      iconBg: "bg-blue-600",
+      text: "text-blue-600",
+      border: "hover:border-blue-300",
+      shadow: "hover:shadow-blue-200/50",
+    },
+    indigo: {
+      iconBg: "bg-indigo-600",
+      text: "text-indigo-600",
+      border: "hover:border-indigo-300",
+      shadow: "hover:shadow-indigo-200/50",
+    },
+    amber: {
+      iconBg: "bg-amber-500",
+      text: "text-amber-600",
+      border: "hover:border-amber-300",
+      shadow: "hover:shadow-amber-200/50",
+    },
+  };
+
+  const colors = colorStyles[category.color as keyof typeof colorStyles];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      whileHover={{ y: -6 }}
+      className={`group bg-white rounded-2xl p-8 cursor-pointer border-2 border-slate-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center ${colors.border} ${colors.shadow}`}
+    >
+      {/* Icon */}
+      <div
+        className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg`}
+      >
+        <Icon className="w-8 h-8 text-white" />
+      </div>
+
+      {/* Title */}
+      <h3 className="text-xl font-bold text-slate-900 mb-2">{category.title}</h3>
+
+      {/* Description */}
+      <p className="text-sm text-slate-600 mb-3">{category.description}</p>
+
+      {/* Count */}
+      <p className={`text-base font-bold ${colors.text}`}>{category.count}</p>
+    </motion.div>
+  );
 }
