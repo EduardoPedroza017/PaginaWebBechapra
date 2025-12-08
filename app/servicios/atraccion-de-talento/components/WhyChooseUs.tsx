@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Benefit {
   icon: LucideIcon;
@@ -17,10 +18,10 @@ interface WhyChooseUsProps {
 
 export default function WhyChooseUs({ title, benefits }: WhyChooseUsProps) {
   return (
-    <section className="py-24 px-6 bg-white relative overflow-hidden">
+    <section className="py-24 px-6 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-gradient-to-tl from-amber-100 to-orange-100 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}

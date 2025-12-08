@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Course {
   id: string;
@@ -20,7 +21,7 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <section className="py-24 px-6 bg-white">
+    <section className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -30,9 +31,9 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center mb-12 tracking-tight"
         >
-          <span className="text-gray-900">Explora </span>
-          <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-            Nuestros Cursos
+          <span className="text-gray-900 dark:text-white"><TranslateText text="Explora" /> </span>
+          <span className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <TranslateText text="Nuestros Cursos" />
           </span>
         </motion.h2>
 
@@ -45,14 +46,14 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="rounded-2xl border-2 border-blue-100 overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow"
+              className="rounded-2xl border-2 border-blue-100 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800 shadow-md hover:shadow-lg transition-shadow"
             >
               <button
                 onClick={() => setOpenId(openId === course.id ? null : course.id)}
                 className={`w-full px-6 py-5 flex justify-between items-center text-left transition-all duration-300 ${
                   openId === course.id
-                    ? "bg-gradient-to-r from-blue-50 to-cyan-50"
-                    : "bg-white hover:bg-blue-50/50"
+                    ? "bg-gradient-to-r from-blue-50 to-blue-50 dark:from-blue-950/50 dark:to-blue-900/50"
+                    : "bg-white dark:bg-slate-800 hover:bg-blue-50/50 dark:hover:bg-slate-700/50"
                 }`}
               >
                 {/* Left accent bar */}

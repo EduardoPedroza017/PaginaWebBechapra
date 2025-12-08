@@ -3,21 +3,22 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calculator, Sparkles, TrendingUp } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function AccountingHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-400/15 via-blue-500/10 to-transparent dark:from-blue-600/8 dark:via-blue-700/5 dark:to-transparent rounded-full blur-3xl"
         />
         
         {/* Grid Pattern */}

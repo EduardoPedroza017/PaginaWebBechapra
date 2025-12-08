@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Building2 } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface ConsultingCTAProps {
   title: string;
@@ -10,18 +11,18 @@ interface ConsultingCTAProps {
 
 export default function ConsultingCTA({ title, subtitle }: ConsultingCTAProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 to-transparent rounded-full"
+          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 dark:from-white/5 to-transparent rounded-full"
         />
         <motion.div
           animate={{ scale: [1.2, 1, 1.2] }}
           transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-purple-500/30 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-indigo-500/30 dark:from-indigo-600/15 to-transparent rounded-full"
         />
         {/* Floating Icons */}
         {[...Array(6)].map((_, i) => (
@@ -55,7 +56,7 @@ export default function ConsultingCTA({ title, subtitle }: ConsultingCTAProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h3>
 
         <motion.p
@@ -63,9 +64,9 @@ export default function ConsultingCTA({ title, subtitle }: ConsultingCTAProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed"
+          className="text-xl text-white/90 dark:text-white/80 max-w-2xl mx-auto leading-relaxed"
         >
-          {subtitle}
+          <TranslateText text={subtitle} />
         </motion.p>
       </div>
     </section>

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Service {
   icon: LucideIcon;
@@ -18,7 +19,7 @@ interface ServiceCardsProps {
 
 export default function ServiceCards({ title, services }: ServiceCardsProps) {
   return (
-    <section className="py-24 px-6 bg-white">
+    <section className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -26,9 +27,9 @@ export default function ServiceCards({ title, services }: ServiceCardsProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-black text-blue-900 text-center mb-16 tracking-tight"
+          className="text-4xl md:text-5xl font-black text-blue-900 dark:text-white text-center mb-16 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h2>
 
         {/* Cards Grid */}
@@ -43,29 +44,29 @@ export default function ServiceCards({ title, services }: ServiceCardsProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ scale: 1.03, y: -8 }}
-                className="group relative bg-white rounded-xl p-8 border border-gray-100 border-l-4 border-l-blue-600 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col min-h-[280px]"
+                className="group relative bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-100 dark:border-slate-700 border-l-4 border-l-blue-600 dark:border-l-blue-500 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col min-h-[280px]"
               >
                 {/* Icon */}
-                <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors duration-300">
-                  <Icon size={32} className="text-blue-900" />
+                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-100 dark:group-hover:bg-blue-900 transition-colors duration-300">
+                  <Icon size={32} className="text-blue-900 dark:text-blue-400" />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors">
-                    {service.title}
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+                    <TranslateText text={service.title} />
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-justify mb-6">
-                    {service.desc}
+                  <p className="text-gray-600 dark:text-slate-400 leading-relaxed text-justify mb-6">
+                    <TranslateText text={service.desc} />
                   </p>
                 </div>
 
                 {/* Link */}
                 <Link
                   href={service.href}
-                  className="inline-flex items-center gap-2 text-blue-600 font-bold hover:gap-3 transition-all duration-300 mt-auto"
+                  className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold hover:gap-3 transition-all duration-300 mt-auto"
                 >
-                  Ver mas
+                  <TranslateText text="Ver mas" />
                   <ArrowRight size={16} />
                 </Link>
               </motion.div>

@@ -51,7 +51,7 @@ const beneficios = [
 
 export default function DesarrolloOrganizacionalPage() {
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden bg-white dark:bg-slate-900">
       <ServiceHero
         title="Creando una cultura de exito empresarial"
         subtitle="Desarrollo Organizacional"

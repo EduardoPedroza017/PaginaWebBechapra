@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { TranslateText } from '@/components/TranslateText';
 
 interface DarkCTAProps {
   title: string;
@@ -26,7 +27,7 @@ export default function DarkCTA({
   secondaryLabel = "Ver servicios",
 }: DarkCTAProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_520px] gap-12 items-center">
           {/* Content */}
@@ -37,11 +38,11 @@ export default function DarkCTA({
             transition={{ duration: 0.7 }}
           >
             <h2 className="text-3xl md:text-4xl lg:text-[2.8rem] font-black text-white mb-5 leading-tight tracking-tight">
-              {title}
+              <TranslateText text={title} />
             </h2>
 
-            <p className="text-lg text-white/85 mb-10 leading-relaxed">
-              {subtitle}
+            <p className="text-lg text-white/85 dark:text-white/80 mb-10 leading-relaxed">
+              <TranslateText text={subtitle} />
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -51,9 +52,9 @@ export default function DarkCTA({
               >
                 <Link
                   href={primaryLink}
-                  className="inline-block px-10 py-4 bg-blue-600 text-white rounded-xl font-bold text-base shadow-xl shadow-blue-600/30 hover:bg-blue-500 transition-all duration-300 min-w-[220px] text-center"
+                  className="inline-block px-10 py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-xl font-bold text-base shadow-xl shadow-blue-600/30 dark:shadow-blue-700/20 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300 min-w-[220px] text-center"
                 >
-                  {primaryLabel}
+                  <TranslateText text={primaryLabel} />
                 </Link>
               </motion.div>
               <motion.div
@@ -62,9 +63,9 @@ export default function DarkCTA({
               >
                 <Link
                   href={secondaryLink}
-                  className="inline-block px-10 py-4 bg-transparent text-white rounded-xl font-bold text-base border-2 border-white/30 hover:bg-white/10 transition-all duration-300 min-w-[220px] text-center"
+                  className="inline-block px-10 py-4 bg-transparent text-white rounded-xl font-bold text-base border-2 border-white/30 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/5 transition-all duration-300 min-w-[220px] text-center"
                 >
-                  {secondaryLabel}
+                  <TranslateText text={secondaryLabel} />
                 </Link>
               </motion.div>
             </div>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Step {
   icon: LucideIcon;
@@ -17,7 +18,7 @@ interface ProcessStepsProps {
 
 export default function ProcessSteps({ title, steps, tip }: ProcessStepsProps) {
   return (
-    <section id="proceso" className="py-24 px-6 bg-white">
+    <section id="proceso" className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -25,15 +26,15 @@ export default function ProcessSteps({ title, steps, tip }: ProcessStepsProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-black text-center text-gray-900 mb-16 tracking-tight"
+          className="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-white mb-16 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h2>
 
         {/* Steps */}
         <div className="relative">
           {/* Connection Line */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 -translate-y-1/2 rounded-full" />
+          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 dark:from-blue-800 dark:via-blue-600 dark:to-blue-800 -translate-y-1/2 rounded-full" />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {steps.map((step, i) => {
@@ -47,15 +48,15 @@ export default function ProcessSteps({ title, steps, tip }: ProcessStepsProps) {
                   transition={{ duration: 0.6, delay: i * 0.2 }}
                   className="relative"
                 >
-                  <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-3xl p-8 pt-16 border-2 border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300">
+                  <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800 dark:to-blue-950/30 rounded-3xl p-8 pt-16 border-2 border-blue-100 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300">
                     {/* Step Number */}
-                    <div className="absolute -top-8 left-8 w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl shadow-blue-600/30 border-4 border-white">
+                    <div className="absolute -top-8 left-8 w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-xl shadow-blue-600/30 dark:shadow-blue-900/30 border-4 border-white dark:border-slate-900">
                       {i + 1}
                     </div>
 
                     {/* Icon */}
-                    <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-5 shadow-md border border-blue-100">
-                      <Icon size={28} className="text-blue-600" />
+                    <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-xl flex items-center justify-center mb-5 shadow-md border border-blue-100 dark:border-blue-800">
+                      <Icon size={28} className="text-blue-600 dark:text-blue-400" />
                     </div>
 
                     {/* Content */}

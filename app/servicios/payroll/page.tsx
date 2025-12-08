@@ -39,7 +39,7 @@ const scopeItems = [
 
 export default function PayrollPage() {
   return (
-    <main className="min-h-screen bg-white overflow-x-hidden">
+    <main className="min-h-screen bg-white dark:bg-slate-900 overflow-x-hidden">
       <PayrollHero title="Payroll & Nomina Empresarial" description="Gestiona tu nomina de forma profesional, segura y sin errores. Cumplimos con todas las obligaciones fiscales y laborales, para que tu te enfoques en hacer crecer tu empresa." imageSrc="/image/servicios/payroll.jpg" imageAlt="Payroll Bechapra" backLink="/servicios" backLabel="Volver" ctaLabel="Contactar a Bechapra" ctaLink="#contacto" />
       <WhatIsPayroll />
       <BenefitsGrid title="Beneficios de externalizar tu nomina" benefits={benefits} />

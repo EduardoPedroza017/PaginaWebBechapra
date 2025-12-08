@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Sparkles, Users } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface TalentHeroProps {
   title: string;
@@ -29,7 +30,7 @@ export default function TalentHero({
   ctaLink = "#contacto",
 }: TalentHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[620px] bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[620px] bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -113,11 +114,11 @@ export default function TalentHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-sm rounded-full border border-amber-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 dark:from-blue-400/20 dark:to-blue-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 dark:border-blue-500/30 mb-6"
             >
-              <Sparkles size={16} className="text-amber-400" />
-              <span className="text-amber-200 text-sm font-medium">
-                Reclutamiento Especializado
+              <Sparkles size={16} className="text-blue-400 dark:text-blue-300" />
+              <span className="text-blue-200 dark:text-blue-300 text-sm font-medium">
+                <TranslateText text="Reclutamiento Especializado" />
               </span>
             </motion.div>
 

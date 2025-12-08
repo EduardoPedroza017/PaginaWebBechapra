@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ShoppingCart, Briefcase, Store, TrendingUp } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface UseCase {
   title: string;
@@ -16,10 +17,10 @@ const icons = [ShoppingCart, Briefcase, Store, TrendingUp];
 
 export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-orange-50 via-amber-50/50 to-yellow-50/30 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-50/30 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
       {/* Decorative */}
-      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-yellow-200 to-orange-200 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-200 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/20 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-200 to-blue-200 dark:from-blue-900/25 dark:to-blue-800/15 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -33,14 +34,14 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold mb-4"
+            className="inline-block px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-4"
           >
-            Industrias
+            <TranslateText text="Industrias" />
           </motion.span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-            Casos de{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-              uso
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+            <TranslateText text="Casos de" />{" "}
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+              <TranslateText text="uso" />
             </span>
           </h2>
         </motion.div>
@@ -57,17 +58,17 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative bg-white rounded-2xl p-6 border border-orange-100 shadow-lg hover:shadow-xl hover:border-orange-300 transition-all duration-300 cursor-pointer"
+                className="group relative bg-white rounded-2xl p-6 border border-blue-100 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer"
               >
                 {/* Icon */}
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-12 h-12 mb-4 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20"
+                  className="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20"
                 >
                   <Icon className="w-6 h-6 text-white" />
                 </motion.div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                   {useCase.title}
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
@@ -75,7 +76,7 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                 </p>
 
                 {/* Bottom accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-400 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.div>
             );
           })}

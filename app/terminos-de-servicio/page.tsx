@@ -1,11 +1,39 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
+import { TranslateText } from '@/components/TranslateText';
+
+function getInitialTheme(): 'light' | 'dark' {
+	if (typeof window === 'undefined') return 'light';
+	const saved = localStorage.getItem('theme');
+	return (saved === 'dark' || saved === 'light') ? saved : 'light';
+}
 
 export default function TerminosServicio() {
+	const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+	const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+			handlerRef.current = (e: MediaQueryListEvent) => {
+				const newTheme = e.matches ? 'dark' : 'light';
+				setTheme(newTheme);
+				localStorage.setItem('theme', newTheme);
+			};
+			
+			mediaQuery.addEventListener('change', handlerRef.current);
+			
+			return () => {
+				if (handlerRef.current) {
+					mediaQuery.removeEventListener('change', handlerRef.current);
+				}
+			};
+		}
+	}, []);
 	const sections = [
 		{
 			title: "1. Aceptación de los Términos",
@@ -89,7 +117,9 @@ Fecha de última actualización: Noviembre 2025`
 	return (
 		<main style={{
 			minHeight: '100vh',
-			background: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
+			background: theme === 'dark' 
+				? 'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
+				: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
 			position: 'relative'
 		}}>
 			{/* Decorative background elements */}
@@ -130,35 +160,37 @@ Fecha de última actualización: Noviembre 2025`
 				margin: '0 auto',
 				padding: 'clamp(3rem, 5vw, 6rem) clamp(1.5rem, 3vw, 2rem)'
 			}}>
-				{/* Introduction */}
-				<motion.div
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						marginBottom: '4rem',
-						padding: '2.5rem',
-						background: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
-						borderRadius: '16px',
-						boxShadow: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
-						position: 'relative',
-						overflow: 'hidden'
-					}}
-				>
-					<p style={{
-						fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
-						lineHeight: 1.8,
-						color: 'white',
-						margin: 0,
-						position: 'relative',
-						zIndex: 1
-					}}>
-						Bienvenido a Bechapra. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos.
-					</p>
-				</motion.div>
-
-				{/* Sections */}
+			{/* Introduction */}
+			<motion.div
+				initial={{opacity: 0, y: 20}}
+				whileInView={{opacity: 1, y: 0}}
+				viewport={{once: true}}
+				transition={{duration: 0.6}}
+				style={{
+					marginBottom: '4rem',
+					padding: '2.5rem',
+					background: theme === 'dark'
+						? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
+						: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
+					borderRadius: '16px',
+					boxShadow: theme === 'dark'
+						? '0 10px 40px rgba(30,64,95,0.4), 0 0 0 1px rgba(30,64,95,0.2)'
+						: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
+					position: 'relative',
+					overflow: 'hidden'
+				}}
+			>
+				<p style={{
+					fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
+					lineHeight: 1.8,
+					color: 'white',
+					margin: 0,
+					position: 'relative',
+					zIndex: 1
+				}}>
+					<TranslateText text="Bienvenido a Bechapra. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos." />
+				</p>
+			</motion.div>				{/* Sections */}
 				{sections.map((section, index) => (
 					<motion.div
 						key={index}
@@ -169,25 +201,25 @@ Fecha de última actualización: Noviembre 2025`
 						style={{
 							marginBottom: '3rem',
 							paddingLeft: '1.5rem',
-							borderLeft: '3px solid #004AB7'
+							borderLeft: theme === 'dark' ? '3px solid #60a5fa' : '3px solid #004AB7'
 						}}
 					>
 						<h2 style={{
 							fontSize: 'clamp(1.5rem, 2vw, 1.875rem)',
 							fontWeight: 700,
-							color: '#004AB7',
+							color: theme === 'dark' ? '#60a5fa' : '#004AB7',
 							marginBottom: '1.25rem',
 							margin: 0
 						}}>
-							{section.title}
+							<TranslateText text={section.title} />
 						</h2>
 						<div style={{
 							fontSize: 'clamp(1rem, 1.5vw, 1.0625rem)',
 							lineHeight: 1.8,
-							color: '#475569',
+							color: theme === 'dark' ? '#cbd5e1' : '#475569',
 							whiteSpace: 'pre-line'
 						}}>
-							{section.content}
+							<TranslateText text={section.content} />
 						</div>
 					</motion.div>
 				))}
@@ -201,19 +233,25 @@ Fecha de última actualización: Noviembre 2025`
 					style={{
 						marginTop: '4rem',
 						padding: '2rem',
-						background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+						background: theme === 'dark'
+							? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
+							: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
 						borderRadius: '12px',
 						textAlign: 'center',
-						border: '1px solid rgba(0,74,183,0.1)',
-						boxShadow: '0 2px 12px rgba(0,74,183,0.08)'
+						border: theme === 'dark'
+							? '1px solid rgba(96,165,250,0.2)'
+							: '1px solid rgba(0,74,183,0.1)',
+						boxShadow: theme === 'dark'
+							? '0 2px 12px rgba(30,64,95,0.3)'
+							: '0 2px 12px rgba(0,74,183,0.08)'
 					}}
 				>
 					<p style={{
 						fontSize: '0.95rem',
-						color: '#64748b',
+						color: theme === 'dark' ? '#cbd5e1' : '#64748b',
 						margin: 0
 					}}>
-						El uso continuado de este sitio web constituye la aceptación de estos términos.
+						<TranslateText text="El uso continuado de este sitio web constituye la aceptación de estos términos." />
 					</p>
 				</motion.div>
 			</section>

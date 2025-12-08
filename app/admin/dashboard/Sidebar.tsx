@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   ChevronRight,
   UserCheck,
+  MapPin,
 } from "lucide-react";
 import { Palette } from "../../../src/theme/palettes";
 
@@ -37,6 +38,7 @@ export const sidebarItems: SidebarItem[] = [
   { label: "Gestión de Comunicados", path: "/admin/press", icon: <Megaphone size={20} /> },
   { label: "Gestión de Essence", path: "/admin/essence", icon: <Map size={20} /> },
   { label: "Gestión de Directivos", path: "/admin/organigrama", icon: <UserCheck size={20} /> },
+  { label: "Ubicación de la Empresa", path: "/admin/ubicacion", icon: <MapPin size={20} /> },
 ];
 
 interface SidebarProps {

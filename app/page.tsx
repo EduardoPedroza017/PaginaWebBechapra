@@ -14,7 +14,7 @@ import Footer from "../components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
+    <main className="min-h-screen overflow-x-hidden transition-colors duration-300 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <HeroSection />
 
       <Section>

@@ -3,10 +3,11 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Building2, ArrowRight, Sparkles } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 export default function AboutHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pt-24 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-slate-900 dark:via-slate-800 dark:to-blue-950 pt-24 pb-32 overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Gradient Orbs */}
@@ -62,24 +63,22 @@ export default function AboutHero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6"
           >
-            <Building2 size={16} className="text-amber-400" />
-            <span className="text-white/90 text-sm font-medium">Conócenos</span>
+            <Building2 size={16} className="text-blue-400" />
+            <span className="text-white/90 text-sm font-medium"><TranslateText text="Conócenos" /></span>
           </motion.div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-            Acerca de
+            <TranslateText text="Acerca de" />
             <br />
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 bg-clip-text text-transparent">
               Bechapra
             </span>
           </h1>
 
           {/* Description */}
           <p className="text-xl md:text-2xl text-blue-100/90 leading-relaxed mb-10 max-w-2xl">
-            Somos tu aliado estratégico en soluciones empresariales integrales.
-            Con más de 15 años de experiencia, hemos acompañado a cientos de
-            organizaciones en su transformación y crecimiento.
+            <TranslateText text="Somos tu aliado estratégico en soluciones empresariales integrales. Con más de 15 años de experiencia, hemos acompañado a cientos de organizaciones en su transformación y crecimiento." />
           </p>
 
           {/* CTA Buttons */}
@@ -87,9 +86,9 @@ export default function AboutHero() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300"
               >
-                Contáctanos
+                <TranslateText text="Contáctanos" />
                 <ArrowRight size={20} />
               </Link>
             </motion.div>
@@ -98,7 +97,7 @@ export default function AboutHero() {
                 href="#esencia"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
               >
-                Nuestra Esencia
+                <TranslateText text="Nuestra Esencia" />
               </a>
             </motion.div>
           </div>
@@ -127,8 +126,8 @@ export default function AboutHero() {
               <div className="text-3xl md:text-4xl font-black text-white mb-1">
                 {stat.value}
               </div>
-              <div className="text-blue-200/80 text-sm font-medium">
-                {stat.label}
+              <div className="text-blue-200/80 dark:text-blue-300/90 text-sm font-medium">
+                <TranslateText text={stat.label} />
               </div>
             </motion.div>
           ))}

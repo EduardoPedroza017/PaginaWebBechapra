@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, PieChart, ClipboardCheck, TrendingUp, Shield, Banknote } from "lucide-react";
+import Footer from "@/components/Footer";
 import {
   AccountingHero,
   ServicesGrid,

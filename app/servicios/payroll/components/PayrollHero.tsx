@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface PayrollHeroProps {
   title: string;
@@ -27,7 +28,7 @@ export default function PayrollHero({
   ctaLink = "#contacto",
 }: PayrollHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-950 via-blue-800 to-indigo-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-950 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -37,7 +38,7 @@ export default function PayrollHero({
             rotate: [0, 180, 360]
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-cyan-400/20 via-blue-500/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 via-blue-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{ 
@@ -45,7 +46,7 @@ export default function PayrollHero({
             opacity: [0.1, 0.2, 0.1]
           }}
           transition={{ duration: 15, repeat: Infinity, delay: 2 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-amber-400/15 via-orange-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/15 via-indigo-500/10 to-transparent dark:from-blue-600/8 dark:via-indigo-700/5 dark:to-transparent rounded-full blur-3xl"
         />
         {/* Grid Pattern */}
         <div 

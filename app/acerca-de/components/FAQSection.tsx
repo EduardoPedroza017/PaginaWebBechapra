@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { HelpCircle, ChevronDown, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { TranslateText } from "@/components/TranslateText";
 
 const faqs = [
   {
@@ -24,7 +25,7 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30">
+    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -34,14 +35,14 @@ export default function FAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 text-cyan-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400 rounded-full text-sm font-semibold mb-4">
             <HelpCircle size={16} />
             FAQ
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Preguntas{" "}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="Preguntas" />{" "}
             <span className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
-              Frecuentes
+              <TranslateText text="Frecuentes" />
             </span>
           </h2>
         </motion.div>
@@ -58,20 +59,20 @@ export default function FAQSection() {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 text-left group"
+                className="w-full bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-all duration-300 text-left group"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {faq.q}
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <TranslateText text={faq.q} />
                   </h3>
                   <motion.div
                     animate={{ rotate: openIndex === i ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors"
+                    className="w-10 h-10 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors"
                   >
                     <ChevronDown
                       size={20}
-                      className="text-gray-600 group-hover:text-blue-600"
+                      className="text-gray-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"
                     />
                   </motion.div>
                 </div>
@@ -85,8 +86,8 @@ export default function FAQSection() {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <p className="text-gray-600 mt-4 pt-4 border-t border-gray-100 leading-relaxed">
-                    {faq.a}
+                  <p className="text-gray-600 dark:text-slate-400 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 leading-relaxed">
+                    <TranslateText text={faq.a} />
                   </p>
                 </motion.div>
               </button>
@@ -102,13 +103,13 @@ export default function FAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <p className="text-gray-600 mb-4">¿Tienes otra pregunta?</p>
+          <p className="text-gray-600 dark:text-slate-400 mb-4"><TranslateText text="¿Tienes otra pregunta?" /></p>
           <Link
             href="/#contacto"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-600/25 transition-all duration-300"
           >
             <MessageCircle size={18} />
-            Contáctanos
+            <TranslateText text="Contáctanos" />
           </Link>
         </motion.div>
       </div>

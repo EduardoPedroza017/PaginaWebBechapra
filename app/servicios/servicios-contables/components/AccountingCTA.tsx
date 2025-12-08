@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Calculator, CheckCircle } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function AccountingCTA() {
   const ctaFeatures = [
@@ -12,18 +13,18 @@ export default function AccountingCTA() {
   ];
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 to-transparent rounded-full"
+          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 dark:from-white/5 to-transparent rounded-full"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [360, 180, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-indigo-400/20 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-indigo-400/20 dark:from-indigo-600/15 to-transparent rounded-full"
         />
         
         {/* Floating calculators */}
@@ -69,14 +70,14 @@ export default function AccountingCTA() {
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
-            ¿Listo para ordenar{" "}
-            <span className="bg-gradient-to-r from-amber-300 to-yellow-300 bg-clip-text text-transparent">
-              tus finanzas?
+            <TranslateText text="¿Listo para ordenar" />{" "}
+            <span className="bg-gradient-to-r from-blue-300 to-indigo-300 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              <TranslateText text="tus finanzas?" />
             </span>
           </h2>
 
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Agenda una reunión y recibe una propuesta de contabilidad personalizada para tu empresa.
+          <p className="text-xl text-blue-100 dark:text-blue-200/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <TranslateText text="Agenda una reunión y recibe una propuesta de contabilidad personalizada para tu empresa." />
           </p>
 
           {/* Features */}

@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar, Trophy } from "lucide-react";
+import { Calendar, Trophy } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface CTASectionProps {
   title: string;
@@ -27,7 +28,7 @@ export default function CTASection({
   secondaryLabel = "Ver casos de éxito",
 }: CTASectionProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+    <section className="py-24 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -52,10 +53,10 @@ export default function CTASection({
             transition={{ duration: 0.7 }}
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-              {title}
+              <TranslateText text={title} />
             </h2>
-            <p className="text-xl text-blue-100/90 mb-10 leading-relaxed">
-              {subtitle}
+            <p className="text-xl text-blue-100/90 dark:text-blue-200/80 mb-10 leading-relaxed">
+              <TranslateText text={subtitle} />
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -65,10 +66,10 @@ export default function CTASection({
               >
                 <Link
                   href={primaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
                   <Calendar size={20} />
-                  {primaryLabel}
+                  <TranslateText text={primaryLabel} />
                 </Link>
               </motion.div>
               <motion.div
@@ -77,10 +78,10 @@ export default function CTASection({
               >
                 <Link
                   href={secondaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300"
                 >
                   <Trophy size={20} />
-                  {secondaryLabel}
+                  <TranslateText text={secondaryLabel} />
                 </Link>
               </motion.div>
             </div>

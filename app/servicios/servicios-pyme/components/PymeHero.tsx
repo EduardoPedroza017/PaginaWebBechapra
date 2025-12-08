@@ -3,21 +3,22 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Rocket, Sparkles, TrendingUp, Building2 } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function PymeHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-orange-600 via-amber-500 to-yellow-500 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 dark:from-slate-950 dark:via-blue-950 dark:to-blue-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-white/20 via-yellow-300/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-white/20 via-blue-300/15 to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-orange-300/20 via-red-400/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-300/20 via-blue-400/10 to-transparent rounded-full blur-3xl"
         />
         
         {/* Grid Pattern */}
@@ -85,7 +86,7 @@ export default function PymeHero() {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
               Servicios{" "}
-              <span className="bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-lg">
+              <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-lg">
                 PYME
               </span>
             </h1>
@@ -97,7 +98,7 @@ export default function PymeHero() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-orange-600 rounded-2xl font-bold text-lg shadow-xl shadow-orange-900/20 hover:shadow-orange-900/30 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/20 hover:shadow-blue-900/30 transition-all duration-300"
               >
                 Quiero una propuesta
                 <ArrowRight className="w-5 h-5" />

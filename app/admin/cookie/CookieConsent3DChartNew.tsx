@@ -2,7 +2,8 @@
 
 import React, { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Html, RoundedBox, Text, Float, Environment } from "@react-three/drei";
+import { OrbitControls, Html, RoundedBox, Float, MeshTransmissionMaterial } from "@react-three/drei";
+import { BarChart3, CheckCircle, XCircle, Database, MousePointer } from "lucide-react";
 import * as THREE from "three";
 
 interface CookieConsent {
@@ -17,7 +18,7 @@ interface Props {
   theme?: 'light' | 'dark';
 }
 
-// Barra 3D animada
+// Barra 3D animada futurista
 function AnimatedBar({ 
   position, 
   height, 
@@ -58,126 +59,182 @@ function AnimatedBar({
 
   return (
     <group position={position}>
-      {/* Barra principal */}
+      {/* Barra principal con efecto glass */}
       <RoundedBox
         ref={meshRef}
         args={[1.2, currentHeight, 1.2]}
-        radius={0.08}
-        smoothness={4}
+        radius={0.1}
+        smoothness={6}
         castShadow
         receiveShadow
         onPointerOver={() => onHover(true)}
         onPointerOut={() => onHover(false)}
       >
+        <MeshTransmissionMaterial
+          color={color}
+          thickness={0.5}
+          roughness={0.1}
+          transmission={0.95}
+          ior={1.5}
+          chromaticAberration={0.06}
+          backside={true}
+          emissive={emissive}
+          emissiveIntensity={isHovered ? 0.8 : 0.4}
+        />
+      </RoundedBox>
+      
+      {/* Core interno brillante */}
+      <RoundedBox
+        args={[0.8, currentHeight * 0.98, 0.8]}
+        radius={0.08}
+        smoothness={4}
+      >
         <meshStandardMaterial 
           color={color} 
           emissive={emissive}
-          emissiveIntensity={isHovered ? 0.4 : 0.15}
-          metalness={0.3}
-          roughness={0.4}
+          emissiveIntensity={isHovered ? 1.2 : 0.6}
+          metalness={0.9}
+          roughness={0.1}
         />
       </RoundedBox>
 
-      {/* Etiqueta superior */}
+      {/* Etiqueta superior moderna */}
       <Float speed={2} rotationIntensity={0} floatIntensity={0.3}>
         <Html position={[0, currentHeight + 0.8, 0]} center distanceFactor={8}>
           <div style={{
-            background: color,
+            background: `linear-gradient(135deg, ${color}ee, ${emissive}dd)`,
             color: '#fff',
-            padding: '6px 14px',
-            borderRadius: '10px',
+            padding: '8px 16px',
+            borderRadius: '12px',
             fontWeight: 700,
-            fontSize: '14px',
-            boxShadow: `0 4px 20px ${color}60`,
+            fontSize: '15px',
+            boxShadow: `0 8px 32px ${color}80, inset 0 1px 0 rgba(255,255,255,0.3)`,
             whiteSpace: 'nowrap',
-            transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-            transition: 'transform 0.2s'
+            transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)'
           }}>
             {value} {label}
           </div>
         </Html>
       </Float>
 
-      {/* Reflejo en la base */}
-      <RoundedBox
-        position={[0, -0.02, 0]}
-        args={[1.2, currentHeight * 0.3, 1.2]}
-        radius={0.08}
-        rotation={[Math.PI, 0, 0]}
-      >
+      {/* Anillo de energía en la base */}
+      <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.7, 0.05, 16, 64]} />
         <meshStandardMaterial 
-          color={color} 
-          transparent 
-          opacity={0.1}
-        />
-      </RoundedBox>
-    </group>
-  );
-}
-
-// Plataforma base
-function Platform({ theme }: { theme: 'light' | 'dark' }) {
-  return (
-    <group>
-      {/* Base principal */}
-      <RoundedBox
-        position={[0, -0.15, 0]}
-        args={[6, 0.3, 4]}
-        radius={0.1}
-        receiveShadow
-      >
-        <meshStandardMaterial 
-          color={theme === 'dark' ? '#1e293b' : '#e2e8f0'} 
-          metalness={0.2}
-          roughness={0.8}
-        />
-      </RoundedBox>
-
-      {/* Borde brillante */}
-      <mesh position={[0, 0.01, 0]}>
-        <ringGeometry args={[2.8, 3, 64]} />
-        <meshStandardMaterial 
-          color={theme === 'dark' ? '#3b82f6' : '#60a5fa'}
-          emissive={theme === 'dark' ? '#3b82f6' : '#60a5fa'}
-          emissiveIntensity={0.3}
+          color={emissive} 
+          emissive={emissive}
+          emissiveIntensity={isHovered ? 2 : 1}
           transparent
-          opacity={0.3}
+          opacity={0.6}
         />
       </mesh>
 
-      {/* Grid decorativo */}
-      <gridHelper 
-        args={[5, 10, theme === 'dark' ? '#334155' : '#cbd5e1', theme === 'dark' ? '#1e293b' : '#e2e8f0']} 
-        position={[0, 0.02, 0]} 
-      />
+      {/* Reflejo holográfico en la base */}
+      <RoundedBox
+        position={[0, -0.02, 0]}
+        args={[1.3, currentHeight * 0.4, 1.3]}
+        radius={0.1}
+        rotation={[Math.PI, 0, 0]}
+      >
+        <meshStandardMaterial 
+          color={emissive} 
+          transparent 
+          opacity={0.15}
+          emissive={emissive}
+          emissiveIntensity={0.3}
+        />
+      </RoundedBox>
     </group>
   );
 }
 
-// Partículas flotantes
-function Particles({ count = 30, theme }: { count?: number; theme: 'light' | 'dark' }) {
+// Plataforma base futurista
+function Platform({ theme }: { theme: 'light' | 'dark' }) {
+  return (
+    <group>
+      {/* Base principal con efecto holográfico */}
+      <RoundedBox
+        position={[0, -0.15, 0]}
+        args={[7, 0.4, 5]}
+        radius={0.15}
+        receiveShadow
+      >
+        <meshStandardMaterial 
+          color={theme === 'dark' ? '#0f172a' : '#dbeafe'} 
+          metalness={0.8}
+          roughness={0.2}
+          emissive={theme === 'dark' ? '#1e3a8a' : '#3b82f6'}
+          emissiveIntensity={0.2}
+        />
+      </RoundedBox>
+
+      {/* Anillos de energía concéntricos */}
+      {[2.5, 3, 3.5].map((radius, i) => (
+        <mesh key={i} position={[0, 0.02, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[radius, 0.02, 16, 64]} />
+          <meshStandardMaterial 
+            color={theme === 'dark' ? '#3b82f6' : '#60a5fa'}
+            emissive={theme === 'dark' ? '#3b82f6' : '#60a5fa'}
+            emissiveIntensity={0.8 - i * 0.2}
+            transparent
+            opacity={0.4}
+          />
+        </mesh>
+      ))}
+
+      {/* Grid futurista */}
+      <gridHelper 
+        args={[6, 20, theme === 'dark' ? '#1e40af' : '#93c5fd', theme === 'dark' ? '#0f172a' : '#dbeafe']} 
+        position={[0, 0.03, 0]} 
+      />
+      
+      {/* Puntos de luz en esquinas */}
+      {[[-3, 0.3, -2], [3, 0.3, -2], [-3, 0.3, 2], [3, 0.3, 2]].map((pos, i) => (
+        <Float key={i} speed={3} rotationIntensity={0} floatIntensity={0.5}>
+          <mesh position={pos as [number, number, number]}>
+            <sphereGeometry args={[0.08, 16, 16]} />
+            <meshStandardMaterial 
+              color="#60a5fa"
+              emissive="#3b82f6"
+              emissiveIntensity={2}
+            />
+          </mesh>
+        </Float>
+      ))}
+    </group>
+  );
+}
+
+// Partículas flotantes futuristas
+function Particles({ count = 40, theme }: { count?: number; theme: 'light' | 'dark' }) {
   const particles = useMemo(() => {
     return Array.from({ length: count }, () => ({
       position: [
-        (Math.random() - 0.5) * 8,
-        Math.random() * 4 + 1,
-        (Math.random() - 0.5) * 6
+        (Math.random() - 0.5) * 10,
+        Math.random() * 5 + 1,
+        (Math.random() - 0.5) * 8
       ] as [number, number, number],
-      speed: Math.random() * 0.5 + 0.2,
-      size: Math.random() * 0.05 + 0.02
+      speed: Math.random() * 0.8 + 0.3,
+      size: Math.random() * 0.08 + 0.03,
+      color: Math.random() > 0.5 ? '#60a5fa' : '#a78bfa'
     }));
   }, [count]);
 
   return (
     <>
       {particles.map((particle, i) => (
-        <Float key={i} speed={particle.speed} rotationIntensity={0} floatIntensity={1}>
+        <Float key={i} speed={particle.speed} rotationIntensity={0.5} floatIntensity={1.5}>
           <mesh position={particle.position}>
-            <sphereGeometry args={[particle.size, 8, 8]} />
+            <octahedronGeometry args={[particle.size, 0]} />
             <meshStandardMaterial 
-              color={theme === 'dark' ? '#60a5fa' : '#3b82f6'}
-              emissive={theme === 'dark' ? '#60a5fa' : '#3b82f6'}
-              emissiveIntensity={0.5}
+              color={particle.color}
+              emissive={particle.color}
+              emissiveIntensity={1.5}
+              metalness={0.8}
+              roughness={0.2}
             />
           </mesh>
         </Float>
@@ -201,48 +258,76 @@ export default function CookieConsent3DChart({ data, theme = 'light' }: Props) {
   return (
     <div className={`w-full h-[500px] rounded-2xl overflow-hidden relative ${
       theme === 'dark' 
-        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
-        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
+        ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950' 
+        : 'bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-100'
     }`}>
-      {/* Info overlay */}
-      <div className={`absolute top-4 left-4 z-10 rounded-xl p-4 backdrop-blur-md ${
-        theme === 'dark' ? 'bg-gray-900/70 border border-gray-700' : 'bg-white/70 border border-gray-200'
+      {/* Info overlay moderna */}
+      <div className={`absolute top-4 left-4 z-10 rounded-2xl p-4 backdrop-blur-xl border ${
+        theme === 'dark' 
+          ? 'bg-slate-900/60 border-blue-500/30 shadow-lg shadow-blue-500/20' 
+          : 'bg-white/60 border-blue-200/50 shadow-lg shadow-blue-200/30'
       }`}>
-        <h4 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-          📊 Matriz de Datos
-        </h4>
+        <div className="flex items-center gap-2 mb-3">
+          <Database className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+          <h4 className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            Matriz de Datos
+          </h4>
+        </div>
         <div className={`font-mono text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-          <div>[Aceptados, Rechazados]</div>
-          <div className={`text-lg font-bold mt-1 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
+          <div className="mb-1">[Aceptados, Rechazados]</div>
+          <div className={`text-xl font-bold ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
             [{accepted}, {rejected}]
           </div>
         </div>
       </div>
 
-      {/* Controls hint */}
-      <div className={`absolute bottom-4 right-4 z-10 rounded-lg px-3 py-2 text-xs ${
-        theme === 'dark' ? 'bg-gray-900/70 text-gray-400' : 'bg-white/70 text-gray-500'
+      {/* Controls hint moderna */}
+      <div className={`absolute bottom-4 right-4 z-10 rounded-xl px-4 py-2 text-xs backdrop-blur-xl flex items-center gap-2 ${
+        theme === 'dark' 
+          ? 'bg-slate-900/60 text-gray-300 border border-gray-700/50' 
+          : 'bg-white/60 text-gray-600 border border-gray-200/50'
       }`}>
-        🖱️ Arrastra para rotar • Scroll para zoom
+        <MousePointer className="w-4 h-4" />
+        <span>Arrastra para rotar • Scroll para zoom</span>
       </div>
 
       <Canvas 
-        camera={{ position: [6, 5, 8], fov: 45 }} 
+        camera={{ position: [6, 5, 8], fov: 50 }} 
         shadows
-        gl={{ antialias: true }}
+        gl={{ 
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance"
+        }}
       >
-        <color attach="background" args={[theme === 'dark' ? '#0f172a' : '#f8fafc']} />
+        <color attach="background" args={[theme === 'dark' ? '#020617' : '#f0f9ff']} />
         
-        {/* Iluminación */}
-        <ambientLight intensity={0.4} />
+        {/* Iluminación cinematográfica */}
+        <ambientLight intensity={0.3} />
         <directionalLight 
-          position={[10, 15, 10]} 
-          intensity={1} 
+          position={[10, 20, 10]} 
+          intensity={1.5} 
           castShadow
-          shadow-mapSize={[2048, 2048]}
+          shadow-mapSize={[4096, 4096]}
+          shadow-camera-far={50}
+          shadow-camera-left={-10}
+          shadow-camera-right={10}
+          shadow-camera-top={10}
+          shadow-camera-bottom={-10}
         />
-        <pointLight position={[-5, 5, -5]} intensity={0.5} color="#60a5fa" />
-        <pointLight position={[5, 5, 5]} intensity={0.3} color="#a78bfa" />
+        <pointLight position={[-8, 8, -8]} intensity={1} color="#60a5fa" />
+        <pointLight position={[8, 6, 8]} intensity={0.8} color="#a78bfa" />
+        <spotLight
+          position={[0, 15, 0]}
+          angle={0.3}
+          penumbra={1}
+          intensity={1}
+          color="#3b82f6"
+          castShadow
+        />
+        
+        {/* Fog atmosférico */}
+        <fog attach="fog" args={[theme === 'dark' ? '#020617' : '#f0f9ff', 15, 30]} />
 
         {/* Plataforma */}
         <Platform theme={theme} />
@@ -274,37 +359,53 @@ export default function CookieConsent3DChart({ data, theme = 'light' }: Props) {
           isHovered={hoveredBar === 'rejected'}
         />
 
-        {/* Título 3D */}
-        <Html position={[0, 4.5, 0]} center>
-          <div className={`text-center px-6 py-3 rounded-xl backdrop-blur-md ${
-            theme === 'dark' ? 'bg-gray-900/80 border border-gray-700' : 'bg-white/80 border border-gray-200'
+        {/* Título 3D futurista */}
+        <Html position={[0, 5, 0]} center>
+          <div className={`text-center px-8 py-4 rounded-2xl backdrop-blur-xl border ${
+            theme === 'dark' 
+              ? 'bg-slate-900/70 border-blue-500/40 shadow-2xl shadow-blue-500/30' 
+              : 'bg-white/70 border-blue-300/50 shadow-2xl shadow-blue-300/30'
           }`}>
-            <div className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              🍪 Consentimientos de Cookies
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <BarChart3 className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+              <div className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                Consentimientos de Cookies
+              </div>
             </div>
-            <div className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-              Total: {total} registros
+            <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              Total: <span className="font-bold">{total}</span> registros
             </div>
           </div>
         </Html>
 
-        {/* Tooltip detallado */}
+        {/* Tooltip detallado moderno */}
         {hoveredBar && (
-          <Html position={[hoveredBar === 'accepted' ? -1.5 : 1.5, 4, 0]} center>
-            <div className={`p-4 rounded-xl backdrop-blur-md min-w-[200px] ${
-              theme === 'dark' ? 'bg-gray-900/90 border border-gray-600' : 'bg-white/90 border border-gray-200'
-            }`} style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
-              <div className={`font-bold mb-2 ${hoveredBar === 'accepted' ? 'text-green-500' : 'text-red-500'}`}>
-                {hoveredBar === 'accepted' ? '✅ Aceptados' : '❌ Rechazados'}
+          <Html position={[hoveredBar === 'accepted' ? -1.5 : 1.5, 4.2, 0]} center>
+            <div className={`p-5 rounded-2xl backdrop-blur-xl min-w-[240px] border ${
+              theme === 'dark' 
+                ? 'bg-slate-900/90 border-gray-700/50 shadow-2xl shadow-black/50' 
+                : 'bg-white/90 border-gray-200/50 shadow-2xl shadow-gray-300/50'
+            }`}>
+              <div className="flex items-center gap-2 mb-3">
+                {hoveredBar === 'accepted' ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <XCircle className="w-6 h-6 text-red-500" />
+                )}
+                <div className={`font-bold text-lg ${hoveredBar === 'accepted' ? 'text-green-500' : 'text-red-500'}`}>
+                  {hoveredBar === 'accepted' ? 'Aceptados' : 'Rechazados'}
+                </div>
               </div>
-              <div className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`text-3xl font-bold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                 {hoveredBar === 'accepted' ? accepted : rejected}
               </div>
-              <div className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                {((hoveredBar === 'accepted' ? accepted : rejected) / (total || 1) * 100).toFixed(1)}% del total
+              <div className={`flex items-center justify-between text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <span>Porcentaje:</span>
+                <span className="font-bold">{((hoveredBar === 'accepted' ? accepted : rejected) / (total || 1) * 100).toFixed(1)}%</span>
               </div>
-              <div className={`text-xs mt-2 font-mono ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                Altura: {(hoveredBar === 'accepted' ? acceptedHeight : rejectedHeight).toFixed(2)}
+              <div className={`flex items-center justify-between text-xs mt-2 font-mono ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                <span>Altura 3D:</span>
+                <span>{(hoveredBar === 'accepted' ? acceptedHeight : rejectedHeight).toFixed(2)}u</span>
               </div>
             </div>
           </Html>

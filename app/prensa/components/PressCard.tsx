@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Calendar, ArrowUpRight, FileText } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
   id: string;
@@ -16,9 +17,10 @@ interface PressCardProps {
   item: PressItem;
   index: number;
   isFeatured?: boolean;
+  theme: 'light' | 'dark';
 }
 
-export default function PressCard({ item, index, isFeatured = false }: PressCardProps) {
+export default function PressCard({ item, index, isFeatured = false, theme }: PressCardProps) {
   const formattedDate = new Date(item.date).toLocaleDateString('es-MX', {
     day: 'numeric',
     month: 'long',
@@ -57,7 +59,7 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
             {/* Featured Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/20 backdrop-blur-sm rounded-full border border-amber-400/30 mb-6">
               <FileText size={14} className="text-amber-400" />
-              <span className="text-amber-300 text-sm font-semibold">Destacado</span>
+              <span className="text-amber-300 text-sm font-semibold"><TranslateText text="Destacado" /></span>
             </div>
 
             {/* Date */}
@@ -78,7 +80,7 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
 
             {/* Read More */}
             <div className="flex items-center gap-2 text-amber-400 font-semibold group-hover:gap-3 transition-all duration-300">
-              <span>Leer comunicado completo</span>
+              <span><TranslateText text="Leer comunicado completo" /></span>
               <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
             </div>
           </div>
@@ -117,7 +119,7 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
 
         {/* Read More */}
         <div className="flex items-center gap-2 text-blue-600 font-semibold text-sm group-hover:gap-3 transition-all duration-300 mt-auto">
-          <span>Leer más</span>
+          <span><TranslateText text="Leer más" /></span>
           <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
         </div>
 

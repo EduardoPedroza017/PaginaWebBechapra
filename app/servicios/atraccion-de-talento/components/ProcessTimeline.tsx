@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Step {
   n: string;
@@ -17,7 +18,7 @@ interface ProcessTimelineProps {
 
 export default function ProcessTimeline({ title, steps }: ProcessTimelineProps) {
   return (
-    <section id="proceso" className="py-24 px-6 bg-white">
+    <section id="proceso" className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -25,9 +26,9 @@ export default function ProcessTimeline({ title, steps }: ProcessTimelineProps) 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-black text-center text-gray-900 mb-16 tracking-tight"
+          className="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-white mb-16 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h2>
 
         {/* Timeline */}

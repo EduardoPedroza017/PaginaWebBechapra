@@ -1,11 +1,40 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
+import { TranslateText } from '@/components/TranslateText';
+
+function getInitialTheme(): 'light' | 'dark' {
+	if (typeof window === 'undefined') return 'light';
+	const saved = localStorage.getItem('theme');
+	return (saved === 'dark' || saved === 'light') ? saved : 'light';
+}
 
 export default function PoliticaCookies() {
+	const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+	const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+			handlerRef.current = (e: MediaQueryListEvent) => {
+				const newTheme = e.matches ? 'dark' : 'light';
+				setTheme(newTheme);
+				localStorage.setItem('theme', newTheme);
+			};
+			
+			mediaQuery.addEventListener('change', handlerRef.current);
+			
+			return () => {
+				if (handlerRef.current) {
+					mediaQuery.removeEventListener('change', handlerRef.current);
+				}
+			};
+		}
+	}, []);
+
 	const cookieTypes = [
 		{
 			type: "Cookies Estrictamente Necesarias",
@@ -119,7 +148,9 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 	return (
 		<main style={{
 			minHeight: '100vh',
-			background: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
+			background: theme === 'dark' 
+				? 'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
+				: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
 			position: 'relative'
 		}}>
 			{/* Decorative background elements */}
@@ -169,9 +200,13 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 				style={{
 					marginBottom: '4rem',
 					padding: '2.5rem',
-					background: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
+					background: theme === 'dark'
+						? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
+						: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
 					borderRadius: '16px',
-					boxShadow: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
+					boxShadow: theme === 'dark'
+						? '0 10px 40px rgba(30,64,95,0.4), 0 0 0 1px rgba(30,64,95,0.2)'
+						: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
 					position: 'relative',
 					overflow: 'hidden'
 				}}
@@ -184,7 +219,7 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 					position: 'relative',
 					zIndex: 1
 				}}>
-					Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en nuestro sitio web, y cómo puede controlarlas. Al continuar navegando por nuestro sitio, usted acepta el uso de cookies de acuerdo con esta política.
+					<TranslateText text="Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en nuestro sitio web, y cómo puede controlarlas. Al continuar navegando por nuestro sitio, usted acepta el uso de cookies de acuerdo con esta política." />
 				</p>
 			</motion.div>				{/* Cookie Types */}
 				<motion.div
@@ -197,11 +232,11 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 					<h2 style={{
 						fontSize: 'clamp(1.75rem, 2.5vw, 2.25rem)',
 						fontWeight: 700,
-						color: '#004AB7',
+						color: theme === 'dark' ? '#60a5fa' : '#004AB7',
 						marginBottom: '2rem',
 						margin: 0
 					}}>
-						Tipos de Cookies que Utilizamos
+						<TranslateText text="Tipos de Cookies que Utilizamos" />
 					</h2>
 
 					<div style={{
@@ -217,10 +252,16 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 								transition={{duration: 0.6, delay: index * 0.1}}
 							style={{
 								padding: '2rem',
-								background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+								background: theme === 'dark'
+									? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+									: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
 								borderRadius: '16px',
-								border: '1px solid rgba(0,74,183,0.1)',
-								boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,74,183,0.05)',
+								border: theme === 'dark'
+									? '1px solid rgba(148,163,184,0.1)'
+									: '1px solid rgba(0,74,183,0.1)',
+								boxShadow: theme === 'dark'
+									? '0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,163,184,0.1)'
+									: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,74,183,0.05)',
 								transition: 'all 0.3s ease',
 								cursor: 'default'
 							}}
@@ -236,10 +277,10 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 									<h3 style={{
 										fontSize: 'clamp(1.25rem, 1.75vw, 1.5rem)',
 										fontWeight: 700,
-										color: '#1e293b',
+										color: theme === 'dark' ? '#e2e8f0' : '#1e293b',
 										margin: 0
 									}}>
-										{cookie.type}
+										<TranslateText text={cookie.type} />
 									</h3>
 									<span style={{
 										padding: '0.375rem 0.875rem',
@@ -249,33 +290,33 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 										background: cookie.required ? '#dcfce7' : '#f0f9ff',
 										color: cookie.required ? '#166534' : '#075985'
 									}}>
-										{cookie.required ? 'Necesarias' : 'Opcionales'}
+										<TranslateText text={cookie.required ? "Necesarias" : "Opcionales"} />
 									</span>
 								</div>
 
 								<p style={{
 									fontSize: 'clamp(0.95rem, 1.25vw, 1.0625rem)',
 									lineHeight: 1.7,
-									color: '#475569',
+									color: theme === 'dark' ? '#cbd5e1' : '#475569',
 									marginBottom: '1rem',
 									margin: 0
 								}}>
-									{cookie.description}
+									<TranslateText text={cookie.description} />
 								</p>
 
 								<div style={{
 									marginTop: '1rem',
 									paddingTop: '1rem',
-									borderTop: '1px solid #e2e8f0'
+									borderTop: theme === 'dark' ? '1px solid #334155' : '1px solid #e2e8f0'
 								}}>
 									<p style={{
 										fontSize: '0.9rem',
 										fontWeight: 600,
-										color: '#64748b',
+										color: theme === 'dark' ? '#94a3b8' : '#64748b',
 										marginBottom: '0.5rem',
 										margin: 0
 									}}>
-										Ejemplos:
+										<TranslateText text="Ejemplos:" />
 									</p>
 									<ul style={{
 										margin: 0,
@@ -287,9 +328,9 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 										{cookie.examples.map((example, i) => (
 											<li key={i} style={{
 												fontSize: '0.9rem',
-												color: '#64748b'
+												color: theme === 'dark' ? '#94a3b8' : '#64748b'
 											}}>
-												{example}
+												<TranslateText text={example} />
 											</li>
 										))}
 									</ul>
@@ -310,25 +351,25 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 						style={{
 							marginBottom: '3rem',
 							paddingLeft: '1.5rem',
-							borderLeft: '3px solid #004AB7'
+							borderLeft: theme === 'dark' ? '3px solid #60a5fa' : '3px solid #004AB7'
 						}}
 					>
 						<h2 style={{
 							fontSize: 'clamp(1.5rem, 2vw, 1.875rem)',
 							fontWeight: 700,
-							color: '#004AB7',
+							color: theme === 'dark' ? '#60a5fa' : '#004AB7',
 							marginBottom: '1.25rem',
 							margin: 0
 						}}>
-							{section.title}
+							<TranslateText text={section.title} />
 						</h2>
 						<div style={{
 							fontSize: 'clamp(1rem, 1.5vw, 1.0625rem)',
 							lineHeight: 1.8,
-							color: '#475569',
+							color: theme === 'dark' ? '#cbd5e1' : '#475569',
 							whiteSpace: 'pre-line'
 						}}>
-							{section.content}
+							<TranslateText text={section.content} />
 						</div>
 					</motion.div>
 				))}
@@ -342,19 +383,25 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 					style={{
 						marginTop: '4rem',
 						padding: '2rem',
-						background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+						background: theme === 'dark'
+							? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
+							: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
 						borderRadius: '12px',
 						textAlign: 'center',
-						border: '1px solid rgba(0,74,183,0.1)',
-						boxShadow: '0 2px 12px rgba(0,74,183,0.08)'
+						border: theme === 'dark'
+							? '1px solid rgba(96,165,250,0.2)'
+							: '1px solid rgba(0,74,183,0.1)',
+						boxShadow: theme === 'dark'
+							? '0 2px 12px rgba(30,64,95,0.3)'
+							: '0 2px 12px rgba(0,74,183,0.08)'
 					}}
 				>
 					<p style={{
 						fontSize: '0.95rem',
-						color: '#64748b',
+						color: theme === 'dark' ? '#cbd5e1' : '#64748b',
 						margin: 0
 					}}>
-						Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones.
+						<TranslateText text="Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones." />
 					</p>
 				</motion.div>
 			</section>

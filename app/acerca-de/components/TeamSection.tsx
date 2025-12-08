@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Users } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 export default function TeamSection() {
   return (
-    <section className="py-24 px-6 bg-white">
+    <section className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -15,18 +16,18 @@ export default function TeamSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 rounded-full text-sm font-semibold mb-4">
             <Users size={16} />
-            Liderazgo
+            <TranslateText text="Liderazgo" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Nuestro Equipo{" "}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="Nuestro Equipo" />{" "}
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Directivo
+              <TranslateText text="Directivo" />
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Liderazgo con experiencia y compromiso con la excelencia.
+          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <TranslateText text="Liderazgo con experiencia y compromiso con la excelencia." />
           </p>
         </motion.div>
 
@@ -67,11 +68,11 @@ export default function TeamSection() {
             {/* Content */}
             <div className="relative z-10">
               <h3 className="text-2xl font-bold text-white mb-2">
-                Dirección General
+                <TranslateText text="Dirección General" />
               </h3>
-              <div className="w-12 h-1 bg-gradient-to-r from-amber-400 to-orange-400 mx-auto rounded-full mb-4" />
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-400 to-blue-500 mx-auto rounded-full mb-4" />
               <p className="text-blue-200 font-medium">
-                Chief Executive Officer
+                <TranslateText text="Chief Executive Officer" />
               </p>
             </div>
 

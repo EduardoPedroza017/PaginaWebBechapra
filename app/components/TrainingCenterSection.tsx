@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { GraduationCap, Users, Video, Award, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trainingFeatures } from "./data/homeData";
+import { TranslateText } from "@/components/TranslateText";
 
 const iconMap = {
   users: Users,
@@ -42,21 +43,21 @@ export default function TrainingCenterSection() {
         transition={{ duration: 0.5 }}
         className="text-center max-w-3xl mx-auto mb-12"
       >
-        <span className="inline-flex items-center gap-2 text-blue-700 bg-blue-100 font-semibold text-sm px-4 py-2 rounded-full mb-4">
+        <span className="inline-flex items-center gap-2 font-semibold text-sm px-4 py-2 rounded-full mb-4 text-blue-700 bg-blue-100 dark:bg-blue-900/40 dark:text-blue-500">
           <GraduationCap className="w-4 h-4" />
-          Formación de talento
+          <TranslateText text="Formación de talento" />
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
           Bechapra Training Center
         </h2>
-        <p className="text-lg text-slate-600 max-w-xl mx-auto">
-          Formamos y conectamos el talento del futuro con las mejores oportunidades
+        <p className="text-lg max-w-xl mx-auto text-slate-600 dark:text-slate-300">
+          <TranslateText text="Formamos y conectamos el talento del futuro con las mejores oportunidades" />
         </p>
       </motion.div>
 
       <div className="max-w-6xl mx-auto">
         <div
-          className="relative bg-white rounded-3xl overflow-hidden shadow-xl"
+          className="relative rounded-3xl overflow-hidden shadow-xl bg-white dark:bg-slate-900"
           onMouseEnter={stopAutoplay}
           onMouseLeave={startAutoplay}
         >
@@ -96,7 +97,7 @@ export default function TrainingCenterSection() {
             </div>
 
             {/* Right: Content */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center">
+            <div className="p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-900">
               {/* Tabs */}
               <div className="flex flex-wrap gap-2 mb-8">
                 {trainingFeatures.map((feature, i) => {
@@ -108,11 +109,11 @@ export default function TrainingCenterSection() {
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                         active === i
                           ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          : "text-slate-600 hover:bg-slate-200 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
-                      {feature.label}
+                      <TranslateText text={feature.label} />
                     </button>
                   );
                 })}
@@ -127,14 +128,14 @@ export default function TrainingCenterSection() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
-                    {trainingFeatures[active].label}
+                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
+                    <TranslateText text={trainingFeatures[active].label} />
                   </h3>
-                  <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                    {trainingFeatures[active].description}
+                  <p className="text-lg mb-8 leading-relaxed text-slate-600 dark:text-slate-300">
+                    <TranslateText text={trainingFeatures[active].description} />
                   </p>
                   <button className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all">
-                    Más información
+                    <TranslateText text="Más información" />
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </motion.div>
@@ -147,7 +148,7 @@ export default function TrainingCenterSection() {
                     key={i}
                     onClick={() => setActive(i)}
                     className={`h-2 rounded-full transition-all ${
-                      active === i ? "bg-blue-600 w-8" : "bg-slate-200 w-2 hover:bg-slate-300"
+                      active === i ? "bg-blue-600 w-8" : "w-2 hover:bg-slate-300 bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
                     }`}
                   />
                 ))}

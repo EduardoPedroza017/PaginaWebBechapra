@@ -11,7 +11,10 @@ interface SectionProps {
 }
 
 export default function Section({ children, id, variant = "white", className = "", size = "md" }: SectionProps) {
-  const bgColor = variant === "blue" ? "#E3F2FD" : "#FFFFFF";
+  const bgColor = variant === "blue" 
+    ? "bg-blue-50 dark:bg-slate-800" 
+    : "bg-white dark:bg-slate-950";
+  
   const paddingY = {
     sm: "py-12 sm:py-16",
     md: "py-16 sm:py-20 lg:py-24",
@@ -21,9 +24,8 @@ export default function Section({ children, id, variant = "white", className = "
   return (
     <section
       id={id}
-      className={className}
+      className={`${bgColor} ${className} transition-colors duration-300`}
       style={{
-        background: bgColor,
         width: "100vw",
         marginLeft: "calc(-50vw + 50%)",
       }}

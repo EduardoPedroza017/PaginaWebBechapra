@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
   id: string;
@@ -24,12 +25,22 @@ interface PressItem {
   file_url?: string;
 }
 
+function getInitialTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  const saved = localStorage.getItem('prensa-theme');
+  if (saved) return saved as 'light' | 'dark';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 export default function PressDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [press, setPress] = useState<PressItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedPress, setRelatedPress] = useState<PressItem[]>([]);
+  const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+  const mediaQueryRef = useRef<MediaQueryList | null>(null);
+  const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
 
   useEffect(() => {
     if (!params?.id) return;
@@ -47,6 +58,24 @@ export default function PressDetailPage() {
       })
       .finally(() => setLoading(false));
   }, [params]);
+
+  useEffect(() => {
+    localStorage.setItem('prensa-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    handlerRef.current = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? 'dark' : 'light');
+    };
+    mediaQueryRef.current = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQueryRef.current.addEventListener('change', handlerRef.current);
+    
+    return () => {
+      if (mediaQueryRef.current && handlerRef.current) {
+        mediaQueryRef.current.removeEventListener('change', handlerRef.current);
+      }
+    };
+  }, []);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -67,9 +96,13 @@ export default function PressDetailPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-50">
+      <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen transition-colors duration-300">
         {/* Hero Skeleton */}
-        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pt-24 pb-32">
+        <div style={{
+          background: theme === 'dark'
+            ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
+            : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
+        }} className="pt-24 pb-32">
           <div className="max-w-4xl mx-auto px-6">
             <div className="animate-pulse">
               <div className="w-32 h-10 bg-white/20 rounded-xl mb-8" />
@@ -80,11 +113,14 @@ export default function PressDetailPage() {
           </div>
         </div>
         <div className="max-w-4xl mx-auto px-6 -mt-20">
-          <div className="bg-white rounded-3xl p-10 shadow-xl animate-pulse">
+          <div style={{
+            background: theme === 'dark' ? '#1e293b' : 'white',
+            boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)'
+          }} className="rounded-3xl p-10 animate-pulse transition-colors duration-300">
             <div className="space-y-4">
-              <div className="w-full h-4 bg-gray-200 rounded" />
-              <div className="w-full h-4 bg-gray-200 rounded" />
-              <div className="w-3/4 h-4 bg-gray-200 rounded" />
+              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-full h-4 rounded transition-colors duration-300" />
+              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-full h-4 rounded transition-colors duration-300" />
+              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-3/4 h-4 rounded transition-colors duration-300" />
             </div>
           </div>
         </div>
@@ -94,27 +130,29 @@ export default function PressDetailPage() {
 
   if (!press) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen flex items-center justify-center transition-colors duration-300">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-            <FileText size={40} className="text-gray-400" />
+          <div style={{
+            background: theme === 'dark' ? '#1e293b' : '#f3f4f6'
+          }} className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-300">
+            <FileText size={40} style={{ color: theme === 'dark' ? '#64748b' : '#9ca3af' }} />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Comunicado no encontrado
+          <h1 style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="text-2xl font-bold mb-2 transition-colors duration-300">
+            <TranslateText text="Comunicado no encontrado" />
           </h1>
-          <p className="text-gray-500 mb-6">
-            El comunicado que buscas no existe o fue eliminado.
+          <p style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="mb-6 transition-colors duration-300">
+            <TranslateText text="El comunicado que buscas no existe o fue eliminado." />
           </p>
           <Link
             href="/prensa"
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
           >
             <ArrowLeft size={18} />
-            Volver a Comunicados
+            <TranslateText text="Volver a Comunicados" />
           </Link>
         </motion.div>
       </main>
@@ -133,9 +171,13 @@ export default function PressDetailPage() {
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pt-24 pb-40 overflow-hidden">
+      <section style={{
+        background: theme === 'dark'
+          ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
+          : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
+      }} className="relative pt-24 pb-40 overflow-hidden transition-colors duration-300">
         {/* Background Decorations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -163,7 +205,7 @@ export default function PressDetailPage() {
               size={18}
               className="group-hover:-translate-x-1 transition-transform duration-300"
             />
-            Volver a Comunicados
+            <TranslateText text="Volver a Comunicados" />
           </motion.button>
 
           {/* Date & Reading Time */}
@@ -179,7 +221,7 @@ export default function PressDetailPage() {
             </span>
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-blue-100 text-sm font-medium border border-white/20">
               <Clock size={16} />
-              {readingTime} min de lectura
+              {readingTime} <TranslateText text="min de lectura" />
             </span>
           </motion.div>
 
@@ -203,7 +245,11 @@ export default function PressDetailPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white rounded-3xl shadow-2xl shadow-blue-900/10 overflow-hidden"
+            style={{
+              background: theme === 'dark' ? '#1e293b' : 'white',
+              boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)'
+            }}
+            className="rounded-3xl overflow-hidden transition-colors duration-300"
           >
             {/* Top Accent */}
             <div className="h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500" />
@@ -211,7 +257,7 @@ export default function PressDetailPage() {
             <div className="p-8 md:p-12">
               {/* Content */}
               <div className="prose prose-lg max-w-none">
-                <p className="text-gray-700 text-lg md:text-xl leading-relaxed whitespace-pre-line">
+                <p style={{ color: theme === 'dark' ? '#cbd5e1' : '#374151' }} className="text-lg md:text-xl leading-relaxed whitespace-pre-line transition-colors duration-300">
                   {press.excerpt}
                 </p>
               </div>
@@ -224,19 +270,26 @@ export default function PressDetailPage() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center gap-3 mt-8 px-6 py-3 bg-blue-50 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition-colors duration-300"
+                  style={{
+                    background: theme === 'dark' ? '#1e3a5f' : '#eff6ff',
+                    color: '#2563eb'
+                  }}
+                  className="inline-flex items-center gap-3 mt-8 px-6 py-3 rounded-xl font-semibold hover:opacity-80 transition-all duration-300"
                 >
                   <ExternalLink size={18} />
-                  Ver enlace externo
+                  <TranslateText text="Ver enlace externo" />
                 </motion.a>
               )}
 
               {/* File Download */}
               {press.file_url && (
-                <div className="mt-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
-                  <h3 className="flex items-center gap-2 text-gray-800 font-bold mb-4">
+                <div style={{
+                  background: theme === 'dark' ? 'rgba(30, 41, 59, 0.5)' : 'linear-gradient(to bottom right, #f9fafb, #f3f4f6)',
+                  borderColor: theme === 'dark' ? '#475569' : '#e5e7eb'
+                }} className="mt-8 p-6 rounded-2xl border transition-colors duration-300">
+                  <h3 style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="flex items-center gap-2 font-bold mb-4 transition-colors duration-300">
                     <FileText size={20} className="text-blue-600" />
-                    Archivo adjunto
+                    <TranslateText text="Archivo adjunto" />
                   </h3>
                   <motion.a
                     href={`http://localhost:5000${press.file_url}`}
@@ -248,7 +301,7 @@ export default function PressDetailPage() {
                     className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/25 hover:shadow-xl transition-all duration-300"
                   >
                     <Download size={18} />
-                    Descargar archivo
+                    <TranslateText text="Descargar archivo" />
                     {press.file_url.split("/").pop() && (
                       <span className="ml-2 px-3 py-1 bg-white/20 rounded-lg text-sm">
                         {press.file_url.split("/").pop()}
@@ -259,21 +312,26 @@ export default function PressDetailPage() {
               )}
 
               {/* Divider */}
-              <hr className="my-8 border-gray-200" />
+              <hr style={{ borderColor: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="my-8 transition-colors duration-300" />
 
               {/* Share Section */}
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="text-gray-500 text-sm">
-                  ¿Te resultó útil este comunicado? Compártelo.
+                <div style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="text-sm transition-colors duration-300">
+                  <TranslateText text="¿Te resultó útil este comunicado? Compártelo." />
                 </div>
                 <motion.button
                   onClick={handleShare}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-300"
+                  style={{
+                    background: theme === 'dark' ? '#1e293b' : '#f3f4f6',
+                    color: theme === 'dark' ? '#e2e8f0' : '#374151',
+                    borderColor: theme === 'dark' ? '#475569' : 'transparent'
+                  }}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium border transition-all duration-300"
                 >
                   <Share2 size={18} />
-                  Compartir
+                  <TranslateText text="Compartir" />
                 </motion.button>
               </div>
             </div>
@@ -287,8 +345,8 @@ export default function PressDetailPage() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="mt-16"
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Otros comunicados
+              <h2 style={{ color: theme === 'dark' ? '#e2e8f0' : '#111827' }} className="text-2xl font-bold mb-6 transition-colors duration-300">
+                <TranslateText text="Otros comunicados" />
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPress.map((item, i) => (
@@ -301,7 +359,12 @@ export default function PressDetailPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
-                      className="h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-lg shadow-blue-900/5 hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+                      style={{
+                        background: theme === 'dark' ? '#1e293b' : 'white',
+                        borderColor: theme === 'dark' ? '#475569' : '#f3f4f6',
+                        boxShadow: theme === 'dark' ? 'none' : '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                      }}
+                      className="h-full rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-2"
                     >
                       <div className="flex items-center gap-2 text-blue-600 text-sm font-medium mb-3">
                         <Calendar size={14} />
@@ -311,7 +374,7 @@ export default function PressDetailPage() {
                           year: "numeric",
                         })}
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
+                      <h3 style={{ color: theme === 'dark' ? '#e2e8f0' : '#111827' }} className="text-lg font-bold group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
                         {item.title}
                       </h3>
                     </motion.article>
@@ -330,10 +393,11 @@ export default function PressDetailPage() {
           >
             <Link
               href="/prensa"
-              className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition-colors"
+              style={{ color: '#2563eb' }}
+              className="inline-flex items-center gap-2 font-semibold hover:text-blue-700 transition-colors"
             >
               <ArrowLeft size={18} />
-              Ver todos los comunicados
+              <TranslateText text="Ver todos los comunicados" />
             </Link>
           </motion.div>
         </div>

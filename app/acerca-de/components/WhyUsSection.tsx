@@ -10,6 +10,7 @@ import {
   Heart,
   CheckCircle,
 } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 const reasons = [
   {
@@ -85,7 +86,7 @@ const colorStyles: Record<string, { bg: string; icon: string; border: string }> 
 
 export default function WhyUsSection() {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30">
+    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -95,20 +96,19 @@ export default function WhyUsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
             <CheckCircle size={16} />
-            Nuestras Fortalezas
+            <TranslateText text="Nuestras Fortalezas" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            ¿Por qué{" "}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="¿Por qué" />{" "}
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Bechapra
             </span>
             ?
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Descubre las razones por las que cientos de empresas confían en
-            nosotros.
+          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <TranslateText text="Descubre las razones por las que cientos de empresas confían en nosotros." />
           </p>
         </motion.div>
 
@@ -128,7 +128,7 @@ export default function WhyUsSection() {
                 className="group"
               >
                 <div
-                  className={`relative h-full bg-gradient-to-br ${colors.bg} rounded-2xl p-6 border ${colors.border} hover:shadow-lg hover:-translate-y-2 transition-all duration-300`}
+                  className={`relative h-full bg-gradient-to-br ${colors.bg} dark:from-slate-800 dark:to-slate-800/50 rounded-2xl p-6 border ${colors.border} dark:border-slate-700 hover:shadow-lg hover:-translate-y-2 transition-all duration-300`}
                 >
                   {/* Icon */}
                   <div
@@ -138,10 +138,10 @@ export default function WhyUsSection() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {item.title}
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <TranslateText text={item.title} />
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                  <p className="text-gray-600 dark:text-slate-400 leading-relaxed"><TranslateText text={item.desc} /></p>
                 </div>
               </motion.div>
             );

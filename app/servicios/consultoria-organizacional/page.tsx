@@ -9,6 +9,7 @@ import {
   ConsultingCTA,
   ContactSection,
 } from "./components";
+import Footer from "@/components/Footer";
 import {
   Target,
   BarChart3,
@@ -20,12 +21,12 @@ import {
 
 // Data
 const services = [
-  { title: "Estrategia de Organización", icon: Target, color: "#7c3aed" },
-  { title: "Administrativa", icon: BarChart3, color: "#8b5cf6" },
-  { title: "Prevención de Riesgos Laborales", icon: Shield, color: "#a855f7" },
-  { title: "Financiera", icon: TrendingUp, color: "#7c3aed" },
-  { title: "Recursos Humanos", icon: CheckCircle, color: "#8b5cf6" },
-  { title: "Especializada", icon: Lightbulb, color: "#a855f7" },
+  { title: "Estrategia de Organización", icon: Target, color: "#2563eb" },
+  { title: "Administrativa", icon: BarChart3, color: "#3b82f6" },
+  { title: "Prevención de Riesgos Laborales", icon: Shield, color: "#0ea5e9" },
+  { title: "Financiera", icon: TrendingUp, color: "#2563eb" },
+  { title: "Recursos Humanos", icon: CheckCircle, color: "#3b82f6" },
+  { title: "Especializada", icon: Lightbulb, color: "#0ea5e9" },
 ];
 
 const howWeWorkSteps = [
@@ -42,7 +43,7 @@ const benefits = [
 
 export default function ConsultoriaOrganizacionalPage() {
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-hidden bg-white dark:bg-slate-900">
       <ConsultingHero
         title="Consultoría"
         highlightWord="Organizacional"
@@ -76,6 +77,7 @@ export default function ConsultoriaOrganizacionalPage() {
       />
 
       <ContactSection />
+      <Footer />
     </main>
   );
 }

@@ -18,11 +18,18 @@ export function TranslateText({ text, asOption = false }: TranslateTextProps) {
       setTranslated(text);
       return;
     }
-    setLoading(true);
-    translateText(text, lang)
-      .then(setTranslated)
-      .catch(() => setTranslated(text))
-      .finally(() => setLoading(false));
+
+    // Añadir pequeño delay aleatorio para evitar llamadas simultáneas
+    const delay = Math.random() * 300;
+    const timeoutId = setTimeout(() => {
+      setLoading(true);
+      translateText(text, lang)
+        .then(setTranslated)
+        .catch(() => setTranslated(text))
+        .finally(() => setLoading(false));
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
   }, [lang, text]);
 
   if (asOption) {

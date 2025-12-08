@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiCpu, FiMonitor, FiBriefcase } from "react-icons/fi";
 import AnimatedSection from "./AnimatedSection";
 import DivisionButton from "./DivisionButton";
+import { TranslateText } from "@/components/TranslateText";
 
 
 export default function DivisionsSection() {
@@ -59,10 +60,10 @@ export default function DivisionsSection() {
     <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Divisiones de Bechapra</h2>
-          <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-base sm:text-lg text-slate-600">
-            Especializadas en diferentes áreas para ofrecerte soluciones a medida
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white"><TranslateText text="Divisiones de Bechapra" /></h2>
+          <div className="w-20 h-1 bg-blue-600 dark:bg-blue-500 rounded-full mx-auto mb-6" />
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+            <TranslateText text="Especializadas en diferentes áreas para ofrecerte soluciones a medida" />
           </p>
         </div>
       </AnimatedSection>
@@ -107,7 +108,7 @@ export default function DivisionsSection() {
               return (
                 <div
                   key={d.label}
-                  className={cardClasses + " w-[90%] md:w-[380px] h-[320px] md:h-[380px] rounded-3xl overflow-hidden bg-gradient-to-br from-blue-700 to-blue-500 flex flex-col justify-between group"}
+                  className={cardClasses + " w-[90%] md:w-[380px] h-[320px] md:h-[380px] rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex flex-col justify-between group"}
                   aria-hidden={!isActive && !isLeft && !isRight}
                 >
                   <div className="flex flex-col justify-between h-full relative z-10 p-6">
@@ -117,15 +118,15 @@ export default function DivisionsSection() {
                         {d.label}
                       </h3>
                     </div>
-                    <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4">{d.description}</p>
+                    <p className="text-sm sm:text-base text-white/90 mt-2 sm:mt-4"><TranslateText text={d.description} /></p>
                     <div className="mt-6">
                       <button className={isActive
-                        ? "bg-white text-blue-700 font-bold px-5 py-2 rounded-full shadow-lg hover:bg-blue-100 transition"
+                        ? "bg-white text-blue-600 font-bold px-5 py-2 rounded-full shadow-lg hover:bg-blue-50 transition"
                         : "bg-white/30 text-white font-semibold px-5 py-2 rounded-full cursor-default opacity-70"}
                         tabIndex={isActive ? 0 : -1}
                         aria-disabled={!isActive}
                       >
-                        Conoce la división
+                        <TranslateText text="Conoce la división" />
                       </button>
                     </div>
                   </div>

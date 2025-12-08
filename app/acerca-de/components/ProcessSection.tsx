@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Search, Lightbulb, Rocket, LineChart, ArrowRight } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 const steps = [
   {
@@ -43,7 +44,7 @@ const colorStyles: Record<string, string> = {
 
 export default function ProcessSection() {
   return (
-    <section className="py-24 px-6 bg-white">
+    <section className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -53,18 +54,18 @@ export default function ProcessSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 rounded-full text-sm font-semibold mb-4">
             <Rocket size={16} />
-            Metodología
+            <TranslateText text="Metodología" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Nuestro{" "}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="Nuestro" />{" "}
             <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Proceso
+              <TranslateText text="Proceso" />
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Un enfoque estructurado que garantiza resultados excepcionales.
+          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <TranslateText text="Un enfoque estructurado que garantiza resultados excepcionales." />
           </p>
         </motion.div>
 
@@ -107,16 +108,16 @@ export default function ProcessSection() {
                   {/* Content Card */}
                   <motion.div
                     whileHover={{ y: -5 }}
-                    className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
+                    className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
                   >
-                    <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon size={24} className="text-gray-700" />
+                    <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon size={24} className="text-gray-700 dark:text-slate-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {item.title}
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      <TranslateText text={item.title} />
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {item.desc}
+                    <p className="text-gray-600 dark:text-slate-400 text-sm leading-relaxed">
+                      <TranslateText text={item.desc} />
                     </p>
                   </motion.div>
                 </motion.div>

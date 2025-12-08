@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Trophy } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface DarkCTAProps {
   title: string;
@@ -27,7 +28,7 @@ export default function DarkCTA({
   secondaryLabel = "Ver casos de éxito",
 }: DarkCTAProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -66,7 +67,7 @@ export default function DarkCTA({
               transition={{ duration: 0.6 }}
               className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
             >
-              {title}
+              <TranslateText text={title} />
             </motion.h2>
 
             <motion.p
@@ -74,9 +75,9 @@ export default function DarkCTA({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-xl text-gray-300 mb-10 leading-relaxed"
+              className="text-xl text-gray-300 dark:text-gray-400 mb-10 leading-relaxed"
             >
-              {subtitle}
+              <TranslateText text={subtitle} />
             </motion.p>
 
             <motion.div
@@ -104,10 +105,10 @@ export default function DarkCTA({
               >
                 <Link
                   href={secondaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white rounded-2xl font-bold text-lg border-2 border-blue-600 hover:bg-blue-600/10 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white rounded-2xl font-bold text-lg border-2 border-blue-600 dark:border-blue-700 hover:bg-blue-600/10 dark:hover:bg-blue-700/10 transition-all duration-300"
                 >
                   <Trophy size={20} />
-                  {secondaryLabel}
+                  <TranslateText text={secondaryLabel} />
                 </Link>
               </motion.div>
             </motion.div>

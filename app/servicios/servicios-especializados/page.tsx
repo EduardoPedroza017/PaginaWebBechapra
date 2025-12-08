@@ -93,7 +93,7 @@ const razones = [
 
 export default function ServiciosEspecializadosPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 overflow-x-hidden">
+    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:to-slate-900 overflow-x-hidden">
       <ServiceHero
         title="Servicios Especializados"
         description="Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nomina y cumplimiento para que tu organizacion mantenga foco en el crecimiento."

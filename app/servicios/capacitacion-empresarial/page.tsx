@@ -18,6 +18,7 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
+import Footer from "@/components/Footer";
 
 // Data
 const programs = [

@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Send, Calculator, Phone, Mail, MapPin } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function ContactSection() {
   return (
-    <section id="contacto" className="py-24 px-6 bg-gradient-to-b from-blue-50/30 to-white">
+    <section id="contacto" className="py-24 px-6 bg-gradient-to-b from-blue-50/30 to-white dark:from-slate-950 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -19,19 +20,19 @@ export default function ContactSection() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30"
+            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
           >
             <Calculator className="w-8 h-8 text-white" />
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
-            ¿Listo para transformar tu{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              contabilidad?
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
+            <TranslateText text="¿Listo para transformar tu" />{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              <TranslateText text="contabilidad?" />
             </span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Contáctanos y recibe una consultoría gratuita para diseñar la solución contable que tu empresa necesita.
+          <p className="text-lg text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <TranslateText text="Contáctanos y recibe una consultoría gratuita para diseñar la solución contable que tu empresa necesita." />
           </p>
         </motion.div>
 

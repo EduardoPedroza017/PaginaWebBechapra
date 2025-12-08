@@ -1,7 +1,9 @@
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { FiGlobe } from "react-icons/fi";
 import { FaFlagUsa, FaFlag } from "react-icons/fa6";
+import { useLanguage } from "@/lib/LanguageContext";
 
 const LANGUAGES = [
   { code: "es", name: "Español", icon: <FaFlag /> },
@@ -14,8 +16,10 @@ const LANGUAGES = [
 
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(LANGUAGES[0]);
+  const { lang, setLang } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
+
+  const selected = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -28,74 +32,43 @@ export default function LanguageSwitcher() {
   }, []);
 
   return (
-    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
+    <div ref={ref} className="relative inline-block">
       <button
         onClick={() => setOpen((v) => !v)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          background: "none",
-          border: "1px solid #e5e7eb",
-          borderRadius: 6,
-          padding: "4px 12px",
-          cursor: "pointer",
-          fontWeight: 500,
-          fontSize: 15,
-          color: "#222",
-          minWidth: 60,
-        }}
+        className="flex items-center gap-2 bg-transparent border rounded-md px-3 py-1 cursor-pointer font-medium text-sm min-w-[60px] transition-colors border-slate-300 text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <FiGlobe style={{ fontSize: 18, marginRight: 4 }} />
+        <FiGlobe className="text-lg mr-1" />
         {selected.icon}
-        <span style={{ marginLeft: 4 }}>{selected.code.toUpperCase()}</span>
+        <span className="ml-1">{selected.code.toUpperCase()}</span>
       </button>
       {open && (
         <ul
-          style={{
-            position: "absolute",
-            top: "110%",
-            left: 0,
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 6,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-            minWidth: 120,
-            zIndex: 100,
-            padding: 0,
-            margin: 0,
-          }}
+          className="absolute top-[110%] left-0 bg-white border rounded-md shadow-lg min-w-[120px] z-[100] p-0 m-0 border-slate-200 dark:bg-slate-900 dark:border-slate-700"
           role="listbox"
         >
-          {LANGUAGES.map((lang) => (
+          {LANGUAGES.map((language) => (
             <li
-              key={lang.code}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "8px 16px",
-                cursor: "pointer",
-                background: selected.code === lang.code ? "#f3f4f6" : "#fff",
-                fontWeight: selected.code === lang.code ? 600 : 400,
-                color: selected.code === lang.code ? "#2563eb" : "#222",
-              }}
+              key={language.code}
+              className={`flex items-center gap-2 px-4 py-2 cursor-pointer transition-colors ${
+                selected.code === language.code
+                  ? 'bg-slate-100 font-semibold text-blue-600 dark:bg-slate-800 dark:text-blue-500'
+                  : 'bg-white font-normal text-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+              }`}
               onClick={() => {
-                setSelected(lang);
+                setLang(language.code);
                 setOpen(false);
               }}
               role="option"
-              aria-selected={selected.code === lang.code}
+              aria-selected={selected.code === language.code}
             >
-              <span style={{
-                fontSize: 22,
-                color: selected.code === lang.code ? "#2563eb" : "#222",
-                filter: selected.code === lang.code ? "none" : "grayscale(0%) brightness(0.7)",
-                transition: "color 0.2s, filter 0.2s"
-              }}>{lang.icon}</span>
-              <span style={{ fontSize: 15 }}>{lang.name}</span>
+              <span className={`text-[22px] transition-all ${
+                selected.code === language.code
+                  ? 'text-blue-600 dark:text-blue-500'
+                  : 'text-slate-700 brightness-75 dark:text-slate-400'
+              }`}>{language.icon}</span>
+              <span className="text-sm">{language.name}</span>
             </li>
           ))}
         </ul>

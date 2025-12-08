@@ -3,10 +3,20 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Newspaper, ArrowRight } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
-export default function PressHero() {
+interface PressHeroProps {
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+}
+
+export default function PressHero({ theme, setTheme }: PressHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pt-24 pb-32 overflow-hidden">
+    <section style={{
+      background: theme === 'dark'
+        ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
+        : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
+    }} className="relative w-screen -ml-[calc(50vw-50%)] pt-24 pb-32 overflow-hidden transition-colors duration-300">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Gradient Orbs */}
@@ -63,21 +73,21 @@ export default function PressHero() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6"
           >
             <Newspaper size={16} className="text-amber-400" />
-            <span className="text-white/90 text-sm font-medium">Comunicación Oficial</span>
+            <span className="text-white/90 text-sm font-medium"><TranslateText text="Comunicación Oficial" /></span>
           </motion.div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
             <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              Sala de
+              <TranslateText text="Sala de" />
             </span>
             <br />
-            Prensa
+            <TranslateText text="Prensa" />
           </h1>
 
           {/* Description */}
           <p className="text-xl md:text-2xl text-blue-100/90 leading-relaxed mb-10 max-w-2xl">
-            Mantente informado sobre nuestros comunicados oficiales, reconocimientos y apariciones en medios de comunicación.
+            <TranslateText text="Mantente informado sobre nuestros comunicados oficiales, reconocimientos y apariciones en medios de comunicación." />
           </p>
 
           {/* CTA Buttons */}
@@ -87,7 +97,7 @@ export default function PressHero() {
                 href="/#contacto"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300"
               >
-                Contacto de Prensa
+                <TranslateText text="Contacto de Prensa" />
                 <ArrowRight size={20} />
               </Link>
             </motion.div>
@@ -96,7 +106,7 @@ export default function PressHero() {
                 href="#comunicados"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
               >
-                Ver Comunicados
+                <TranslateText text="Ver Comunicados" />
               </a>
             </motion.div>
           </div>
@@ -123,7 +133,7 @@ export default function PressHero() {
               className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
             >
               <div className="text-3xl md:text-4xl font-black text-white mb-1">{stat.value}</div>
-              <div className="text-blue-200/80 text-sm font-medium">{stat.label}</div>
+              <div className="text-blue-200/80 text-sm font-medium"><TranslateText text={stat.label} /></div>
             </motion.div>
           ))}
         </motion.div>
@@ -134,7 +144,7 @@ export default function PressHero() {
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
           <path 
             d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" 
-            fill="white"
+            fill={theme === 'dark' ? '#0f172a' : 'white'}
           />
         </svg>
       </div>

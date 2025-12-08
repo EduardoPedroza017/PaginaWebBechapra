@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Service {
   title: string;
@@ -16,10 +17,10 @@ interface ServicesGridProps {
 
 export default function ServicesGrid({ title, services }: ServicesGridProps) {
   return (
-    <section id="servicios" className="py-24 px-6 bg-white relative overflow-hidden">
+    <section id="servicios" className="py-24 px-6 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Decorative */}
-      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-violet-100 to-purple-100 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-indigo-100 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/20 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -30,9 +31,9 @@ export default function ServicesGrid({ title, services }: ServicesGridProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight"
         >
-          <span className="text-gray-900">Nuestros Servicios de </span>
-          <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-            Consultoría
+          <span className="text-gray-900 dark:text-white"><TranslateText text="Nuestros Servicios de" /> </span>
+          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <TranslateText text="Consultoría" />
           </span>
         </motion.h2>
 
@@ -48,7 +49,7 @@ export default function ServicesGrid({ title, services }: ServicesGridProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-violet-50/30 rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-violet-200 transition-all duration-500 cursor-pointer overflow-hidden text-center"
+                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-blue-950/30 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-2xl hover:border-blue-200 dark:hover:border-blue-700 transition-all duration-500 cursor-pointer overflow-hidden text-center"
               >
                 {/* Top Gradient Line */}
                 <div
@@ -82,7 +83,7 @@ export default function ServicesGrid({ title, services }: ServicesGridProps) {
                   className="text-base md:text-lg font-bold transition-colors group-hover:brightness-110"
                   style={{ color: service.color }}
                 >
-                  {service.title}
+                  <TranslateText text={service.title} />
                 </h3>
 
                 {/* Bottom Accent */}

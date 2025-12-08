@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { socialLinks } from "./data/homeData";
+import { TranslateText } from "@/components/TranslateText";
 
 export default function CtaRedes() {
   return (
@@ -36,10 +37,10 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-300 text-sm font-semibold"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-blue-900/40 text-blue-500 dark:bg-blue-900/60 dark:text-blue-400"
             >
               <MessageCircle className="w-4 h-4" />
-              Conecta con nosotros
+              <TranslateText text="Conecta con nosotros" />
             </motion.div>
 
             <motion.h3
@@ -49,10 +50,10 @@ export default function CtaRedes() {
               transition={{ delay: 0.3 }}
               className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight"
             >
-              Juntos trazamos
+              <TranslateText text="Juntos trazamos" />
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                tu camino al éxito
+              <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-blue-500">
+                <TranslateText text="tu camino al éxito" />
               </span>
             </motion.h3>
 
@@ -61,9 +62,9 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="text-lg text-slate-300 max-w-lg"
+              className="text-lg max-w-lg text-slate-300 dark:text-slate-400"
             >
-              ¿Listo para llevar tu negocio al siguiente nivel? Agenda una reunión con nuestros especialistas y descubre cómo podemos ayudarte.
+              <TranslateText text="¿Listo para llevar tu negocio al siguiente nivel? Agenda una reunión con nuestros especialistas y descubre cómo podemos ayudarte." />
             </motion.p>
 
             <motion.a
@@ -72,9 +73,9 @@ export default function CtaRedes() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
               href="#contacto"
-              className="group inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all bg-white text-slate-900 dark:bg-blue-500 dark:text-white"
             >
-              ¡Agenda ahora!
+              <TranslateText text="¡Agenda ahora!" />
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </div>
@@ -87,7 +88,7 @@ export default function CtaRedes() {
             transition={{ delay: 0.4 }}
             className="flex flex-col items-center justify-center lg:items-end"
           >
-            <h4 className="text-lg font-bold text-white mb-6">¡Síguenos en redes!</h4>
+            <h4 className="text-lg font-bold text-white mb-6"><TranslateText text="¡Síguenos en redes!" /></h4>
 
             <div className="grid grid-cols-2 gap-4">
               {socialLinks.map((link, i) => (

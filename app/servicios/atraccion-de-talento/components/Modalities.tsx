@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Modality {
   icon: LucideIcon;
@@ -22,7 +23,7 @@ const cardGradients = [
 
 export default function Modalities({ title, modalities }: ModalitiesProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 relative overflow-hidden">
+    <section className="py-24 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -49,7 +50,7 @@ export default function Modalities({ title, modalities }: ModalitiesProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center text-white mb-16 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h2>
 
         {/* Cards */}

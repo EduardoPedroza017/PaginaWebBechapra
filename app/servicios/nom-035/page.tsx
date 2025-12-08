@@ -9,6 +9,7 @@ import {
   NomCTA,
   ContactSection,
 } from "./components";
+import Footer from "@/components/Footer";
 
 const stats = [
   { icon: Shield, value: "100%", label: "Cumplimiento Garantizado" },
@@ -72,7 +73,7 @@ const benefits = [
 
 export default function NOM035Page() {
   return (
-    <main className="min-h-screen bg-linear-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
+    <main className="min-h-screen bg-linear-to-b from-blue-950 via-blue-900 to-blue-950 dark:bg-slate-900 overflow-hidden">
       <NomHero
         title="Cumplimiento"
         highlightWord="NOM-035"
@@ -86,6 +87,7 @@ export default function NOM035Page() {
         subtitle="Protege a tu equipo y evita sanciones. Nuestros expertos te guiarán en cada paso del proceso."
       />
       <ContactSection />
+      <Footer />
     </main>
   );
 }

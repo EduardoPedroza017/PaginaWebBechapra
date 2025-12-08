@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Sparkles, LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface ServiceHeroProps {
   title: string;
   highlightWord?: string;
-  subtitle?: string;
   description: string;
   imageSrc: string;
   imageAlt: string;
@@ -21,7 +21,6 @@ interface ServiceHeroProps {
 export default function ServiceHero({
   title,
   highlightWord,
-  subtitle,
   description,
   imageSrc,
   imageAlt,
@@ -31,18 +30,18 @@ export default function ServiceHero({
   ctaLink = "#contacto",
 }: ServiceHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 pt-24 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-blue-900 pt-24 pb-32 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
           transition={{ duration: 10, repeat: Infinity }}
-          className="absolute -top-24 -right-24 w-[300px] h-[300px] bg-white/10 rounded-full blur-3xl"
+          className="absolute -top-24 -right-24 w-[300px] h-[300px] bg-white/10 dark:bg-white/5 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 12, repeat: Infinity, delay: 1 }}
-          className="absolute -bottom-12 -left-12 w-[250px] h-[250px] bg-cyan-400/15 rounded-full blur-3xl"
+          className="absolute -bottom-12 -left-12 w-[250px] h-[250px] bg-blue-400/15 dark:bg-blue-600/10 rounded-full blur-3xl"
         />
       </div>
 
@@ -57,37 +56,37 @@ export default function ServiceHero({
             {/* Back Link */}
             <Link
               href={backLink}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-900 rounded-full font-semibold text-sm mb-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-full font-semibold text-sm mb-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <ArrowLeft
                 size={16}
                 className="group-hover:-translate-x-1 transition-transform duration-300"
               />
-              {backLabel}
+              <TranslateText text={backLabel} />
             </Link>
 
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-[3.8rem] font-black text-white mb-6 leading-[1.1] tracking-tight">
-              {title}{" "}
+              <TranslateText text={title} />{" "}
               {highlightWord && (
-                <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-                  {highlightWord}
+                <span className="bg-gradient-to-r from-blue-400 to-blue-500 dark:from-blue-300 dark:to-blue-400 bg-clip-text text-transparent">
+                  <TranslateText text={highlightWord} />
                 </span>
               )}
             </h1>
 
             {/* Description */}
-            <p className="text-xl text-white/90 leading-relaxed mb-8 max-w-xl">
-              {description}
+            <p className="text-xl text-white/90 dark:text-white/80 leading-relaxed mb-8 max-w-xl">
+              <TranslateText text={description} />
             </p>
 
             {/* CTA */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={ctaLink}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl transition-all duration-300"
               >
-                {ctaLabel}
+                <TranslateText text={ctaLabel} />
                 <ArrowRight size={20} />
               </Link>
             </motion.div>

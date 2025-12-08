@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { TranslateText } from "@/components/TranslateText";
 
-export function PressCardSkeleton({ isFeatured = false }: { isFeatured?: boolean }) {
+export function PressCardSkeleton({ isFeatured = false, theme = 'light' }: { isFeatured?: boolean; theme?: 'light' | 'dark' }) {
   if (isFeatured) {
     return (
       <div className="bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 rounded-3xl p-8 md:p-10 animate-pulse">
@@ -36,35 +37,38 @@ export function PressCardSkeleton({ isFeatured = false }: { isFeatured?: boolean
   );
 }
 
-export default function PressSkeleton() {
+export default function PressSkeleton({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   return (
     <div className="space-y-8">
       {/* Featured Skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <PressCardSkeleton isFeatured />
-        <PressCardSkeleton isFeatured />
+        <PressCardSkeleton isFeatured theme={theme} />
+        <PressCardSkeleton isFeatured theme={theme} />
       </div>
 
       {/* Regular Cards Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
-          <PressCardSkeleton key={i} />
+          <PressCardSkeleton key={i} theme={theme} />
         ))}
       </div>
     </div>
   );
 }
 
-export function EmptyState() {
+export function EmptyState({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="text-center py-20"
     >
-      <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+      <div style={{
+        background: theme === 'dark' ? '#1e293b' : '#f3f4f6'
+      }} className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-300">
         <svg
-          className="w-12 h-12 text-gray-400"
+          style={{ color: theme === 'dark' ? '#64748b' : '#9ca3af' }}
+          className="w-12 h-12"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -77,11 +81,11 @@ export function EmptyState() {
           />
         </svg>
       </div>
-      <h3 className="text-xl font-bold text-gray-800 mb-2">
-        No se encontraron comunicados
+      <h3 style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="text-xl font-bold mb-2 transition-colors duration-300">
+        <TranslateText text="No se encontraron comunicados" />
       </h3>
-      <p className="text-gray-500 max-w-md mx-auto">
-        No hay comunicados que coincidan con tu búsqueda. Intenta con otros términos o elimina los filtros.
+      <p style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="max-w-md mx-auto transition-colors duration-300">
+        <TranslateText text="No hay comunicados que coincidan con tu búsqueda. Intenta con otros términos o elimina los filtros." />
       </p>
     </motion.div>
   );

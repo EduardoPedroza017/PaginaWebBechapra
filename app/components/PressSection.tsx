@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Award, Calendar, Newspaper } from 'lucide-react';
+import { TranslateText } from "@/components/TranslateText";
 
 export default function PressSection() {
 	const [currentSlide, setCurrentSlide] = useState(0);
@@ -81,18 +82,18 @@ export default function PressSection() {
 				transition={{ duration: 0.6 }}
 				className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4"
 			>
-				<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-					Prensa y Reconocimientos
+				<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white">
+					<TranslateText text="Prensa y Reconocimientos" />
 				</h2>
-				<div className="w-20 h-1 bg-blue-600 rounded-full mx-auto mb-6" />
-				<p className="text-base sm:text-lg text-slate-600">
-					Conoce nuestros logros, participación en eventos y reconocimientos más recientes
+				<div className="w-20 h-1 rounded-full mx-auto mb-6 bg-blue-600 dark:bg-blue-500" />
+				<p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+					<TranslateText text="Conoce nuestros logros, participación en eventos y reconocimientos más recientes" />
 				</p>
 			</motion.div>
 
 			<div className="relative max-w-6xl mx-auto">
 				{/* Carrusel principal */}
-				<div className="relative h-[500px] sm:h-[550px] md:h-[600px] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+				<div className="relative h-[500px] sm:h-[550px] md:h-[600px] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
 					<AnimatePresence mode="wait">
 						<motion.div
 							key={currentSlide}
@@ -131,25 +132,25 @@ export default function PressSection() {
 										transition={{ delay: 0.3 }}
 										className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 leading-tight"
 									>
-										{pressItems[currentSlide].title}
+										<TranslateText text={pressItems[currentSlide].title} />
 									</motion.h3>
 
 									<motion.p
 										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ delay: 0.4 }}
-										className="text-base sm:text-lg text-blue-100 mb-4"
+										className="text-base sm:text-lg mb-4 text-blue-100 dark:text-blue-200"
 									>
-										{pressItems[currentSlide].date}
+										<TranslateText text={pressItems[currentSlide].date} />
 									</motion.p>
 
 									<motion.p
 										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ delay: 0.5 }}
-										className="text-base sm:text-lg text-white/90 mb-6 max-w-lg"
+										className="text-base sm:text-lg mb-6 text-slate-100 dark:text-slate-200"
 									>
-										{pressItems[currentSlide].description}
+										<TranslateText text={pressItems[currentSlide].description} />
 									</motion.p>
 
 									<motion.div

@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Send, Rocket, Phone, Mail, MapPin } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function ContactSection() {
   return (
-    <section id="contacto" className="py-24 px-6 bg-gradient-to-b from-orange-50/30 to-white">
+    <section id="contacto" className="py-24 px-6 bg-gradient-to-b from-blue-50/30 to-white dark:from-slate-900 dark:to-slate-950">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -19,19 +20,19 @@ export default function ContactSection() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30"
+            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
           >
             <Rocket className="w-8 h-8 text-white" />
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
-            ¿Listo para profesionalizar{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-              tu PYME?
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
+            <TranslateText text="¿Listo para profesionalizar" />{" "}
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+              <TranslateText text="tu PYME?" />
             </span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Contáctanos y recibe una consultoría gratuita para diseñar la solución ideal para tu empresa.
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <TranslateText text="Contáctanos y recibe una consultoría gratuita para diseñar la solución ideal para tu empresa." />
           </p>
         </motion.div>
 
@@ -55,9 +56,9 @@ export default function ContactSection() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ x: 8 }}
-                className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm hover:shadow-lg hover:border-orange-300 transition-all cursor-pointer"
+                className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-blue-100 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center">
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -73,10 +74,10 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="p-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl text-white"
+              className="p-6 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl text-white"
             >
               <h4 className="font-bold mb-2">Más de 200+ PYMEs confían en nosotros</h4>
-              <p className="text-sm text-orange-100">Soluciones adaptadas al tamaño de tu negocio.</p>
+              <p className="text-sm text-blue-100">Soluciones adaptadas al tamaño de tu negocio.</p>
             </motion.div>
           </motion.div>
 
@@ -98,7 +99,7 @@ export default function ContactSection() {
                     <input
                       type="text"
                       placeholder="Tu nombre"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                     />
                   </div>
                   <div>
@@ -108,7 +109,7 @@ export default function ContactSection() {
                     <input
                       type="email"
                       placeholder="tu@email.com"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -121,14 +122,14 @@ export default function ContactSection() {
                     <input
                       type="text"
                       placeholder="Nombre de tu empresa"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Número de empleados
                     </label>
-                    <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none">
+                    <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none">
                       <option>1-10</option>
                       <option>11-50</option>
                       <option>51-100</option>
@@ -144,7 +145,7 @@ export default function ContactSection() {
                   <textarea
                     rows={4}
                     placeholder="Cuéntanos sobre tu negocio y tus necesidades..."
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none resize-none"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none"
                   />
                 </div>
 
@@ -152,7 +153,7 @@ export default function ContactSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-400 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all flex items-center justify-center gap-3"
                 >
                   <Send className="w-5 h-5" />
                   Enviar solicitud

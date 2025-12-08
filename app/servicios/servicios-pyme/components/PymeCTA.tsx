@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Rocket, CheckCircle } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function PymeCTA() {
   const ctaFeatures = [
@@ -12,18 +13,18 @@ export default function PymeCTA() {
   ];
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/20 to-transparent rounded-full"
+          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/20 dark:from-white/10 to-transparent rounded-full"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [360, 180, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-orange-300/30 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-blue-300/30 dark:from-blue-600/20 to-transparent rounded-full"
         />
         
         {/* Floating rockets */}
@@ -100,7 +101,7 @@ export default function PymeCTA() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-orange-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
               >
                 Contactar
                 <ArrowRight className="w-5 h-5" />

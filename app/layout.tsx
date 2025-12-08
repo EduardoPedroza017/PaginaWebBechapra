@@ -6,6 +6,7 @@ import Analytics from "@/components/Analytics";
 import { Montserrat } from 'next/font/google';
 import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import { ThemeProvider } from "@/lib/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,14 +46,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://use.typekit.net/abc1def.css" />
       </head>
       <body className="antialiased">
-        <LanguageProvider>
-          <NavbarConditional />
-          <main className="min-h-screen w-full overflow-x-hidden">
-            {children}
-          </main>
-          <Analytics />
-          <CookieConsent />
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <NavbarConditional />
+            <main className="min-h-screen w-full overflow-x-hidden">
+              {children}
+            </main>
+            <Analytics />
+            <CookieConsent />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

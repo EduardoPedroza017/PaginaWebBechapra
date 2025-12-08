@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Reason {
   icon: LucideIcon;
@@ -16,7 +17,7 @@ interface WhyUsProps {
 
 export default function WhyUsSection({ title, reasons }: WhyUsProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-blue-100/50 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-100/50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -24,9 +25,9 @@ export default function WhyUsSection({ title, reasons }: WhyUsProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-black text-gray-900 text-center mb-12 tracking-tight"
+          className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white text-center mb-12 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h2>
 
         {/* Cards Grid */}
@@ -41,18 +42,18 @@ export default function WhyUsSection({ title, reasons }: WhyUsProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="bg-white p-10 rounded-3xl border-2 border-blue-100 hover:border-blue-600 hover:shadow-xl hover:shadow-blue-600/15 transition-all duration-300 cursor-pointer"
+                className="bg-white dark:bg-slate-800 p-10 rounded-3xl border-2 border-blue-100 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-600 hover:shadow-xl hover:shadow-blue-600/15 dark:hover:shadow-blue-900/30 transition-all duration-300 cursor-pointer"
               >
                 <Icon
                   size={40}
                   strokeWidth={2.5}
-                  className="text-blue-600 mb-6"
+                  className="text-blue-600 dark:text-blue-400 mb-6"
                 />
-                <h3 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">
-                  {reason.title}
+                <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
+                  <TranslateText text={reason.title} />
                 </h3>
-                <p className="text-base text-gray-700 opacity-75 leading-relaxed">
-                  {reason.desc}
+                <p className="text-base text-gray-700 dark:text-gray-300 opacity-75 leading-relaxed">
+                  <TranslateText text={reason.desc} />
                 </p>
               </motion.div>
             );

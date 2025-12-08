@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Clock, ArrowRight, Loader2, FileText } from "lucide-react";
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { TranslateText } from '@/components/TranslateText';
 
 interface NewsItem {
   title: string;
@@ -13,133 +14,166 @@ interface NewsItem {
   image_url?: string;
 }
 
+const NewsSkeleton = () => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-800"
+        >
+          <div className="w-full h-48 bg-slate-200 dark:bg-slate-800 animate-pulse" />
+          <div className="p-6 space-y-4">
+            <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-1/4" />
+            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-3/4" />
+            <div className="space-y-2">
+              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
+              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-5/6" />
+            </div>
+            <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-32" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function NewsCards() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/news")
-      .then((res) => res.json())
-      .then((data) => {
-        const sorted = data.sort(
-          (a: NewsItem, b: NewsItem) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
-        setNews(sorted.slice(0, 3));
-      })
-      .catch(() => setNews([]))
-      .finally(() => setLoading(false));
+    const fetchNews = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/news');
+        const data = await response.json();
+        setNews(data.slice(0, 3));
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
   }, []);
 
-  return (
-    <section>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <span className="inline-flex items-center gap-2 text-blue-700 bg-blue-100 font-semibold text-sm px-4 py-2 rounded-full mb-4">
-          <FileText className="w-4 h-4" />
-          Blog y noticias
-        </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-          Últimas Noticias
-        </h2>
-        <p className="text-lg text-slate-600 max-w-xl mx-auto">
-          Mantente informado sobre tendencias, eventos y cambios legislativos importantes
-        </p>
-      </motion.div>
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+  return (
+    <section className="py-20 bg-white dark:bg-slate-900">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full">
+              <TranslateText text="Blog y noticias" />
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+              <TranslateText text="Últimas Noticias" />
+            </h2>
+          </motion.div>
         </div>
-      ) : news.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-3xl shadow-sm">
-          <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <p className="text-slate-500 text-lg">No hay noticias disponibles</p>
-        </div>
-      ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {news.map((item, i) => (
-            <Link key={i} href={`/noticias/${encodeURIComponent(item.title)}`}>
-              <motion.article
-                initial={{ opacity: 0, y: 30 }}
+
+        {loading ? (
+          <NewsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group h-full rounded-3xl bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
               >
-                {/* Image */}
-                <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
-                  {item.image_url ? (
-                    <img
-                      src={`http://localhost:5000${item.image_url}`}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <FileText className="w-16 h-16 text-blue-200" />
+                <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-800 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 transition-all duration-300">
+                  {item.image_url && (
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <Image
+                        src={item.image_url}
+                        alt={item.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg shadow-lg">
-                    {item.subtitle || "Noticia"}
+                  <div className="p-6">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                      {formatDate(item.date)}
+                    </p>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
+                      {item.description}
+                    </p>
+                    <Link
+                      href="/noticias"
+                      className="inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:gap-2 transition-all"
+                    >
+                      <TranslateText text="Leer más" />
+                      <svg
+                        className="w-4 h-4 ml-2 group-hover:ml-3 transition-all"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
                   </div>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
-                {/* Content */}
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4 text-slate-500">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">
-                      {new Date(item.date).toLocaleDateString("es-MX", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-slate-500 leading-relaxed mb-4 line-clamp-2">
-                    {item.description}
-                  </p>
-
-                  <span className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 group-hover:gap-3 transition-all">
-                    Leer artículo
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </div>
-              </motion.article>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="text-center mt-12"
-      >
-        <Link
-          href="/noticias"
-          className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/25"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-center mt-12"
         >
-          Ver todas las noticias
-          <ArrowRight className="w-5 h-5" />
-        </Link>
-      </motion.div>
+          <Link
+            href="/noticias"
+            className="inline-flex items-center px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-lg hover:shadow-xl"
+          >
+            <TranslateText text="Ver todas las noticias" />
+            <svg
+              className="w-5 h-5 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </Link>
+        </motion.div>
+      </div>
     </section>
   );
 }

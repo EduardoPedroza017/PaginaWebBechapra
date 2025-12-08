@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Clock, ArrowLeft } from 'lucide-react';
 import Footer from '@/components/Footer';
+import { TranslateText } from '@/components/TranslateText';
 
 interface NewsItem {
 	title: string;
@@ -33,33 +35,28 @@ export default function NewsDetailPage() {
 
 	if (loading) {
 		return (
-			<main style={{background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-				<div style={{fontSize: '1.5rem', color: '#003d8f'}}>Cargando noticia...</div>
+			<main className="bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 min-h-screen flex items-center justify-center">
+				<div className="text-2xl text-blue-900 dark:text-blue-400"><TranslateText text="Cargando noticia..." /></div>
 			</main>
 		);
 	}
 
 	if (!news) {
 		return (
-			<main style={{background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2rem'}}>
-				<div style={{fontSize: '1.5rem', color: '#666'}}>Noticia no encontrada</div>
-				<button onClick={() => router.push('/noticias')} style={{padding: '1rem 2rem', borderRadius: '12px', background: '#003d8f', color: 'white', fontWeight: 700, border: 'none', cursor: 'pointer'}}>Volver a Noticias</button>
+			<main className="bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 min-h-screen flex items-center justify-center flex-col gap-8">
+				<div className="text-2xl text-slate-600 dark:text-slate-400"><TranslateText text="Noticia no encontrada" /></div>
+				<button onClick={() => router.push('/noticias')} className="px-8 py-4 rounded-xl bg-blue-900 dark:bg-blue-600 text-white font-bold border-none cursor-pointer hover:bg-blue-800 dark:hover:bg-blue-700 transition-colors">
+					<TranslateText text="Volver a Noticias" />
+				</button>
 			</main>
 		);
 	}
 
 	return (
-		<main style={{background: 'linear-gradient(180deg, #E8F4FF 0%, #D0E8FF 100%)'}}>
+		<main className="bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
 			{/* Hero Section */}
-			<section style={{
-				width: '100vw',
-				marginLeft: 'calc(-50vw + 50%)',
-				padding: '4rem 1.5rem 6rem',
-				background: 'linear-gradient(90deg, #003d8f 0%, #004AB7 35%, #004AB7 65%, #0056d4 100%)',
-				position: 'relative',
-				overflow: 'hidden'
-			}}>
-				<div style={{maxWidth: '1280px', margin: '0 auto', position: 'relative', zIndex: 2}}>
+			<section className="w-screen -ml-[calc(50vw-50%)] px-6 py-16 lg:py-24 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 relative overflow-hidden">
+				<div className="max-w-[1280px] mx-auto relative z-10">
 					<motion.div
 						initial={{opacity: 0, y: 30}}
 						animate={{opacity: 1, y: 0}}
@@ -67,56 +64,21 @@ export default function NewsDetailPage() {
 					>
 						<button 
 							onClick={() => router.push('/noticias')}
-							style={{
-								display: 'inline-flex',
-								alignItems: 'center',
-								gap: '0.5rem',
-								background: 'rgba(255,255,255,0.2)',
-								color: 'white',
-								border: 'none',
-								padding: '0.75rem 1.5rem',
-								borderRadius: '8px',
-								fontWeight: 600,
-								cursor: 'pointer',
-								marginBottom: '2rem',
-								transition: 'all 0.3s ease'
-							}}
+							className="inline-flex items-center gap-2 bg-white/20 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer mb-8 hover:bg-white/30 transition-all"
 						>
 							<ArrowLeft size={20} />
-							Volver a Noticias
+							<TranslateText text="Volver a Noticias" />
 						</button>
 
-						<div style={{
-							display: 'inline-block',
-							background: 'rgba(255,255,255,0.2)',
-							color: 'white',
-							padding: '0.5rem 1rem',
-							borderRadius: '8px',
-							fontSize: '0.9rem',
-							fontWeight: 600,
-							marginBottom: '1.5rem'
-						}}>
-							{news.subtitle || 'Noticia'}
+						<div className="inline-block bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold mb-6">
+							<TranslateText text={news.subtitle || 'Noticia'} />
 						</div>
 
-						<h1 style={{
-							fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-							fontWeight: 900,
-							color: 'white',
-							marginBottom: '1.5rem',
-							letterSpacing: '-0.02em',
-							lineHeight: 1.2
-						}}>
-							{news.title}
+						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+							<TranslateText text={news.title} />
 						</h1>
 
-						<div style={{
-							display: 'flex',
-							alignItems: 'center',
-							gap: '0.5rem',
-							color: 'rgba(255,255,255,0.9)',
-							fontSize: '1rem'
-						}}>
+						<div className="flex items-center gap-2 text-white/90 text-base">
 							<Clock size={20} />
 							<span>{new Date(news.date).toLocaleDateString('es-MX', {day: 'numeric', month: 'long', year: 'numeric'})}</span>
 						</div>
@@ -125,127 +87,52 @@ export default function NewsDetailPage() {
 			</section>
 
 			{/* Contenido */}
-			<section style={{
-				maxWidth: '1100px',
-				margin: '-4rem auto 0',
-				padding: '0 1.5rem 6rem',
-				position: 'relative',
-				zIndex: 10
-			}}>
+			<section className="max-w-[1100px] mx-auto -mt-16 px-6 pb-24 relative z-10">
 				<motion.div
 					initial={{opacity: 0, y: 40}}
 					animate={{opacity: 1, y: 0}}
 					transition={{duration: 0.6}}
-					style={{
-						background: 'white',
-						borderRadius: '24px',
-						overflow: 'hidden',
-						boxShadow: '0 20px 60px rgba(0,61,143,0.15)'
-					}}
+					className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/15 dark:shadow-blue-500/10"
 				>
-					{news.image_url && (
-						<div style={{
-							width: '100%',
-							height: '500px',
-							position: 'relative',
-							overflow: 'hidden',
-							background: 'linear-gradient(135deg, #E8F4FF 0%, #D0E8FF 100%)'
-						}}>
-							<img 
-								src={`http://localhost:5000${news.image_url}`}
-								alt={news.title}
-								style={{
-									width: '100%',
-									height: '100%',
-									objectFit: 'cover'
-								}}
-							/>
-							<div style={{
-								position: 'absolute',
-								bottom: 0,
-								left: 0,
-								right: 0,
-								height: '120px',
-								background: 'linear-gradient(to top, rgba(0,0,0,0.4), transparent)'
-							}} />
-						</div>
-					)}
-
-					<div style={{padding: '3.5rem'}}>
+				{news.image_url && (
+					<div className="w-full h-[500px] relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
+						<Image 
+							src={`http://localhost:5000${news.image_url}`}
+							alt={news.title}
+							fill
+							className="object-cover"
+							unoptimized
+						/>
+						<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/40 to-transparent" />
+					</div>
+				)}					<div className="p-14">
 						{/* Metadata */}
-						<div style={{
-							display: 'flex',
-							alignItems: 'center',
-							gap: '1.5rem',
-							marginBottom: '2.5rem',
-							paddingBottom: '2rem',
-							borderBottom: '2px solid #E8F4FF'
-						}}>
-							<div style={{
-								display: 'flex',
-								alignItems: 'center',
-								gap: '0.5rem',
-								color: '#666',
-								fontSize: '1rem'
-							}}>
+						<div className="flex items-center gap-6 mb-10 pb-8 border-b-2 border-slate-100 dark:border-slate-700">
+							<div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-base">
 								<Clock size={20} />
 								<span>{new Date(news.date).toLocaleDateString('es-MX', {day: 'numeric', month: 'long', year: 'numeric'})}</span>
 							</div>
-							<div style={{
-								background: 'linear-gradient(135deg, #003d8f 0%, #0056d4 100%)',
-								color: 'white',
-								padding: '0.5rem 1.2rem',
-								borderRadius: '8px',
-								fontSize: '0.9rem',
-								fontWeight: 700
-							}}>
-								{news.subtitle || 'Noticia'}
+							<div className="bg-gradient-to-r from-blue-900 to-blue-700 dark:from-blue-600 dark:to-blue-500 text-white px-5 py-2 rounded-lg text-sm font-bold">
+								<TranslateText text={news.subtitle || 'Noticia'} />
 							</div>
 						</div>
 
 						{/* Contenido principal */}
-						<div style={{
-							fontSize: '1.15rem',
-							color: '#2d3748',
-							lineHeight: 1.9,
-							whiteSpace: 'pre-wrap',
-							letterSpacing: '0.01em'
-						}}>
+						<div className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap tracking-wide">
 							{news.description.split('\n\n').map((paragraph, i) => (
-								<p key={i} style={{
-									marginBottom: '1.5rem',
-									textAlign: 'justify'
-								}}>
-									{paragraph}
+								<p key={i} className="mb-6 text-justify">
+									<TranslateText text={paragraph} />
 								</p>
 							))}
 						</div>
 
 						{/* Botón de compartir */}
-						<div style={{
-							marginTop: '3rem',
-							paddingTop: '2rem',
-							borderTop: '2px solid #E8F4FF',
-							display: 'flex',
-							gap: '1rem',
-							flexWrap: 'wrap'
-						}}>
+						<div className="mt-12 pt-8 border-t-2 border-slate-100 dark:border-slate-700 flex gap-4 flex-wrap">
 							<button
 								onClick={() => router.push('/noticias')}
-								style={{
-									padding: '1rem 2rem',
-									borderRadius: '12px',
-									background: 'linear-gradient(90deg, #003d8f 0%, #0056d4 100%)',
-									color: 'white',
-									fontWeight: 700,
-									border: 'none',
-									cursor: 'pointer',
-									fontSize: '1rem',
-									boxShadow: '0 4px 12px rgba(0,61,143,0.2)',
-									transition: 'all 0.3s ease'
-								}}
+								className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-900 to-blue-700 dark:from-blue-600 dark:to-blue-500 text-white font-bold border-none cursor-pointer text-base shadow-lg shadow-blue-900/20 dark:shadow-blue-500/20 hover:shadow-xl hover:-translate-y-1 transition-all"
 							>
-								← Ver más noticias
+								← <TranslateText text="Ver más noticias" />
 							</button>
 						</div>
 					</div>

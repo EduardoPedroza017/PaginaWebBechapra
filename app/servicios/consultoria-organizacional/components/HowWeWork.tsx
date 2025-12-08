@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface HowWeWorkProps {
   title: string;
@@ -11,10 +12,10 @@ interface HowWeWorkProps {
 
 export default function HowWeWork({ title, description, steps }: HowWeWorkProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-violet-50 via-purple-50/50 to-slate-50 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
       {/* Decorative */}
-      <div className="absolute -top-20 -left-20 w-72 h-72 bg-gradient-to-br from-violet-200/30 to-purple-200/20 rounded-full blur-3xl" />
-      <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-gradient-to-tl from-blue-200/25 to-indigo-200/15 rounded-full blur-3xl" />
+      <div className="absolute -top-20 -left-20 w-72 h-72 bg-gradient-to-br from-blue-200/30 to-indigo-200/20 dark:from-blue-900/20 dark:to-indigo-900/10 rounded-full blur-3xl" />
+      <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-gradient-to-tl from-blue-200/25 to-blue-200/15 dark:from-blue-900/15 dark:to-blue-800/8 rounded-full blur-3xl" />
 
       <div className="relative max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -26,8 +27,8 @@ export default function HowWeWork({ title, description, steps }: HowWeWorkProps)
             transition={{ duration: 0.7 }}
             className="relative"
           >
-            <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-violet-100 to-purple-100 border border-violet-200 shadow-2xl flex items-center justify-center">
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-3xl blur-2xl" />
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 shadow-2xl flex items-center justify-center">
               {/* Process Visual */}
               <div className="p-8 space-y-4 w-full">
                 {steps.map((step, i) => (
@@ -39,10 +40,10 @@ export default function HowWeWork({ title, description, steps }: HowWeWorkProps)
                     transition={{ delay: 0.3 + i * 0.15 }}
                     className="flex items-center gap-4 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md"
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
                       <span className="text-white font-bold text-sm">{i + 1}</span>
                     </div>
-                    <span className="text-violet-900 font-semibold text-sm">{step}</span>
+                    <span className="text-blue-900 font-semibold text-sm">{step}</span>
                   </motion.div>
                 ))}
               </div>
@@ -56,10 +57,10 @@ export default function HowWeWork({ title, description, steps }: HowWeWorkProps)
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <h2 className="text-3xl md:text-4xl font-black text-violet-900 mb-6 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-blue-900 mb-6 tracking-tight">
               {title}
             </h2>
-            <p className="text-lg text-violet-800/80 leading-relaxed mb-8">
+            <p className="text-lg text-blue-800/80 leading-relaxed mb-8">
               {description}
             </p>
 
@@ -73,10 +74,10 @@ export default function HowWeWork({ title, description, steps }: HowWeWorkProps)
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="flex items-start gap-3 group"
                 >
-                  <div className="w-6 h-6 min-w-[24px] rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform">
+                  <div className="w-6 h-6 min-w-[24px] rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform">
                     <CheckCircle size={14} className="text-white" />
                   </div>
-                  <span className="text-violet-900 font-medium leading-relaxed">
+                  <span className="text-blue-900 font-medium leading-relaxed">
                     {step}
                   </span>
                 </motion.div>

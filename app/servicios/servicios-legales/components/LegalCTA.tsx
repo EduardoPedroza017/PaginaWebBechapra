@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Scale, Shield, CheckCircle } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 export default function LegalCTA() {
   const ctaFeatures = [
@@ -12,18 +13,18 @@ export default function LegalCTA() {
   ];
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-violet-600 via-purple-600 to-slate-800 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 to-transparent rounded-full"
+          className="absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-to-br from-white/10 dark:from-white/5 to-transparent rounded-full"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [360, 180, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-amber-400/20 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-blue-400/20 dark:from-blue-600/15 to-transparent rounded-full"
         />
         
         {/* Floating icons */}
@@ -74,12 +75,12 @@ export default function LegalCTA() {
 
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
             ¿Listo para reducir{" "}
-            <span className="bg-gradient-to-r from-amber-300 to-yellow-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-sky-300 to-blue-300 bg-clip-text text-transparent">
               riesgos legales?
             </span>
           </h2>
 
-          <p className="text-xl text-violet-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
             Hablemos: proponemos un plan legal inicial personalizado para tu empresa.
           </p>
 
@@ -105,7 +106,7 @@ export default function LegalCTA() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-violet-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
               >
                 Contactar ahora
                 <ArrowRight className="w-5 h-5" />

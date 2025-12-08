@@ -95,7 +95,7 @@ const faqs = [
 
 export default function ServiciosPymePage() {
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-hidden bg-white dark:bg-slate-900">
       <PymeHero />
       <ServicesGrid services={services} />
       <UseCasesSection useCases={useCases} />

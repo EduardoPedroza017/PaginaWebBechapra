@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Program {
   title: string;
@@ -17,10 +18,10 @@ interface ProgramsGridProps {
 
 export default function ProgramsGrid({ title, programs }: ProgramsGridProps) {
   return (
-    <section id="programas" className="py-24 px-6 bg-white relative overflow-hidden">
+    <section id="programas" className="py-24 px-6 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Decorative */}
-      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-teal-100 to-emerald-100 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/20 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/20 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -31,9 +32,9 @@ export default function ProgramsGrid({ title, programs }: ProgramsGridProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight"
         >
-          <span className="text-gray-900">Nuestros Programas de </span>
-          <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-            Capacitación
+          <span className="text-gray-900 dark:text-white"><TranslateText text="Nuestros Programas de" /> </span>
+          <span className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <TranslateText text="Capacitación" />
           </span>
         </motion.h2>
 
@@ -49,7 +50,7 @@ export default function ProgramsGrid({ title, programs }: ProgramsGridProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
                 whileHover={{ y: -12, scale: 1.02 }}
-                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 rounded-3xl p-8 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-blue-200 transition-all duration-500 cursor-pointer overflow-hidden text-center"
+                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-blue-950/30 rounded-3xl p-8 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-2xl hover:border-blue-200 dark:hover:border-blue-700 transition-all duration-500 cursor-pointer overflow-hidden text-center"
               >
                 {/* Top Gradient Line */}
                 <div
@@ -77,6 +78,14 @@ export default function ProgramsGrid({ title, programs }: ProgramsGridProps) {
                 >
                   <Icon size={36} style={{ color: program.color }} />
                 </motion.div>
+
+                {/* Text */}
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                  <TranslateText text={program.title} />
+                </h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
+                  <TranslateText text={program.desc} />
+                </p>
 
                 {/* Content */}
                 <h3

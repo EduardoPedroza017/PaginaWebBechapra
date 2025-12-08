@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 type Status = "idle" | "sending" | "success" | "error";
 
@@ -77,12 +78,12 @@ export default function ContactForm() {
                 onFocus={() => setFocused(field.name)}
                 onBlur={() => setFocused(null)}
                 placeholder={field.placeholder}
-                className={`w-full pl-12 pr-4 py-4 rounded-xl border bg-slate-50 text-slate-900 placeholder-slate-400 outline-none transition-all
+                className={`w-full pl-12 pr-4 py-4 rounded-xl border outline-none transition-all bg-slate-50 text-slate-900 placeholder-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500
                   ${errors[field.name] 
-                    ? "border-red-400 bg-red-50/50" 
+                    ? "border-red-400 bg-red-50/50 dark:bg-red-900/20 dark:border-red-500" 
                     : focused === field.name 
-                      ? "border-blue-500 bg-white" 
-                      : "border-slate-200 hover:border-slate-300"
+                      ? "border-blue-500 bg-white dark:bg-slate-700 dark:border-blue-400" 
+                      : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600"
                   }`}
                 aria-invalid={!!errors[field.name]}
               />
@@ -118,12 +119,12 @@ export default function ContactForm() {
               onFocus={() => setFocused("message")}
               onBlur={() => setFocused(null)}
               placeholder="¿En qué podemos ayudarte?"
-              className={`w-full pl-12 pr-4 py-4 rounded-xl border bg-slate-50 text-slate-900 placeholder-slate-400 outline-none transition-all resize-y min-h-[140px]
+              className={`w-full pl-12 pr-4 py-4 rounded-xl border outline-none transition-all resize-y min-h-[140px] bg-slate-50 text-slate-900 placeholder-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500
                 ${errors.message 
-                  ? "border-red-400 bg-red-50/50" 
+                  ? "border-red-400 bg-red-50/50 dark:bg-red-900/20 dark:border-red-500" 
                   : focused === "message" 
-                    ? "border-blue-500 bg-white" 
-                    : "border-slate-200 hover:border-slate-300"
+                    ? "border-blue-500 bg-white dark:bg-slate-700 dark:border-blue-400" 
+                    : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600"
                 }`}
               aria-invalid={!!errors.message}
             />
@@ -158,12 +159,12 @@ export default function ContactForm() {
             {status === "sending" ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Enviando...
+                <TranslateText text="Enviando..." />
               </>
             ) : (
               <>
                 <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                Enviar mensaje
+                <TranslateText text="Enviar mensaje" />
               </>
             )}
           </span>
@@ -175,10 +176,10 @@ export default function ContactForm() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 font-medium rounded-xl"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-50 text-green-600 font-medium dark:bg-green-900/20 dark:text-green-400"
             >
               <CheckCircle className="w-5 h-5" />
-              ¡Mensaje enviado! Te contactaremos pronto.
+              <TranslateText text="¡Mensaje enviado! Te contactaremos pronto." />
             </motion.div>
           )}
 
@@ -187,10 +188,10 @@ export default function ContactForm() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-500 font-medium rounded-xl"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-500 font-medium dark:bg-red-900/20 dark:text-red-400"
             >
               <AlertCircle className="w-5 h-5" />
-              Ocurrió un error. Intenta de nuevo.
+              <TranslateText text="Ocurrió un error. Intenta de nuevo." />
             </motion.div>
           )}
         </AnimatePresence>

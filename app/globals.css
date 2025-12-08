@@ -63,17 +63,29 @@
   --gray-900: #212529;
 }
 
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode variables */
+.dark {
+  --background: #0a1627;
+  --foreground: #f1f5f9;
+  
+  /* Dark mode brand colors - slightly adjusted for better visibility */
+  --brand-primary: #3b82f6;        
+  --brand-secondary: #2563eb;      
+  --brand-light: #1e293b;          
+  --brand-dark: #cbd5e1;           
+  --brand-accent: #60a5fa;         
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }

@@ -10,6 +10,7 @@ import {
   LegalCTA,
   ContactSection,
 } from "./components";
+import Footer from "@/components/Footer";
 
 const services = [
   { 
@@ -109,7 +110,7 @@ const benefits = [
 
 export default function ServiciosLegalesPage() {
   return (
-    <main className="min-h-screen bg-white overflow-hidden">
+    <main className="min-h-screen bg-white dark:bg-slate-900 overflow-hidden">
       <LegalHero />
       <ServicesGrid services={services} />
       <PackagesSection packages={packages} />
@@ -117,6 +118,7 @@ export default function ServiciosLegalesPage() {
       <FAQBenefits faqs={faqs} benefits={benefits} />
       <LegalCTA />
       <ContactSection />
+      <Footer />
     </main>
   );
 }

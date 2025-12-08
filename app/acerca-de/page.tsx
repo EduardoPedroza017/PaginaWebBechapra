@@ -14,7 +14,7 @@ import {
 
 export default function AcercaDePage() {
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-white dark:bg-slate-950 min-h-screen">
       {/* Hero Section */}
       <AboutHero />
 

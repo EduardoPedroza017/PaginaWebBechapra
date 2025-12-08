@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Users, Building2, Briefcase } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
 
 const groups = [
@@ -64,14 +65,14 @@ const cardVariants = {
 
 export default function ServiciosIndex() {
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-white">
+		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
 			{/* Hero Section */}
-			<section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800">
+			<section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900">
 				{/* Background decorations */}
 				<div className="absolute inset-0">
-					<div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-					<div className="absolute bottom-0 right-1/4 w-80 h-80 bg-cyan-400/10 rounded-full blur-3xl" />
-					<div className="absolute top-1/2 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-2xl" />
+					<div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 dark:bg-white/3 rounded-full blur-3xl" />
+					<div className="absolute bottom-0 right-1/4 w-80 h-80 bg-cyan-400/10 dark:bg-cyan-400/5 rounded-full blur-3xl" />
+					<div className="absolute top-1/2 right-0 w-64 h-64 bg-blue-400/10 dark:bg-blue-400/5 rounded-full blur-2xl" />
 				</div>
 
 				<div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28">
@@ -83,37 +84,35 @@ export default function ServiciosIndex() {
 							transition={{ duration: 0.6 }}
 							className="space-y-6"
 						>
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.2 }}
-								className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-blue-100 text-sm font-semibold"
-							>
-								<Briefcase className="w-4 h-4" />
-								Soluciones Empresariales
-							</motion.div>
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: 0.2 }}
+									className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-blue-100 dark:text-blue-200 text-sm font-semibold"
+								>
+									<Briefcase className="w-4 h-4" />
+									<TranslateText text="Soluciones Empresariales" />
+								</motion.div>
 
-							<h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
-								Nuestros{" "}
-								<span className="bg-gradient-to-r from-cyan-300 to-blue-200 bg-clip-text text-transparent">
-									Servicios
-								</span>
-							</h1>
+								<h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+									<TranslateText text="Nuestros" />{" "}
+									<span className="bg-gradient-to-r from-cyan-300 to-blue-200 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
+										<TranslateText text="Servicios" />
+									</span>
+								</h1>
 
-							<p className="text-lg sm:text-xl text-blue-100/90 max-w-xl leading-relaxed">
-								Descubre soluciones integrales en Capital Humano, Desarrollo Organizacional y Management Services diseñadas para impulsar el crecimiento de tu empresa.
-							</p>
-
-							<motion.div
+								<p className="text-lg sm:text-xl text-blue-100/90 dark:text-blue-200/80 max-w-xl leading-relaxed">
+									<TranslateText text="Descubre soluciones integrales en Capital Humano, Desarrollo Organizacional y Management Services diseñadas para impulsar el crecimiento de tu empresa." />
+								</p>							<motion.div
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.4 }}
 							>
 								<Link
 									href="#servicios-grid"
-									className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+									className="group inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-400 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
 								>
-									Explorar Servicios
+									<TranslateText text="Explorar Servicios" />
 									<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 								</Link>
 							</motion.div>
@@ -190,11 +189,11 @@ export default function ServiciosIndex() {
 			</section>
 
 			{/* Services Grid Section */}
-			<section id="servicios-grid" className="py-20 lg:py-28 bg-white relative">
+			<section id="servicios-grid" className="py-20 lg:py-28 bg-white dark:bg-slate-900 relative">
 				{/* Subtle background pattern */}
 				<div className="absolute inset-0 opacity-30">
-					<div className="absolute top-20 left-10 w-72 h-72 bg-blue-100 rounded-full blur-3xl" />
-					<div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-100 rounded-full blur-3xl" />
+					<div className="absolute top-20 left-10 w-72 h-72 bg-blue-100 dark:bg-blue-900/30 rounded-full blur-3xl" />
+					<div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-100 dark:bg-cyan-900/30 rounded-full blur-3xl" />
 				</div>
 
 				<div className="relative max-w-7xl mx-auto px-6">
@@ -205,15 +204,15 @@ export default function ServiciosIndex() {
 						viewport={{ once: true }}
 						className="text-center mb-16"
 					>
-						<h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-4">
-							Nuestras{" "}
-							<span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-								Líneas de Servicio
+						<h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4">
+							<TranslateText text="Nuestras" />{" "}
+							<span className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
+								<TranslateText text="Líneas de Servicio" />
 							</span>
 						</h2>
 
-						<p className="text-lg text-slate-600 max-w-2xl mx-auto">
-							Soluciones especializadas diseñadas para cada necesidad de tu negocio
+						<p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+							<TranslateText text="Soluciones especializadas diseñadas para cada necesidad de tu negocio" />
 						</p>
 
 						<div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full mx-auto mt-6" />

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LucideIcon, ChevronDown } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface FAQ {
   q: string;
@@ -24,7 +25,7 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-violet-50 via-purple-50/50 to-slate-50">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -33,10 +34,10 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-            Preguntas{" "}
-            <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-              frecuentes
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+            <TranslateText text="Preguntas" />{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              <TranslateText text="frecuentes" />
             </span>
           </h2>
         </motion.div>
@@ -44,9 +45,9 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* FAQ Column */}
           <div>
-            <h3 className="text-xl font-bold text-violet-900 mb-6 flex items-center gap-2">
-              <span className="w-8 h-1 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full" />
-              Dudas comunes
+            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-6 flex items-center gap-2">
+              <span className="w-8 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-600 dark:to-indigo-600 rounded-full" />
+              <TranslateText text="Dudas comunes" />
             </h3>
             
             <div className="space-y-4">
@@ -57,7 +58,7 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="border border-violet-100 rounded-2xl overflow-hidden bg-white hover:border-violet-200 transition-colors shadow-sm"
+                  className="border border-blue-100 rounded-2xl overflow-hidden bg-white hover:border-blue-200 transition-colors shadow-sm"
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -67,9 +68,9 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
                     <motion.div
                       animate={{ rotate: openFaq === i ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className="flex-shrink-0 w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center"
+                      className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
                     >
-                      <ChevronDown className="w-5 h-5 text-violet-600" />
+                      <ChevronDown className="w-5 h-5 text-blue-600" />
                     </motion.div>
                   </button>
 
@@ -94,8 +95,8 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
 
           {/* Benefits Column */}
           <div>
-            <h3 className="text-xl font-bold text-violet-900 mb-6 flex items-center gap-2">
-              <span className="w-8 h-1 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full" />
+            <h3 className="text-xl font-bold text-blue-900 mb-6 flex items-center gap-2">
+              <span className="w-8 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
               Beneficios clave
             </h3>
 
@@ -110,17 +111,17 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={{ x: 8, scale: 1.02 }}
-                    className="group relative bg-white rounded-2xl p-6 border border-violet-100 hover:border-violet-300 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden"
+                    className="group relative bg-white rounded-2xl p-6 border border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden"
                   >
                     {/* Left accent */}
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-violet-400 via-purple-500 to-amber-400 rounded-l-2xl" />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-indigo-500 to-sky-400 rounded-l-2xl" />
 
                     <div className="flex items-start gap-4 pl-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 mb-1 group-hover:text-violet-700 transition-colors">
+                        <h4 className="font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors">
                           {benefit.title}
                         </h4>
                         <p className="text-gray-600 text-sm leading-relaxed">

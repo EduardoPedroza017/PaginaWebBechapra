@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 import {
@@ -11,6 +11,7 @@ import {
   EmptyState,
 } from "./components";
 import { ChevronDown, Loader2 } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
   id: string;
@@ -20,12 +21,22 @@ interface PressItem {
   link?: string;
 }
 
+function getInitialTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  const saved = localStorage.getItem('prensa-theme');
+  if (saved) return saved as 'light' | 'dark';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 export default function PrensaPage() {
   const [press, setPress] = useState<PressItem[]>([]);
   const [filtered, setFiltered] = useState<PressItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(8);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+  const mediaQueryRef = useRef<MediaQueryList | null>(null);
+  const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/press")
@@ -42,6 +53,24 @@ export default function PrensaPage() {
         console.error("Error fetching press:", err);
       })
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('prensa-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    handlerRef.current = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? 'dark' : 'light');
+    };
+    mediaQueryRef.current = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQueryRef.current.addEventListener('change', handlerRef.current);
+    
+    return () => {
+      if (mediaQueryRef.current && handlerRef.current) {
+        mediaQueryRef.current.removeEventListener('change', handlerRef.current);
+      }
+    };
   }, []);
 
   // Reset pagination on filter
@@ -65,9 +94,9 @@ export default function PrensaPage() {
   const hasMore = filtered.length > visibleCount;
 
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen transition-colors duration-300">
       {/* Hero Section */}
-      <PressHero />
+      <PressHero theme={theme} setTheme={setTheme} />
 
       {/* Press Releases Section */}
       <section id="comunicados" className="py-20 px-6">
@@ -80,18 +109,20 @@ export default function PrensaPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
-              Comunicados Oficiales
+            <span style={{ 
+              background: theme === 'dark' ? 'rgba(96, 165, 250, 0.2)' : 'rgb(219, 234, 254)',
+              color: theme === 'dark' ? '#60a5fa' : 'rgb(37, 99, 235)'
+            }} className="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-4 transition-colors duration-300">
+              <TranslateText text="Comunicados Oficiales" />
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-              Nuestros{" "}
+            <h2 style={{ color: theme === 'dark' ? '#e2e8f0' : '#111827' }} className="text-4xl md:text-5xl font-black mb-4 transition-colors duration-300">
+              <TranslateText text="Nuestros" /> {" "}
               <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Comunicados
+                <TranslateText text="Comunicados" />
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Información oficial sobre nuestras actividades, logros y
-              novedades.
+            <p style={{ color: theme === 'dark' ? '#cbd5e1' : 'rgb(75, 85, 99)' }} className="text-xl max-w-2xl mx-auto transition-colors duration-300">
+              <TranslateText text="Información oficial sobre nuestras actividades, logros y novedades." />
             </p>
           </motion.div>
 
@@ -101,13 +132,14 @@ export default function PrensaPage() {
             onFilter={handleFilter}
             totalCount={press.length}
             filteredCount={filtered.length}
+            theme={theme}
           />
 
           {/* Content */}
           {loading ? (
-            <PressSkeleton />
+            <PressSkeleton theme={theme} />
           ) : filtered.length === 0 ? (
-            <EmptyState />
+            <EmptyState theme={theme} />
           ) : (
             <div className="space-y-8">
               {/* Featured Press Items */}
@@ -119,6 +151,7 @@ export default function PrensaPage() {
                       item={item}
                       index={i}
                       isFeatured={true}
+                      theme={theme}
                     />
                   ))}
                 </div>
@@ -138,6 +171,7 @@ export default function PrensaPage() {
                       item={item}
                       index={i + 2}
                       isFeatured={false}
+                      theme={theme}
                     />
                   ))}
                 </motion.div>
@@ -155,16 +189,25 @@ export default function PrensaPage() {
                     disabled={loadingMore}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                    style={{
+                      background: theme === 'dark' 
+                        ? 'linear-gradient(to right, #1e40af, #4f46e5)' 
+                        : 'linear-gradient(to right, #2563eb, #4f46e5)',
+                      color: 'white',
+                      boxShadow: theme === 'dark' 
+                        ? '0 20px 25px -5px rgba(30, 64, 175, 0.3)'
+                        : '0 20px 25px -5px rgba(37, 99, 235, 0.3)'
+                    }}
+                    className="group flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {loadingMore ? (
                       <>
                         <Loader2 size={20} className="animate-spin" />
-                        <span>Cargando...</span>
+                        <span><TranslateText text="Cargando..." /></span>
                       </>
                     ) : (
                       <>
-                        <span>Ver más comunicados</span>
+                        <span><TranslateText text="Ver más comunicados" /></span>
                         <ChevronDown
                           size={20}
                           className="group-hover:translate-y-1 transition-transform duration-300"
@@ -179,10 +222,10 @@ export default function PrensaPage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center text-gray-500 text-sm pt-4"
+                style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}
+                className="text-center text-sm pt-4 transition-colors duration-300"
               >
-                Mostrando {Math.min(visibleCount, filtered.length)} de{" "}
-                {filtered.length} comunicados
+                <TranslateText text={`Mostrando ${Math.min(visibleCount, filtered.length)} de ${filtered.length} comunicados`} />
               </motion.div>
             </div>
           )}
@@ -190,7 +233,11 @@ export default function PrensaPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+      <section style={{
+        background: theme === 'dark' 
+          ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)'
+          : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)',
+      }} className="py-20 px-6 relative overflow-hidden transition-colors duration-300">
         {/* Background Decorations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -213,16 +260,14 @@ export default function PrensaPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              ¿Eres medio de{" "}
+              <TranslateText text="¿Eres medio de" /> {" "}
               <span className="bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">
-                comunicación
+                <TranslateText text="comunicación" />
               </span>
               ?
             </h2>
             <p className="text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Contáctanos para solicitar información, entrevistas o material de
-              prensa. Nuestro equipo de comunicación está disponible para
-              atenderte.
+              <TranslateText text="Contáctanos para solicitar información, entrevistas o material de prensa. Nuestro equipo de comunicación está disponible para atenderte." />
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
@@ -232,7 +277,7 @@ export default function PrensaPage() {
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                Contacto de Prensa
+                <TranslateText text="Contacto de Prensa" />
                 <svg
                   className="w-5 h-5"
                   fill="none"

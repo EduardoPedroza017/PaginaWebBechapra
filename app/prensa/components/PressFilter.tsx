@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Calendar, X, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
   id: string;
@@ -17,9 +18,10 @@ interface PressFilterProps {
   onFilter: (filtered: PressItem[]) => void;
   totalCount: number;
   filteredCount: number;
+  theme: 'light' | 'dark';
 }
 
-export default function PressFilter({ press, onFilter, totalCount, filteredCount }: PressFilterProps) {
+export default function PressFilter({ press, onFilter, totalCount, filteredCount, theme }: PressFilterProps) {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("");
   const [isFiltering, setIsFiltering] = useState(false);
@@ -63,21 +65,31 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white rounded-2xl p-6 shadow-lg shadow-blue-900/5 border border-gray-100"
+        style={{
+          background: theme === 'dark' ? '#1e293b' : 'white',
+          borderColor: theme === 'dark' ? '#475569' : '#f3f4f6'
+        }}
+        className="rounded-2xl p-6 shadow-lg transition-colors duration-300"
       >
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           {/* Search Input */}
           <div className="relative flex-1">
             <Search
               size={20}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}
+              className="absolute left-4 top-1/2 -translate-y-1/2"
             />
             <input
               type="text"
               placeholder="Buscar comunicados..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 text-gray-800 placeholder:text-gray-400"
+              style={{
+                background: theme === 'dark' ? '#0f172a' : '#f9fafb',
+                borderColor: theme === 'dark' ? '#475569' : '#e5e7eb',
+                color: theme === 'dark' ? '#e2e8f0' : '#1f2937'
+              }}
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl border focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400"
             />
             {search && (
               <button
@@ -93,12 +105,18 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
           <div className="relative w-full lg:w-56">
             <Calendar
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+              style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
             />
             <select
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              className="w-full pl-12 pr-10 py-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 text-gray-800 appearance-none cursor-pointer"
+              style={{
+                background: theme === 'dark' ? '#0f172a' : '#f9fafb',
+                borderColor: theme === 'dark' ? '#475569' : '#e5e7eb',
+                color: theme === 'dark' ? '#e2e8f0' : '#1f2937'
+              }}
+              className="w-full pl-12 pr-10 py-3.5 rounded-xl border focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 appearance-none cursor-pointer"
             >
               <option value="">Todos los años</option>
               {years.map((y) => (
@@ -132,10 +150,15 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 onClick={clearFilters}
-                className="px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-colors duration-300 flex items-center gap-2 justify-center"
+                style={{
+                  background: theme === 'dark' ? '#1e293b' : '#f3f4f6',
+                  color: theme === 'dark' ? '#e2e8f0' : '#374151',
+                  borderColor: theme === 'dark' ? '#475569' : '#e5e7eb'
+                }}
+                className="px-6 py-3.5 border rounded-xl font-semibold transition-colors duration-300 flex items-center gap-2 justify-center"
               >
                 <X size={18} />
-                <span>Limpiar</span>
+                <span><TranslateText text="Limpiar" /></span>
               </motion.button>
             )}
           </AnimatePresence>
@@ -148,20 +171,23 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-4 pt-4 border-t border-gray-100"
+              style={{
+                borderColor: theme === 'dark' ? '#475569' : '#f3f4f6'
+              }}
+              className="mt-4 pt-4 border-t"
             >
               <div className="flex items-center gap-2 text-sm">
                 <Filter size={16} className="text-blue-600" />
-                <span className="text-gray-600">
+                <span style={{ color: theme === 'dark' ? '#cbd5e1' : '#4b5563' }}>
                   Mostrando{" "}
                   <span className="font-semibold text-blue-600">
                     {filteredCount}
                   </span>{" "}
                   de{" "}
-                  <span className="font-semibold text-gray-800">
+                  <span style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="font-semibold">
                     {totalCount}
                   </span>{" "}
-                  comunicados
+                  <TranslateText text="comunicados" />
                 </span>
               </div>
             </motion.div>

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { CompanyLocation } from './CompanyLocation';
 
 const footerLinks = {
 	empresa: [
@@ -37,7 +38,7 @@ const socialLinks = [
 export default function Footer() {
 	 const currentYear = new Date().getFullYear();
    return (
-	  <footer className="w-screen relative overflow-hidden text-white" style={{background: 'linear-gradient(135deg, #001a4d 0%, #003d8f 50%, #004AB7 100%)', marginLeft: 'calc(-50vw + 50%)'}}>
+	  <footer className="w-screen relative overflow-hidden text-white" style={{background: 'linear-gradient(135deg, #0A1933 0%, #003D95 50%, #004AB7 100%)', marginLeft: 'calc(-50vw + 50%)'}}>
 			{/* Decorative background elements */}
 			<motion.div
 				animate={{scale: [1, 1.1, 1]}}
@@ -60,7 +61,7 @@ export default function Footer() {
 					position: 'absolute',
 					width: '350px',
 					height: '350px',
-					background: 'radial-gradient(circle, rgba(0,172,183,0.05) 0%, transparent 70%)',
+					background: 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)',
 					borderRadius: '50%',
 					bottom: '-80px',
 					left: '-80px',
@@ -144,7 +145,7 @@ export default function Footer() {
 							   <ul className="flex flex-col gap-3 items-center sm:items-start list-none p-0 m-0">
 								{section.links.map((link, i) => (
 									<li key={i}>
-									   <Link href={link.href} className="text-white/75 no-underline text-sm lg:text-base transition-all inline-block hover:text-yellow-400 hover:pl-2">
+									   <Link href={link.href} className="text-white/75 no-underline text-sm lg:text-base transition-all inline-block hover:text-blue-500 hover:pl-2">
 										   {link.label}
 									   </Link>
 									</li>
@@ -164,21 +165,8 @@ export default function Footer() {
 							Contacto
 						</h3>
 
-					   <div className="flex flex-col gap-4 items-center sm:items-start">
-							   <a href="mailto:contacto@bechapra.com" className="flex items-start gap-3 text-white/75 no-underline text-sm transition-all hover:text-yellow-400">
-								   <Mail size={18} className="mt-[2px] shrink-0" />
-								   <span>contacto@bechapra.com</span>
-							   </a>
-
-							   <a href="tel:+525585482311" className="flex items-start gap-3 text-white/75 no-underline text-sm transition-all hover:text-yellow-400">
-								   <Phone size={18} className="mt-[2px] shrink-0" />
-								   <span>(55) 8548 2311</span>
-							   </a>
-
-							   <div className="flex items-start gap-3 text-white/75 text-sm">
-								   <MapPin size={18} className="mt-[2px] shrink-0" />
-								   <span>Ciudad de México, México</span>
-							   </div>
+					   <div className="text-white/75 [&_a]:text-white/75 [&_a:hover]:text-blue-400">
+							   <CompanyLocation />
 						</div>
 					</motion.div>
 				</div>
@@ -196,8 +184,8 @@ export default function Footer() {
 				   >
 					   <p className="text-xs text-white/60 m-0">© {currentYear} Bechapra. Todos los derechos reservados.</p>
 					   <div className="flex gap-4 flex-wrap justify-center">
-						   <a href="/politica-de-privacidad" className="text-xs text-white/60 no-underline transition-colors hover:text-yellow-400">Política de privacidad</a>
-						   <a href="/terminos-de-servicio" className="text-xs text-white/60 no-underline transition-colors hover:text-yellow-400">Términos de servicio</a>
+						   <a href="/politica-de-privacidad" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500">Política de privacidad</a>
+						   <a href="/terminos-de-servicio" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500">Términos de servicio</a>
 					   </div>
 				   </motion.div>
 			</div>

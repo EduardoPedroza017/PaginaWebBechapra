@@ -50,7 +50,7 @@ const benefits = [
 
 export default function CapitalHumanoPage() {
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-white dark:bg-slate-900 min-h-screen">
       {/* Hero Section */}
       <ServiceHero
         title="Capital Humano"

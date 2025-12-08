@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface NomHeroProps {
   title: string;
@@ -24,7 +25,7 @@ export default function NomHero({
   ctaLink = "#contacto",
 }: NomHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[580px] bg-gradient-to-br from-emerald-950 via-teal-900 to-cyan-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[580px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -34,7 +35,7 @@ export default function NomHero({
             opacity: [0.15, 0.25, 0.15],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-emerald-400/20 via-teal-500/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -42,7 +43,7 @@ export default function NomHero({
             opacity: [0.1, 0.2, 0.1],
           }}
           transition={{ duration: 18, repeat: Infinity, delay: 3 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/15 via-teal-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-400/15 via-blue-500/10 to-transparent dark:from-blue-600/8 dark:via-blue-700/5 dark:to-transparent rounded-full blur-3xl"
         />
         {/* Mesh Grid */}
         <div
@@ -108,10 +109,10 @@ export default function NomHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-sm rounded-full border border-emerald-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6"
             >
-              <Sparkles size={16} className="text-emerald-400" />
-              <span className="text-emerald-200 text-sm font-medium">
+            <Sparkles size={16} className="text-blue-400" />
+            <span className="text-blue-200 text-sm font-medium">
                 Cumplimiento Normativo
               </span>
             </motion.div>
@@ -119,13 +120,13 @@ export default function NomHero({
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
               {title}{" "}
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
                 {highlightWord}
               </span>
             </h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-teal-100/90 leading-relaxed mb-10 max-w-[540px]">
+            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
               {description}
             </p>
 
@@ -134,7 +135,7 @@ export default function NomHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-400 to-teal-500 text-gray-900 rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   {ctaLabel}
                   <ArrowRight size={20} />
@@ -160,23 +161,23 @@ export default function NomHero({
           >
             <div className="relative w-full max-w-[450px] h-[380px]">
               {/* Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/30 to-teal-500/30 rounded-3xl blur-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-3xl blur-3xl" />
 
               {/* Main Card */}
               <div className="relative h-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl border border-white/20 p-8 flex flex-col justify-center">
                 {/* Decorative Lines */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400 rounded-t-3xl" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-indigo-500 to-sky-400 rounded-t-3xl" />
 
                 <div className="text-center">
                   <motion.div
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl"
+                    className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl"
                   >
                     <ShieldCheck size={48} className="text-white" />
                   </motion.div>
                   <h3 className="text-2xl font-black text-white mb-2">NOM-035-STPS</h3>
-                  <p className="text-teal-200/80 text-sm">
+                  <p className="text-blue-200/80 text-sm">
                     Factores de riesgo psicosocial
                   </p>
                 </div>
@@ -184,11 +185,11 @@ export default function NomHero({
                 {/* Stats inside card */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
                   <div className="bg-white/10 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-black text-emerald-400">+120</div>
+                    <div className="text-2xl font-black text-blue-400">+120</div>
                     <div className="text-xs text-white/70">Organizaciones</div>
                   </div>
                   <div className="bg-white/10 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-black text-teal-400">95%</div>
+                    <div className="text-2xl font-black text-indigo-400">95%</div>
                     <div className="text-xs text-white/70">Éxito</div>
                   </div>
                 </div>
@@ -201,7 +202,7 @@ export default function NomHero({
                 className="absolute -bottom-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
                     <ShieldCheck size={18} className="text-white" />
                   </div>
                   <div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Service {
   icon: LucideIcon;
@@ -18,13 +19,13 @@ interface SolutionsGridProps {
 }
 
 const cardBgColors = [
-  "from-blue-100/80 to-blue-200/60",
-  "from-indigo-100/80 to-indigo-200/60",
-  "from-sky-100/80 to-sky-200/60",
-  "from-violet-100/80 to-violet-200/60",
-  "from-emerald-100/80 to-emerald-200/60",
-  "from-purple-100/80 to-purple-200/60",
-  "from-cyan-100/80 to-cyan-200/60",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
+  "from-blue-100/80 to-blue-200/60 dark:from-blue-950/50 dark:to-blue-900/30",
 ];
 
 export default function SolutionsGrid({

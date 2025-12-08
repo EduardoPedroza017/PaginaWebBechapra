@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Building2, Sparkles } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface ConsultingHeroProps {
   title: string;
@@ -24,7 +25,7 @@ export default function ConsultingHero({
   ctaLink = "#contacto",
 }: ConsultingHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[580px] bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[580px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -34,7 +35,7 @@ export default function ConsultingHero({
             opacity: [0.15, 0.25, 0.15],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-violet-500/20 via-purple-500/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -42,7 +43,7 @@ export default function ConsultingHero({
             opacity: [0.1, 0.2, 0.1],
           }}
           transition={{ duration: 18, repeat: Infinity, delay: 3 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-400/15 via-cyan-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-400/15 via-blue-500/10 to-transparent dark:from-blue-600/8 dark:via-blue-700/5 dark:to-transparent rounded-full blur-3xl"
         />
         {/* Mesh Grid */}
         <div
@@ -108,10 +109,10 @@ export default function ConsultingHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500/20 to-purple-500/20 backdrop-blur-sm rounded-full border border-violet-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6"
             >
-              <Sparkles size={16} className="text-violet-400" />
-              <span className="text-violet-200 text-sm font-medium">
+              <Sparkles size={16} className="text-blue-400" />
+              <span className="text-blue-200 text-sm font-medium">
                 Consultoría Experta
               </span>
             </motion.div>
@@ -119,7 +120,7 @@ export default function ConsultingHero({
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
               {title}{" "}
-              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
                 {highlightWord}
               </span>
             </h1>
@@ -134,7 +135,7 @@ export default function ConsultingHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-violet-500/25 hover:shadow-2xl hover:shadow-violet-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   {ctaLabel}
                   <ArrowRight size={20} />
@@ -160,12 +161,12 @@ export default function ConsultingHero({
           >
             <div className="relative w-full max-w-[450px] h-[380px]">
               {/* Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/30 to-purple-500/30 rounded-3xl blur-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-3xl blur-3xl" />
 
               {/* Main Card */}
               <div className="relative h-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl border border-white/20 p-8 flex flex-col justify-center">
                 {/* Decorative Lines */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-t-3xl" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-sky-500 rounded-t-3xl" />
 
                 <div className="space-y-6">
                   {[
@@ -180,11 +181,11 @@ export default function ConsultingHero({
                       transition={{ delay: 0.5 + i * 0.15 }}
                       className="flex items-center gap-4"
                     >
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                         <span className="text-white font-bold">{i + 1}</span>
                       </div>
                       <div>
-                        <div className="text-sm text-violet-300/80">{item.label}</div>
+                        <div className="text-sm text-blue-300/80">{item.label}</div>
                         <div className="text-white font-semibold">{item.value}</div>
                       </div>
                     </motion.div>
@@ -199,7 +200,7 @@ export default function ConsultingHero({
                 className="absolute -bottom-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                     <Building2 size={18} className="text-white" />
                   </div>
                   <div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface ServiceHeroProps {
   title: string;
@@ -27,7 +28,7 @@ export default function ServiceHero({
   ctaLink = "#contacto",
 }: ServiceHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 pt-16 pb-20 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-16 pb-20 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 right-0 bottom-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1)_0%,transparent_40%),radial-gradient(circle_at_70%_60%,rgba(255,255,255,0.08)_0%,transparent_40%)]" />

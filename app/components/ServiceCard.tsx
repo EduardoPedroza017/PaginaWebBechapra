@@ -65,7 +65,7 @@ export default function ServiceCard({
         {/* Window controls */}
         <div className="flex items-center gap-2 p-2">
           <span className="w-3 h-3 rounded-full bg-red-500 inline-block" aria-hidden="true"></span>
-          <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block" aria-hidden="true"></span>
+          <span className="w-3 h-3 rounded-full bg-blue-600 inline-block" aria-hidden="true"></span>
           <span className="w-3 h-3 rounded-full bg-green-500 inline-block" aria-hidden="true"></span>
         </div>
 

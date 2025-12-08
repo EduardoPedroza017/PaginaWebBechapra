@@ -10,6 +10,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions,
+  TooltipItem,
 } from "chart.js";
 import { BarChart3 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
@@ -71,7 +73,7 @@ export default function PressChart({ data, theme }: PressChartProps) {
     };
   }, [data, theme]);
 
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -88,8 +90,8 @@ export default function PressChart({ data, theme }: PressChartProps) {
         cornerRadius: 8,
         displayColors: false,
         callbacks: {
-          title: (items: { label?: string }[]) => items[0]?.label ?? '',
-          label: (item: { raw?: number }) => `${item.raw ?? 0} comunicados`,
+          title: (items: TooltipItem<'bar'>[]) => items[0]?.label ?? '',
+          label: (item: TooltipItem<'bar'>) => `${item.raw ?? 0} comunicados`,
         },
       },
     },

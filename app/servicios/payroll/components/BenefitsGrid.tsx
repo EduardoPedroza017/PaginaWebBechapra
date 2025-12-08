@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { TranslateText } from '@/components/TranslateText';
 
 interface Benefit {
   icon: LucideIcon;
@@ -16,14 +17,14 @@ interface BenefitsGridProps {
 
 const cardColors = [
   "from-blue-500 to-indigo-600",
-  "from-cyan-500 to-blue-600",
-  "from-emerald-500 to-teal-600",
-  "from-violet-500 to-purple-600",
+  "from-blue-600 to-indigo-700",
+  "from-blue-500 to-blue-700",
+  "from-indigo-500 to-blue-600",
 ];
 
 export default function BenefitsGrid({ title, benefits }: BenefitsGridProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+    <section className="py-24 px-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-950 dark:via-blue-950/20 dark:to-indigo-950/30">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -33,9 +34,9 @@ export default function BenefitsGrid({ title, benefits }: BenefitsGridProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight"
         >
-          <span className="text-gray-900">{title.split(' ').slice(0, -1).join(' ')} </span>
-          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            {title.split(' ').slice(-1)}
+          <span className="text-gray-900 dark:text-white"><TranslateText text={title.split(' ').slice(0, -1).join(' ')} /> </span>
+          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <TranslateText text={title.split(' ').slice(-1)[0]} />
           </span>
         </motion.h2>
 
@@ -53,7 +54,7 @@ export default function BenefitsGrid({ title, benefits }: BenefitsGridProps) {
                 whileHover={{ y: -12, scale: 1.02 }}
                 className="group relative"
               >
-                <div className="relative h-full bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
+                <div className="relative h-full bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-slate-700">
                   {/* Background Gradient on Hover */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${cardColors[i % cardColors.length]} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                   

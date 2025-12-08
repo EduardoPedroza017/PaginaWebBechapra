@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Target, Eye, Heart, Sparkles } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 interface EssenceData {
   mision: string;
@@ -54,7 +55,7 @@ export default function EssenceSection() {
   const data = essence || defaultEssence;
 
   return (
-    <section id="esencia" className="py-24 px-6 bg-white">
+    <section id="esencia" className="py-24 px-6 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -64,19 +65,18 @@ export default function EssenceSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
             <Sparkles size={16} />
-            Lo que nos define
+            <TranslateText text="Lo que nos define" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Nuestra{" "}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="Nuestra" />{" "}
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Esencia
+              <TranslateText text="Esencia" />
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Los pilares fundamentales que guían cada decisión y acción en
-            Bechapra.
+          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <TranslateText text="Los pilares fundamentales que guían cada decisión y acción en Bechapra." />
           </p>
         </motion.div>
 
@@ -96,7 +96,7 @@ export default function EssenceSection() {
                 className={`group relative rounded-3xl p-8 transition-all duration-500 hover:-translate-y-3 ${
                   item.featured
                     ? "bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white shadow-2xl shadow-blue-900/30"
-                    : "bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-lg hover:shadow-xl"
+                    : "bg-gradient-to-br from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/50 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl"
                 }`}
               >
                 {/* Top Accent */}
@@ -133,17 +133,17 @@ export default function EssenceSection() {
                 <div className="relative z-10">
                   <h3
                     className={`text-2xl font-bold mb-4 ${
-                      item.featured ? "text-white" : "text-gray-900"
+                      item.featured ? "text-white" : "text-gray-900 dark:text-white"
                     }`}
                   >
-                    {item.title}
+                    <TranslateText text={item.title} />
                   </h3>
                   <p
                     className={`leading-relaxed ${
-                      item.featured ? "text-blue-100/90" : "text-gray-600"
+                      item.featured ? "text-blue-100/90" : "text-gray-600 dark:text-slate-400"
                     }`}
                   >
-                    {content}
+                    <TranslateText text={content} />
                   </p>
                 </div>
 

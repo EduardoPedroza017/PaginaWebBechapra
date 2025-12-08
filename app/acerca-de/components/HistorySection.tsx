@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Calendar, Trophy, TrendingUp, Users, Clock, Award } from "lucide-react";
+import { TranslateText } from "@/components/TranslateText";
 
 const timelineData = [
   { year: "2009", event: "Fundación de Bechapra", icon: Calendar },
@@ -20,7 +21,7 @@ const statsData = [
 
 export default function HistorySection() {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/50">
+    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-slate-800 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -30,14 +31,14 @@ export default function HistorySection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
             <Calendar size={16} />
-            Nuestra Trayectoria
+            <TranslateText text="Nuestra Trayectoria" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Historia y{" "}
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-              Logros
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+            <TranslateText text="Historia y" />{" "}
+            <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
+              <TranslateText text="Logros" />
             </span>
           </h2>
         </motion.div>
@@ -64,16 +65,16 @@ export default function HistorySection() {
 
                   <motion.div
                     whileHover={{ y: -8, scale: 1.02 }}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 text-center h-full"
+                    className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center h-full"
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon size={24} className="text-blue-600" />
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon size={24} className="text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="text-3xl font-black text-blue-600 mb-2">
+                    <div className="text-3xl font-black text-blue-600 dark:text-blue-400 mb-2">
                       {item.year}
                     </div>
-                    <p className="text-gray-600 text-sm font-medium leading-relaxed">
-                      {item.event}
+                    <p className="text-gray-600 dark:text-slate-400 text-sm font-medium leading-relaxed">
+                      <TranslateText text={item.event} />
                     </p>
                   </motion.div>
                 </motion.div>
@@ -100,7 +101,7 @@ export default function HistorySection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 text-center group hover:shadow-xl transition-all duration-300"
+                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-slate-700 text-center group hover:shadow-xl transition-all duration-300"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Icon size={22} className="text-white" />
@@ -108,7 +109,7 @@ export default function HistorySection() {
                 <div className="text-4xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1">
                   {stat.value}
                 </div>
-                <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
+                <p className="text-gray-600 dark:text-slate-400 text-sm font-medium"><TranslateText text={stat.label} /></p>
               </motion.div>
             );
           })}
