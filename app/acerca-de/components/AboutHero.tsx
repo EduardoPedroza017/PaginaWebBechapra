@@ -14,7 +14,7 @@ export default function AboutHero() {
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-3xl"
+          className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
@@ -144,7 +144,7 @@ export default function AboutHero() {
         >
           <path
             d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="white"
+            className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>

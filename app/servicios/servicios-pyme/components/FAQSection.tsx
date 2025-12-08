@@ -54,19 +54,19 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl border border-blue-100 overflow-hidden shadow-sm hover:shadow-lg hover:border-blue-200 transition-all"
+              className="bg-white dark:bg-slate-800 rounded-2xl border border-blue-100 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-600 transition-all"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 className="w-full px-6 py-5 flex items-center justify-between text-left"
               >
-                <span className="font-semibold text-gray-900 pr-4">{faq.q}</span>
+                <span className="font-semibold text-gray-900 dark:text-white pr-4"><TranslateText text={faq.q} /></span>
                 <motion.div
                   animate={{ rotate: openFaq === i ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-100 rounded-full flex items-center justify-center"
+                  className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50 rounded-full flex items-center justify-center"
                 >
-                  <ChevronDown className="w-5 h-5 text-blue-600" />
+                  <ChevronDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </motion.div>
               </button>
 
@@ -79,8 +79,8 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
                     transition={{ duration: 0.3 }}
                   >
                     <div className="px-6 pb-5">
-                      <div className="pt-2 border-t border-blue-100">
-                        <p className="text-gray-600 leading-relaxed pt-4">{faq.a}</p>
+                      <div className="pt-2 border-t border-blue-100 dark:border-slate-700">
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed pt-4"><TranslateText text={faq.a} /></p>
                       </div>
                     </div>
                   </motion.div>

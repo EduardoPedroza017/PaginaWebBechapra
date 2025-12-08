@@ -58,7 +58,7 @@ export default function AccountingHero() {
             className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 mb-10"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Volver a servicios</span>
+            <span className="font-medium"><TranslateText text="Volver a servicios" /></span>
           </Link>
         </motion.div>
 
@@ -74,30 +74,30 @@ export default function AccountingHero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 dark:from-blue-600/20 dark:to-indigo-600/20 backdrop-blur-sm rounded-full border border-blue-400/30 dark:border-blue-500/30 mb-6"
             >
-              <Sparkles className="w-4 h-4 text-blue-300" />
-              <span className="text-sm font-semibold text-blue-200">Precisión Financiera</span>
+              <Sparkles className="w-4 h-4 text-blue-300 dark:text-blue-400" />
+              <span className="text-sm font-semibold text-blue-200 dark:text-blue-300"><TranslateText text="Precisión Financiera" /></span>
             </motion.div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-              Servicios{" "}
-              <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                Contables
+              <TranslateText text="Servicios" />{" "}
+              <span className="bg-gradient-to-r from-blue-300 via-cyan-300 to-blue-400 dark:from-blue-400 dark:via-cyan-400 dark:to-blue-500 bg-clip-text text-transparent">
+                <TranslateText text="Contables" />
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-8 max-w-xl">
-              Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos.
+            <p className="text-lg md:text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-8 max-w-xl">
+              <TranslateText text="Gestión contable confiable que te permite tomar decisiones financieras basadas en datos precisos y reportes oportunos." />
             </p>
 
             <div className="flex flex-wrap gap-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="#contacto"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-500 dark:to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 dark:shadow-blue-600/25 hover:shadow-blue-500/40 dark:hover:shadow-blue-600/40 transition-all duration-300"
                 >
-                  Solicitar consulta
+                  <TranslateText text="Solicitar consulta" />
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </motion.div>
@@ -126,8 +126,8 @@ export default function AccountingHero() {
                 <Calculator className="w-14 h-14 text-white" />
               </motion.div>
 
-              <h3 className="text-2xl font-bold text-white text-center mb-3">Control Total</h3>
-              <p className="text-blue-200/80 text-center text-lg">Finanzas claras, decisiones seguras</p>
+              <h3 className="text-2xl font-bold text-white text-center mb-3"><TranslateText text="Control Total" /></h3>
+              <p className="text-blue-200/80 dark:text-blue-300/70 text-center text-lg"><TranslateText text="Finanzas claras, decisiones seguras" /></p>
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mt-8">

@@ -69,14 +69,14 @@ export default function PymeCTA() {
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
-            ¿Listo para{" "}
+            <TranslateText text="¿Listo para" />{" "}
             <span className="underline decoration-white/50 decoration-4 underline-offset-4">
-              arrancar?
+              <TranslateText text="arrancar?" />
             </span>
           </h2>
 
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Solicita una propuesta adaptada a tu operación y tamaño de empresa.
+            <TranslateText text="Solicita una propuesta adaptada a tu operación y tamaño de empresa." />
           </p>
 
           {/* Features */}
@@ -91,7 +91,7 @@ export default function PymeCTA() {
                 className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30"
               >
                 <CheckCircle className="w-4 h-4 text-white" />
-                <span className="text-sm text-white font-medium">{feature}</span>
+                <span className="text-sm text-white font-medium"><TranslateText text={feature} /></span>
               </motion.div>
             ))}
           </div>
@@ -103,7 +103,7 @@ export default function PymeCTA() {
                 href="#contacto"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
               >
-                Contactar
+                <TranslateText text="Contactar" />
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
@@ -113,7 +113,7 @@ export default function PymeCTA() {
                 href="#paquetes"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white/20 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border-2 border-white/40 hover:bg-white/30 transition-all duration-300"
               >
-                Ver paquetes
+                <TranslateText text="Ver paquetes" />
               </Link>
             </motion.div>
           </div>

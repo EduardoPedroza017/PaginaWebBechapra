@@ -30,7 +30,7 @@ export default function TalentCTA({
         <motion.div
           animate={{ scale: [1.2, 1, 1.2] }}
           transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-orange-600/30 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-cyan-600/30 to-transparent rounded-full"
         />
         {/* Floating Icons */}
         {[...Array(6)].map((_, i) => (
@@ -87,7 +87,7 @@ export default function TalentCTA({
         >
           <Link
             href={ctaLink}
-            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-amber-600 rounded-2xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl hover:bg-amber-50 transition-all duration-300"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl hover:bg-blue-50 dark:hover:bg-blue-100 transition-all duration-300"
           >
             {ctaLabel}
             <ArrowRight size={22} />

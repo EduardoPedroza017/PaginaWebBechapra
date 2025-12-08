@@ -1,39 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
 import { TranslateText } from '@/components/TranslateText';
 
-function getInitialTheme(): 'light' | 'dark' {
-	if (typeof window === 'undefined') return 'light';
-	const saved = localStorage.getItem('theme');
-	return (saved === 'dark' || saved === 'light') ? saved : 'light';
-}
-
 export default function PoliticaPrivacidad() {
-	const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
-	const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
-
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-			handlerRef.current = (e: MediaQueryListEvent) => {
-				const newTheme = e.matches ? 'dark' : 'light';
-				setTheme(newTheme);
-				localStorage.setItem('theme', newTheme);
-			};
-			
-			mediaQuery.addEventListener('change', handlerRef.current);
-			
-			return () => {
-				if (handlerRef.current) {
-					mediaQuery.removeEventListener('change', handlerRef.current);
-				}
-			};
-		}
-	}, []);
 	const sections = [
 		{
 			title: "1. Información que Recopilamos",
@@ -108,36 +81,10 @@ Ubicación: Ciudad de México, México
 	];
 
 	return (
-		<main style={{
-			minHeight: '100vh',
-			background: theme === 'dark' 
-				? 'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
-				: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
-			position: 'relative'
-		}}>
+		<main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
 			{/* Decorative background elements */}
-			<div style={{
-				position: 'absolute',
-				top: '10%',
-				right: '-5%',
-				width: '400px',
-				height: '400px',
-				background: 'radial-gradient(circle, rgba(0,74,183,0.08) 0%, transparent 70%)',
-				borderRadius: '50%',
-				pointerEvents: 'none',
-				zIndex: 0
-			}} />
-			<div style={{
-				position: 'absolute',
-				bottom: '20%',
-				left: '-3%',
-				width: '350px',
-				height: '350px',
-				background: 'radial-gradient(circle, rgba(0,172,183,0.06) 0%, transparent 70%)',
-				borderRadius: '50%',
-				pointerEvents: 'none',
-				zIndex: 0
-			}} />
+			<div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,74,183,0.08)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
+			<div className="absolute bottom-[20%] left-[-3%] w-[350px] h-[350px] bg-[radial-gradient(circle,rgba(0,172,183,0.06)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
 
 			{/* Hero Section */}
 			<SubpageHero
@@ -146,107 +93,51 @@ Ubicación: Ciudad de México, México
 			/>
 
 			{/* Content Section */}
-			<section style={{
-				position: 'relative',
-				zIndex: 1,
-				maxWidth: '1200px',
-				margin: '0 auto',
-				padding: 'clamp(3rem, 5vw, 6rem) clamp(1.5rem, 3vw, 2rem)'
-			}}>
+			<section className="relative z-[1] max-w-[1200px] mx-auto px-6 py-12 md:py-16 lg:py-24">
 			{/* Introduction */}
 			<motion.div
 				initial={{opacity: 0, y: 20}}
 				whileInView={{opacity: 1, y: 0}}
 				viewport={{once: true}}
 				transition={{duration: 0.6}}
-				style={{
-					marginBottom: '4rem',
-					padding: '2.5rem',
-					background: theme === 'dark'
-						? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
-						: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
-					borderRadius: '16px',
-					boxShadow: theme === 'dark'
-						? '0 10px 40px rgba(30,64,95,0.4), 0 0 0 1px rgba(30,64,95,0.2)'
-						: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
-					position: 'relative',
-					overflow: 'hidden'
-				}}
+				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
 			>
-				<p style={{
-					fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
-					lineHeight: 1.8,
-					color: 'white',
-					margin: 0,
-					position: 'relative',
-					zIndex: 1
-				}}>
+				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
 					<TranslateText text="Bechapra - Soluciones Empresariales, con domicilio en Ciudad de México, México, es responsable del tratamiento de sus datos personales. Este Aviso de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos su información personal en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares." />
 				</p>
-			</motion.div>				{/* Sections */}
-				{sections.map((section, index) => (
-					<motion.div
-						key={index}
-						initial={{opacity: 0, y: 20}}
-						whileInView={{opacity: 1, y: 0}}
-						viewport={{once: true}}
-						transition={{duration: 0.6, delay: index * 0.1}}
-						style={{
-							marginBottom: '3rem',
-							paddingLeft: '1.5rem',
-							borderLeft: theme === 'dark' ? '3px solid #60a5fa' : '3px solid #004AB7'
-						}}
-					>
-						<h2 style={{
-							fontSize: 'clamp(1.5rem, 2vw, 1.875rem)',
-							fontWeight: 700,
-							color: theme === 'dark' ? '#60a5fa' : '#004AB7',
-							marginBottom: '1.25rem',
-							margin: 0
-						}}>
-							<TranslateText text={section.title} />
-						</h2>
-						<div style={{
-							fontSize: 'clamp(1rem, 1.5vw, 1.0625rem)',
-							lineHeight: 1.8,
-							color: theme === 'dark' ? '#cbd5e1' : '#475569',
-							whiteSpace: 'pre-line'
-						}}>
-							<TranslateText text={section.content} />
-						</div>
-					</motion.div>
-				))}
+			</motion.div>
 
-				{/* Footer Note */}
+			{/* Sections */}
+			{sections.map((section, index) => (
 				<motion.div
+					key={index}
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
 					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						marginTop: '4rem',
-						padding: '2rem',
-						background: theme === 'dark'
-							? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
-							: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-						borderRadius: '12px',
-						textAlign: 'center',
-						border: theme === 'dark'
-							? '1px solid rgba(96,165,250,0.2)'
-							: '1px solid rgba(0,74,183,0.1)',
-						boxShadow: theme === 'dark'
-							? '0 2px 12px rgba(30,64,95,0.3)'
-							: '0 2px 12px rgba(0,74,183,0.08)'
-					}}
+					transition={{duration: 0.6, delay: index * 0.1}}
+					className="mb-12 pl-6 border-l-[3px] border-blue-700 dark:border-blue-400"
 				>
-					<p style={{
-						fontSize: '0.95rem',
-						color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-						margin: 0
-					}}>
-						<TranslateText text="Al utilizar nuestros servicios, usted acepta los términos establecidos en este Aviso de Privacidad." />
-					</p>
+					<h2 className="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400 mb-5">
+						<TranslateText text={section.title} />
+					</h2>
+					<div className="text-base leading-relaxed text-gray-600 dark:text-slate-300 whitespace-pre-line">
+						<TranslateText text={section.content} />
+					</div>
 				</motion.div>
+			))}
+
+			{/* Footer Note */}
+			<motion.div
+				initial={{opacity: 0, y: 20}}
+				whileInView={{opacity: 1, y: 0}}
+				viewport={{once: true}}
+				transition={{duration: 0.6}}
+				className="mt-16 p-8 bg-blue-50 dark:bg-slate-800 rounded-xl text-center border border-blue-100 dark:border-slate-700"
+			>
+				<p className="text-sm text-gray-600 dark:text-slate-400 m-0">
+					<TranslateText text="Al utilizar nuestros servicios, usted acepta los términos establecidos en este Aviso de Privacidad." />
+				</p>
+			</motion.div>
 			</section>
 
 			<Footer />

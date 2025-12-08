@@ -6,6 +6,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { CompanyLocation } from './CompanyLocation';
+import { TranslateText } from './TranslateText';
+import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
 
 const footerLinks = {
 	empresa: [
@@ -69,9 +72,9 @@ export default function Footer() {
 				}}
 			/>
 
-			   <div className="max-w-[1400px] mx-auto relative z-10 px-5 py-10 md:py-16 lg:py-20">
+			   <div className="max-w-[1400px] 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto relative z-10 px-5 sm:px-8 lg:px-10 2xl:px-16 py-10 md:py-16 lg:py-20 2xl:py-24">
 				{/* Main footer content grid */}
-					   <div className="flex flex-col gap-12 sm:grid sm:grid-cols-2 sm:gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1.1fr] lg:gap-16 lg:mb-12">
+					   <div className="flex flex-col gap-10 sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1.1fr] lg:gap-12 xl:gap-16 2xl:gap-20 lg:mb-12">
 					{/* Brand section - larger */}
 					<motion.div
 						initial={{opacity: 0, y: 20}}
@@ -85,13 +88,13 @@ export default function Footer() {
 								alt="Bechapra Logo"
 								width={100}
 								height={100}
-								   className="h-[70px] lg:h-[100px] w-auto mb-5 lg:mb-8"
+										   className="h-[60px] sm:h-[70px] lg:h-[90px] 2xl:h-[110px] w-auto mb-4 sm:mb-5 lg:mb-8"
 								priority
 							/>
 						</Link>
 
 					   <p className="text-sm lg:text-base text-white/80 leading-relaxed mb-5 lg:mb-6 text-center sm:text-left pr-0 sm:pr-4">
-							Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro.
+							<TranslateText text="Tu aliado estratégico en soluciones empresariales integrales. Transformamos organizaciones desde adentro." />
 						</p>
 
 					{/* Social links */}
@@ -139,14 +142,14 @@ export default function Footer() {
 							transition={{duration: 0.6, delay: (sectionIdx + 1) * 0.1}}
 						>
 							   <h3 className="uppercase text-white font-extrabold text-base lg:text-lg mb-7 tracking-wider opacity-90 text-center sm:text-left">
-								{section.title}
+								<TranslateText text={section.title} />
 							</h3>
 
 							   <ul className="flex flex-col gap-3 items-center sm:items-start list-none p-0 m-0">
 								{section.links.map((link, i) => (
 									<li key={i}>
 									   <Link href={link.href} className="text-white/75 no-underline text-sm lg:text-base transition-all inline-block hover:text-blue-500 hover:pl-2">
-										   {link.label}
+										   <TranslateText text={link.label} />
 									   </Link>
 									</li>
 								))}
@@ -162,7 +165,7 @@ export default function Footer() {
 						transition={{duration: 0.6, delay: 0.4}}
 					>
 						   <h3 className="uppercase text-white font-extrabold text-sm mb-5 tracking-wider opacity-90 text-center sm:text-left">
-							Contacto
+							<TranslateText text="Contacto" />
 						</h3>
 
 					   <div className="text-white/75 [&_a]:text-white/75 [&_a:hover]:text-blue-400">
@@ -180,12 +183,25 @@ export default function Footer() {
 					   whileInView={{opacity: 1}}
 					   viewport={{once: true}}
 					   transition={{duration: 0.6, delay: 0.5}}
-					   className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:justify-between sm:gap-8"
+					   className="flex flex-col items-center justify-center gap-6 text-center"
 				   >
-					   <p className="text-xs text-white/60 m-0">© {currentYear} Bechapra. Todos los derechos reservados.</p>
-					   <div className="flex gap-4 flex-wrap justify-center">
-						   <a href="/politica-de-privacidad" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500">Política de privacidad</a>
-						   <a href="/terminos-de-servicio" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500">Términos de servicio</a>
+					   {/* Language and Theme Controls */}
+					   <div className="flex items-center gap-4">
+						   <div className="[&_button]:bg-white/10 [&_button]:border-white/20 [&_button]:text-white [&_button:hover]:bg-white/20 [&_ul]:bg-slate-900 [&_ul]:border-white/20 [&_li]:text-white/80 [&_li:hover]:bg-white/10">
+							   <LanguageSwitcher />
+						   </div>
+						   <div className="[&_button]:bg-white/10 [&_button]:text-white [&_button:hover]:bg-white/20">
+							   <ThemeToggle />
+						   </div>
+					   </div>
+
+					   {/* Links and Copyright */}
+					   <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:w-full sm:gap-8">
+						   <p className="text-xs text-white/60 m-0">© {currentYear} Bechapra. <TranslateText text="Todos los derechos reservados." /></p>
+						   <div className="flex gap-4 flex-wrap justify-center">
+							   <a href="/politica-de-privacidad" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500"><TranslateText text="Política de privacidad" /></a>
+							   <a href="/terminos-de-servicio" className="text-xs text-white/60 no-underline transition-colors hover:text-blue-500"><TranslateText text="Términos de servicio" /></a>
+						   </div>
 					   </div>
 				   </motion.div>
 			</div>

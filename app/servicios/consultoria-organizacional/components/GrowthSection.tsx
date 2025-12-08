@@ -60,7 +60,7 @@ export default function GrowthSection({
             className="relative"
           >
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-3xl blur-2xl" />
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 shadow-2xl flex items-center justify-center">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/50 dark:to-indigo-900/50 border border-blue-200 dark:border-blue-800 shadow-2xl flex items-center justify-center">
               {/* Growth Visual */}
               <div className="text-center p-8">
                 <motion.div
@@ -81,11 +81,11 @@ export default function GrowthSection({
                     <path d="M17 6h6v6" />
                   </svg>
                 </motion.div>
-                <h3 className="text-2xl font-black text-blue-900 mb-2">
-                  Crecimiento Sostenible
+                <h3 className="text-2xl font-black text-blue-900 dark:text-blue-100 mb-2">
+                  <TranslateText text="Crecimiento Sostenible" />
                 </h3>
-                <p className="text-blue-700/80">
-                  Estrategias que impulsan resultados
+                <p className="text-blue-700/80 dark:text-blue-300/80">
+                  <TranslateText text="Estrategias que impulsan resultados" />
                 </p>
               </div>
             </div>

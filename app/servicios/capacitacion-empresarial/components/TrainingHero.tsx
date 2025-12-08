@@ -105,7 +105,7 @@ export default function TrainingHero({
                   size={16}
                   className="group-hover:-translate-x-1 transition-transform duration-300"
                 />
-                {backLabel}
+                <TranslateText text={backLabel} />
               </Link>
             </motion.div>
 
@@ -118,21 +118,21 @@ export default function TrainingHero({
             >
               <Sparkles size={16} className="text-cyan-400" />
               <span className="text-cyan-200 text-sm font-medium">
-                Formación Certificada
+                <TranslateText text="Formación Certificada" />
               </span>
             </motion.div>
 
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-              {title}{" "}
+              <TranslateText text={title} />{" "}
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-teal-400 bg-clip-text text-transparent">
-                {highlightWord}
+                <TranslateText text={highlightWord} />
               </span>
             </h1>
 
             {/* Description */}
             <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
-              {description}
+              <TranslateText text={description} />
             </p>
 
             {/* CTA Buttons */}
@@ -142,7 +142,7 @@ export default function TrainingHero({
                   href={ctaLink}
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-cyan-500/25 hover:shadow-2xl hover:shadow-cyan-500/40 transition-all duration-300"
                 >
-                  {ctaLabel}
+                  <TranslateText text={ctaLabel} />
                   <ArrowRight size={20} />
                 </Link>
               </motion.div>
@@ -151,7 +151,7 @@ export default function TrainingHero({
                   href="#programas"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
                 >
-                  Ver programas
+                  <TranslateText text="Ver programas" />
                 </Link>
               </motion.div>
             </div>
@@ -184,15 +184,15 @@ export default function TrainingHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute -bottom-4 -left-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-sm">100%</span>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500">Cursos</div>
-                    <div className="text-sm font-bold text-gray-900">Prácticos</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400"><TranslateText text="Cursos" /></div>
+                    <div className="text-sm font-bold text-gray-900 dark:text-white"><TranslateText text="Prácticos" /></div>
                   </div>
                 </div>
               </motion.div>
@@ -200,15 +200,15 @@ export default function TrainingHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                className="absolute -top-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute -top-4 -right-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                     <GraduationCap size={18} className="text-white" />
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500">Instructores</div>
-                    <div className="text-sm font-bold text-gray-900">Certificados</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400"><TranslateText text="Instructores" /></div>
+                    <div className="text-sm font-bold text-gray-900 dark:text-white"><TranslateText text="Certificados" /></div>
                   </div>
                 </div>
               </motion.div>
@@ -222,7 +222,7 @@ export default function TrainingHero({
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="white"
+            className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>

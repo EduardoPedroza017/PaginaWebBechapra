@@ -52,17 +52,17 @@ export default function ServiceHero({
                 size={18}
                 className="group-hover:-translate-x-1 transition-transform duration-300"
               />
-              {backLabel}
+              <TranslateText text={backLabel} />
             </Link>
 
             {/* Title */}
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-[1.1] tracking-tight">
-              {title}
+              <TranslateText text={title} />
             </h1>
 
             {/* Description */}
             <p className="text-lg text-white/85 leading-relaxed mb-8 max-w-[540px]">
-              {description}
+              <TranslateText text={description} />
             </p>
 
             {/* CTA */}
@@ -71,7 +71,7 @@ export default function ServiceHero({
                 href={ctaLink}
                 className="inline-flex items-center gap-3 px-7 py-3.5 bg-gradient-to-br from-white to-blue-50 text-blue-700 rounded-full font-bold shadow-xl shadow-white/20 hover:shadow-2xl transition-all duration-300 border-2 border-white/30"
               >
-                {ctaLabel}
+                <TranslateText text={ctaLabel} />
                 <ArrowRight size={20} />
               </Link>
             </motion.div>

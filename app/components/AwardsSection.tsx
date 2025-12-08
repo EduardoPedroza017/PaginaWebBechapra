@@ -59,10 +59,10 @@ export default function AwardsSection() {
             className="flex gap-8 w-fit"
           >
             {duplicatedAwards.map((award, i) => (
-              <motion.div
+                <motion.div
                 key={`${award.id}-${i}`}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="group relative rounded-2xl shadow-lg hover:shadow-xl flex flex-col items-center justify-center min-w-[220px] h-[140px] px-6 py-4 border transition-all bg-white border-slate-100 dark:bg-slate-900 dark:border-slate-800"
+                className="group relative rounded-2xl shadow-lg hover:shadow-xl flex flex-col items-center justify-center min-w-[220px] h-[140px] px-6 py-4 border transition-all bg-white border-slate-100 dark:bg-slate-800/80 dark:border-slate-700 dark:shadow-blue-900/20"
               >
                 {/* Decorative star on hover */}
                 <Star className="absolute top-3 right-3 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500 dark:text-blue-400" />
@@ -76,7 +76,7 @@ export default function AwardsSection() {
                     className="max-w-[160px] h-[80px] object-contain grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300"
                   />
                 ) : (
-                  <div className="w-[160px] h-[80px] border-2 border-dashed rounded-xl flex items-center justify-center text-xs font-bold uppercase bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200 text-slate-400 dark:from-slate-800 dark:to-slate-900 dark:border-slate-700 dark:text-slate-500">
+                  <div className="w-[160px] h-[80px] border-2 border-dashed rounded-xl flex items-center justify-center text-xs font-bold uppercase bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200 text-slate-400 dark:from-slate-700 dark:to-slate-800 dark:border-slate-600 dark:text-slate-400">
                     {award.title || "LOGO"}
                   </div>
                 )}

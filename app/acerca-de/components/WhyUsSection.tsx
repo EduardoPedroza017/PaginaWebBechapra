@@ -29,25 +29,25 @@ const reasons = [
     icon: Zap,
     title: "Innovación continua",
     desc: "Metodologías actualizadas, herramientas modernas y enfoque ágil en cada proyecto.",
-    color: "amber",
+    color: "cyan",
   },
   {
     icon: Shield,
     title: "Confiabilidad",
     desc: "Compromiso con la confidencialidad, ética profesional y transparencia total.",
-    color: "green",
+    color: "blue",
   },
   {
     icon: Briefcase,
     title: "Soluciones integrales",
     desc: "De capital humano a finanzas: una sola empresa para todas tus necesidades.",
-    color: "purple",
+    color: "indigo",
   },
   {
     icon: Heart,
     title: "Enfoque humano",
     desc: "Entendemos que detrás de cada número hay personas y su bienestar es prioritario.",
-    color: "rose",
+    color: "cyan",
   },
 ];
 
@@ -62,25 +62,10 @@ const colorStyles: Record<string, { bg: string; icon: string; border: string }> 
     icon: "from-indigo-600 to-indigo-700",
     border: "border-indigo-200",
   },
-  amber: {
-    bg: "from-amber-50 to-amber-100/50",
-    icon: "from-amber-500 to-orange-500",
-    border: "border-amber-200",
-  },
-  green: {
-    bg: "from-green-50 to-green-100/50",
-    icon: "from-green-600 to-emerald-600",
-    border: "border-green-200",
-  },
-  purple: {
-    bg: "from-purple-50 to-purple-100/50",
-    icon: "from-purple-600 to-purple-700",
-    border: "border-purple-200",
-  },
-  rose: {
-    bg: "from-rose-50 to-rose-100/50",
-    icon: "from-rose-500 to-pink-500",
-    border: "border-rose-200",
+  cyan: {
+    bg: "from-cyan-50 to-cyan-100/50",
+    icon: "from-cyan-500 to-blue-500",
+    border: "border-cyan-200",
   },
 };
 

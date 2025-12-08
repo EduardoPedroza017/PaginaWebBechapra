@@ -75,7 +75,7 @@ export default function BlueCTA({
             href={ctaLink}
             className="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
           >
-            {ctaLabel}
+            <TranslateText text={ctaLabel} />
             <ArrowRight size={22} />
           </Link>
         </motion.div>

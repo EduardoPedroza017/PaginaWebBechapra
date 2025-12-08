@@ -65,8 +65,8 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
                   }`}
                 />
 
-                <span className="text-lg font-bold text-blue-900 pr-4">
-                  {course.title}
+                <span className="text-lg font-bold text-blue-900 dark:text-white pr-4">
+                  <TranslateText text={course.title} />
                 </span>
 
                 <motion.div
@@ -74,8 +74,8 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
                   transition={{ duration: 0.3 }}
                   className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
                     openId === course.id
-                      ? "bg-gradient-to-br from-blue-600 to-cyan-500 text-white"
-                      : "bg-blue-100 text-blue-600"
+                      ? "bg-gradient-to-br from-blue-600 to-cyan-500 dark:from-blue-500 dark:to-cyan-400 text-white"
+                      : "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400"
                   }`}
                 >
                   <ChevronDown size={20} />
@@ -91,10 +91,10 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 py-5 bg-gradient-to-b from-blue-50/50 to-white border-t border-blue-100">
+                    <div className="px-6 py-5 bg-gradient-to-b from-blue-50/50 to-white dark:from-slate-800 dark:to-slate-800 border-t border-blue-100 dark:border-slate-700">
                       {course.description && (
-                        <p className="text-gray-600 mb-4 leading-relaxed">
-                          {course.description}
+                        <p className="text-gray-600 dark:text-slate-400 mb-4 leading-relaxed">
+                          <TranslateText text={course.description} />
                         </p>
                       )}
                       {course.items && course.items.length > 0 && (
@@ -102,10 +102,10 @@ export default function CoursesAccordion({ title, courses }: CoursesAccordionPro
                           {course.items.map((item, idx) => (
                             <li
                               key={idx}
-                              className="flex items-center gap-3 text-gray-700"
+                              className="flex items-center gap-3 text-gray-700 dark:text-slate-300"
                             >
-                              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
-                              {item}
+                              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-400" />
+                              <TranslateText text={item} />
                             </li>
                           ))}
                         </ul>

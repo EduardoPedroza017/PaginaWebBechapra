@@ -66,18 +66,18 @@ export default function BenefitsGrid({ title, benefits }: BenefitsGridProps) {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-white mb-3 transition-colors duration-500">
-                      {benefit.title}
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-white mb-3 transition-colors duration-500">
+                      <TranslateText text={benefit.title} />
                     </h3>
 
                     {/* Description */}
-                    <p className="text-gray-600 group-hover:text-white/90 leading-relaxed transition-colors duration-500">
-                      {benefit.desc}
+                    <p className="text-gray-600 dark:text-slate-300 group-hover:text-white/90 leading-relaxed transition-colors duration-500">
+                      <TranslateText text={benefit.desc} />
                     </p>
                   </div>
 
                   {/* Decorative Circle */}
-                  <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full opacity-50 group-hover:opacity-20 transition-opacity duration-500" />
+                  <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full opacity-50 group-hover:opacity-20 transition-opacity duration-500" />
                 </div>
               </motion.div>
             );

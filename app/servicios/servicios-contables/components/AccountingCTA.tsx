@@ -91,8 +91,8 @@ export default function AccountingCTA() {
                 transition={{ delay: 0.2 + i * 0.1 }}
                 className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
               >
-                <CheckCircle className="w-4 h-4 text-green-300" />
-                <span className="text-sm text-white font-medium">{feature}</span>
+                <CheckCircle className="w-4 h-4 text-blue-300 dark:text-blue-400" />
+                <span className="text-sm text-white font-medium"><TranslateText text={feature} /></span>
               </motion.div>
             ))}
           </div>
@@ -102,9 +102,9 @@ export default function AccountingCTA() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-100 text-blue-600 dark:text-blue-700 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-white/20 dark:hover:shadow-slate-200/20 transition-all duration-300"
               >
-                Solicitar asesoría
+                <TranslateText text="Solicitar asesoría" />
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
@@ -112,9 +112,9 @@ export default function AccountingCTA() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border-2 border-white/30 hover:bg-white/20 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border-2 border-white/30 dark:border-white/20 hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300"
               >
-                Agendar reunión
+                <TranslateText text="Agendar reunión" />
               </Link>
             </motion.div>
           </div>

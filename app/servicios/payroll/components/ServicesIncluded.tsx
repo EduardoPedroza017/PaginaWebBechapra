@@ -61,8 +61,8 @@ export default function ServicesIncluded({
                 {item.icon}
               </div>
               <div>
-                <h3 className="font-bold text-blue-900 mb-1">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+                <h3 className="font-bold text-blue-900 dark:text-blue-300 mb-1"><TranslateText text={item.title} /></h3>
+                <p className="text-gray-600 dark:text-slate-400 text-sm leading-relaxed"><TranslateText text={item.desc} /></p>
               </div>
             </motion.div>
           ))}

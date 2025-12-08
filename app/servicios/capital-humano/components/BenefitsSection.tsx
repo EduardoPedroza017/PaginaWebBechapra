@@ -54,7 +54,7 @@ export default function BenefitsSection({
             <motion.div
               animate={{ rotate: [0, -5, 0] }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl -z-10"
+              className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl -z-10"
             />
           </motion.div>
 
@@ -65,14 +65,14 @@ export default function BenefitsSection({
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full text-sm font-semibold mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6">
               <CheckCircle size={16} />
               <TranslateText text="Beneficios Exclusivos" />
             </span>
 
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-8">
               <TranslateText text={title.split(" ").slice(0, -2).join(" ")} />{" "}
-              <span className="bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
                 <TranslateText text={title.split(" ").slice(-2).join(" ")} />
               </span>
             </h2>
@@ -89,7 +89,7 @@ export default function BenefitsSection({
                   className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
                       <CheckCircle size={20} className="text-white" />
                     </div>
                     <div>

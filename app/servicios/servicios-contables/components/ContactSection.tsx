@@ -56,14 +56,14 @@ export default function ContactSection() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ x: 8 }}
-                className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-blue-100 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer"
+                className="flex items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-blue-100 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl flex items-center justify-center">
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">{item.label}</p>
-                  <p className="font-semibold text-gray-900">{item.value}</p>
+                  <p className="text-sm text-gray-500 dark:text-slate-400"><TranslateText text={item.label} /></p>
+                  <p className="font-semibold text-gray-900 dark:text-white">{item.value}</p>
                 </div>
               </motion.div>
             ))}
@@ -74,10 +74,10 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="p-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl text-white"
+              className="p-6 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 rounded-2xl text-white"
             >
-              <h4 className="font-bold mb-2">Más de 500+ empresas confían en nosotros</h4>
-              <p className="text-sm text-blue-100">Gestión contable profesional con resultados comprobados.</p>
+              <h4 className="font-bold mb-2"><TranslateText text="Más de 500+ empresas confían en nosotros" /></h4>
+              <p className="text-sm text-blue-100 dark:text-blue-200"><TranslateText text="Gestión contable profesional con resultados comprobados." /></p>
             </motion.div>
           </motion.div>
 
@@ -89,62 +89,62 @@ export default function ContactSection() {
             transition={{ delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-slate-700">
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Nombre completo
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                      <TranslateText text="Nombre completo" />
                     </label>
                     <input
                       type="text"
                       placeholder="Tu nombre"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Email
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                      <TranslateText text="Email" />
                     </label>
                     <input
                       type="email"
                       placeholder="tu@email.com"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Empresa
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                      <TranslateText text="Empresa" />
                     </label>
                     <input
                       type="text"
                       placeholder="Nombre de tu empresa"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Teléfono
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                      <TranslateText text="Teléfono" />
                     </label>
                     <input
                       type="tel"
                       placeholder="+52 (55) 1234-5678"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition-all outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    ¿Cómo podemos ayudarte?
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                    <TranslateText text="¿Cómo podemos ayudarte?" />
                   </label>
                   <textarea
                     rows={4}
                     placeholder="Cuéntanos sobre tus necesidades contables..."
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition-all outline-none resize-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                   />
                 </div>
 
@@ -152,10 +152,10 @@ export default function ContactSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30 hover:shadow-blue-500/50 dark:hover:shadow-blue-900/50 transition-all flex items-center justify-center gap-3"
                 >
                   <Send className="w-5 h-5" />
-                  Enviar solicitud
+                  <TranslateText text="Enviar solicitud" />
                 </motion.button>
               </form>
             </div>

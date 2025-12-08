@@ -20,7 +20,7 @@ const NewsSkeleton = () => {
       {[1, 2, 3].map((i) => (
         <div
           key={i}
-          className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-800"
+          className="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700"
         >
           <div className="w-full h-48 bg-slate-200 dark:bg-slate-800 animate-pulse" />
           <div className="p-6 space-y-4">
@@ -68,7 +68,7 @@ export default function NewsCards() {
   };
 
   return (
-    <section className="py-20 bg-white dark:bg-slate-900">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <motion.div
@@ -99,7 +99,7 @@ export default function NewsCards() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group"
               >
-                <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-800 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 transition-all duration-300">
+                <div className="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 transition-all duration-300">
                   {item.image_url && (
                     <div className="relative h-48 w-full overflow-hidden">
                       <Image

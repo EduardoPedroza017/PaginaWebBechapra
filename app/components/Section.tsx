@@ -12,7 +12,7 @@ interface SectionProps {
 
 export default function Section({ children, id, variant = "white", className = "", size = "md" }: SectionProps) {
   const bgColor = variant === "blue" 
-    ? "bg-blue-50 dark:bg-slate-800" 
+    ? "bg-blue-50 dark:bg-slate-900/50" 
     : "bg-white dark:bg-slate-950";
   
   const paddingY = {

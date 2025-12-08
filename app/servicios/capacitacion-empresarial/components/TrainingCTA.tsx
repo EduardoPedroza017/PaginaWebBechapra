@@ -68,7 +68,7 @@ export default function TrainingCTA({
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight"
         >
-          {title}
+          <TranslateText text={title} />
         </motion.h3>
 
         <motion.p
@@ -78,7 +78,7 @@ export default function TrainingCTA({
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed"
         >
-          {subtitle}
+          <TranslateText text={subtitle} />
         </motion.p>
 
         <motion.div
@@ -93,7 +93,7 @@ export default function TrainingCTA({
               href={primaryLink}
               className="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 rounded-2xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl hover:bg-blue-50 transition-all duration-300"
             >
-              {primaryLabel}
+              <TranslateText text={primaryLabel} />
               <ArrowRight size={22} />
             </Link>
           </motion.div>
@@ -103,7 +103,7 @@ export default function TrainingCTA({
               href={secondaryLink}
               className="inline-flex items-center gap-3 px-10 py-5 bg-white/15 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border-2 border-white/30 hover:bg-white/25 transition-all duration-300"
             >
-              {secondaryLabel}
+              <TranslateText text={secondaryLabel} />
             </Link>
           </motion.div>
         </motion.div>

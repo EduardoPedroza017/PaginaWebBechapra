@@ -36,7 +36,7 @@ export default function NoticiasPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-700 to-blue-900 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 py-20 lg:py-28 px-6">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-700 to-blue-900 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 py-16 sm:py-20 lg:py-28 2xl:py-32 px-4 sm:px-6">
         {/* Background decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
@@ -44,7 +44,7 @@ export default function NoticiasPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-6xl mx-auto text-center z-10">
+        <div className="relative max-w-6xl 2xl:max-w-7xl mx-auto text-center z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ export default function NoticiasPage() {
           >
             <path
               d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-              fill="rgb(248 250 252)"
+              className="fill-slate-50 dark:fill-slate-900"
             />
           </svg>
         </div>
@@ -132,8 +132,8 @@ export default function NoticiasPage() {
       </section>
 
       {/* News Grid Section */}
-      <section className="py-20 bg-white dark:bg-slate-900">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-16 sm:py-20 2xl:py-24 bg-white dark:bg-slate-900">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -159,7 +159,7 @@ export default function NoticiasPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-slate-100 rounded-2xl h-[420px] animate-pulse"
+                  className="bg-slate-100 dark:bg-slate-800 rounded-2xl h-[420px] animate-pulse"
                 />
               ))}
             </div>
@@ -247,7 +247,7 @@ export default function NoticiasPage() {
                 icon: TrendingUp,
                 title: "Cambios Legislativos",
                 count: "27 actualizaciones",
-                color: "amber" as const,
+                color: "cyan" as const,
                 description: "Reformas fiscales, laborales y normativas",
               },
             ].map((category, i) => (
@@ -288,7 +288,7 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
         )}
 
         {/* Image */}
-        <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
+        <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
           {item.image_url ? (
             <Image
               src={`http://localhost:5000${item.image_url}`}
@@ -299,7 +299,7 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Newspaper className="w-16 h-16 text-blue-200" />
+              <Newspaper className="w-16 h-16 text-blue-200 dark:text-slate-600" />
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -356,7 +356,7 @@ function CategoryCard({
     icon: React.ComponentType<{ className?: string }>;
     title: string;
     count: string;
-    color: "blue" | "indigo" | "amber";
+    color: "blue" | "indigo" | "cyan";
     description: string;
   };
   index: number;
@@ -377,8 +377,8 @@ function CategoryCard({
         <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
           <IconComponent className="w-8 h-8 text-white" />
         </div>
-      ) : category.color === "amber" ? (
-        <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
+      ) : category.color === "cyan" ? (
+        <div className="w-16 h-16 bg-cyan-600 dark:bg-cyan-700 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
           <IconComponent className="w-8 h-8 text-white" />
         </div>
       ) : (

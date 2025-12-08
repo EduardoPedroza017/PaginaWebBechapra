@@ -40,7 +40,7 @@ export default function TalentHero({
             opacity: [0.15, 0.25, 0.15],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-amber-400/20 via-orange-500/15 to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-blue-500/15 to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -125,7 +125,7 @@ export default function TalentHero({
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
               {title}{" "}
-              <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300 bg-clip-text text-transparent">
                 {highlightWord}
               </span>
             </h1>
@@ -140,7 +140,7 @@ export default function TalentHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-400 to-orange-500 text-gray-900 rounded-2xl font-bold text-lg shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   {ctaLabel}
                   <ArrowRight size={20} />
@@ -166,7 +166,7 @@ export default function TalentHero({
           >
             <div className="relative">
               {/* Glow Effect */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/25 to-orange-500/25 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/25 to-cyan-500/25 rounded-3xl blur-2xl" />
 
               <div className="relative w-full max-w-[550px] h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 <Image
@@ -184,15 +184,15 @@ export default function TalentHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute -bottom-4 -left-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-sm">85%</span>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500">Tasa de</div>
-                    <div className="text-sm font-bold text-gray-900">Aceptacion</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">Tasa de</div>
+                    <div className="text-sm font-bold text-gray-900 dark:text-white">Aceptacion</div>
                   </div>
                 </div>
               </motion.div>
@@ -200,15 +200,15 @@ export default function TalentHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                className="absolute -top-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute -top-4 -right-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-sm">48h</span>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500">Respuesta</div>
-                    <div className="text-sm font-bold text-gray-900">Primeros CVs</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">Respuesta</div>
+                    <div className="text-sm font-bold text-gray-900 dark:text-white">Primeros CVs</div>
                   </div>
                 </div>
               </motion.div>
@@ -222,7 +222,7 @@ export default function TalentHero({
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="white"
+            className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>

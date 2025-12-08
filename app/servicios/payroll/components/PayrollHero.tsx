@@ -100,7 +100,7 @@ export default function PayrollHero({
                   size={16}
                   className="group-hover:-translate-x-1 transition-transform duration-300"
                 />
-                {backLabel}
+                <TranslateText text={backLabel} />
               </Link>
             </motion.div>
 
@@ -109,10 +109,10 @@ export default function PayrollHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400/20 to-orange-500/20 backdrop-blur-sm rounded-full border border-amber-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-full border border-cyan-400/30 mb-6"
             >
-              <Sparkles size={16} className="text-amber-400" />
-              <span className="text-amber-200 text-sm font-medium">Servicio Premium</span>
+              <Sparkles size={16} className="text-cyan-400" />
+              <span className="text-cyan-200 text-sm font-medium"><TranslateText text="Servicio Premium" /></span>
             </motion.div>
 
             {/* Title */}
@@ -120,14 +120,14 @@ export default function PayrollHero({
               {title.split('&').map((part, i) => (
                 <span key={i}>
                   {i > 0 && <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">&</span>}
-                  {part}
+                  <TranslateText text={part} />
                 </span>
               ))}
             </h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
-              {description}
+            <p className="text-lg md:text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-10 max-w-[540px]">
+              <TranslateText text={description} />
             </p>
 
             {/* CTA Buttons */}
@@ -137,7 +137,7 @@ export default function PayrollHero({
                   href={ctaLink}
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-white to-blue-50 text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
                 >
-                  {ctaLabel}
+                  <TranslateText text={ctaLabel} />
                   <ArrowRight size={20} />
                 </Link>
               </motion.div>
@@ -146,7 +146,7 @@ export default function PayrollHero({
                   href="#proceso"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
                 >
-                  Ver proceso
+                  <TranslateText text="Ver proceso" />
                 </Link>
               </motion.div>
             </div>
@@ -179,17 +179,17 @@ export default function PayrollHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -bottom-6 -left-6 px-6 py-4 bg-white rounded-2xl shadow-xl"
+                className="absolute -bottom-6 -left-6 px-6 py-4 bg-white dark:bg-slate-800 rounded-2xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Cumplimiento</div>
-                    <div className="text-lg font-bold text-gray-900">100% Legal</div>
+                    <div className="text-sm text-gray-500 dark:text-slate-400"><TranslateText text="Cumplimiento" /></div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white"><TranslateText text="100% Legal" /></div>
                   </div>
                 </div>
               </motion.div>
@@ -203,7 +203,7 @@ export default function PayrollHero({
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="white"
+            className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>

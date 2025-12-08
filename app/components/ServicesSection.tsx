@@ -14,7 +14,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
-      className="group relative flex flex-col rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white dark:bg-slate-900 dark:border dark:border-slate-800"
+      className="group relative flex flex-col rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white dark:bg-slate-800/90 dark:border dark:border-slate-700 dark:hover:border-slate-600"
     >
       {/* Image Container */}
       <div className="relative h-56 overflow-hidden">

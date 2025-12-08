@@ -58,25 +58,25 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative bg-white rounded-2xl p-6 border border-blue-100 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer"
+                className="group relative bg-white dark:bg-slate-800 rounded-2xl p-6 border border-blue-100 dark:border-slate-700 shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 cursor-pointer"
               >
                 {/* Icon */}
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20"
+                  className="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20"
                 >
                   <Icon className="w-6 h-6 text-white" />
                 </motion.div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                  {useCase.title}
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <TranslateText text={useCase.title} />
                 </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {useCase.desc}
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                  <TranslateText text={useCase.desc} />
                 </p>
 
                 {/* Bottom accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 dark:from-blue-500 dark:via-blue-400 dark:to-blue-500 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.div>
             );
           })}

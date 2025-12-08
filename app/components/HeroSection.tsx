@@ -15,8 +15,8 @@ export default function HeroSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-blue-100/20 to-transparent dark:from-blue-900/20 dark:to-transparent" />
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="relative w-full max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-12 sm:py-16 lg:py-20 2xl:py-24 z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
           {/* Content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -85,10 +85,10 @@ export default function HeroSection() {
                 { value: "98%", label: "Satisfacción" },
               ].map((stat, i) => (
                 <div key={i}>
-                  <div className="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400">
+                  <div className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-black text-blue-600 dark:text-blue-400">
                     {stat.value}
                   </div>
-                  <div className="text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <div className="text-[10px] sm:text-xs md:text-sm 2xl:text-base font-medium text-slate-500 dark:text-slate-400">
                     <TranslateText text={stat.label} />
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.95, x: 50 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:block relative"
+            className="hidden md:block relative"
           >
             <div className="relative">
               {/* Decorative elements */}

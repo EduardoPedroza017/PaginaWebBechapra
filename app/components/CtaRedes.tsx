@@ -102,13 +102,13 @@ export default function CtaRedes() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.1 }}
                   whileHover={{ scale: 1.05, y: -4 }}
-                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all"
+                  className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700"
                   aria-label={`Visitar ${link.name}`}
                 >
                   <div className="w-12 h-12 flex items-center justify-center">
-                    <Image src={link.icon} alt="" width={40} height={40} className="object-contain brightness-0 invert" />
+                    <Image src={link.icon} alt="" width={40} height={40} className="object-contain dark:brightness-0 dark:invert" />
                   </div>
-                  <span className="text-xs text-white/80 font-medium text-center">{link.label}</span>
+                  <span className="text-xs text-slate-700 dark:text-white/90 font-medium text-center">{link.label}</span>
                 </motion.a>
               ))}
             </div>

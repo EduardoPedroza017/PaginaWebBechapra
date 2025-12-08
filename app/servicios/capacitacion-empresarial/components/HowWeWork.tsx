@@ -74,8 +74,8 @@ export default function HowWeWork({
                   <div className="w-6 h-6 min-w-[24px] rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform">
                     <CheckCircle size={14} className="text-white" />
                   </div>
-                  <span className="text-blue-900 font-medium leading-relaxed">
-                    {point}
+                  <span className="text-blue-900 dark:text-slate-200 font-medium leading-relaxed">
+                    <TranslateText text={point} />
                   </span>
                 </motion.div>
               ))}

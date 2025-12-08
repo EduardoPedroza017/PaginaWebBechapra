@@ -79,8 +79,8 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       <TranslateText text={service.title} />
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {service.desc}
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <TranslateText text={service.desc} />
                     </p>
                   </div>
                 </div>

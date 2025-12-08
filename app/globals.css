@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Configure dark mode to use 'class' strategy instead of media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom breakpoints for very large screens */
+@custom-variant 3xl (@media (min-width: 1920px));
+@custom-variant 4xl (@media (min-width: 2560px));
+
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: none; }
@@ -88,4 +95,21 @@ body {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 200ms;
+}
+
+/* Glass card component with dark mode support */
+.glass-card {
+  background: linear-gradient(135deg, #004AB7 0%, #0066CC 100%);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 74, 183, 0.1), 0 2px 4px -2px rgba(0, 74, 183, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.dark .glass-card {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+  box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.3), 0 2px 4px -2px rgba(30, 64, 175, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.2);
 }

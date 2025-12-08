@@ -58,9 +58,9 @@ export default function PositionsCloud({ title, positions }: PositionsCloudProps
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="text-center text-gray-500 mt-8 text-sm"
+          className="text-center text-gray-500 dark:text-slate-400 mt-8 text-sm"
         >
-          Y muchos mas perfiles operativos, administrativos y especializados
+          <TranslateText text="Y muchos mas perfiles operativos, administrativos y especializados" />
         </motion.p>
       </div>
     </section>

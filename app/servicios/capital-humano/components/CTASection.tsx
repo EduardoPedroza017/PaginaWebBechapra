@@ -39,7 +39,7 @@ export default function CTASection({
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -right-1/4 w-full h-full bg-gradient-to-tl from-amber-400/10 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -right-1/4 w-full h-full bg-gradient-to-tl from-cyan-400/10 dark:from-cyan-500/10 to-transparent rounded-full"
         />
       </div>
 
@@ -109,15 +109,15 @@ export default function CTASection({
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl"
+              className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-xl"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
                   <Trophy size={24} className="text-white" />
                 </div>
                 <div>
-                  <div className="text-2xl font-black text-gray-900">500+</div>
-                  <div className="text-sm text-gray-500">Empresas</div>
+                  <div className="text-2xl font-black text-gray-900 dark:text-white">500+</div>
+                  <div className="text-sm text-gray-500 dark:text-slate-400">Empresas</div>
                 </div>
               </div>
             </motion.div>

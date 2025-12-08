@@ -32,8 +32,8 @@ export default function WhyChooseUs({ title, benefits }: WhyChooseUsProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight"
         >
-          <span className="text-gray-900">{title.split(' ').slice(0, -1).join(' ')} </span>
-          <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+          <span className="text-gray-900 dark:text-white">{title.split(' ').slice(0, -1).join(' ')} </span>
+          <span className="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
             {title.split(' ').slice(-1)}
           </span>
         </motion.h2>
@@ -50,29 +50,29 @@ export default function WhyChooseUs({ title, benefits }: WhyChooseUsProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
                 whileHover={{ y: -12, scale: 1.02 }}
-                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 rounded-3xl p-8 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-amber-200 transition-all duration-500 cursor-pointer overflow-hidden"
+                className="group relative bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 dark:from-slate-800 dark:via-slate-800/50 dark:to-blue-950/30 rounded-3xl p-8 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-2xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-500 cursor-pointer overflow-hidden"
               >
                 {/* Background Glow */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-amber-400/10 to-orange-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-blue-600/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Icon */}
-                <div className="relative w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-amber-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <div className="relative w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                   <Icon size={28} className="text-white" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {benefit.title}
                 </h3>
-                <p className="text-sm text-amber-600/80 font-medium mb-4">
+                <p className="text-sm text-blue-600/80 dark:text-blue-400/80 font-medium mb-4">
                   {benefit.subtitle}
                 </p>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
                   {benefit.desc}
                 </p>
 
                 {/* Bottom Accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
               </motion.div>
             );
           })}

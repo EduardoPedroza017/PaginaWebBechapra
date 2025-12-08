@@ -19,7 +19,7 @@ const PressSkeleton = () => {
       {[1, 2, 3].map((i) => (
         <div
           key={i}
-          className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-gray-200 dark:border-slate-800"
+          className="bg-white dark:bg-slate-800/90 rounded-xl p-6 border border-gray-200 dark:border-slate-700"
         >
           <div className="space-y-4">
             <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-1/3" />
@@ -66,7 +66,7 @@ export default function PressCards() {
   };
 
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-950">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <motion.div
@@ -97,7 +97,7 @@ export default function PressCards() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group"
               >
-                <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-gray-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 h-full flex flex-col">
+                <div className="bg-white dark:bg-slate-800/90 rounded-xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 h-full flex flex-col">
                   <div className="flex items-center gap-2 mb-3">
                     <svg
                       className="w-5 h-5 text-blue-600 dark:text-blue-400"

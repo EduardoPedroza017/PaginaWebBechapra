@@ -95,7 +95,7 @@ export default function LegalCTA() {
                 transition={{ delay: 0.2 + i * 0.1 }}
                 className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
               >
-                <CheckCircle className="w-4 h-4 text-green-300" />
+                <CheckCircle className="w-4 h-4 text-blue-300" />
                 <span className="text-sm text-white font-medium">{feature}</span>
               </motion.div>
             ))}

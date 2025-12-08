@@ -1,40 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
 import { TranslateText } from '@/components/TranslateText';
 
-function getInitialTheme(): 'light' | 'dark' {
-	if (typeof window === 'undefined') return 'light';
-	const saved = localStorage.getItem('theme');
-	return (saved === 'dark' || saved === 'light') ? saved : 'light';
-}
-
 export default function PoliticaCookies() {
-	const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
-	const handlerRef = useRef<((e: MediaQueryListEvent) => void) | null>(null);
-
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-			handlerRef.current = (e: MediaQueryListEvent) => {
-				const newTheme = e.matches ? 'dark' : 'light';
-				setTheme(newTheme);
-				localStorage.setItem('theme', newTheme);
-			};
-			
-			mediaQuery.addEventListener('change', handlerRef.current);
-			
-			return () => {
-				if (handlerRef.current) {
-					mediaQuery.removeEventListener('change', handlerRef.current);
-				}
-			};
-		}
-	}, []);
-
 	const cookieTypes = [
 		{
 			type: "Cookies Estrictamente Necesarias",
@@ -146,36 +118,10 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 	];
 
 	return (
-		<main style={{
-			minHeight: '100vh',
-			background: theme === 'dark' 
-				? 'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
-				: 'linear-gradient(to bottom, #ffffff 0%, #f8fafc 50%, #ffffff 100%)',
-			position: 'relative'
-		}}>
+		<main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
 			{/* Decorative background elements */}
-			<div style={{
-				position: 'absolute',
-				top: '10%',
-				right: '-5%',
-				width: '400px',
-				height: '400px',
-				background: 'radial-gradient(circle, rgba(0,74,183,0.08) 0%, transparent 70%)',
-				borderRadius: '50%',
-				pointerEvents: 'none',
-				zIndex: 0
-			}} />
-			<div style={{
-				position: 'absolute',
-				bottom: '20%',
-				left: '-3%',
-				width: '350px',
-				height: '350px',
-				background: 'radial-gradient(circle, rgba(0,172,183,0.06) 0%, transparent 70%)',
-				borderRadius: '50%',
-				pointerEvents: 'none',
-				zIndex: 0
-			}} />
+			<div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,74,183,0.08)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
+			<div className="absolute bottom-[20%] left-[-3%] w-[350px] h-[350px] bg-[radial-gradient(circle,rgba(0,172,183,0.06)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
 
 			{/* Hero Section */}
 			<SubpageHero
@@ -184,226 +130,103 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 			/>
 
 			{/* Content Section */}
-			<section style={{
-				position: 'relative',
-				zIndex: 1,
-				maxWidth: '1200px',
-				margin: '0 auto',
-				padding: 'clamp(3rem, 5vw, 6rem) clamp(1.5rem, 3vw, 2rem)'
-			}}>
+			<section className="relative z-[1] max-w-[1200px] mx-auto px-6 py-12 md:py-16 lg:py-24">
 			{/* Introduction */}
 			<motion.div
 				initial={{opacity: 0, y: 20}}
 				whileInView={{opacity: 1, y: 0}}
 				viewport={{once: true}}
 				transition={{duration: 0.6}}
-				style={{
-					marginBottom: '4rem',
-					padding: '2.5rem',
-					background: theme === 'dark'
-						? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
-						: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
-					borderRadius: '16px',
-					boxShadow: theme === 'dark'
-						? '0 10px 40px rgba(30,64,95,0.4), 0 0 0 1px rgba(30,64,95,0.2)'
-						: '0 10px 40px rgba(0,74,183,0.2), 0 0 0 1px rgba(0,74,183,0.1)',
-					position: 'relative',
-					overflow: 'hidden'
-				}}
+				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
 			>
-				<p style={{
-					fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
-					lineHeight: 1.8,
-					color: 'white',
-					margin: 0,
-					position: 'relative',
-					zIndex: 1
-				}}>
+				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
 					<TranslateText text="Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en nuestro sitio web, y cómo puede controlarlas. Al continuar navegando por nuestro sitio, usted acepta el uso de cookies de acuerdo con esta política." />
 				</p>
-			</motion.div>				{/* Cookie Types */}
+			</motion.div>
+
+			{/* Cookie Types */}
+			<motion.div
+				initial={{opacity: 0, y: 20}}
+				whileInView={{opacity: 1, y: 0}}
+				viewport={{once: true}}
+				transition={{duration: 0.6}}
+				className="mb-16"
+			>
+				<h2 className="text-2xl md:text-3xl font-bold text-blue-700 dark:text-blue-400 mb-8">
+					<TranslateText text="Tipos de Cookies que Utilizamos" />
+				</h2>
+
+				<div className="grid gap-6">
+					{cookieTypes.map((cookie, index) => (
+						<motion.div
+							key={index}
+							initial={{opacity: 0, y: 20}}
+							whileInView={{opacity: 1, y: 0}}
+							viewport={{once: true}}
+							transition={{duration: 0.6, delay: index * 0.1}}
+							className="p-8 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
+						>
+							<div className="flex justify-between items-center mb-4 flex-wrap gap-4">
+								<h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white m-0">
+									<TranslateText text={cookie.type} />
+								</h3>
+								<span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${cookie.required ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'}`}>
+									<TranslateText text={cookie.required ? "Necesarias" : "Opcionales"} />
+								</span>
+							</div>
+
+							<p className="text-base leading-relaxed text-gray-600 dark:text-slate-300 mb-4">
+								<TranslateText text={cookie.description} />
+							</p>
+
+							<div className="mt-4 pt-4 border-t border-gray-200 dark:border-slate-600">
+								<p className="text-sm font-semibold text-gray-500 dark:text-slate-400 mb-2">
+									<TranslateText text="Ejemplos:" />
+								</p>
+								<ul className="m-0 pl-6 flex flex-col gap-1.5">
+									{cookie.examples.map((example, i) => (
+										<li key={i} className="text-sm text-gray-500 dark:text-slate-400">
+											<TranslateText text={example} />
+										</li>
+									))}
+								</ul>
+							</div>
+						</motion.div>
+					))}
+				</div>
+			</motion.div>
+
+			{/* Sections */}
+			{sections.map((section, index) => (
 				<motion.div
+					key={index}
 					initial={{opacity: 0, y: 20}}
 					whileInView={{opacity: 1, y: 0}}
 					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{marginBottom: '4rem'}}
+					transition={{duration: 0.6, delay: index * 0.1}}
+					className="mb-12 pl-6 border-l-[3px] border-blue-700 dark:border-blue-400"
 				>
-					<h2 style={{
-						fontSize: 'clamp(1.75rem, 2.5vw, 2.25rem)',
-						fontWeight: 700,
-						color: theme === 'dark' ? '#60a5fa' : '#004AB7',
-						marginBottom: '2rem',
-						margin: 0
-					}}>
-						<TranslateText text="Tipos de Cookies que Utilizamos" />
+					<h2 className="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400 mb-5">
+						<TranslateText text={section.title} />
 					</h2>
-
-					<div style={{
-						display: 'grid',
-						gap: '1.5rem'
-					}}>
-						{cookieTypes.map((cookie, index) => (
-							<motion.div
-								key={index}
-								initial={{opacity: 0, y: 20}}
-								whileInView={{opacity: 1, y: 0}}
-								viewport={{once: true}}
-								transition={{duration: 0.6, delay: index * 0.1}}
-							style={{
-								padding: '2rem',
-								background: theme === 'dark'
-									? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
-									: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-								borderRadius: '16px',
-								border: theme === 'dark'
-									? '1px solid rgba(148,163,184,0.1)'
-									: '1px solid rgba(0,74,183,0.1)',
-								boxShadow: theme === 'dark'
-									? '0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(148,163,184,0.1)'
-									: '0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,74,183,0.05)',
-								transition: 'all 0.3s ease',
-								cursor: 'default'
-							}}
-							>
-								<div style={{
-									display: 'flex',
-									justifyContent: 'space-between',
-									alignItems: 'center',
-									marginBottom: '1rem',
-									flexWrap: 'wrap',
-									gap: '1rem'
-								}}>
-									<h3 style={{
-										fontSize: 'clamp(1.25rem, 1.75vw, 1.5rem)',
-										fontWeight: 700,
-										color: theme === 'dark' ? '#e2e8f0' : '#1e293b',
-										margin: 0
-									}}>
-										<TranslateText text={cookie.type} />
-									</h3>
-									<span style={{
-										padding: '0.375rem 0.875rem',
-										borderRadius: '20px',
-										fontSize: '0.875rem',
-										fontWeight: 600,
-										background: cookie.required ? '#dcfce7' : '#f0f9ff',
-										color: cookie.required ? '#166534' : '#075985'
-									}}>
-										<TranslateText text={cookie.required ? "Necesarias" : "Opcionales"} />
-									</span>
-								</div>
-
-								<p style={{
-									fontSize: 'clamp(0.95rem, 1.25vw, 1.0625rem)',
-									lineHeight: 1.7,
-									color: theme === 'dark' ? '#cbd5e1' : '#475569',
-									marginBottom: '1rem',
-									margin: 0
-								}}>
-									<TranslateText text={cookie.description} />
-								</p>
-
-								<div style={{
-									marginTop: '1rem',
-									paddingTop: '1rem',
-									borderTop: theme === 'dark' ? '1px solid #334155' : '1px solid #e2e8f0'
-								}}>
-									<p style={{
-										fontSize: '0.9rem',
-										fontWeight: 600,
-										color: theme === 'dark' ? '#94a3b8' : '#64748b',
-										marginBottom: '0.5rem',
-										margin: 0
-									}}>
-										<TranslateText text="Ejemplos:" />
-									</p>
-									<ul style={{
-										margin: 0,
-										paddingLeft: '1.5rem',
-										display: 'flex',
-										flexDirection: 'column',
-										gap: '0.375rem'
-									}}>
-										{cookie.examples.map((example, i) => (
-											<li key={i} style={{
-												fontSize: '0.9rem',
-												color: theme === 'dark' ? '#94a3b8' : '#64748b'
-											}}>
-												<TranslateText text={example} />
-											</li>
-										))}
-									</ul>
-								</div>
-							</motion.div>
-						))}
+					<div className="text-base leading-relaxed text-gray-600 dark:text-slate-300 whitespace-pre-line">
+						<TranslateText text={section.content} />
 					</div>
 				</motion.div>
+			))}
 
-				{/* Sections */}
-				{sections.map((section, index) => (
-					<motion.div
-						key={index}
-						initial={{opacity: 0, y: 20}}
-						whileInView={{opacity: 1, y: 0}}
-						viewport={{once: true}}
-						transition={{duration: 0.6, delay: index * 0.1}}
-						style={{
-							marginBottom: '3rem',
-							paddingLeft: '1.5rem',
-							borderLeft: theme === 'dark' ? '3px solid #60a5fa' : '3px solid #004AB7'
-						}}
-					>
-						<h2 style={{
-							fontSize: 'clamp(1.5rem, 2vw, 1.875rem)',
-							fontWeight: 700,
-							color: theme === 'dark' ? '#60a5fa' : '#004AB7',
-							marginBottom: '1.25rem',
-							margin: 0
-						}}>
-							<TranslateText text={section.title} />
-						</h2>
-						<div style={{
-							fontSize: 'clamp(1rem, 1.5vw, 1.0625rem)',
-							lineHeight: 1.8,
-							color: theme === 'dark' ? '#cbd5e1' : '#475569',
-							whiteSpace: 'pre-line'
-						}}>
-							<TranslateText text={section.content} />
-						</div>
-					</motion.div>
-				))}
-
-				{/* Footer Note */}
-				<motion.div
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6}}
-					style={{
-						marginTop: '4rem',
-						padding: '2rem',
-						background: theme === 'dark'
-							? 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)'
-							: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-						borderRadius: '12px',
-						textAlign: 'center',
-						border: theme === 'dark'
-							? '1px solid rgba(96,165,250,0.2)'
-							: '1px solid rgba(0,74,183,0.1)',
-						boxShadow: theme === 'dark'
-							? '0 2px 12px rgba(30,64,95,0.3)'
-							: '0 2px 12px rgba(0,74,183,0.08)'
-					}}
-				>
-					<p style={{
-						fontSize: '0.95rem',
-						color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-						margin: 0
-					}}>
-						<TranslateText text="Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones." />
-					</p>
-				</motion.div>
+			{/* Footer Note */}
+			<motion.div
+				initial={{opacity: 0, y: 20}}
+				whileInView={{opacity: 1, y: 0}}
+				viewport={{once: true}}
+				transition={{duration: 0.6}}
+				className="mt-16 p-8 bg-blue-50 dark:bg-slate-800 rounded-xl text-center border border-blue-100 dark:border-slate-700"
+			>
+				<p className="text-sm text-gray-600 dark:text-slate-400 m-0">
+					<TranslateText text="Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones." />
+				</p>
+			</motion.div>
 			</section>
             
             <Footer />

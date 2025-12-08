@@ -57,7 +57,7 @@ export default function TrainingCenterSection() {
 
       <div className="max-w-6xl mx-auto">
         <div
-          className="relative rounded-3xl overflow-hidden shadow-xl bg-white dark:bg-slate-900"
+          className="relative rounded-3xl overflow-hidden shadow-xl bg-white dark:bg-slate-800/80 dark:border dark:border-slate-700"
           onMouseEnter={stopAutoplay}
           onMouseLeave={startAutoplay}
         >
@@ -97,7 +97,7 @@ export default function TrainingCenterSection() {
             </div>
 
             {/* Right: Content */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-900">
+            <div className="p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-800/80">
               {/* Tabs */}
               <div className="flex flex-wrap gap-2 mb-8">
                 {trainingFeatures.map((feature, i) => {

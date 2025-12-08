@@ -87,17 +87,6 @@ export default function ProgramsGrid({ title, programs }: ProgramsGridProps) {
                   <TranslateText text={program.desc} />
                 </p>
 
-                {/* Content */}
-                <h3
-                  className="text-xl font-bold mb-3 transition-colors group-hover:brightness-110"
-                  style={{ color: program.color }}
-                >
-                  {program.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {program.desc}
-                </p>
-
                 {/* Bottom Accent */}
                 <div
                   className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"

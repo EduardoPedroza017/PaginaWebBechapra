@@ -54,13 +54,13 @@ export default function ProcessSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
             <Rocket size={16} />
             <TranslateText text="Metodología" />
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
             <TranslateText text="Nuestro" />{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               <TranslateText text="Proceso" />
             </span>
           </h2>

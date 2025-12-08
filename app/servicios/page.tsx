@@ -75,7 +75,7 @@ export default function ServiciosIndex() {
 					<div className="absolute top-1/2 right-0 w-64 h-64 bg-blue-400/10 dark:bg-blue-400/5 rounded-full blur-2xl" />
 				</div>
 
-				<div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28">
+				<div className="relative max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-16 sm:py-20 lg:py-28 2xl:py-32">
 					<div className="grid lg:grid-cols-2 gap-12 items-center">
 						{/* Content */}
 						<motion.div
@@ -162,17 +162,17 @@ export default function ServiciosIndex() {
 
 								{/* Floating card */}
 								<motion.div
-									initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ delay: 0.8 }}
-									className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3"
+									className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 flex items-center gap-3"
 								>
-									<div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-										<CheckCircle className="w-6 h-6 text-blue-600" />
+									<div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+										<CheckCircle className="w-6 h-6 text-blue-600 dark:text-blue-400" />
 									</div>
 									<div>
-										<p className="font-bold text-slate-900">Soluciones Integrales</p>
-										<p className="text-sm text-slate-500">Para tu empresa</p>
+										<p className="font-bold text-slate-900 dark:text-white">Soluciones Integrales</p>
+										<p className="text-sm text-slate-500 dark:text-slate-400">Para tu empresa</p>
 									</div>
 								</motion.div>
 							</div>
@@ -183,20 +183,20 @@ export default function ServiciosIndex() {
 				{/* Wave decoration */}
 				<div className="absolute bottom-0 left-0 right-0">
 					<svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-						<path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="rgb(248 250 252)" />
+						<path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" className="fill-slate-50 dark:fill-slate-900" />
 					</svg>
 				</div>
 			</section>
 
 			{/* Services Grid Section */}
-			<section id="servicios-grid" className="py-20 lg:py-28 bg-white dark:bg-slate-900 relative">
+			<section id="servicios-grid" className="py-20 lg:py-28 bg-slate-50 dark:bg-slate-900 relative">
 				{/* Subtle background pattern */}
 				<div className="absolute inset-0 opacity-30">
 					<div className="absolute top-20 left-10 w-72 h-72 bg-blue-100 dark:bg-blue-900/30 rounded-full blur-3xl" />
 					<div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-100 dark:bg-cyan-900/30 rounded-full blur-3xl" />
 				</div>
 
-				<div className="relative max-w-7xl mx-auto px-6">
+				<div className="relative max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
 					{/* Header */}
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
@@ -280,26 +280,26 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 		blue: {
 			gradient: "from-blue-600 to-blue-700",
 			iconBg: "bg-blue-600",
-			lightBg: "bg-blue-50",
-			text: "text-blue-600",
-			border: "border-blue-200 hover:border-blue-400",
-			shadow: "hover:shadow-blue-200/50",
+			lightBg: "bg-blue-50 dark:bg-blue-950/50",
+			text: "text-blue-600 dark:text-blue-400",
+			border: "border-blue-200 hover:border-blue-400 dark:border-slate-700 dark:hover:border-blue-500",
+			shadow: "hover:shadow-blue-200/50 dark:hover:shadow-blue-900/30",
 		},
 		cyan: {
 			gradient: "from-cyan-600 to-cyan-700",
 			iconBg: "bg-cyan-600",
-			lightBg: "bg-cyan-50",
-			text: "text-cyan-600",
-			border: "border-cyan-200 hover:border-cyan-400",
-			shadow: "hover:shadow-cyan-200/50",
+			lightBg: "bg-cyan-50 dark:bg-cyan-950/50",
+			text: "text-cyan-600 dark:text-cyan-400",
+			border: "border-cyan-200 hover:border-cyan-400 dark:border-slate-700 dark:hover:border-cyan-500",
+			shadow: "hover:shadow-cyan-200/50 dark:hover:shadow-cyan-900/30",
 		},
 		indigo: {
 			gradient: "from-indigo-600 to-indigo-700",
 			iconBg: "bg-indigo-600",
-			lightBg: "bg-indigo-50",
-			text: "text-indigo-600",
-			border: "border-indigo-200 hover:border-indigo-400",
-			shadow: "hover:shadow-indigo-200/50",
+			lightBg: "bg-indigo-50 dark:bg-indigo-950/50",
+			text: "text-indigo-600 dark:text-indigo-400",
+			border: "border-indigo-200 hover:border-indigo-400 dark:border-slate-700 dark:hover:border-indigo-500",
+			shadow: "hover:shadow-indigo-200/50 dark:hover:shadow-indigo-900/30",
 		},
 	};
 
@@ -318,7 +318,7 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 				}
 			}}
 			aria-label={`${group.title} — ver subservicios`}
-			className={`group relative bg-white rounded-2xl cursor-pointer border ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-300 hover:-translate-y-2 flex flex-col h-full overflow-hidden`}
+			className={`group relative bg-white dark:bg-slate-800/90 rounded-2xl cursor-pointer border ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-300 hover:-translate-y-2 flex flex-col h-full overflow-hidden`}
 		>
 			{/* Top gradient bar */}
 			<div className={`h-2 bg-gradient-to-r ${colors.gradient}`} />
@@ -333,10 +333,10 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 							<Icon className="w-7 h-7 text-white" />
 						)}
 					</div>
-					<h2 className="text-xl font-bold text-slate-900 mb-3">
+					<h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
 						{group.title}
 					</h2>
-					<p className="text-slate-600 text-sm leading-relaxed">
+					<p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
 						{group.description}
 					</p>
 				</div>
@@ -344,7 +344,7 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 				{/* Services List */}
 				<div className="flex-1">
 					<div className={`${colors.lightBg} rounded-xl p-5`}>
-						<h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+						<h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
 							Servicios incluidos
 						</h3>
 						<ul className="space-y-3">
@@ -353,7 +353,7 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 									<Link
 										href={item.href}
 										onClick={(e) => e.stopPropagation()}
-										className={`flex items-center gap-3 text-slate-700 hover:${colors.text} transition-colors group/link`}
+										className={`flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:${colors.text} transition-colors group/link`}
 									>
 										<div className={`w-5 h-5 rounded-full ${colors.iconBg} flex items-center justify-center shrink-0`}>
 											<CheckCircle className="w-3 h-3 text-white" />
@@ -369,7 +369,7 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 				</div>
 
 				{/* Footer */}
-				<div className="mt-6 pt-5 border-t border-slate-100">
+				<div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-700">
 					<span className={`inline-flex items-center gap-2 text-sm font-bold ${colors.text} group-hover:gap-3 transition-all`}>
 						Ver más detalles
 						<ArrowRight className="w-4 h-4" />

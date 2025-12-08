@@ -38,11 +38,11 @@ export default function Navbar() {
           <Link href="/" className="font-medium text-[clamp(0.875rem,1vw,1rem)] relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500"><TranslateText text="Inicio" /></Link>
           <div className="relative flex items-center h-full group">
             <Link href="/servicios" className="font-medium text-[clamp(0.875rem,1vw,1rem)] relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500"><TranslateText text="Servicios" /></Link>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 translate-y-2 grid grid-cols-3 p-10 pt-10 pb-9 rounded-xl border shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all z-20 w-max max-w-[90vw] gap-10 bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-800">
+            <div className="absolute top-full left-1/2 -translate-x-1/2 translate-y-2 grid grid-cols-1 lg:grid-cols-3 p-6 lg:p-10 pt-6 lg:pt-10 pb-5 lg:pb-9 rounded-xl border shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all z-20 w-max max-w-[95vw] lg:max-w-[90vw] gap-6 lg:gap-10 bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-800">
               {serviceGroups.map(group => (
-                <div key={group.slug} className="flex flex-col gap-4 min-w-[280px]">
+                <div key={group.slug} className="flex flex-col gap-3 lg:gap-4 min-w-[200px] lg:min-w-[280px]">
                   <div className="flex gap-4 items-start mb-2">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-blue-50 dark:bg-blue-900/40">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl flex items-center justify-center shrink-0 bg-blue-50 dark:bg-blue-900/40">
                       <Image
                         src={group.icon}
                         alt=""

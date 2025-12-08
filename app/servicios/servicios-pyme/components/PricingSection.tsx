@@ -84,11 +84,11 @@ export default function PricingSection({ packages }: PricingSectionProps) {
                 {pkg.items.map((item, j) => (
                   <li key={j} className="flex items-start gap-3">
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      pkg.popular ? 'bg-white/20' : 'bg-blue-100'
+                      pkg.popular ? 'bg-white/20' : 'bg-blue-100 dark:bg-blue-900/50'
                     }`}>
-                      <Check className={`w-3 h-3 ${pkg.popular ? 'text-white' : 'text-blue-600'}`} />
+                      <Check className={`w-3 h-3 ${pkg.popular ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
                     </div>
-                    <span className={`text-sm ${pkg.popular ? 'text-white/90' : 'text-gray-600'}`}>
+                    <span className={`text-sm ${pkg.popular ? 'text-white/90' : 'text-gray-600 dark:text-gray-300'}`}>
                       {item}
                     </span>
                   </li>
@@ -101,11 +101,11 @@ export default function PricingSection({ packages }: PricingSectionProps) {
                   href="#contacto"
                   className={`w-full py-3.5 rounded-xl font-bold text-center flex items-center justify-center gap-2 transition-all ${
                     pkg.popular 
-                      ? 'bg-white text-blue-600 hover:bg-blue-50' 
-                      : 'bg-gradient-to-r from-blue-500 to-blue-400 text-white hover:shadow-lg hover:shadow-blue-500/30'
+                      ? 'bg-white text-blue-600 hover:bg-blue-50 dark:bg-white dark:text-blue-600 dark:hover:bg-blue-50' 
+                      : 'bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/30 dark:hover:shadow-blue-900/30'
                   }`}
                 >
-                  Elegir paquete
+                  <TranslateText text="Elegir paquete" />
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </motion.div>

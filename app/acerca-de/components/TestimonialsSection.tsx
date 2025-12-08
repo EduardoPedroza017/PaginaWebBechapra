@@ -47,13 +47,13 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
             <Star size={16} />
             <TranslateText text="Casos de Éxito" />
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
             <TranslateText text="Historias de" />{" "}
-            <span className="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
               <TranslateText text="Clientes" />
             </span>
           </h2>
@@ -96,9 +96,9 @@ export default function TestimonialsSection() {
                 </p>
 
                 {/* Result Badge */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800 mb-6">
-                  <ArrowUpRight size={16} className="text-green-600 dark:text-green-400" />
-                  <span className="text-green-700 dark:text-green-400 font-semibold text-sm">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-100 dark:border-blue-800 mb-6">
+                  <ArrowUpRight size={16} className="text-blue-600 dark:text-blue-400" />
+                  <span className="text-blue-700 dark:text-blue-400 font-semibold text-sm">
                     <TranslateText text={item.resultado} />
                   </span>
                 </div>

@@ -60,11 +60,11 @@ export default function ProcessSteps({ title, steps, tip }: ProcessStepsProps) {
                     </div>
 
                     {/* Content */}
-                    <h3 className="text-xl font-bold text-blue-900 mb-3">
-                      {step.title}
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-3">
+                      <TranslateText text={step.title} />
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {step.desc}
+                    <p className="text-gray-600 dark:text-slate-400 leading-relaxed">
+                      <TranslateText text={step.desc} />
                     </p>
                   </div>
 
@@ -95,17 +95,17 @@ export default function ProcessSteps({ title, steps, tip }: ProcessStepsProps) {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="mt-16 max-w-3xl mx-auto"
           >
-            <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 pl-20 border-2 border-blue-200">
+            <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 rounded-2xl p-6 pl-20 border-2 border-blue-200 dark:border-blue-800">
               {/* Icon */}
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               
               <div>
-                <span className="font-bold text-blue-700 block mb-1">Consejo</span>
-                <span className="text-gray-700">{tip}</span>
+                <span className="font-bold text-blue-700 dark:text-blue-400 block mb-1"><TranslateText text="Consejo" /></span>
+                <span className="text-gray-700 dark:text-slate-300"><TranslateText text={tip} /></span>
               </div>
             </div>
           </motion.div>

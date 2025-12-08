@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { setCookieConsentBackend } from "../lib/cookieConsent";
+import { TranslateText } from './TranslateText';
 
 export default function CookieConsent() {
 	const [showBanner, setShowBanner] = useState(false);
@@ -119,16 +120,7 @@ export default function CookieConsent() {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.3 }}
-						style={{
-							position: 'fixed',
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							backgroundColor: 'rgba(0, 0, 0, 0.5)',
-							zIndex: 9998,
-							backdropFilter: 'blur(4px)'
-						}}
+						className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998]"
 						onClick={handleClose}
 					/>
 
@@ -138,234 +130,92 @@ export default function CookieConsent() {
 						animate={{ y: 0, opacity: 1 }}
 						exit={{ y: 100, opacity: 0 }}
 						transition={{ duration: 0.4, ease: 'easeOut' }}
-						style={{
-							position: 'fixed',
-							bottom: 0,
-							left: 0,
-							right: 0,
-							zIndex: 9999,
-							padding: 'clamp(1.5rem, 3vw, 2rem)',
-							background: 'linear-gradient(to top, #ffffff 0%, #f8fafc 100%)',
-							boxShadow: '0 -4px 30px rgba(0, 0, 0, 0.15), 0 -2px 10px rgba(0, 74, 183, 0.1)',
-							borderTop: '3px solid #004AB7'
-						}}
+						className="fixed bottom-0 left-0 right-0 z-[9999] p-4 md:p-6 lg:p-8 bg-gradient-to-t from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 shadow-[0_-4px_30px_rgba(0,0,0,0.15)] border-t-[3px] border-blue-700 dark:border-blue-500"
 					>
-						<div style={{
-							maxWidth: '1400px',
-							margin: '0 auto',
-							display: 'flex',
-							flexDirection: 'column',
-							gap: '1.5rem'
-						}}>
+						<div className="max-w-[1400px] mx-auto flex flex-col gap-6">
 							{/* Contenido del mensaje */}
-							<div style={{
-								display: 'flex',
-								alignItems: 'flex-start',
-								gap: '1.5rem',
-								flexWrap: 'wrap'
-							}}>
+							<div className="flex items-start gap-6 flex-wrap">
 								{/* Icono */}
-								<div style={{
-									width: '48px',
-									height: '48px',
-									borderRadius: '12px',
-									background: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									flexShrink: 0,
-									boxShadow: '0 4px 12px rgba(0, 74, 183, 0.3)'
-								}}>
+								<div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-600 dark:to-blue-500 flex items-center justify-center shrink-0 shadow-lg shadow-blue-700/30 dark:shadow-blue-500/30">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
 										<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
 									</svg>
 								</div>
 
 								{/* Texto */}
-								<div style={{ flex: 1, minWidth: '300px' }}>
-									<h3 style={{
-										fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-										fontWeight: 700,
-										color: '#1e293b',
-										marginBottom: '0.75rem',
-										margin: 0
-									}}>
-										Este sitio web utiliza cookies
+								<div className="flex-1 min-w-[300px]">
+									<h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-3">
+										<TranslateText text="Este sitio web utiliza cookies" />
 									</h3>
-									<p style={{
-										fontSize: 'clamp(0.9rem, 1.5vw, 1rem)',
-										lineHeight: 1.6,
-										color: '#475569',
-										margin: 0,
-										marginBottom: '0.5rem'
-									}}>
-										Este sitio web utiliza cookies y otras tecnologías de seguimiento para mejorar su experiencia de navegación. 
-										Bechapra está comprometido con su privacidad y seguridad.{' '}
+									<p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-300 mb-2">
+										<TranslateText text="Este sitio web utiliza cookies y otras tecnologías de seguimiento para mejorar su experiencia de navegación. Bechapra está comprometido con su privacidad y seguridad." />{' '}
 										<Link 
 											href="/politica-de-privacidad" 
-											style={{
-												color: '#004AB7',
-												textDecoration: 'underline',
-												fontWeight: 600
-											}}
+											className="text-blue-700 dark:text-blue-400 underline font-semibold hover:text-blue-600 dark:hover:text-blue-300"
 										>
-											Conozca más sobre nuestra Política de Privacidad
+											<TranslateText text="Conozca más sobre nuestra Política de Privacidad" />
 										</Link>
-										{' '}y{' '}
+										{' '}<TranslateText text="y" />{' '}
 										<Link 
 											href="/politica-de-cookies" 
-											style={{
-												color: '#004AB7',
-												textDecoration: 'underline',
-												fontWeight: 600
-											}}
+											className="text-blue-700 dark:text-blue-400 underline font-semibold hover:text-blue-600 dark:hover:text-blue-300"
 										>
-											Política de Cookies
+											<TranslateText text="Política de Cookies" />
 										</Link>
-										. Puede aceptar o rechazar todas las cookies que venden y/o comparten su información personal.
+										. <TranslateText text="Puede aceptar o rechazar todas las cookies que venden y/o comparten su información personal." />
 									</p>
 								</div>
 							</div>
 
 							{/* Botones */}
-							<div style={{
-								display: 'flex',
-								gap: '1rem',
-								flexWrap: 'wrap',
-								justifyContent: 'flex-end',
-								alignItems: 'center'
-							}}>
+							<div className="flex gap-4 flex-wrap justify-end items-center">
 								<button
 									onClick={handleReject}
-									style={{
-										padding: 'clamp(0.75rem, 1.5vw, 1rem) clamp(1.5rem, 2.5vw, 2rem)',
-										fontSize: 'clamp(0.9rem, 1.25vw, 1rem)',
-										fontWeight: 600,
-										color: '#475569',
-										background: 'transparent',
-										border: '2px solid #cbd5e1',
-										borderRadius: '8px',
-										cursor: 'pointer',
-										transition: 'all 0.3s ease',
-										fontFamily: 'inherit'
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.background = '#f1f5f9';
-										e.currentTarget.style.borderColor = '#94a3b8';
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.background = 'transparent';
-										e.currentTarget.style.borderColor = '#cbd5e1';
-									}}
+									className="px-6 py-3 text-sm md:text-base font-semibold text-slate-600 dark:text-slate-300 bg-transparent border-2 border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-400 dark:hover:border-slate-500"
 								>
-									Rechazar
+									<TranslateText text="Rechazar" />
 								</button>
 
 								<button
 									onClick={handleAccept}
-									style={{
-										padding: 'clamp(0.75rem, 1.5vw, 1rem) clamp(2rem, 3vw, 2.5rem)',
-										fontSize: 'clamp(0.9rem, 1.25vw, 1rem)',
-										fontWeight: 600,
-										color: 'white',
-										background: 'linear-gradient(135deg, #004AB7 0%, #0066CC 100%)',
-										border: 'none',
-										borderRadius: '8px',
-										cursor: 'pointer',
-										transition: 'all 0.3s ease',
-										boxShadow: '0 4px 12px rgba(0, 74, 183, 0.3)',
-										fontFamily: 'inherit'
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.transform = 'translateY(-2px)';
-										e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 74, 183, 0.4)';
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.transform = 'translateY(0)';
-										e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 74, 183, 0.3)';
-									}}
+									className="px-8 py-3 text-sm md:text-base font-semibold text-white bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-600 dark:to-blue-500 border-none rounded-lg cursor-pointer transition-all duration-300 shadow-lg shadow-blue-700/30 dark:shadow-blue-500/30 hover:-translate-y-0.5 hover:shadow-xl"
 								>
-									Aceptar
+									<TranslateText text="Aceptar" />
 								</button>
 
 								{/* Botón cerrar */}
 								<button
 									onClick={handleClose}
-									style={{
-										width: '40px',
-										height: '40px',
-										borderRadius: '8px',
-										background: 'transparent',
-										border: '2px solid #cbd5e1',
-										cursor: 'pointer',
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'center',
-										transition: 'all 0.3s ease'
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.background = '#fee2e2';
-										e.currentTarget.style.borderColor = '#fca5a5';
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.background = 'transparent';
-										e.currentTarget.style.borderColor = '#cbd5e1';
-									}}
+									className="w-10 h-10 rounded-lg bg-transparent border-2 border-slate-300 dark:border-slate-600 cursor-pointer flex items-center justify-center transition-all duration-300 hover:bg-red-100 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-600"
 									aria-label="Cerrar"
 								>
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-600 dark:text-slate-400">
 										<path d="M18 6L6 18M6 6l12 12"/>
 									</svg>
 								</button>
 							</div>
 
 							{/* Links adicionales */}
-							<div style={{
-								display: 'flex',
-								gap: '1.5rem',
-								flexWrap: 'wrap',
-								fontSize: '0.875rem',
-								color: '#64748b',
-								borderTop: '1px solid #e2e8f0',
-								paddingTop: '1rem'
-							}}>
+							<div className="flex gap-6 flex-wrap text-sm text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-4">
 								<Link 
 									href="/terminos-de-servicio" 
-									style={{
-										color: '#64748b',
-										textDecoration: 'none',
-										transition: 'color 0.3s ease'
-									}}
-									onMouseEnter={(e) => e.currentTarget.style.color = '#004AB7'}
-									onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+									className="text-slate-500 dark:text-slate-400 no-underline transition-colors duration-300 hover:text-blue-700 dark:hover:text-blue-400"
 								>
-									Términos de Servicio
+									<TranslateText text="Términos de Servicio" />
 								</Link>
-								<span style={{ color: '#cbd5e1' }}>|</span>
+								<span className="text-slate-300 dark:text-slate-600">|</span>
 								<Link 
 									href="/politica-de-privacidad" 
-									style={{
-										color: '#64748b',
-										textDecoration: 'none',
-										transition: 'color 0.3s ease'
-									}}
-									onMouseEnter={(e) => e.currentTarget.style.color = '#004AB7'}
-									onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+									className="text-slate-500 dark:text-slate-400 no-underline transition-colors duration-300 hover:text-blue-700 dark:hover:text-blue-400"
 								>
-									Política de Privacidad
+									<TranslateText text="Política de Privacidad" />
 								</Link>
-								<span style={{ color: '#cbd5e1' }}>|</span>
+								<span className="text-slate-300 dark:text-slate-600">|</span>
 								<Link 
 									href="/politica-de-cookies" 
-									style={{
-										color: '#64748b',
-										textDecoration: 'none',
-										transition: 'color 0.3s ease'
-									}}
-									onMouseEnter={(e) => e.currentTarget.style.color = '#004AB7'}
-									onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+									className="text-slate-500 dark:text-slate-400 no-underline transition-colors duration-300 hover:text-blue-700 dark:hover:text-blue-400"
 								>
-									Política de Cookies
+									<TranslateText text="Política de Cookies" />
 								</Link>
 							</div>
 						</div>

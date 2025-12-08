@@ -183,7 +183,7 @@ export default function PressDetailPage() {
           <motion.div
             animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
             transition={{ duration: 10, repeat: Infinity }}
-            className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-3xl"
+            className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 dark:from-cyan-500/15 dark:to-blue-600/15 rounded-full blur-3xl"
           />
           <motion.div
             animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}

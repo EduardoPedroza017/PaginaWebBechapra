@@ -106,7 +106,7 @@ export default function BenefitsStagger({
               <motion.div
                 animate={{ rotate: [0, -5, 0] }}
                 transition={{ duration: 5, repeat: Infinity }}
-                className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl -z-10"
+                className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl -z-10"
               />
             </div>
           </motion.div>

@@ -17,8 +17,8 @@ interface ModalitiesProps {
 
 const cardGradients = [
   "from-blue-500 to-indigo-600",
-  "from-amber-500 to-orange-600",
-  "from-purple-500 to-violet-600",
+  "from-cyan-500 to-blue-600",
+  "from-blue-600 to-blue-800",
 ];
 
 export default function Modalities({ title, modalities }: ModalitiesProps) {
@@ -81,7 +81,7 @@ export default function Modalities({ title, modalities }: ModalitiesProps) {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-amber-300 transition-colors">
+                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-cyan-300 transition-colors">
                     {modality.title}
                   </h3>
                   <p className="text-gray-400 group-hover:text-gray-300 leading-relaxed transition-colors">

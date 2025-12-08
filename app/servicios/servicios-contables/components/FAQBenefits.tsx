@@ -83,7 +83,7 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
                         transition={{ duration: 0.3 }}
                       >
                         <div className="px-6 pb-5">
-                          <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                          <p className="text-gray-600 dark:text-slate-400 leading-relaxed"><TranslateText text={faq.a} /></p>
                         </div>
                       </motion.div>
                     )}
@@ -95,9 +95,9 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
 
           {/* Benefits Column */}
           <div>
-            <h3 className="text-xl font-bold text-blue-900 mb-6 flex items-center gap-2">
-              <span className="w-8 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-              Beneficios clave
+            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-6 flex items-center gap-2">
+              <span className="w-8 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-600 dark:to-indigo-600 rounded-full" />
+              <TranslateText text="Beneficios clave" />
             </h3>
 
             <div className="space-y-4">
@@ -111,21 +111,21 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={{ x: 8, scale: 1.02 }}
-                    className="group relative bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 rounded-2xl p-6 border border-blue-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden"
+                    className="group relative bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-800 dark:via-blue-950/30 dark:to-slate-800 rounded-2xl p-6 border border-blue-100 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl dark:hover:shadow-blue-900/20 transition-all duration-300 cursor-pointer overflow-hidden"
                   >
                     {/* Left accent */}
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-indigo-500 to-cyan-400 rounded-l-2xl" />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-indigo-500 to-cyan-400 dark:from-blue-500 dark:via-indigo-600 dark:to-cyan-500 rounded-l-2xl" />
 
                     <div className="flex items-start gap-4 pl-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 group-hover:shadow-blue-500/40 dark:group-hover:shadow-blue-900/40 transition-shadow">
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors">
-                          {benefit.title}
+                        <h4 className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+                          <TranslateText text={benefit.title} />
                         </h4>
-                        <p className="text-gray-600 text-sm leading-relaxed">
-                          {benefit.desc}
+                        <p className="text-gray-600 dark:text-slate-400 text-sm leading-relaxed">
+                          <TranslateText text={benefit.desc} />
                         </p>
                       </div>
                     </div>

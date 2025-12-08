@@ -110,7 +110,7 @@ export default function EssenceSection() {
                     <motion.div
                       animate={{ opacity: [0.1, 0.2, 0.1] }}
                       transition={{ duration: 4, repeat: Infinity }}
-                      className="absolute -top-20 -right-20 w-40 h-40 bg-amber-400/20 rounded-full blur-3xl"
+                      className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-400/20 rounded-full blur-3xl"
                     />
                   </div>
                 )}

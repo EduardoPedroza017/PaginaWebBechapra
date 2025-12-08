@@ -100,7 +100,7 @@ export default function ConsultingHero({
                   size={16}
                   className="group-hover:-translate-x-1 transition-transform duration-300"
                 />
-                {backLabel}
+                <TranslateText text={backLabel} />
               </Link>
             </motion.div>
 
@@ -113,21 +113,21 @@ export default function ConsultingHero({
             >
               <Sparkles size={16} className="text-blue-400" />
               <span className="text-blue-200 text-sm font-medium">
-                Consultoría Experta
+                <TranslateText text="Consultoría Experta" />
               </span>
             </motion.div>
 
             {/* Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-              {title}{" "}
+              <TranslateText text={title} />{" "}
               <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
-                {highlightWord}
+                <TranslateText text={highlightWord} />
               </span>
             </h1>
 
             {/* Description */}
             <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
-              {description}
+              <TranslateText text={description} />
             </p>
 
             {/* CTA Buttons */}
@@ -137,7 +137,7 @@ export default function ConsultingHero({
                   href={ctaLink}
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300"
                 >
-                  {ctaLabel}
+                  <TranslateText text={ctaLabel} />
                   <ArrowRight size={20} />
                 </Link>
               </motion.div>
@@ -146,7 +146,7 @@ export default function ConsultingHero({
                   href="#servicios"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
                 >
-                  Ver servicios
+                  <TranslateText text="Ver servicios" />
                 </Link>
               </motion.div>
             </div>
@@ -219,7 +219,7 @@ export default function ConsultingHero({
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="white"
+            className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>

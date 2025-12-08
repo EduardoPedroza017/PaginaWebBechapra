@@ -5,25 +5,16 @@ import Link from "next/link";
 import { Newspaper, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
-interface PressHeroProps {
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-}
-
-export default function PressHero({ theme, setTheme }: PressHeroProps) {
+export default function PressHero() {
   return (
-    <section style={{
-      background: theme === 'dark'
-        ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
-        : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
-    }} className="relative w-screen -ml-[calc(50vw-50%)] pt-24 pb-32 overflow-hidden transition-colors duration-300">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] pt-24 pb-32 overflow-hidden transition-colors duration-300 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Gradient Orbs */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-3xl"
+          className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
@@ -72,13 +63,13 @@ export default function PressHero({ theme, setTheme }: PressHeroProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6"
           >
-            <Newspaper size={16} className="text-amber-400" />
+            <Newspaper size={16} className="text-cyan-400" />
             <span className="text-white/90 text-sm font-medium"><TranslateText text="Comunicación Oficial" /></span>
           </motion.div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
               <TranslateText text="Sala de" />
             </span>
             <br />
@@ -95,7 +86,7 @@ export default function PressHero({ theme, setTheme }: PressHeroProps) {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-black/30 transition-all duration-300"
               >
                 <TranslateText text="Contacto de Prensa" />
                 <ArrowRight size={20} />
@@ -144,7 +135,7 @@ export default function PressHero({ theme, setTheme }: PressHeroProps) {
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
           <path 
             d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" 
-            fill={theme === 'dark' ? '#0f172a' : 'white'}
+            className="fill-slate-50 dark:fill-slate-900"
           />
         </svg>
       </div>

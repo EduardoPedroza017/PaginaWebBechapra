@@ -18,10 +18,9 @@ interface PressFilterProps {
   onFilter: (filtered: PressItem[]) => void;
   totalCount: number;
   filteredCount: number;
-  theme: 'light' | 'dark';
 }
 
-export default function PressFilter({ press, onFilter, totalCount, filteredCount, theme }: PressFilterProps) {
+export default function PressFilter({ press, onFilter, totalCount, filteredCount }: PressFilterProps) {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("");
   const [isFiltering, setIsFiltering] = useState(false);
@@ -65,36 +64,26 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        style={{
-          background: theme === 'dark' ? '#1e293b' : 'white',
-          borderColor: theme === 'dark' ? '#475569' : '#f3f4f6'
-        }}
-        className="rounded-2xl p-6 shadow-lg transition-colors duration-300"
+        className="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg transition-colors duration-300"
       >
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           {/* Search Input */}
           <div className="relative flex-1">
             <Search
               size={20}
-              style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}
-              className="absolute left-4 top-1/2 -translate-y-1/2"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400"
             />
             <input
               type="text"
               placeholder="Buscar comunicados..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{
-                background: theme === 'dark' ? '#0f172a' : '#f9fafb',
-                borderColor: theme === 'dark' ? '#475569' : '#e5e7eb',
-                color: theme === 'dark' ? '#e2e8f0' : '#1f2937'
-              }}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl border focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl border bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-600 text-gray-900 dark:text-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400 dark:placeholder:text-slate-500"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-full transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors"
               >
                 <X size={16} />
               </button>
@@ -105,18 +94,12 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
           <div className="relative w-full lg:w-56">
             <Calendar
               size={18}
-              style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-slate-400"
             />
             <select
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              style={{
-                background: theme === 'dark' ? '#0f172a' : '#f9fafb',
-                borderColor: theme === 'dark' ? '#475569' : '#e5e7eb',
-                color: theme === 'dark' ? '#e2e8f0' : '#1f2937'
-              }}
-              className="w-full pl-12 pr-10 py-3.5 rounded-xl border focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 appearance-none cursor-pointer"
+              className="w-full pl-12 pr-10 py-3.5 rounded-xl border bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-600 text-gray-900 dark:text-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 appearance-none cursor-pointer"
             >
               <option value="">Todos los años</option>
               {years.map((y) => (
@@ -127,7 +110,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
             </select>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
               <svg
-                className="w-4 h-4 text-gray-400"
+                className="w-4 h-4 text-gray-400 dark:text-slate-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -150,12 +133,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 onClick={clearFilters}
-                style={{
-                  background: theme === 'dark' ? '#1e293b' : '#f3f4f6',
-                  color: theme === 'dark' ? '#e2e8f0' : '#374151',
-                  borderColor: theme === 'dark' ? '#475569' : '#e5e7eb'
-                }}
-                className="px-6 py-3.5 border rounded-xl font-semibold transition-colors duration-300 flex items-center gap-2 justify-center"
+                className="px-6 py-3.5 border rounded-xl font-semibold transition-colors duration-300 flex items-center gap-2 justify-center bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 border-gray-200 dark:border-slate-600 hover:bg-gray-200 dark:hover:bg-slate-600"
               >
                 <X size={18} />
                 <span><TranslateText text="Limpiar" /></span>
@@ -171,20 +149,17 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              style={{
-                borderColor: theme === 'dark' ? '#475569' : '#f3f4f6'
-              }}
-              className="mt-4 pt-4 border-t"
+              className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700"
             >
               <div className="flex items-center gap-2 text-sm">
-                <Filter size={16} className="text-blue-600" />
-                <span style={{ color: theme === 'dark' ? '#cbd5e1' : '#4b5563' }}>
+                <Filter size={16} className="text-blue-600 dark:text-blue-400" />
+                <span className="text-gray-600 dark:text-slate-300">
                   Mostrando{" "}
-                  <span className="font-semibold text-blue-600">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
                     {filteredCount}
                   </span>{" "}
                   de{" "}
-                  <span style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="font-semibold">
+                  <span className="font-semibold text-gray-900 dark:text-white">
                     {totalCount}
                   </span>{" "}
                   <TranslateText text="comunicados" />

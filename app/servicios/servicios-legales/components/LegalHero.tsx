@@ -58,7 +58,7 @@ export default function LegalHero() {
             className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 mb-10"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Volver a servicios</span>
+            <span className="font-medium"><TranslateText text="Volver a servicios" /></span>
           </Link>
         </motion.div>
 
@@ -77,18 +77,18 @@ export default function LegalHero() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6"
             >
               <Sparkles className="w-4 h-4 text-blue-300" />
-              <span className="text-sm font-semibold text-blue-200">Protección Legal</span>
+              <span className="text-sm font-semibold text-blue-200"><TranslateText text="Protección Legal" /></span>
             </motion.div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-              Servicios{" "}
+              <TranslateText text="Servicios" />{" "}
               <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                Legales
+                <TranslateText text="Legales" />
               </span>
             </h1>
 
             <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-8 max-w-xl">
-              Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo.
+              <TranslateText text="Protege tu negocio con asesoría legal práctica enfocada en prevención y cumplimiento normativo." />
             </p>
 
             {/* Stats */}
@@ -107,7 +107,7 @@ export default function LegalHero() {
                   <div className="text-3xl font-black bg-gradient-to-r from-sky-400 to-blue-400 bg-clip-text text-transparent">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-blue-200/70">{stat.label}</div>
+                  <div className="text-sm text-blue-200/70"><TranslateText text={stat.label} /></div>
                 </motion.div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export default function LegalHero() {
                 href="#contacto"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300"
               >
-                Solicitar asesoría
+                <TranslateText text="Solicitar asesoría" />
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
@@ -145,8 +145,8 @@ export default function LegalHero() {
                 <Scale className="w-16 h-16 text-white" />
               </motion.div>
 
-              <h3 className="text-2xl font-bold text-white text-center mb-3">Protección Total</h3>
-              <p className="text-blue-200/80 text-center text-lg mb-6">Tu empresa segura y en cumplimiento</p>
+              <h3 className="text-2xl font-bold text-white text-center mb-3"><TranslateText text="Protección Total" /></h3>
+              <p className="text-blue-200/80 text-center text-lg mb-6"><TranslateText text="Tu empresa segura y en cumplimiento" /></p>
 
               {/* Mini stats */}
               <div className="grid grid-cols-3 gap-4">
@@ -163,7 +163,7 @@ export default function LegalHero() {
                     className="text-center p-3 bg-white/5 rounded-xl border border-white/10"
                   >
                     <div className="text-xl font-black text-white">{stat.value}</div>
-                    <div className="text-xs text-blue-300/70">{stat.label}</div>
+                    <div className="text-xs text-blue-300/70"><TranslateText text={stat.label} /></div>
                   </motion.div>
                 ))}
               </div>
