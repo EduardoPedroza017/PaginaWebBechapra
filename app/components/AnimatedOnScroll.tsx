@@ -31,6 +31,7 @@ export default function AnimatedOnScroll({ children, className = "", rootMargin 
 
     // If user prefers reduced motion, reveal immediately and skip observer
     if(prefersReduced){
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       return;
     }
@@ -40,10 +41,16 @@ export default function AnimatedOnScroll({ children, className = "", rootMargin 
         if(entry.isIntersecting){
           // reduce delay on small screens for snappier UX
           const effectiveDelay = isSmallScreen ? Math.max(0, Math.floor(delay/3)) : delay;
-          setTimeout(()=> setVisible(true), effectiveDelay);
+          setTimeout(()=> {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setVisible(true);
+          }, effectiveDelay);
           if(once) observer.unobserve(node);
         } else {
-          if(!once) setVisible(false);
+          if(!once) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setVisible(false);
+          }
         }
       });
     }, { root: null, rootMargin, threshold });

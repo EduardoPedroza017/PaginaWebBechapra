@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Search, Calendar, X, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TranslateText } from "@/components/TranslateText";
@@ -23,19 +23,18 @@ interface PressFilterProps {
 export default function PressFilter({ press, onFilter, totalCount, filteredCount }: PressFilterProps) {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("");
-  const [isFiltering, setIsFiltering] = useState(false);
 
   // Get unique years sorted descending
   const years = Array.from(
     new Set(press.map((p) => new Date(p.date).getFullYear().toString()))
   ).sort((a, b) => b.localeCompare(a));
 
-  useEffect(() => {
-    let filtered = press;
+  const filtered = useMemo(() => {
+    let result = press;
 
     if (search.trim()) {
       const searchLower = search.toLowerCase();
-      filtered = filtered.filter(
+      result = result.filter(
         (p) =>
           p.title.toLowerCase().includes(searchLower) ||
           p.excerpt.toLowerCase().includes(searchLower)
@@ -43,14 +42,19 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
     }
 
     if (year) {
-      filtered = filtered.filter(
+      result = result.filter(
         (p) => new Date(p.date).getFullYear().toString() === year
       );
     }
 
-    setIsFiltering(search.trim() !== "" || year !== "");
+    return result;
+  }, [press, search, year]);
+
+  const isFiltering = search.trim() !== "" || year !== "";
+
+  useEffect(() => {
     onFilter(filtered);
-  }, [search, year, press, onFilter]);
+  }, [filtered, onFilter]);
 
   const clearFilters = () => {
     setSearch("");

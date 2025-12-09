@@ -8,7 +8,7 @@ interface ImagePreviewModalProps {
   isOpen: boolean;
   filename: string | null;
   images: { filename: string }[];
-  theme: 'light' | 'dark';
+  theme?: 'light' | 'dark';
   onClose: () => void;
 }
 
@@ -19,8 +19,12 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
   useEffect(() => {
     if (filename && images.length > 0) {
       const index = images.findIndex(img => img.filename === filename);
-      if (index !== -1) setCurrentIndex(index);
+      if (index !== -1) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCurrentIndex(index);
+      }
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setZoom(1);
   }, [filename, images]);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { TranslateText } from "@/components/TranslateText";
-import { Cookie, CheckCircle, XCircle, TrendingUp, Users, Clock, Percent } from "lucide-react";
+import { CheckCircle, XCircle, TrendingUp, Users, Clock, Percent } from "lucide-react";
 
 interface CookieConsent {
   accepted: boolean;

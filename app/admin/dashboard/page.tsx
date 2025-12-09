@@ -80,11 +80,13 @@ export default function AdminDashboard() {
   if (loading || !themeReady) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${
-        theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+        theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
       }`}>
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-          <p className={`text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${
+            theme === 'dark' ? 'border-blue-500' : 'border-blue-600'
+          }`}></div>
+          <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>
             <TranslateText text="Cargando panel de administración..." />
           </p>
         </div>
@@ -95,27 +97,31 @@ export default function AdminDashboard() {
   if (!admin) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${
-        theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+        theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
       }`}>
         <div className={`max-w-md w-full mx-4 rounded-2xl shadow-2xl p-8 text-center ${
-          theme === 'dark' ? 'bg-gray-900 border border-red-900/50' : 'bg-white border border-red-200'
+          theme === 'dark' ? 'bg-slate-900/90 backdrop-blur-xl border border-slate-700/50' : 'bg-white/80 backdrop-blur-xl border border-slate-200/60'
         }`}>
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
-            <AlertCircle className="w-10 h-10 text-red-600 dark:text-red-400" />
-          </div>
-          <h1 className={`text-2xl font-bold mb-4 ${
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
+          <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
+            theme === 'dark' ? 'bg-rose-500/20' : 'bg-rose-100'
           }`}>
+            <AlertCircle className={`w-8 h-8 ${theme === 'dark' ? 'text-rose-400' : 'text-rose-600'}`} />
+          </div>
+          <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             <TranslateText text="Acceso Denegado" />
-          </h1>
-          <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-            <TranslateText text="No tienes permisos de administrador. Por favor, inicia sesión con una cuenta autorizada." />
+          </h2>
+          <p className={`mb-6 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+            <TranslateText text="No tienes permisos para acceder a esta página." />
           </p>
           <button
             onClick={() => router.push('/admin')}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 ${
+              theme === 'dark' 
+                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30'
+                : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30'
+            }`}
           >
-            <TranslateText text="Ir al Login" />
+            <TranslateText text="Volver al Login" />
           </button>
         </div>
       </div>
@@ -124,30 +130,30 @@ export default function AdminDashboard() {
 
   return (
     <div className={`flex min-h-screen ${
-      theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-gray-50 to-blue-50'
+      theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
     }`}>
       <Sidebar selected="/admin/dashboard" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
-          {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl ${
-                theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
+          {/* Page Header con diseño mejorado */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div className="flex items-center gap-4">
+              <div className={`p-4 rounded-2xl shadow-lg ${
+                theme === 'dark' 
+                  ? 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/30' 
+                  : 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
               }`}>
-                <LayoutDashboard className={`w-6 h-6 ${
-                  theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                }`} />
+                <LayoutDashboard className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className={`text-xl md:text-2xl font-bold ${
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                <h1 className={`text-2xl md:text-3xl font-bold ${
+                  theme === 'dark' ? 'text-white' : 'text-slate-900'
                 }`}>
                   <TranslateText text="Panel de Control" />
                 </h1>
-                <p className={`text-sm ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                <p className={`text-sm font-medium mt-0.5 ${
+                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
                 }`}>
                   <TranslateText text="Resumen general del sistema" />
                 </p>
@@ -156,10 +162,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={handleRefresh}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all hover:scale-105 active:scale-95 ${
+              className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
                 theme === 'dark'
-                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 shadow-sm border border-gray-200'
+                  ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                  : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
               }`}
             >
               <RefreshCw className="w-4 h-4" />

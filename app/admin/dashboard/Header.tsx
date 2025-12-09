@@ -1,7 +1,6 @@
 
 "use client";
-import { Moon, Sun, LogOut, Menu, ShieldCheck, ChevronDown } from 'lucide-react';
-import Image from 'next/image';
+import { Moon, Sun, LogOut, Menu,  ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { TranslateText } from '@/components/TranslateText';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -13,67 +12,68 @@ interface HeaderProps {
   theme: 'light' | 'dark';
   palette?: Palette;
 }
-export function Header({ onLogout, onToggleTheme, theme, palette }: HeaderProps) {
+export function Header({ onLogout, onToggleTheme, theme }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDark = theme === 'dark';
+
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-
   const { lang, setLang } = useLanguage();
 
-  // Usar colores de la paleta si está definida
-  // Unificar azul con Sidebar y mejorar contraste
-  const headerClasses = palette
-    ? `${palette.background} border ${palette.border}`
-    : isDark
-      ? 'bg-gradient-to-r from-[#0b1b3f] via-[#1b3f9c] to-[#0b1b3f] text-white border-[#1b3f9c]'
-      : 'bg-gradient-to-r from-[#1f82ff] via-[#3b8dff] to-[#1f82ff] text-white border-[#1f82ff]';
+  // Diseño moderno y limpio
+  const headerClasses = isDark
+    ? 'bg-slate-900/95 backdrop-blur-xl border-slate-800 text-white'
+    : 'bg-white/95 backdrop-blur-xl border-slate-200 text-slate-900';
 
-  // Modernizar botones
-  const themeButtonClasses = palette
-    ? `bg-white/20 hover:bg-white/40 backdrop-blur-sm border border-white/30 shadow-md`
-    : isDark
-      ? 'bg-gradient-to-r from-[#1e293b] to-[#153e90] text-white hover:from-[#153e90] hover:to-[#1e293b] border border-white/20 shadow-md'
-      : 'bg-gradient-to-r from-[#e3f0ff] to-[#b3d1ff] text-[#153e90] hover:from-[#b3d1ff] hover:to-[#e3f0ff] border border-[#1769e0]/20 shadow-md';
+  const buttonBase = 'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 hover:scale-105 active:scale-95 shadow-md';
 
-  const logoutButtonClasses = palette
-    ? `bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md border border-red-400/30`
-    : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-md border border-red-400/30';
+  const themeButtonClasses = isDark
+    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+    : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200';
+
+  const logoutButtonClasses = 'bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white border border-rose-400/30';
 
   return (
-    <header className={`sticky top-0 z-50 flex items-center justify-between px-4 md:px-6 py-3 shadow-lg border-b backdrop-blur-md ${headerClasses}`}>
-      {/* Título sin logo */}
+    <header className={`sticky top-0 z-50 flex items-center justify-between px-4 md:px-6 py-4 shadow-lg border-b ${headerClasses}`}>
+      {/* Título y breadcrumb */}
       <div className="flex flex-col">
-        <h1 className="font-semibold text-base md:text-lg text-white">
+        <h1 className={`font-bold text-lg md:text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
           <TranslateText text="Bechapra" />
         </h1>
-        <p className="text-[10px] md:text-[11px] text-white/60 font-medium">
+        <p className={`text-xs md:text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           <TranslateText text="Panel de Administración" />
         </p>
       </div>
 
-
-      {/* Desktop Navigation + Traducción */}
-      <div className="hidden md:flex items-center gap-2.5">
+      {/* Desktop Navigation */}
+      <div className="hidden md:flex items-center gap-3">
+        {/* Botón de tema */}
         <button
           onClick={onToggleTheme}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95 ${themeButtonClasses}`}
+          className={`${buttonBase} ${themeButtonClasses} text-sm`}
           aria-label={`Cambiar a modo ${isDark ? 'claro' : 'oscuro'}`}
+          title={`Cambiar a modo ${isDark ? 'claro' : 'oscuro'}`}
         >
-          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          {isDark ? <Sun size={18} /> : <Moon size={18} />}
           <span className="hidden lg:inline">
             <TranslateText text={isDark ? 'Claro' : 'Oscuro'} />
           </span>
         </button>
 
-        {/* Selector de idioma */}
+        {/* Selector de idioma mejorado */}
         <div className="relative">
-          <div className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 transition-all rounded-lg px-3 py-2 cursor-pointer">
-            <span className="text-[11px] font-medium text-white/90"><TranslateText text="Idioma" /></span>
-            <ChevronDown size={14} className="text-white/70" />
+          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 shadow-md ${
+            isDark
+              ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700'
+              : 'bg-slate-100 hover:bg-slate-200 border border-slate-200'
+          }`}>
+            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <TranslateText text="Idioma" />
+            </span>
+            <ChevronDown size={16} className={isDark ? 'text-slate-400' : 'text-slate-600'} />
             <select
               value={lang}
               onChange={e => setLang(e.target.value)}
@@ -94,46 +94,62 @@ export function Header({ onLogout, onToggleTheme, theme, palette }: HeaderProps)
           </div>
         </div>
 
+        {/* Botón de logout */}
         <button
           onClick={onLogout}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium text-white transition-all duration-200 hover:scale-105 active:scale-95 ${logoutButtonClasses}`}
+          className={`${buttonBase} ${logoutButtonClasses} text-sm`}
           aria-label="Cerrar sesión"
+          title="Cerrar sesión"
         >
-          <LogOut size={16} />
-          <span className="hidden lg:inline"><TranslateText text="Salir" /></span>
+          <LogOut size={18} />
+          <span className="hidden lg:inline">
+            <TranslateText text="Salir" />
+          </span>
         </button>
       </div>
 
       {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+        className={`md:hidden p-2.5 rounded-xl transition-colors shadow-md ${
+          isDark
+            ? 'bg-slate-800 hover:bg-slate-700 text-white'
+            : 'bg-slate-100 hover:bg-slate-200 text-slate-900'
+        }`}
         aria-label="Menú"
       >
-        <Menu size={22} className="text-white" />
+        <Menu size={22} />
       </button>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu mejorado */}
       {mobileMenuOpen && (
-        <div className={`absolute top-full left-0 right-0 md:hidden shadow-xl border-t border-white/10 z-50 backdrop-blur-md ${
-          isDark ? 'bg-[#0b1b3f]/95' : 'bg-[#1f82ff]/95'
+        <div className={`absolute top-full left-0 right-0 md:hidden shadow-2xl border-t z-50 backdrop-blur-xl ${
+          isDark
+            ? 'bg-slate-900/95 border-slate-800'
+            : 'bg-white/95 border-slate-200'
         }`}>
-          <div className="flex flex-col gap-2 p-3">
+          <div className="flex flex-col gap-2 p-4">
             <button
               onClick={() => {
                 onToggleTheme();
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${themeButtonClasses}`}
+              className={`${buttonBase} ${themeButtonClasses} text-sm justify-start`}
             >
-              {isDark ? <Sun size={17} /> : <Moon size={17} />}
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
               <span><TranslateText text={isDark ? 'Modo Claro' : 'Modo Oscuro'} /></span>
             </button>
 
             <div className="relative">
-              <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3.5 py-2.5">
-                <span className="text-sm font-medium text-white"><TranslateText text="Idioma" /></span>
-                <ChevronDown size={15} className="text-white/70 ml-auto" />
+              <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl ${
+                isDark
+                  ? 'bg-slate-800 border border-slate-700'
+                  : 'bg-slate-100 border border-slate-200'
+              }`}>
+                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <TranslateText text="Idioma" />
+                </span>
+                <ChevronDown size={16} className={`ml-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`} />
                 <select
                   value={lang}
                   onChange={e => setLang(e.target.value)}
@@ -158,9 +174,9 @@ export function Header({ onLogout, onToggleTheme, theme, palette }: HeaderProps)
                 onLogout();
                 setMobileMenuOpen(false);
               }}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-medium text-white transition-all ${logoutButtonClasses}`}
+              className={`${buttonBase} ${logoutButtonClasses} text-sm justify-start`}
             >
-              <LogOut size={17} />
+              <LogOut size={18} />
               <span><TranslateText text="Cerrar sesión" /></span>
             </button>
           </div>

@@ -21,6 +21,7 @@ interface PressItem {
   title: string;
   date: string;
   excerpt: string;
+  content?: string;
   link?: string;
   file_url?: string;
 }
@@ -82,7 +83,7 @@ export default function PressDetailPage() {
       try {
         await navigator.share({
           title: press?.title,
-          text: press?.excerpt,
+          text: press?.excerpt || press?.title,
           url: window.location.href,
         });
       } catch (err) {
@@ -166,8 +167,9 @@ export default function PressDetailPage() {
     year: "numeric",
   });
 
-  // Estimate reading time (roughly 200 words per minute)
-  const wordCount = press.excerpt.split(/\s+/).length;
+  // Estimate reading time (roughly 200 words per minute) with null-safe excerpt
+  const excerptText = (press.excerpt || press.content || press.title || '').toString();
+  const wordCount = excerptText.trim() ? excerptText.trim().split(/\s+/).length : 0;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   return (

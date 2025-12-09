@@ -19,7 +19,6 @@ interface ContactStatsProps {
 export function ContactStats({ messages, filtered, theme }: ContactStatsProps) {
   // Calcular estadísticas
   const totalMessages = messages.length;
-  const filteredCount = filtered.length;
   
   // Emails únicos
   const uniqueEmails = new Set(messages.map(m => m.email)).size;

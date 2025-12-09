@@ -14,12 +14,10 @@ import {
   Newspaper,
   Megaphone,
   Map,
-  ShieldCheck,
   ChevronRight,
   UserCheck,
   MapPin,
 } from "lucide-react";
-import { Palette } from "../../../src/theme/palettes";
 
 export type SidebarItem = {
   label: string;
@@ -44,27 +42,29 @@ export const sidebarItems: SidebarItem[] = [
 interface SidebarProps {
   selected: string;
   theme?: 'light' | 'dark';
-  palette?: Palette;
 }
 
-export function Sidebar({ selected, theme, palette }: SidebarProps) {
+export function Sidebar({ selected, theme }: SidebarProps) {
   const isDark = theme === 'dark';
-  // Unificar azul con Header y mejorar contraste
-  const baseGradient = palette?.background || (isDark
-    ? 'bg-gradient-to-b from-[#0b1b3f] via-[#1b3f9c] to-[#0b1b3f]'
-    : 'bg-gradient-to-b from-[#1f82ff] via-[#3b8dff] to-[#1f82ff]');
-  const borderColor = palette?.border || (isDark ? 'border-[#1b3f9c]/60' : 'border-[#1f82ff]/60');
-  const headerAccent = palette?.primary || 'bg-gradient-to-br from-[#3b8dff] to-[#1f82ff]';
-  const footerText = palette?.secondary || 'text-white/70';
+  
+  // Diseño moderno y limpio sin gradientes agresivos
+  const bgClasses = isDark
+    ? 'bg-slate-900 border-slate-800'
+    : 'bg-white/95 backdrop-blur-xl border-slate-200 shadow-xl shadow-slate-200/60';
+  
+  const headerBg = isDark
+    ? 'bg-slate-800/50 border-slate-700'
+    : 'bg-slate-50/80 border-slate-200';
 
   return (
     <aside
-      className={`${baseGradient} w-60 md:w-64 min-h-screen flex flex-col shadow-2xl border-r ${borderColor} fixed md:static left-0 top-0 z-40 transition-all duration-300`}
+      className={`${bgClasses} w-64 min-h-screen flex flex-col shadow-xl border-r fixed md:static left-0 top-0 z-40 transition-all duration-300`}
       style={{ maxWidth: '100vw' }}
     >
-      <div className={`px-5 py-5 border-b ${borderColor} bg-white/5 backdrop-blur-sm`}>
+      {/* Header del sidebar */}
+      <div className={`px-5 py-5 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'} ${headerBg}`}>
         <div className="flex items-center gap-3">
-          <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-white/10 shadow-sm flex-shrink-0">
+          <div className={`relative w-11 h-11 rounded-xl overflow-hidden ${isDark ? 'bg-blue-500/10' : 'bg-blue-50'} shadow-sm flex-shrink-0 ring-2 ${isDark ? 'ring-blue-500/20' : 'ring-blue-100'}`}>
             <NextImage
               src="/image/LOGO/logo.png"
               alt="Logo Bechapra"
@@ -74,42 +74,64 @@ export function Sidebar({ selected, theme, palette }: SidebarProps) {
             />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] text-white/50 tracking-[0.15em] uppercase font-medium">
+            <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'} tracking-[0.15em] uppercase font-semibold`}>
               Bechapra
             </span>
-            <h2 className="font-semibold text-base text-white leading-tight"><TranslateText text="Panel Admin" /></h2>
+            <h2 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'} leading-tight`}>
+              <TranslateText text="Panel Admin" />
+            </h2>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+      {/* Navegación principal */}
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
         {sidebarItems.map((item) => {
           const isActive = selected === item.path;
           return (
             <Link
               key={item.path}
               href={item.path}
-              className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition-all duration-200 ${
+              className={`group flex items-center justify-between px-3.5 py-3 rounded-xl font-medium transition-all duration-200 ${
                 isActive
-                  ? 'bg-white text-[#1b3f9c] shadow-md'
-                  : 'text-white/75 hover:text-white hover:bg-white/10'
+                  ? isDark
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
+                    : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                  : isDark
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className={`flex-shrink-0 ${isActive ? 'text-[#1b3f9c]' : 'text-white/60 group-hover:text-white/80'}`}>
+                <span className={`flex-shrink-0 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}>
                   {item.icon}
                 </span>
-                <span className="text-[13px] truncate"><TranslateText text={item.label} /></span>
+                <span className="text-[13px] font-semibold truncate">
+                  <TranslateText text={item.label} />
+                </span>
               </div>
-              {isActive && <ChevronRight size={16} className="text-[#1b3f9c] flex-shrink-0 ml-2" />}
+              {isActive && (
+                <ChevronRight size={16} className="flex-shrink-0 ml-2 animate-pulse" />
+              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className={`px-5 py-3.5 border-t ${borderColor} bg-white/5`}>
-        <p className="text-[11px] text-white/60 font-medium text-center">Bechapra CMS</p>
-        <p className="text-[10px] text-white/40 text-center mt-0.5">v1.0.0</p>
+      {/* Footer del sidebar */}
+      <div className={`px-5 py-4 border-t ${isDark ? 'border-slate-800 bg-slate-800/30' : 'border-slate-200 bg-slate-50'}`}>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-pulse shadow-lg ${isDark ? 'shadow-emerald-400/50' : 'shadow-emerald-500/50'}`} />
+          <span className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Sistema Activo
+          </span>
+        </div>
+        <p className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'} font-medium`}>
+          Bechapra CMS
+        </p>
+        <p className={`text-[10px] ${isDark ? 'text-slate-600' : 'text-slate-400'} mt-0.5`}>
+          Versión 2.0.0
+        </p>
       </div>
     </aside>
   );

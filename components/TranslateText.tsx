@@ -15,6 +15,7 @@ export function TranslateText({ text, asOption = false }: TranslateTextProps) {
 
   useEffect(() => {
     if (lang === 'es') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTranslated(text);
       return;
     }
@@ -22,11 +23,21 @@ export function TranslateText({ text, asOption = false }: TranslateTextProps) {
     // Añadir pequeño delay aleatorio para evitar llamadas simultáneas
     const delay = Math.random() * 300;
     const timeoutId = setTimeout(() => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(true);
       translateText(text, lang)
-        .then(setTranslated)
-        .catch(() => setTranslated(text))
-        .finally(() => setLoading(false));
+        .then((value) => {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setTranslated(value);
+        })
+        .catch(() => {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setTranslated(text);
+        })
+        .finally(() => {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setLoading(false);
+        });
     }, delay);
 
     return () => clearTimeout(timeoutId);

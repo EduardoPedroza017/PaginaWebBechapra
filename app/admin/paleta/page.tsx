@@ -54,7 +54,7 @@ export default function PaletaPage() {
 
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-blue-50 to-indigo-100'}`}>
-      <Sidebar selected="/admin/paleta" theme={theme} palette={activePalette} />
+      <Sidebar selected="/admin/paleta" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header
           onLogout={() => {
