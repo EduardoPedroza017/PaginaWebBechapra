@@ -29,7 +29,7 @@ export default function PrensaPage() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/press")
+    fetch("/api/press")
       .then((res) => res.json())
       .then((data: PressItem[]) => {
         // Sort by date descending

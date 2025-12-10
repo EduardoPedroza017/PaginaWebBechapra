@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, Clock, Server, Newspaper, Image as ImageIcon, FileText } from "lucide-react";
+import { Shield, Clock, Server, Newspaper, Image as ImageIcon, FileText, TrendingUp, TrendingDown } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 import { useEffect, useState } from "react";
 import { StatCard } from "../components/shared";
@@ -15,6 +15,9 @@ interface Stats {
   gallery: number;
   press: number;
   users: number;
+  newsDelta?: number;
+  galleryDelta?: number;
+  pressDelta?: number;
 }
 
 export default function DashboardStats({ role, theme }: DashboardStatsProps) {
@@ -41,6 +44,9 @@ export default function DashboardStats({ role, theme }: DashboardStatsProps) {
           gallery: Array.isArray(gallery) ? gallery.length : 0,
           press: Array.isArray(press) ? press.length : 0,
           users: 0,
+          newsDelta: 12,
+          galleryDelta: 8,
+          pressDelta: -5,
         });
       } catch {
         // Silent fail
@@ -99,7 +105,8 @@ export default function DashboardStats({ role, theme }: DashboardStatsProps) {
             icon={<Newspaper size={24} />}
             color="blue"
             theme={theme}
-            trend={{ value: 12, isPositive: true }}
+            trend={{ value: stats.newsDelta ?? 0, isPositive: (stats.newsDelta ?? 0) >= 0 }}
+            sparklineValues={[4,6,5,7,9,11,stats.news || 0]}
           />
           <StatCard
             title="Imágenes en Galería"
@@ -107,7 +114,8 @@ export default function DashboardStats({ role, theme }: DashboardStatsProps) {
             icon={<ImageIcon size={24} />}
             color="purple"
             theme={theme}
-            trend={{ value: 8, isPositive: true }}
+            trend={{ value: stats.galleryDelta ?? 0, isPositive: (stats.galleryDelta ?? 0) >= 0 }}
+            sparklineValues={[3,4,4,5,6,7,stats.gallery || 0]}
           />
           <StatCard
             title="Comunicados de Prensa"
@@ -115,7 +123,8 @@ export default function DashboardStats({ role, theme }: DashboardStatsProps) {
             icon={<FileText size={24} />}
             color="green"
             theme={theme}
-            trend={{ value: 5, isPositive: false }}
+            trend={{ value: stats.pressDelta ?? 0, isPositive: (stats.pressDelta ?? 0) >= 0 }}
+            sparklineValues={[6,5,5,5,4,3,stats.press || 0]}
           />
         </div>
       </div>

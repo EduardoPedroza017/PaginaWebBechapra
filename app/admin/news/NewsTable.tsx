@@ -41,7 +41,7 @@ export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
   }
 
   return (
-    <div className={`rounded-2xl border overflow-hidden ${
+    <div className={`rounded-2xl border ${
       theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
     }`}>
       {/* Header */}
@@ -60,102 +60,106 @@ export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className={`text-left text-xs uppercase tracking-wider ${
-              theme === 'dark' ? 'text-gray-400 bg-gray-800/50' : 'text-gray-500 bg-gray-50'
-            }`}>
-              <th className="px-5 py-3 font-semibold">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <TranslateText text="Fecha" />
-                </div>
-              </th>
-              <th className="px-5 py-3 font-semibold">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  <TranslateText text="Título" />
-                </div>
-              </th>
-              <th className="px-5 py-3 font-semibold hidden md:table-cell"><TranslateText text="Subtítulo" /></th>
-              <th className="px-5 py-3 font-semibold hidden lg:table-cell"><TranslateText text="Descripción" /></th>
-              <th className="px-5 py-3 font-semibold">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" />
-                  <TranslateText text="Imagen" />
-                </div>
-              </th>
-              <th className="px-5 py-3 font-semibold text-right"><TranslateText text="Acciones" /></th>
-            </tr>
-          </thead>
-          <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-800' : 'divide-gray-100'}`}>
-            {paginated.map((item, i) => (
-              <tr 
-                key={i} 
-                className={`transition-colors ${
-                  theme === 'dark' ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'
-                }`}
-              >
-                <td className={`px-5 py-4 whitespace-nowrap ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                  <div className="text-sm">{new Date(item.date).toLocaleDateString()}</div>
-                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                    {new Date(item.date).toLocaleTimeString()}
-                  </div>
-                </td>
-                <td className={`px-5 py-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  <span className="font-semibold line-clamp-1">{item.title}</span>
-                </td>
-                <td className={`px-5 py-4 hidden md:table-cell ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <span className="line-clamp-1">{item.subtitle}</span>
-                </td>
-                <td className={`px-5 py-4 max-w-xs hidden lg:table-cell ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <p className="line-clamp-2 text-sm">{item.description}</p>
-                </td>
-                <td className="px-5 py-4">
-                  {item.image_url ? (
-                    <img
-                      src={`http://localhost:5000${item.image_url}`}
-                      alt="img"
-                      className="w-16 h-12 object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className={`w-16 h-12 rounded-lg flex items-center justify-center ${
-                      theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-                    }`}>
-                      <ImageIcon className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
+        <div className="min-w-full inline-block align-middle">
+          <div className="overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-800">
+              <thead>
+                <tr className={`text-left text-xs uppercase tracking-wider ${
+                  theme === 'dark' ? 'text-gray-400 bg-gray-800/50' : 'text-gray-500 bg-gray-50'
+                }`}>
+                  <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <TranslateText text="Fecha" />
                     </div>
-                  )}
-                </td>
-                <td className="px-5 py-4">
-                  <div className="flex items-center justify-end gap-2">
-                    <button 
-                      onClick={() => onEdit(item)} 
-                      className={`p-2 rounded-lg transition-all active:scale-95 ${
-                        theme === 'dark' 
-                          ? 'bg-amber-600/20 text-amber-400 hover:bg-amber-600/30' 
-                          : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                      }`}
-                      title="Editar"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => onDelete(item)} 
-                      className={`p-2 rounded-lg transition-all active:scale-95 ${
-                        theme === 'dark' 
-                          ? 'bg-red-600/20 text-red-400 hover:bg-red-600/30' 
-                          : 'bg-red-100 text-red-700 hover:bg-red-200'
-                      }`}
-                      title="Eliminar"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </th>
+                  <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      <TranslateText text="Título" />
+                    </div>
+                  </th>
+                  <th className="px-5 py-3 font-semibold hidden md:table-cell whitespace-nowrap"><TranslateText text="Subtítulo" /></th>
+                  <th className="px-5 py-3 font-semibold hidden lg:table-cell whitespace-nowrap"><TranslateText text="Descripción" /></th>
+                  <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4" />
+                      <TranslateText text="Imagen" />
+                    </div>
+                  </th>
+                  <th className="px-5 py-3 font-semibold text-right whitespace-nowrap"><TranslateText text="Acciones" /></th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-800' : 'divide-gray-100'}`}>
+                {paginated.map((item, i) => (
+                  <tr 
+                    key={i} 
+                    className={`transition-colors ${
+                      theme === 'dark' ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <td className={`px-5 py-4 whitespace-nowrap ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                      <div className="text-sm">{new Date(item.date).toLocaleDateString()}</div>
+                      <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
+                        {new Date(item.date).toLocaleTimeString()}
+                      </div>
+                    </td>
+                    <td className={`px-5 py-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                      <span className="font-semibold line-clamp-1 max-w-[200px] block">{item.title}</span>
+                    </td>
+                    <td className={`px-5 py-4 hidden md:table-cell ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <span className="line-clamp-1 max-w-[200px] block">{item.subtitle}</span>
+                    </td>
+                    <td className={`px-5 py-4 hidden lg:table-cell ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className="line-clamp-2 text-sm max-w-[300px]">{item.description}</p>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      {item.image_url ? (
+                        <img
+                          src={`http://localhost:5000${item.image_url}`}
+                          alt="img"
+                          className="w-16 h-12 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className={`w-16 h-12 rounded-lg flex items-center justify-center ${
+                          theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+                        }`}>
+                          <ImageIcon className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2">
+                        <button 
+                          onClick={() => onEdit(item)} 
+                          className={`p-2 rounded-lg transition-all active:scale-95 ${
+                            theme === 'dark' 
+                              ? 'bg-amber-600/20 text-amber-400 hover:bg-amber-600/30' 
+                              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                          }`}
+                          title="Editar"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => onDelete(item)} 
+                          className={`p-2 rounded-lg transition-all active:scale-95 ${
+                            theme === 'dark' 
+                              ? 'bg-red-600/20 text-red-400 hover:bg-red-600/30' 
+                              : 'bg-red-100 text-red-700 hover:bg-red-200'
+                          }`}
+                          title="Eliminar"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       {/* Pagination */}

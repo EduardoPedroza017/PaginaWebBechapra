@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Network, RefreshCw, Save, Eye, Edit3 } from "lucide-react";
+import { Network, RefreshCw, Save, Eye, Edit3, LayoutTemplate } from "lucide-react";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
@@ -9,6 +9,7 @@ import { fetchOrganigrama, saveOrganigrama, OrganigramaNode } from "./Organigram
 import { OrganigramaTree } from "./OrganigramaTree";
 import { OrganigramaEditor } from "./OrganigramaEditor";
 import OrganigramaStats from "./OrganigramaStats";
+import { TemplateSelector } from "./TemplateSelector";
 
 export default function OrganigramaAdminPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -20,6 +21,7 @@ export default function OrganigramaAdminPage() {
   const [edit, setEdit] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [templateOpen, setTemplateOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -74,6 +76,13 @@ export default function OrganigramaAdminPage() {
     }
   };
 
+  const handleApplyTemplate = (structure: OrganigramaNode[]) => {
+    setOrganigrama(structure);
+    setEdit(true);
+    setSuccess("Plantilla aplicada - Edita y guarda los cambios");
+    setTimeout(() => setSuccess(""), 4000);
+  };
+
   if (!mounted) return null;
 
   return (
@@ -85,30 +94,45 @@ export default function OrganigramaAdminPage() {
           {/* Page Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                theme === 'dark' ? 'bg-purple-600/20' : 'bg-purple-100'
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
+                theme === 'dark' 
+                  ? 'bg-gradient-to-br from-purple-600/40 to-pink-600/40 shadow-purple-900/40' 
+                  : 'bg-gradient-to-br from-purple-100 to-pink-100 shadow-purple-200/50'
               }`}>
-                <Network className={`w-7 h-7 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`} />
+                <Network className={`w-7 h-7 ${theme === 'dark' ? 'text-purple-300' : 'text-purple-600'}`} />
               </div>
               <div>
-                <h1 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   <TranslateText text="Organigrama Empresarial" />
                 </h1>
                 <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <TranslateText text="Administra la estructura jerárquica" />
+                  <TranslateText text="Administra la estructura jerárquica de tu organización" />
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {!edit && (
+                <button
+                  onClick={() => setTemplateOpen(true)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all backdrop-blur-sm hover:shadow-lg active:scale-95 ${
+                    theme === 'dark' 
+                      ? 'bg-gradient-to-r from-amber-600/30 to-orange-600/30 text-amber-300 border border-amber-500/30 hover:bg-amber-600/40 shadow-lg shadow-amber-500/20' 
+                      : 'bg-gradient-to-r from-amber-100/60 to-orange-100/60 text-amber-700 border border-amber-200/60 hover:bg-amber-200/80 shadow-md shadow-amber-200/40'
+                  }`}
+                >
+                  <LayoutTemplate className="w-4 h-4" />
+                  <TranslateText text="Plantilla" />
+                </button>
+              )}
               <button
                 onClick={() => loadOrganigrama(true)}
                 disabled={refreshing}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
-                  refreshing ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all backdrop-blur-sm ${
+                  refreshing ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg active:scale-95'
                 } ${
                   theme === 'dark' 
-                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
-                    : 'bg-white text-gray-700 hover:bg-gray-50 shadow-sm border border-gray-200'
+                    ? 'bg-gradient-to-r from-blue-600/30 to-purple-600/30 text-blue-300 border border-blue-500/30 hover:bg-blue-600/40 shadow-lg shadow-blue-500/20' 
+                    : 'bg-gradient-to-r from-blue-100/60 to-purple-100/60 text-blue-700 border border-blue-200/60 hover:bg-blue-200/80 shadow-md shadow-blue-200/40'
                 }`}
               >
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -145,20 +169,22 @@ export default function OrganigramaAdminPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className={`mb-6 p-4 rounded-2xl border flex flex-wrap items-center justify-between gap-4 ${
-            theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+          <div className={`mb-6 p-4 rounded-2xl border flex flex-wrap items-center justify-between gap-4 backdrop-blur-xl ${
+            theme === 'dark' 
+              ? 'bg-gray-900/80 border-gray-700/50 shadow-2xl shadow-purple-900/20' 
+              : 'bg-white/95 border-white/20 shadow-xl shadow-blue-200/30'
           }`}>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setEdit(!edit)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all active:scale-95 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all backdrop-blur-sm active:scale-95 ${
                   edit
                     ? theme === 'dark' 
-                      ? 'bg-blue-600/20 text-blue-400' 
-                      : 'bg-blue-100 text-blue-700'
+                      ? 'bg-blue-600/30 text-blue-300 border border-blue-500/30 hover:bg-blue-600/40' 
+                      : 'bg-blue-100/60 text-blue-700 border border-blue-200/60 hover:bg-blue-200/80'
                     : theme === 'dark'
-                      ? 'bg-amber-600/20 text-amber-400 hover:bg-amber-600/30'
-                      : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                      ? 'bg-purple-600/30 text-purple-300 border border-purple-500/30 hover:bg-purple-600/40'
+                      : 'bg-purple-100/60 text-purple-700 border border-purple-200/60 hover:bg-purple-200/80'
                 }`}
               >
                 {edit ? (
@@ -179,13 +205,13 @@ export default function OrganigramaAdminPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all ${
-                  saving ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'
-                } bg-emerald-600 text-white`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all backdrop-blur-sm ${
+                  saving ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg active:scale-95'
+                } bg-gradient-to-r from-emerald-600/40 to-green-600/40 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/50 shadow-lg shadow-emerald-500/20`}
               >
                 {saving ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-emerald-300/30 border-t-emerald-300 rounded-full animate-spin" />
                     <TranslateText text="Guardando..." />
                   </>
                 ) : (
@@ -215,6 +241,14 @@ export default function OrganigramaAdminPage() {
           )}
         </main>
       </div>
+
+      {/* Template Selector Modal */}
+      <TemplateSelector
+        isOpen={templateOpen}
+        onClose={() => setTemplateOpen(false)}
+        onSelectTemplate={handleApplyTemplate}
+        theme={theme}
+      />
     </div>
   );
 }

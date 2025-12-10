@@ -43,7 +43,7 @@ export default function PressCards() {
   useEffect(() => {
     const fetchPress = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/press');
+        const response = await fetch('/api/press');
         const data = await response.json();
         setPress(data.slice(0, 3));
       } catch (error) {

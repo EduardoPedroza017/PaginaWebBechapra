@@ -45,7 +45,7 @@ export default function NewsCards() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/news');
+        const response = await fetch('/api/news');
         const data = await response.json();
         setNews(data.slice(0, 3));
       } catch (error) {
@@ -103,10 +103,11 @@ export default function NewsCards() {
                   {item.image_url && (
                     <div className="relative h-48 w-full overflow-hidden">
                       <Image
-                        src={item.image_url}
+                        src={item.image_url.startsWith('/uploads/') ? `http://localhost:5000${item.image_url}` : item.image_url}
                         alt={item.title}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        unoptimized={item.image_url.startsWith('/uploads/')}
                       />
                     </div>
                   )}

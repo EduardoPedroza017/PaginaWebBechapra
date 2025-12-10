@@ -123,7 +123,7 @@ export const needsConsentRenewal = (): boolean => {
  */
 export async function setCookieConsentBackend(accepted: boolean): Promise<boolean> {
   try {
-    const res = await fetch("http://localhost:5000/api/cookies", {
+    const res = await fetch("/api/cookies", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -133,7 +133,7 @@ export async function setCookieConsentBackend(accepted: boolean): Promise<boolea
     });
     if (!res.ok) return false;
     return true;
-  } catch (e) {
+  } catch (_) {
     return false;
   }
 }
@@ -143,7 +143,7 @@ export async function setCookieConsentBackend(accepted: boolean): Promise<boolea
  */
 export async function getCookieConsentBackend(): Promise<null | boolean> {
   try {
-    const res = await fetch("http://localhost:5000/api/cookies", {
+    const res = await fetch("/api/cookies", {
       method: "GET",
       credentials: "include"
     });
@@ -151,7 +151,7 @@ export async function getCookieConsentBackend(): Promise<null | boolean> {
     const data = await res.json();
     if (typeof data.accepted === "boolean") return data.accepted;
     return null;
-  } catch (e) {
+  } catch (_) {
     return null;
   }
 }

@@ -45,7 +45,7 @@ export default function PressDetailPage() {
 
   useEffect(() => {
     if (!params?.id) return;
-    fetch(`http://localhost:5000/api/press`)
+    fetch(`/api/press`)
       .then((res) => res.json())
       .then((data: PressItem[]) => {
         const found = data.find((item: PressItem) => item.id === params.id);

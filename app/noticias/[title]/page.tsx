@@ -24,7 +24,7 @@ export default function NewsDetailPage() {
 
 	useEffect(() => {
 		const title = decodeURIComponent(params.title as string);
-		fetch("http://localhost:5000/api/news")
+		fetch("/api/news")
 			.then(res => res.json())
 			.then(data => {
 				const found = data.find((item: NewsItem) => item.title === title);
@@ -97,7 +97,7 @@ export default function NewsDetailPage() {
 				{news.image_url && (
 					<div className="w-full h-[500px] relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
 						<Image 
-							src={`http://localhost:5000${news.image_url}`}
+							src={`/api/proxy-image?url=${encodeURIComponent(`http://localhost:5000${news.image_url}`)}`}
 							alt={news.title}
 							fill
 							className="object-cover"

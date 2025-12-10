@@ -60,7 +60,7 @@ export async function translateText(text: string, dest: string): Promise<string>
   // Crear nueva solicitud
   const requestPromise = (async () => {
     try {
-      const res = await fetch('http://localhost:5000/admin/translate', {
+      const res = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, dest }),

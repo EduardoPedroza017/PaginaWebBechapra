@@ -27,7 +27,7 @@ export function useLocation() {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/location");
+      const res = await fetch("/api/location");
       if (res.ok) {
         const data = await res.json();
         setLocation(data);
@@ -44,7 +44,7 @@ export function useLocation() {
     setMessage(null);
 
     try {
-      const res = await fetch("http://localhost:5000/api/admin/location", {
+      const res = await fetch("/api/location/admin", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

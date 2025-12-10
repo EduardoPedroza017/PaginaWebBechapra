@@ -38,7 +38,7 @@ export default function UserDetailsModal({ user, onClose, theme = 'light' }: Use
     if (!user) return;
     const admin = sessionStorage.getItem("admin") === "true";
     const role = sessionStorage.getItem("role") || "";
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/admin/audit`, {
+    fetch(`/api/admin/audit`, {
       headers: {
         "Content-Type": "application/json",
         "X-Admin": String(admin),

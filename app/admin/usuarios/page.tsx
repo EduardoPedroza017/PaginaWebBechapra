@@ -53,10 +53,10 @@ export default function UsuariosPage() {
     setError("");
     
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = "/api/admin";
       const storedRole = sessionStorage.getItem("role") || "";
       const storedAdmin = sessionStorage.getItem("admin") === "true";
-      const res = await fetch(`${apiBase}/admin/users/`, {
+      const res = await fetch(`${apiBase}/users`, {
         method: "GET",
         headers: { 'X-Role': storedRole, 'X-Admin': storedAdmin.toString() }
       });
@@ -114,8 +114,8 @@ export default function UsuariosPage() {
     if (!deleteUser) return;
     setProcessing(true);
     try {
-      const apiBase = "http://localhost:5000";
-      const res = await fetch(`${apiBase}/admin/users/${encodeURIComponent(deleteUser.email)}`, {
+      const apiBase = "/api/admin";
+      const res = await fetch(`${apiBase}/users-mutations?id=${encodeURIComponent(deleteUser.email)}`, {
         method: "DELETE",
         headers: {
           'X-Role': sessionStorage.getItem("role") || "",
@@ -138,9 +138,9 @@ export default function UsuariosPage() {
   const handleFormSubmit = async (form: { email: string; password?: string; role?: string; roles?: string[]; permissions?: string[] }) => {
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = "/api/admin";
       const method = editUser ? "PUT" : "POST";
-      const url = editUser ? `${apiBase}/admin/users/${encodeURIComponent(form.email)}` : `${apiBase}/admin/users/`;
+      const url = `${apiBase}/users-mutations`;
       const payload = { ...form };
       if (form.roles?.length === 1) { payload.role = form.roles[0]; delete payload.roles; }
       

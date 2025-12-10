@@ -21,7 +21,7 @@ export default function NoticiasPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/news")
+    fetch("/api/news")
       .then((res) => res.json())
       .then((data) => {
         const sorted = data.sort(
@@ -291,7 +291,7 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
         <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
           {item.image_url ? (
             <Image
-              src={`http://localhost:5000${item.image_url}`}
+              src={`/api/proxy-image?url=${encodeURIComponent(`http://localhost:5000${item.image_url}`)}`}
               alt={item.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"

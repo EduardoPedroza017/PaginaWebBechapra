@@ -13,6 +13,7 @@ interface StatCardProps {
     value: number;
     isPositive: boolean;
   };
+  sparklineValues?: number[];
 }
 
 export function StatCard({
@@ -22,7 +23,8 @@ export function StatCard({
   color = 'blue',
   theme = 'light',
   subtitle,
-  trend
+  trend,
+  sparklineValues
 }: StatCardProps) {
   const isDark = theme === 'dark';
   const cardClasses = getStatCardClasses(color, theme);
@@ -70,6 +72,44 @@ export function StatCard({
               <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
                 vs. último mes
               </span>
+            </div>
+          )}
+          {sparklineValues && sparklineValues.length > 1 && (
+            <div className="mt-3 h-10">
+              <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="w-full h-full">
+                {(() => {
+                  const vals = sparklineValues;
+                  const max = Math.max(...vals);
+                  const min = Math.min(...vals);
+                  const range = max - min || 1;
+                  const step = 100 / (vals.length - 1);
+                  const points = vals
+                    .map((v, i) => {
+                      const x = i * step;
+                      const y = 30 - ((v - min) / range) * 28 - 1;
+                      return `${x},${y}`;
+                    })
+                    .join(' ');
+                  const stroke = trend?.isPositive ? '#22c55e' : '#f43f5e';
+                  const fill = trend?.isPositive ? '#22c55e22' : '#f43f5e22';
+                  return (
+                    <>
+                      <polyline
+                        points={points}
+                        fill="none"
+                        stroke={stroke}
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <polyline
+                        points={`0,30 ${points} 100,30`}
+                        fill={fill}
+                        stroke="none"
+                      />
+                    </>
+                  );
+                })()}
+              </svg>
             </div>
           )}
         </div>

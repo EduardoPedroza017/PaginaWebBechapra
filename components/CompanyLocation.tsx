@@ -24,8 +24,8 @@ export function CompanyLocation() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/location")
-      .then((res) => res.json())
+    fetch("/api/location")
+      .then(res => res.json())
       .then((data) => setLocation(data))
       .catch((err) => console.error("Error fetching location:", err))
       .finally(() => setLoading(false));

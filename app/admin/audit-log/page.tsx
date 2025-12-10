@@ -6,6 +6,7 @@ import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { ExportAuditLogsButton } from "./ExportAuditLogsButton";
 import { TranslateText } from "@/components/TranslateText";
+import { Activity, CheckCircle, XCircle, BarChart3 } from "lucide-react";
 
 // Componentes modularizados
 import { MetricCard } from "./MetricCard";
@@ -18,7 +19,8 @@ export type AuditLogFiltersState = {
   user: string;
   ip: string;
   success: '' | 'success' | 'fail';
-  date: string;
+  dateFrom: string;
+  dateTo: string;
 };
 
 interface AuditLogEntry {
@@ -35,7 +37,7 @@ export default function AuditLogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [filters, setFilters] = useState<AuditLogFiltersState>({ user: '', ip: '', success: '', date: '' });
+  const [filters, setFilters] = useState<AuditLogFiltersState>({ user: '', ip: '', success: '', dateFrom: '', dateTo: '' });
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<'audit' | 'database'>('audit');
 
@@ -90,20 +92,31 @@ export default function AuditLogPage() {
     if (filters.ip && (!log.ip || !log.ip.includes(filters.ip))) return false;
     if (filters.success === 'success' && !log.success) return false;
     if (filters.success === 'fail' && log.success) return false;
-    if (filters.date && log.timestamp) {
+    if (filters.dateFrom && log.timestamp) {
       const logDate = new Date(log.timestamp);
-      const filterDate = new Date(filters.date);
-      if (
-        logDate.getFullYear() !== filterDate.getFullYear() ||
-        logDate.getMonth() !== filterDate.getMonth() ||
-        logDate.getDate() !== filterDate.getDate()
-      ) return false;
+      const filterDate = new Date(filters.dateFrom);
+      if (logDate < filterDate) return false;
+    }
+    if (filters.dateTo && log.timestamp) {
+      const logDate = new Date(log.timestamp);
+      const filterDate = new Date(filters.dateTo);
+      filterDate.setHours(23, 59, 59, 999);
+      if (logDate > filterDate) return false;
     }
     return true;
   });
 
-  // Paginación
-  const rowsPerPage = 10;
+  // Detección de anomalías: múltiples fallos desde la misma IP
+  const ipFailCounts: { [key: string]: number } = {};
+  logs.forEach(log => {
+    if (!log.success && log.ip) {
+      ipFailCounts[log.ip] = (ipFailCounts[log.ip] || 0) + 1;
+    }
+  });
+  const hasAnomalies = Object.values(ipFailCounts).some(count => count >= 5);
+
+  // Paginación - Cambiado a 20 filas por página
+  const rowsPerPage = 20;
   const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
   const paginatedLogs = filteredLogs.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
@@ -130,7 +143,6 @@ export default function AuditLogPage() {
     return (
       <div className={`flex min-h-screen items-center justify-center ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
         <div className="text-center p-8">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
           <p className="text-red-500 text-lg">{error}</p>
         </div>
       </div>
@@ -142,6 +154,30 @@ export default function AuditLogPage() {
   const successCount = filteredLogs.filter(l => l.success).length;
   const failCount = total - successCount;
   const successRate = total > 0 ? Math.round((successCount / total) * 100) : 0;
+
+  // Calcular trends comparando última semana vs semana anterior
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+  const lastWeekLogs = logs.filter(log => log.timestamp && new Date(log.timestamp) >= weekAgo);
+  const prevWeekLogs = logs.filter(log => log.timestamp && new Date(log.timestamp) >= twoWeeksAgo && new Date(log.timestamp) < weekAgo);
+
+  const lastWeekTotal = lastWeekLogs.length;
+  const prevWeekTotal = prevWeekLogs.length;
+  const totalTrend = prevWeekTotal > 0 ? Math.round(((lastWeekTotal - prevWeekTotal) / prevWeekTotal) * 100) : 0;
+
+  const lastWeekSuccess = lastWeekLogs.filter(l => l.success).length;
+  const prevWeekSuccess = prevWeekLogs.filter(l => l.success).length;
+  const successTrend = prevWeekSuccess > 0 ? Math.round(((lastWeekSuccess - prevWeekSuccess) / prevWeekSuccess) * 100) : 0;
+
+  const lastWeekFail = lastWeekLogs.length - lastWeekSuccess;
+  const prevWeekFail = prevWeekLogs.length - prevWeekSuccess;
+  const failTrend = prevWeekFail > 0 ? Math.round(((lastWeekFail - prevWeekFail) / prevWeekFail) * 100) : 0;
+
+  const lastWeekRate = lastWeekLogs.length > 0 ? Math.round((lastWeekSuccess / lastWeekLogs.length) * 100) : 0;
+  const prevWeekRate = prevWeekLogs.length > 0 ? Math.round((prevWeekSuccess / prevWeekLogs.length) * 100) : 0;
+  const rateTrend = prevWeekRate > 0 ? lastWeekRate - prevWeekRate : 0;
 
   // Datos agrupados para gráficas
   const byUser: { [key: string]: number } = {};
@@ -156,23 +192,29 @@ export default function AuditLogPage() {
   });
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
+    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'}`}>
       <Sidebar selected="/admin/audit-log" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
-        <main className="flex-1 p-6 lg:p-8">
-          {/* Encabezado */}
-          <div className="mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className={`text-2xl lg:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  <TranslateText text="Centro de Auditoría" />
-                </h1>
-                <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <TranslateText text="Monitoreo y análisis de accesos al sistema" />
-                </p>
+        <main className="flex-1 p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
+          {/* Encabezado mejorado */}
+          <div className="mb-8">
+            <div className={`rounded-2xl p-6 border backdrop-blur-xl transition-all duration-300 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-700/50 shadow-lg shadow-blue-500/10'
+                : 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200/60 shadow-lg shadow-blue-500/10'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h1 className={`text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent`}>
+                    Centro de Auditoría
+                  </h1>
+                  <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Monitoreo y análisis de accesos al sistema
+                  </p>
+                </div>
+                <ExportAuditLogsButton logs={logs} />
               </div>
-              <ExportAuditLogsButton logs={logs} />
             </div>
           </div>
 
@@ -191,18 +233,6 @@ export default function AuditLogPage() {
               >
                 <TranslateText text="Logs de Acceso" />
               </button>
-              <button
-                onClick={() => setActiveTab('database')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === 'database'
-                    ? 'bg-blue-500 text-white shadow-sm'
-                    : theme === 'dark' 
-                      ? 'text-gray-400 hover:text-white' 
-                      : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <TranslateText text="Métricas de BD" />
-              </button>
             </div>
           </div>
 
@@ -218,32 +248,38 @@ export default function AuditLogPage() {
               {/* Métricas principales */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard
-                  icon="📊"
+                  icon={<Activity className="w-6 h-6 text-blue-500" />}
                   title="Total Registros"
                   value={total.toLocaleString()}
                   color="blue"
                   theme={theme}
+                  trend={totalTrend}
                 />
                 <MetricCard
-                  icon="✓"
+                  icon={<CheckCircle className="w-6 h-6 text-green-500" />}
                   title="Exitosos"
                   value={successCount.toLocaleString()}
                   color="green"
                   theme={theme}
+                  trend={successTrend}
                 />
                 <MetricCard
-                  icon="✗"
+                  icon={<XCircle className="w-6 h-6 text-red-500" />}
                   title="Fallidos"
                   value={failCount.toLocaleString()}
                   color="red"
                   theme={theme}
+                  trend={failTrend}
+                  anomaly={hasAnomalies}
                 />
                 <MetricCard
-                  icon="📈"
+                  icon={<BarChart3 className="w-6 h-6 text-purple-500" />}
                   title="Tasa de Éxito"
                   value={`${successRate}%`}
                   color="purple"
                   theme={theme}
+                  trend={rateTrend}
+                  anomaly={successRate < 85}
                 />
               </div>
 
@@ -265,9 +301,7 @@ export default function AuditLogPage() {
                 totalPages={totalPages}
               />
             </div>
-          ) : (
-            <DbMetricsSection theme={theme} />
-          )}
+          ) : null}
         </main>
       </div>
     </div>

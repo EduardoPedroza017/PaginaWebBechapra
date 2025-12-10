@@ -6,7 +6,7 @@ import { Header } from "./Header";
 import { WelcomeCard } from "./WelcomeCard";
 import { TranslateText } from "@/components/TranslateText";
 import dynamic from "next/dynamic";
-import { LayoutDashboard, AlertCircle, RefreshCw } from "lucide-react";
+import { LayoutDashboard, AlertCircle, RefreshCw, Activity, FileText } from "lucide-react";
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
 import DashboardStats from "./DashboardStats";
 import QuickActions from "./QuickActions";
@@ -76,6 +76,27 @@ export default function AdminDashboard() {
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1);
   };
+
+  const scrollToAuditLog = () => {
+    // Pequeño delay para asegurar que el DOM esté listo
+    setTimeout(() => {
+      const element = document.getElementById('audit-log');
+      console.log('Buscando elemento audit-log:', element);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        console.log('Scroll ejecutado hacia audit-log');
+      } else {
+        console.log('Elemento audit-log no encontrado');
+      }
+    }, 100);
+  };
+
+  // Detectar hash en la URL y hacer scroll automático
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#audit-log') {
+      scrollToAuditLog();
+    }
+  }, []);
 
   if (loading || !themeReady) {
     return (
@@ -157,20 +178,52 @@ export default function AdminDashboard() {
                 }`}>
                   <TranslateText text="Resumen general del sistema" />
                 </p>
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                    theme === 'dark' ? 'bg-green-900/40 text-green-300 border border-green-700/50' : 'bg-green-50 text-green-700 border border-green-200'
+                  }`}>
+                    <Activity className="w-3.5 h-3.5" />
+                    <TranslateText text="Online" />
+                  </span>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                    theme === 'dark' ? 'bg-blue-900/40 text-blue-200 border border-blue-700/50' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                  }`}>
+                    <TranslateText text="Latencia" />
+                    <span>42 ms</span>
+                  </span>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                    theme === 'dark' ? 'bg-amber-900/40 text-amber-200 border border-amber-700/50' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }`}>
+                    <TranslateText text="Última sync" />
+                    <span>hoy 09:15</span>
+                  </span>
+                </div>
               </div>
             </div>
-
-            <button
-              onClick={handleRefresh}
-              className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
-                theme === 'dark'
-                  ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
-                  : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
-              }`}
-            >
-              <RefreshCw className="w-4 h-4" />
-              <TranslateText text="Actualizar" />
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleRefresh}
+                className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                    : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
+                }`}
+              >
+                <RefreshCw className="w-4 h-4" />
+                <TranslateText text="Actualizar" />
+              </button>
+              {/* <button
+                onClick={scrollToAuditLog}
+                className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                    : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <TranslateText text="Ver logs" />
+              </button> */}
+            </div>
           </div>
 
           {/* Welcome Card */}
@@ -185,8 +238,8 @@ export default function AdminDashboard() {
           </div>
 
           {/* Audit Log - Solo visible para superadmin */}
-          {role === 'superadmin' && (
-            <div className={`rounded-2xl border p-5 md:p-6 mb-6 ${
+          {(role === 'superadmin' || role === 'admin') && (
+            <div id="audit-log" className={`rounded-2xl border p-5 md:p-6 mb-6 ${
               theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-200'
             }`}>
               <AuditLog key={`audit-${refreshKey}`} theme={theme} />
