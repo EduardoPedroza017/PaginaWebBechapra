@@ -10,6 +10,11 @@ export interface NewsItem {
   description: string;
   date: string;
   image_url?: string;
+  category?: string;
+  tags?: string[];
+  featured?: boolean;
+  altText?: string;
+  author?: string;
 }
 
 interface Props {

@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef, useCallback } from "react";
-import { Plus, Upload, X, AlertCircle, CheckCircle, Eye, Tag, ImagePlus, Sparkles, Type } from "lucide-react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Plus, Upload, X, AlertCircle, CheckCircle, Eye, Tag, ImagePlus, Sparkles, Type, Clock, FileText, Zap } from "lucide-react";
 import { NewsItem } from "./NewsFilter";
+import RichTextEditor from "./RichTextEditor";
 
 interface Props {
   onCreated: (news: NewsItem) => void;
@@ -14,11 +15,12 @@ const CATEGORIES = ["Empresarial", "Recursos Humanos", "Capacitación", "Legal",
 const MAX_TITLE_LENGTH = 100;
 const MAX_SUBTITLE_LENGTH = 150;
 const MAX_DESCRIPTION_LENGTH = 2000;
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_SEO_DESCRIPTION = 160;
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
 export default function NewsForm({ onCreated, theme }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentTab, setCurrentTab] = useState<'content' | 'image' | 'meta'>('content');
+  const [currentTab, setCurrentTab] = useState<'content' | 'image' | 'meta' | 'seo'>('content');
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [description, setDescription] = useState("");
@@ -33,7 +35,12 @@ export default function NewsForm({ onCreated, theme }: Props) {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [seoDescription, setSeoDescription] = useState("");
+  const [seoKeywords, setSeoKeywords] = useState("");
+  const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
+  const [publishTime, setPublishTime] = useState("09:00");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
 
   const showMessage = useCallback((type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
@@ -47,13 +54,11 @@ export default function NewsForm({ onCreated, theme }: Props) {
       return;
     }
 
-    // Validación de tamaño
     if (file.size > MAX_IMAGE_SIZE) {
-      showMessage('error', `La imagen es muy grande. Máximo ${MAX_IMAGE_SIZE / 1024 / 1024}MB`);
+      showMessage('error', `Imagen muy grande. Máximo ${MAX_IMAGE_SIZE / 1024 / 1024}MB`);
       return;
     }
 
-    // Validación de tipo
     if (!file.type.startsWith('image/')) {
       showMessage('error', 'El archivo debe ser una imagen');
       return;
@@ -86,7 +91,7 @@ export default function NewsForm({ onCreated, theme }: Props) {
   }, [handleImageChange]);
 
   const addTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+    if (tagInput.trim() && !tags.includes(tagInput.trim()) && tags.length < 8) {
       setTags([...tags, tagInput.trim()]);
       setTagInput("");
     }
@@ -94,6 +99,22 @@ export default function NewsForm({ onCreated, theme }: Props) {
 
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter(t => t !== tagToRemove));
+  };
+
+  const generateSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  };
+
+  const getReadingTime = () => {
+    const wordsPerMinute = 200;
+    // Remover tags HTML antes de contar palabras
+    const plainText = description.replace(/<[^>]*>/g, '');
+    const wordCount = plainText.split(/\s+/).filter(w => w.length > 0).length;
+    return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
   };
 
   const resetForm = () => {
@@ -107,25 +128,32 @@ export default function NewsForm({ onCreated, theme }: Props) {
     setImage(null);
     setPreview(null);
     setAltText("");
+    setSeoDescription("");
+    setSeoKeywords("");
+    setPublishDate(new Date().toISOString().split('T')[0]);
+    setPublishTime("09:00");
     setCurrentTab('content');
+    localStorage.removeItem('news_draft');
   };
 
   const getCompletionPercentage = () => {
     let completed = 0;
-    const total = 6;
+    const total = 8;
     if (title) completed++;
     if (subtitle) completed++;
-    if (description.length >= 50) completed++;
+    const descriptionText = description.replace(/<[^>]*>/g, '');
+    if (descriptionText.length >= 50) completed++;
     if (image) completed++;
     if (category) completed++;
     if (tags.length > 0) completed++;
+    if (seoDescription) completed++;
+    if (publishDate) completed++;
     return Math.round((completed / total) * 100);
   };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
-    // Validaciones
     if (title.length > MAX_TITLE_LENGTH) {
       showMessage('error', `El título no puede exceder ${MAX_TITLE_LENGTH} caracteres`);
       return;
@@ -134,8 +162,13 @@ export default function NewsForm({ onCreated, theme }: Props) {
       showMessage('error', `El subtítulo no puede exceder ${MAX_SUBTITLE_LENGTH} caracteres`);
       return;
     }
-    if (description.length > MAX_DESCRIPTION_LENGTH) {
+    const descriptionText = description.replace(/<[^>]*>/g, '');
+    if (descriptionText.length > MAX_DESCRIPTION_LENGTH) {
       showMessage('error', `La descripción no puede exceder ${MAX_DESCRIPTION_LENGTH} caracteres`);
+      return;
+    }
+    if (descriptionText.length < 50) {
+      showMessage('error', 'La descripción debe tener al menos 50 caracteres');
       return;
     }
 
@@ -149,6 +182,9 @@ export default function NewsForm({ onCreated, theme }: Props) {
     form.append("tags", JSON.stringify(tags));
     form.append("featured", String(featured));
     form.append("altText", altText);
+    form.append("seoDescription", seoDescription);
+    form.append("seoKeywords", seoKeywords);
+    form.append("publishDate", `${publishDate} ${publishTime}`);
     if (image) form.append("image", image);
     
     try {
@@ -211,7 +247,7 @@ export default function NewsForm({ onCreated, theme }: Props) {
           }`}
         >
           <div className="flex items-center gap-4 flex-1">
-            <div className={`p-2.5 rounded-xl bg-gradient-to-br ${
+            <div className={`p-2.5 rounded-xl bg-linear-to-br ${
               theme === 'dark' ? 'from-blue-600 to-purple-600' : 'from-blue-500 to-purple-500'
             } shadow-lg`}>
               <Sparkles className="w-5 h-5 text-white" />
@@ -224,7 +260,7 @@ export default function NewsForm({ onCreated, theme }: Props) {
                 <div className="flex items-center gap-2 mt-1">
                   <div className="flex-1 h-1.5 bg-gray-700 rounded-full w-32 overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+                      className="h-full bg-linear-to-r from-blue-500 to-purple-500 transition-all duration-300"
                       style={{ width: `${completionPercentage}%` }}
                     />
                   </div>
@@ -256,45 +292,30 @@ export default function NewsForm({ onCreated, theme }: Props) {
           }`}>
             {/* Tabs Navigation */}
             <div className={`flex gap-1 p-2 ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-              <button
-                type="button"
-                onClick={() => setCurrentTab('content')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                  currentTab === 'content'
-                    ? theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg'
-                    : theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                }`}
-              >
-                <Type className="w-4 h-4" />
-                Contenido
-              </button>
-              <button
-                type="button"
-                onClick={() => setCurrentTab('image')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                  currentTab === 'image'
-                    ? theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg'
-                    : theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                }`}
-              >
-                <ImagePlus className="w-4 h-4" />
-                Imagen
-              </button>
-              <button
-                type="button"
-                onClick={() => setCurrentTab('meta')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                  currentTab === 'meta'
-                    ? theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg'
-                    : theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                }`}
-              >
-                <Tag className="w-4 h-4" />
-                Meta
-              </button>
+              {[
+                { id: 'content', label: 'Contenido', icon: Type },
+                { id: 'image', label: 'Imagen', icon: ImagePlus },
+                { id: 'meta', label: 'Meta', icon: Tag },
+                { id: 'seo', label: 'SEO', icon: Zap }
+              ].map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setCurrentTab(id as any)}
+                  className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                    currentTab === id
+                      ? theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg'
+                      : theme === 'dark' ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </button>
+              ))}
             </div>
 
-            <div className="p-5">{/* Tab Content */}
+            <div className="p-5">
+              {/* Tab Content */}
               {currentTab === 'content' && (
                 <div className="space-y-4 animate-in fade-in duration-300">
                   <div>
@@ -333,26 +354,29 @@ export default function NewsForm({ onCreated, theme }: Props) {
                   
                   <div>
                     <label className={labelClass}>
-                      Descripción <span className="text-red-500">*</span>
-                      <span className={`float-right ${description.length > MAX_DESCRIPTION_LENGTH ? 'text-red-500' : description.length < 50 ? 'text-amber-500' : 'text-green-500'}`}>
-                        {description.length}/{MAX_DESCRIPTION_LENGTH} {description.length < 50 && '(mínimo 50)'}
-                      </span>
+                      Descripción (Editor de Texto Enriquecido) <span className="text-red-500">*</span>
                     </label>
-                    <textarea 
-                      className={`${inputClass} resize-none`}
-                      value={description} 
-                      onChange={e => setDescription(e.target.value)} 
+                    <RichTextEditor 
+                      value={description}
+                      onChange={setDescription}
+                      theme={theme}
                       placeholder="Contenido completo de la noticia. Mínimo 50 caracteres..."
-                      required 
-                      rows={8}
                       maxLength={MAX_DESCRIPTION_LENGTH}
                     />
-                    {description.length < 50 && description.length > 0 && (
-                      <p className="text-xs text-amber-500 mt-1 flex items-center gap-1">
+                    {description.replace(/<[^>]*>/g, '').length < 50 && description.length > 0 && (
+                      <p className="text-xs text-amber-500 mt-2 flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
-                        Escribe al menos {50 - description.length} caracteres más
+                        Escribe al menos {50 - description.replace(/<[^>]*>/g, '').length} caracteres más
                       </p>
                     )}
+                  </div>
+
+                  <div className={`p-4 rounded-xl border ${
+                    theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <p className={`text-sm mb-2 font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      📖 Tiempo de lectura aproximado: <strong>{getReadingTime()} minuto{getReadingTime() > 1 ? 's' : ''}</strong>
+                    </p>
                   </div>
                 </div>
               )}
@@ -445,7 +469,7 @@ export default function NewsForm({ onCreated, theme }: Props) {
                   </div>
 
                   <div>
-                    <label className={labelClass}>Etiquetas (Tags)</label>
+                    <label className={labelClass}>Etiquetas (Tags) <span className="text-gray-500">({tags.length}/8)</span></label>
                     <div className="flex gap-2 mb-2">
                       <input 
                         className={`${inputClass} flex-1`}
@@ -453,12 +477,14 @@ export default function NewsForm({ onCreated, theme }: Props) {
                         onChange={e => setTagInput(e.target.value)} 
                         onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                         placeholder="Agregar etiqueta..."
+                        disabled={tags.length >= 8}
                       />
                       <button
                         type="button"
                         onClick={addTag}
+                        disabled={tags.length >= 8 || !tagInput.trim()}
                         className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
-                          theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
+                          theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500' : 'bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
                         } text-white`}
                       >
                         Agregar
@@ -509,6 +535,111 @@ export default function NewsForm({ onCreated, theme }: Props) {
                   </div>
                 </div>
               )}
+
+              {currentTab === 'seo' && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div>
+                    <label className={`${labelClass}`}>
+                      Fecha de Publicación <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={publishDate}
+                      onChange={(e) => setPublishDate(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>
+                      Hora de Publicación
+                    </label>
+                    <input
+                      type="time"
+                      value={publishTime}
+                      onChange={(e) => setPublishTime(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className={`p-3 rounded-lg border ${
+                    theme === 'dark'
+                      ? 'bg-blue-900/20 border-blue-700/50'
+                      : 'bg-blue-50 border-blue-200'
+                  }`}>
+                    <p className={`text-sm ${
+                      theme === 'dark' ? 'text-blue-300' : 'text-blue-700'
+                    }`}>
+                      📅 Se publicará: <strong>{publishDate} a las {publishTime}</strong>
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className={`${labelClass}`}>
+                      Meta Descripción
+                      <span className={`ml-auto float-right text-xs ${
+                        seoDescription.length > MAX_SEO_DESCRIPTION
+                          ? 'text-red-500'
+                          : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        {seoDescription.length}/{MAX_SEO_DESCRIPTION}
+                      </span>
+                    </label>
+                    <textarea
+                      value={seoDescription}
+                      onChange={(e) => setSeoDescription(e.target.value.slice(0, MAX_SEO_DESCRIPTION))}
+                      placeholder="Descripción que aparecerá en los resultados de búsqueda..."
+                      rows={3}
+                      className={`${inputClass} resize-none`}
+                    />
+                    <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Idealmente entre 150-160 caracteres para máxima visibilidad en Google
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>
+                      Palabras Clave (SEO)
+                    </label>
+                    <input
+                      type="text"
+                      value={seoKeywords}
+                      onChange={(e) => setSeoKeywords(e.target.value)}
+                      placeholder="Ej: empresa, tecnología, innovación (separadas por comas)"
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className={`p-4 rounded-xl border ${
+                    theme === 'dark'
+                      ? 'bg-green-900/20 border-green-700/50'
+                      : 'bg-green-50 border-green-200'
+                  }`}>
+                    <p className={`text-sm font-medium mb-2 ${
+                      theme === 'dark' ? 'text-green-300' : 'text-green-700'
+                    }`}>
+                      📊 Vista previa en Google:
+                    </p>
+                    <div className={`text-sm ${
+                      theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                    }`}>
+                      <p className="text-blue-500 font-medium hover:underline cursor-pointer">
+                        {title || 'Tu título aquí'}
+                      </p>
+                      <p className={`text-xs ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        www.bechapra.com/noticias/{generateSlug(title || 'nuevo')}
+                      </p>
+                      <p className={`text-xs mt-1 ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        {seoDescription || 'Tu meta descripción aquí...'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           
             <div className={`flex justify-between items-center gap-3 px-5 py-4 border-t ${
@@ -544,7 +675,7 @@ export default function NewsForm({ onCreated, theme }: Props) {
                   className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-95 shadow-lg flex items-center gap-2 ${
                     loading
                       ? 'bg-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                      : 'bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
                   } text-white`}
                 >
                   {loading ? (
@@ -554,8 +685,8 @@ export default function NewsForm({ onCreated, theme }: Props) {
                     </>
                   ) : (
                     <>
-                      <Plus className="w-4 h-4" />
-                      Crear Noticia
+                      <Sparkles className="w-4 h-4" />
+                      Publicar Noticia
                     </>
                   )}
                 </button>
@@ -571,97 +702,118 @@ export default function NewsForm({ onCreated, theme }: Props) {
           onClick={() => setShowPreview(false)}
         >
           <div 
-            className={`max-w-3xl w-full rounded-2xl shadow-2xl overflow-hidden ${
+            className={`max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl ${
               theme === 'dark' ? 'bg-gray-900' : 'bg-white'
             }`}
             onClick={e => e.stopPropagation()}
           >
-            <div className={`p-6 border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`p-6 border-b sticky top-0 ${theme === 'dark' ? 'border-gray-800 bg-gray-900' : 'border-gray-200 bg-white'}`}>
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  {category && (
-                    <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                      {category}
-                    </span>
-                  )}
-                  <h3 className={`text-3xl font-bold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    {title || 'Título de la noticia'}
+                <div>
+                  <h3 className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    Vista Previa
                   </h3>
-                  <p className={`text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {subtitle || 'Subtítulo de la noticia'}
+                  <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Así se verá tu noticia publicada
                   </p>
                 </div>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className={`ml-4 p-2 rounded-lg transition-colors ${
-                    theme === 'dark' ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
-                  }`}
-                >
+                  className={`p-2 rounded-lg transition-colors ${
+                    theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                  }`}>
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
-              {preview && (
-                <div className="mb-6">
-                  <Image 
-                    src={preview} 
-                    alt={altText || 'Vista previa'} 
-                    width={600}
-                    height={320}
-                    className="w-full h-80 object-cover rounded-xl shadow-lg"
-                  />
-                  {altText && (
-                    <p className={`text-xs mt-2 italic ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
-                      Alt: {altText}
-                    </p>
+            <div className="p-6 space-y-6">
+              <div>
+                <h2 className={`text-3xl font-bold mb-3 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {title || 'Sin título'}
+                </h2>
+                <p className={`text-lg mb-4 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  {subtitle || 'Sin subtítulo'}
+                </p>
+
+                {preview && (
+                  <div className="mb-6 rounded-lg overflow-hidden">
+                    <Image
+                      src={preview}
+                      alt="Preview"
+                      width={600}
+                      height={400}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                )}
+
+                <p className={`leading-relaxed whitespace-pre-wrap mb-6 ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                } prose prose-sm ${theme === 'dark' ? 'prose-invert' : ''} max-w-none`} dangerouslySetInnerHTML={{ __html: description || '<p style="color: var(--text-muted)">Sin descripción</p>' }} />
+
+                <div className={`mt-6 pt-6 border-t ${
+                  theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
+                }`}>
+                  <div className="flex gap-6 flex-wrap text-sm mb-6">
+                    <div>
+                      <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                        Categoría
+                      </p>
+                      <p className={`font-semibold ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        {category}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                        Lectura aprox.
+                      </p>
+                      <p className={`font-semibold ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        {getReadingTime()} minuto{getReadingTime() > 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    {featured && (
+                      <div>
+                        <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                          Estado
+                        </p>
+                        <p className="font-semibold text-blue-500">⭐ Destacada</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {tags.length > 0 && (
+                    <div>
+                      <p className={`text-sm mb-2 font-medium ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        Etiquetas
+                      </p>
+                      <div className="flex gap-2 flex-wrap">
+                        {tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              theme === 'dark'
+                                ? 'bg-blue-600/30 text-blue-300'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}>
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
-              )}
-              
-              <p className={`text-base leading-relaxed whitespace-pre-wrap mb-6 ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-                {description || 'Contenido de la noticia aparecerá aquí...'}
-              </p>
-
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-4 border-t ${
-                  theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
-                }">
-                  {tags.map(tag => (
-                    <span 
-                      key={tag} 
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                        theme === 'dark' ? 'bg-purple-900/40 text-purple-300' : 'bg-purple-100 text-purple-700'
-                      }`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {featured && (
-                <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
-                  theme === 'dark' ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-700'
-                }`}>
-                  <Sparkles className="w-4 h-4" />
-                  <span className="text-sm font-medium">Noticia destacada</span>
-                </div>
-              )}
-            </div>
-
-            <div className={`px-6 py-4 border-t ${theme === 'dark' ? 'bg-gray-800/30 border-gray-800' : 'bg-gray-50 border-gray-200'}`}>
-              <button
-                onClick={() => setShowPreview(false)}
-                className={`w-full px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                  theme === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
-                }`}
-              >
-                Cerrar Vista Previa
-              </button>
+              </div>
             </div>
           </div>
         </div>

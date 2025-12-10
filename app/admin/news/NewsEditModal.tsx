@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, Save, Upload, Pencil } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 import { NewsItem } from "./NewsFilter";
+import RichTextEditor from "./RichTextEditor";
 
 interface Props {
   open: boolean;
@@ -89,8 +90,8 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
   }`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className={`w-full max-w-lg rounded-2xl shadow-2xl border ${
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-auto">
+      <div className={`w-full max-w-5xl rounded-2xl shadow-2xl border ${
         theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
       }`}>
         {/* Header */}
@@ -117,25 +118,37 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}><TranslateText text="Título" /></label>
-              <input className={inputClass} value={title} onChange={e => setTitle(e.target.value)} required />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}><TranslateText text="Título" /></label>
+                  <input className={inputClass} value={title} onChange={e => setTitle(e.target.value)} required />
+                </div>
+                <div>
+                  <label className={labelClass}><TranslateText text="Subtítulo" /></label>
+                  <input className={inputClass} value={subtitle} onChange={e => setSubtitle(e.target.value)} required />
+                </div>
+              </div>
+
+              <div>
+                <label className={labelClass}><TranslateText text="Descripción" /></label>
+                <RichTextEditor 
+                  value={description}
+                  onChange={setDescription}
+                  theme={theme}
+                  placeholder="Contenido completo de la noticia..."
+                  maxLength={2000}
+                />
+              </div>
             </div>
-            <div>
-              <label className={labelClass}><TranslateText text="Subtítulo" /></label>
-              <input className={inputClass} value={subtitle} onChange={e => setSubtitle(e.target.value)} required />
-            </div>
-            <div className="md:col-span-2">
-              <label className={labelClass}><TranslateText text="Descripción" /></label>
-              <textarea className={`${inputClass} resize-none`} value={description} onChange={e => setDescription(e.target.value)} required rows={4} />
-            </div>
-            <div className="md:col-span-2">
+
+            <div className="lg:col-span-5 space-y-3">
               <label className={labelClass}><TranslateText text="Imagen" /></label>
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3">
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex-1 border-2 border-dashed rounded-xl p-4 cursor-pointer transition-all ${
+                  className={`border-2 border-dashed rounded-xl p-4 cursor-pointer transition-all ${
                     theme === 'dark' 
                       ? 'border-gray-700 hover:border-amber-500 hover:bg-gray-800/50' 
                       : 'border-gray-200 hover:border-amber-400 hover:bg-amber-50/50'
@@ -156,7 +169,7 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
                   />
                 </div>
                 {preview && (
-                  <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0">
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-700/40">
                     <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
@@ -173,11 +186,11 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
           )}
 
           {/* Actions */}
-          <div className="flex gap-3 mt-6">
+          <div className="flex flex-col md:flex-row gap-3 mt-6">
             <button 
               type="button" 
               onClick={onClose}
-              className={`flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
+              className={`md:flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
                 theme === 'dark'
                   ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -188,7 +201,7 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
             <button 
               type="submit" 
               disabled={loading}
-              className="flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm bg-amber-600 text-white hover:bg-amber-700 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="md:flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm bg-amber-600 text-white hover:bg-amber-700 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

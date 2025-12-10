@@ -12,6 +12,13 @@ interface Props {
   theme: 'light' | 'dark';
 }
 
+// Convierte HTML en texto plano para mostrar en la tabla sin etiquetas
+const toPlainText = (html: string, maxLength: number) => {
+  const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength).trimEnd() + "...";
+};
+
 export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
   const [page, setPage] = useState(1);
   const pageSize = 5;
@@ -111,7 +118,7 @@ export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
                       <span className="line-clamp-1 max-w-[200px] block">{item.subtitle}</span>
                     </td>
                     <td className={`px-5 py-4 hidden lg:table-cell ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                      <p className="line-clamp-2 text-sm max-w-[300px]">{item.description}</p>
+                      <p className="line-clamp-2 text-sm max-w-[300px]">{toPlainText(item.description || '', 180)}</p>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       {item.image_url ? (
