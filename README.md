@@ -583,6 +583,26 @@ npm run build
 
 ---
 
+## Funcionalidades recientes
+
+### Logo Dinámico
+- El logo de la empresa se carga automáticamente desde el backend y se actualiza en Navbar y Footer.
+- El administrador puede subir nuevos logos y restaurar logos anteriores desde `/admin/branding`.
+- El logo se actualiza en tiempo real tras cambiarlo en el panel.
+
+### Galería Pública
+- Página `/galeria` muestra imágenes públicas gestionadas desde el backend.
+- Modal y animaciones para visualización de imágenes.
+
+### Endpoints utilizados
+- `/api/logo` (GET): Obtiene el logo actual.
+- `/api/logo/history` (GET): Historial de logos.
+- `/admin/upload-logo` (POST): Subir nuevo logo.
+- `/admin/select-logo` (POST): Restaurar logo anterior.
+- `/api/gallery` (GET): Imágenes públicas de la galería.
+
+---
+
 ## Dependencias Principales
 
 **Framework y Core:**

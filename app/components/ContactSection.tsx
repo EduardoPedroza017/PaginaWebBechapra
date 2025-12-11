@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
 import ContactForm from "./ContactForm";
@@ -13,53 +13,64 @@ const contactInfo = [
   { icon: Clock, label: "Horario", value: "Lun - Vie: 9:00 - 18:00" },
 ];
 
-const locationOptions = [
-  {
-    id: "cdmx",
-    label: "CDMX",
-    title: "Oficina Matriz",
-    address: "Av. Insurgentes Sur 859-Piso 2, Nápoles, Benito Juárez, CDMX 03810",
-    coords: { lat: 19.408611, lng: -99.168333 },
-    zoom: 15,
-  },
-  {
-    id: "qro",
-    label: "QRO",
-    title: "Sucursal Querétaro",
-    address: "Blvd. Bernardo Quintana 4500, Centro Sur, Querétaro, QRO",
-    coords: { lat: 20.606, lng: -100.391 },
-    zoom: 14,
-  },
-  {
-    id: "pue",
-    label: "PUE",
-    title: "Oficina Puebla",
-    address: "Avenida Juárez 1686, Centro Histórico, Puebla, PUE",
-    coords: { lat: 19.042, lng: -98.197 },
-    zoom: 14,
-  },
-  {
-    id: "gdl",
-    label: "GDL",
-    title: "Oficina Guadalajara",
-    address: "Av. Chapultepec 123, Lafayette, Guadalajara, JAL",
-    coords: { lat: 20.668, lng: -103.385 },
-    zoom: 13,
-  },
-  {
-    id: "edomex",
-    label: "EDOMEX",
-    title: "Sucursal Estado de México",
-    address: "Av. Tecnológico 300, Metepec, Estado de México",
-    coords: { lat: 19.266, lng: -99.606 },
-    zoom: 13,
-  },
-];
+interface Branch {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  city: string;
+  state: string;
+  locationUrl: string;
+  coordinates?: { lat: number; lng: number };
+  contact?: { phone?: string; email?: string };
+  isActive: boolean;
+}
+
 
 export default function ContactSection() {
-  const [selectedLocation, setSelectedLocation] = useState(locationOptions[0]);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedState, setSelectedState] = useState<string>("");
 
-  const mapSrc = `https://www.google.com/maps?q=${selectedLocation.coords.lat},${selectedLocation.coords.lng}&z=${selectedLocation.zoom}&output=embed`;
+  useEffect(() => {
+    async function fetchBranches() {
+      try {
+        const res = await fetch("http://localhost:5000/api/branches?active=true");
+        const data = await res.json();
+        //console.log("Sucursales desde API:", data);
+        if (Array.isArray(data) && data.length > 0) {
+          setBranches(data);
+          // Selecciona el primer estado único y la primera sucursal de ese estado
+          const firstState = data[0].state;
+          setSelectedState(firstState);
+          setSelectedBranch(data.find((b: Branch) => b.state === firstState) || data[0]);
+        }
+      } catch (error) {
+        //console.error("Error fetching branches:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBranches();
+  }, []);
+
+  // Estados únicos
+  const uniqueStates = Array.from(new Set(branches.map((b) => b.state)));
+  console.log("Estados únicos:", uniqueStates);
+
+  // Cambia sucursal al cambiar estado
+  const handleStateClick = (state: string) => {
+    setSelectedState(state);
+    const branch = branches.find((b) => b.state === state);
+    if (branch) setSelectedBranch(branch);
+  };
+
+  const mapSrc = selectedBranch?.coordinates 
+    ? `https://www.google.com/maps?q=${selectedBranch.coordinates.lat},${selectedBranch.coordinates.lng}&z=15&output=embed`
+    : selectedBranch?.address 
+      ? `https://www.google.com/maps?q=${encodeURIComponent(selectedBranch.address)}&output=embed`
+      : "";
 
   return (
     <div className="relative">
@@ -140,8 +151,8 @@ export default function ContactSection() {
                       <div>
                         <p className="text-sm font-medium text-blue-500 dark:text-blue-400"><TranslateText text={item.label} /></p>
                         <p className="text-white font-semibold">
-                          {item.label === "Ubicación"
-                            ? `${selectedLocation.title} · ${selectedLocation.address}`
+                          {item.label === "Ubicación" && selectedBranch
+                            ? `${selectedBranch.name} · ${selectedBranch.address}`
                             : item.value}
                         </p>
                       </div>
@@ -173,37 +184,49 @@ export default function ContactSection() {
                   <div className="lg:grid lg:grid-cols-[1fr_minmax(300px,1fr)] lg:items-start gap-8">
                       <div className="flex flex-col gap-4 text-sm">
                         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-500">Contáctanos</p>
-                        <div className="flex flex-wrap gap-3">
-                          {locationOptions.map((location) => (
-                            <button
-                              key={location.id}
-                              type="button"
-                              onClick={() => setSelectedLocation(location)}
-                              className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                                selectedLocation.id === location.id
-                                  ? "border-white bg-white text-blue-700 shadow-lg"
-                                  : "border-blue-300 bg-blue-50/50 text-blue-600 hover:bg-blue-100"
-                              }`}
-                            >
-                              {location.label}
-                            </button>
-                          ))}
-                        </div>
-                        <div className="text-sm text-slate-500">
-                          <p className="font-semibold text-slate-900">{selectedLocation.title}</p>
-                          <p>{selectedLocation.address}</p>
-                        </div>
+                        {loading ? (
+                          <p className="text-slate-500">Cargando sucursales...</p>
+                        ) : branches.length === 0 ? (
+                          <p className="text-slate-500">No hay sucursales disponibles</p>
+                        ) : (
+                          <>
+                            <div className="flex flex-wrap gap-3">
+                              {uniqueStates.map((state) => (
+                                <button
+                                  key={state}
+                                  type="button"
+                                  onClick={() => handleStateClick(state)}
+                                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                                    selectedState === state
+                                      ? "border-white bg-white text-blue-700 shadow-lg"
+                                      : "border-blue-300 bg-blue-50/50 text-blue-600 hover:bg-blue-100"
+                                  }`}
+                                >
+                                  {state}
+                                </button>
+                              ))}
+                            </div>
+                            {selectedBranch && (
+                              <div className="text-sm text-slate-500">
+                                <p className="font-semibold text-slate-900">{selectedBranch.name}</p>
+                                <p>{selectedBranch.address}, {selectedBranch.city}, {selectedBranch.state}</p>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     <div className="relative">
                       <div className="overflow-hidden rounded-3xl border border-white/60 bg-white shadow-xl">
-                        <iframe
-                          title="Ubicación Bechapra"
-                          src={mapSrc}
-                          width="100%"
+                        {mapSrc ? (
+                          <iframe
+                            title="Ubicación Bechapra"
+                            src={mapSrc}
+                            width="100%"
                             height="320"
-                          loading="lazy"
-                          className="border-0"
-                        />
+                            loading="lazy"
+                            className="border-0"
+                          />
+                        ) : null}
                       </div>
                     </div>
                   </div>

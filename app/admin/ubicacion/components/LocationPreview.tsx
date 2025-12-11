@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, Phone, MapPin } from "lucide-react";
-import { LocationData } from "../../ubicacion/types";
+import { LocationData } from "@/lib/locationData";
 
 interface LocationPreviewProps {
   location: LocationData;

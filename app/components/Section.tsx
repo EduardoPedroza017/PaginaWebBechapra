@@ -24,11 +24,7 @@ export default function Section({ children, id, variant = "white", className = "
   return (
     <section
       id={id}
-      className={`${bgColor} ${className} transition-colors duration-300`}
-      style={{
-        width: "100vw",
-        marginLeft: "calc(-50vw + 50%)",
-      }}
+      className={`${bgColor} ${className} w-full transition-colors duration-300`}
     >
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${paddingY[size]}`}>
         {children}

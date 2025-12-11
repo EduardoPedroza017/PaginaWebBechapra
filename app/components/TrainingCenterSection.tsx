@@ -64,8 +64,8 @@ export default function TrainingCenterSection() {
           <div className="grid lg:grid-cols-2">
             {/* Left: Image/Visual */}
             <div className="relative min-h-[300px] lg:min-h-[500px] bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden">
-              <div className="absolute inset-0 bg-[url('/image/pattern.svg')] opacity-10" />
-              
+              {/* <div className="absolute inset-0 bg-[url('/image/pattern.svg')] opacity-10" /> */}
+
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
@@ -106,11 +106,10 @@ export default function TrainingCenterSection() {
                     <button
                       key={feature.id}
                       onClick={() => setActive(i)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                        active === i
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${active === i
                           ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
                           : "text-slate-600 hover:bg-slate-200 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
-                      }`}
+                        }`}
                     >
                       <Icon className="w-4 h-4" />
                       <TranslateText text={feature.label} />
@@ -147,9 +146,8 @@ export default function TrainingCenterSection() {
                   <button
                     key={i}
                     onClick={() => setActive(i)}
-                    className={`h-2 rounded-full transition-all ${
-                      active === i ? "bg-blue-600 w-8" : "w-2 hover:bg-slate-300 bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-                    }`}
+                    className={`h-2 rounded-full transition-all ${active === i ? "bg-blue-600 w-8" : "w-2 hover:bg-slate-300 bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
+                      }`}
                   />
                 ))}
               </div>

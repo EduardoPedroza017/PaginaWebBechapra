@@ -43,28 +43,28 @@ export default function LanguageSwitcher() {
         aria-expanded={open}
       >
         <div className="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
-          <Image 
-            src={selected.flag} 
+          <Image
+            src={selected.flag}
             alt={selected.name}
             fill
             className="object-cover"
           />
         </div>
         <span className="text-slate-700 dark:text-slate-200 font-semibold">{selected.code.toUpperCase()}</span>
-        <ChevronDown 
-          size={16} 
-          className={`text-slate-500 dark:text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} 
+        <ChevronDown
+          size={16}
+          className={`text-slate-500 dark:text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </motion.button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute top-[calc(100%+8px)] right-0 sm:right-0 left-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl min-w-[180px] sm:min-w-[200px] max-w-[calc(100vw-2rem)] z-[100] overflow-hidden"
+            className="absolute bottom-[calc(100%+8px)] md:bottom-auto md:top-[calc(100%+8px)] right-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl min-w-[180px] sm:min-w-[200px] max-w-[calc(100vw-2rem)] z-[100] overflow-hidden"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
@@ -82,11 +82,10 @@ export default function LanguageSwitcher() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.03 }}
-                  className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-all duration-150 ${
-                    selected.code === language.code
-                      ? 'bg-blue-50 dark:bg-blue-900/30'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-all duration-150 ${selected.code === language.code
+                    ? 'bg-blue-50 dark:bg-blue-900/30'
+                    : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                    }`}
                   onClick={() => {
                     setLang(language.code);
                     setOpen(false);
@@ -95,13 +94,12 @@ export default function LanguageSwitcher() {
                   aria-selected={selected.code === language.code}
                 >
                   {/* Flag */}
-                  <div className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 shadow-sm transition-all ${
-                    selected.code === language.code 
-                      ? 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-800' 
-                      : 'border-slate-200 dark:border-slate-600'
-                  }`}>
-                    <Image 
-                      src={language.flag} 
+                  <div className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 shadow-sm transition-all ${selected.code === language.code
+                    ? 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-800'
+                    : 'border-slate-200 dark:border-slate-600'
+                    }`}>
+                    <Image
+                      src={language.flag}
                       alt={language.name}
                       fill
                       className="object-cover"
@@ -110,11 +108,10 @@ export default function LanguageSwitcher() {
 
                   {/* Text */}
                   <div className="flex-1">
-                    <p className={`text-sm font-semibold ${
-                      selected.code === language.code 
-                        ? 'text-blue-700 dark:text-blue-400' 
-                        : 'text-slate-700 dark:text-slate-200'
-                    }`}>
+                    <p className={`text-sm font-semibold ${selected.code === language.code
+                      ? 'text-blue-700 dark:text-blue-400'
+                      : 'text-slate-700 dark:text-slate-200'
+                      }`}>
                       {language.name}
                     </p>
                     <p className="text-xs text-slate-400 dark:text-slate-500">
