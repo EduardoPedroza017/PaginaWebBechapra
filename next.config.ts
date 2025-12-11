@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
         pathname: '/uploads/organigrama/**',
       },
     ],
+    domains: ['localhost'],
     localPatterns: [
       {
         pathname: '/image/**',
@@ -29,6 +30,10 @@ const nextConfig: NextConfig = {
       },
       {
         pathname: '/api/proxy-image',
+        search: '',
+      },
+      {
+        pathname: '/uploads/branding/**',
         search: '',
       },
     ],

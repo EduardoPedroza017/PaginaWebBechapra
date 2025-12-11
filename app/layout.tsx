@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}>
       <head>
         {/* Adobe Fonts - Mundial */}
-        <link rel="stylesheet" href="https://use.typekit.net/abc1def.css" />
+        {/* <link rel="stylesheet" href="https://use.typekit.net/abc1def.css" /> */}
       </head>
       <body className="antialiased">
         <ThemeProvider>
