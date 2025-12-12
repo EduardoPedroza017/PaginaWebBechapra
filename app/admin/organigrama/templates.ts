@@ -1,9 +1,17 @@
 import type { OrganigramaNode } from './OrganigramaAPI';
 
-export const ORGANIGRAMA_TEMPLATES: Record<string, { 
-  name: string; 
-  description: string; 
-  structure: OrganigramaNode[] 
+// Definir el tipo Shape localmente para evitar problemas de importación de tipos
+type Shape =
+  | { id: string; type: "rect"; x: number; y: number; width: number; height: number; fill: string }
+  | { id: string; type: "circle"; x: number; y: number; radius: number; fill: string }
+  | { id: string; type: "line"; points: number[]; stroke: string; strokeWidth: number }
+  | { id: string; type: "text"; x: number; y: number; text: string; fontSize: number; fill: string };
+
+export const ORGANIGRAMA_TEMPLATES: Record<string, {
+  name: string;
+  description: string;
+  structure: OrganigramaNode[];
+  shapes?: Shape[];
 }> = {
   basic: {
     name: 'Básico',
@@ -17,6 +25,26 @@ export const ORGANIGRAMA_TEMPLATES: Record<string, {
         descripcion: 'Posición principal de la organización',
         imagen: '',
         hijos: [],
+      },
+    ],
+    shapes: [
+      {
+        id: 'shape-1',
+        type: 'rect',
+        x: 200,
+        y: 100,
+        width: 160,
+        height: 80,
+        fill: '#4f8cff',
+      },
+      {
+        id: 'shape-2',
+        type: 'text',
+        x: 220,
+        y: 120,
+        text: 'Card editable',
+        fontSize: 22,
+        fill: '#222',
       },
     ],
   },

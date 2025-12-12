@@ -38,6 +38,7 @@ export const sidebarItems: SidebarItem[] = [
   { label: "Gestión de Directivos", path: "/admin/organigrama", icon: <UserCheck size={20} /> },
   { label: "Sucursales", path: "/admin/sucursales", icon: <Building2 size={20} /> },
   { label: "Branding / Logo", path: "/admin/branding", icon: <GalleryIcon size={20} /> },
+  { label: "Servicios", path: "/admin/servicios", icon: <ClipboardList size={20} /> },
 ];
 
 interface SidebarProps {

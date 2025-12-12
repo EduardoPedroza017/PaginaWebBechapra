@@ -9,6 +9,9 @@ import type { OrganigramaNode } from "./OrganigramaAPI";
 import { NIVEL_OPTIONS, NIVEL_OPTIONS_DARK } from "./OrganigramaAPI";
 import DeleteNodeModal from "./DeleteNodeModal";
 import { ValidationDisplay } from "./ValidationDisplay";
+import dynamic from "next/dynamic";
+// Importar CanvasEditor de forma dinámica para evitar problemas SSR
+const CanvasEditor = dynamic(() => import("./CanvasEditor"), { ssr: false });
 
 interface Props {
   nodes: OrganigramaNode[];
@@ -55,23 +58,27 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
     setUploadingId(id);
     const formData = new FormData();
     formData.append('file', file);
-    try {
-      const res = await fetch('http://localhost:5000/api/organigrama/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.url) {
-          handleField(id, 'imagen', data.url);
-        }
-      }
-    } finally {
-      setUploadingId(null);
-    }
-  };
-
-  const removeImage = (id: string) => {
+    return (
+      <div>
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold shadow hover:bg-blue-700"
+            onClick={handleAdd}
+          >
+            <Plus className="inline-block w-5 h-5 mr-2" />
+            <TranslateText text="Agregar nodo" />
+          </button>
+          <ValidationDisplay nodes={nodes} />
+        </div>
+        {/* Canvas visual para organigrama */}
+        <div className="mb-8">
+          <CanvasEditor />
+        </div>
+        {/* Aquí va el editor de nodos tradicional */}
+        {/* ...existing code... */}
+      </div>
+    );
     handleField(id, 'imagen', '');
   };
 
@@ -109,7 +116,7 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
               theme === 'dark' ? 'bg-amber-600/20 text-amber-400' : 'bg-amber-100 text-amber-700'
             }`}>
-              {nodes.length} <TranslateText text="directivos" />
+              {(Array.isArray(nodes) ? nodes.length : 0)} <TranslateText text="directivos" />
             </span>
           </div>
         </div>
@@ -342,7 +349,7 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
       </div>
 
       {/* Validation Section */}
-      {nodes.length > 0 && (
+      {Array.isArray(nodes) && nodes.length > 0 && (
         <div className="mt-6">
           <ValidationDisplay nodes={nodes} theme={theme} />
         </div>

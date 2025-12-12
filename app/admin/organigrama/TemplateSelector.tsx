@@ -6,8 +6,9 @@ import { TranslateText } from "@/components/TranslateText";
 import { getTemplateList, getTemplate } from "./templates";
 import type { OrganigramaNode } from "./OrganigramaAPI";
 
+import type { Shape } from './CanvasEditor';
 interface Props {
-  onSelectTemplate: (structure: OrganigramaNode[]) => void;
+  onSelectTemplate: (structure: OrganigramaNode[], shapes?: Shape[]) => void;
   theme?: 'light' | 'dark';
   isOpen: boolean;
   onClose: () => void;
@@ -19,9 +20,9 @@ export function TemplateSelector({ onSelectTemplate, theme = 'light', isOpen, on
 
   const handleApply = () => {
     if (selectedTemplate) {
-      const structure = getTemplate(selectedTemplate);
-      if (structure) {
-        onSelectTemplate(structure);
+      const template = getTemplate(selectedTemplate);
+      if (template) {
+        onSelectTemplate(template.structure, template.shapes);
         setSelectedTemplate(null);
         onClose();
       }

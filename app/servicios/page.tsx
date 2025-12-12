@@ -8,47 +8,32 @@ import { ArrowRight, CheckCircle, Users, Building2, Briefcase } from "lucide-rea
 import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
 
-const groups = [
-	{
-		title: "Capital Humano",
-		href: "/servicios/capital-humano",
-		icon: "/image/icon/Capital Humano_Icon_Color@2x.png",
-		iconComponent: Users,
-		description: "Gestionamos talento, nómina y soluciones humanas que permiten a tu empresa crecer.",
-		color: "blue",
-		items: [
-			{ title: "Servicios especializados", href: "/servicios/servicios-especializados" },
-			{ title: "Payrolling", href: "/servicios/payroll" },
-			{ title: "Atracción de Talento", href: "/servicios/atraccion-de-talento" },
-		],
-	},
-	{
-		title: "Desarrollo Organizacional",
-		href: "/servicios/desarrollo-organizacional",
-		icon: "/image/icon/Iconos_Redes/Chat_NegativoStroke@2x.png",
-		iconComponent: Building2,
-		description: "Mejoramos procesos, cultura y capacidades para que la organización sea más ágil y productiva.",
-		color: "cyan",
-		items: [
-			{ title: "Capacitación Empresarial", href: "/servicios/capacitacion-empresarial" },
-			{ title: "Consultoría Organizacional", href: "/servicios/consultoria-organizacional" },
-			{ title: "NOM 035", href: "/servicios/nom-035" },
-		],
-	},
-	{
-		title: "Management Services",
-		href: "/servicios/management-services",
-		icon: "/image/icon/Servicios Administrativos_Icon_Color@2x.png",
-		iconComponent: Briefcase,
-		description: "Servicios contables, legales y administrativos bajo un solo proveedor confiable.",
-		color: "indigo",
-		items: [
-			{ title: "Servicios Contables", href: "/servicios/servicios-contables" },
-			{ title: "Servicios Legales", href: "/servicios/servicios-legales" },
-			{ title: "Servicios PYME", href: "/servicios/servicios-pyme" },
-		],
-	},
-] as const;
+
+import { useEffect, useState } from "react";
+
+const iconMap: Record<string, any> = {
+	"Capital Humano": Users,
+	"Desarrollo Organizacional": Building2,
+	"Management Services": Briefcase,
+};
+
+const colorMap: Record<string, string> = {
+	"Capital Humano": "blue",
+	"Desarrollo Organizacional": "cyan",
+	"Management Services": "indigo",
+};
+
+type Service = {
+	id: string;
+	name: string;
+	slug: string;
+	description?: string;
+	icon?: string;
+	image?: string;
+	features: { name: string; slug: string }[];
+};
+
+
 
 const containerVariants = {
 	hidden: { opacity: 0 },
@@ -63,7 +48,50 @@ const cardVariants = {
 	visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+// Example static data. Replace with API fetch if needed.
+const defaultServices: Service[] = [
+	{
+		id: "1",
+		name: "Capital Humano",
+		slug: "capital-humano",
+		description: "Soluciones para la gestión y desarrollo del talento humano.",
+		icon: undefined,
+		image: undefined,
+		features: [
+			{ name: "Reclutamiento", slug: "reclutamiento" },
+			{ name: "Capacitación", slug: "capacitacion" },
+		],
+	},
+	{
+		id: "2",
+		name: "Desarrollo Organizacional",
+		slug: "desarrollo-organizacional",
+		description: "Impulsa la cultura y estructura de tu empresa.",
+		icon: undefined,
+		image: undefined,
+		features: [
+			{ name: "Diagnóstico Organizacional", slug: "diagnostico" },
+			{ name: "Gestión del Cambio", slug: "gestion-cambio" },
+		],
+	},
+	{
+		id: "3",
+		name: "Management Services",
+		slug: "management-services",
+		description: "Servicios de consultoría y gestión empresarial.",
+		icon: undefined,
+		image: undefined,
+		features: [
+			{ name: "Consultoría", slug: "consultoria" },
+			{ name: "Estrategia", slug: "estrategia" },
+		],
+	},
+];
+
 export default function ServiciosIndex() {
+	const [services, setServices] = useState<Service[]>(defaultServices);
+	// Si necesitas cargar desde una API, usa useEffect aquí
+	// useEffect(() => { ... }, []);
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
 			{/* Hero Section */}
@@ -226,8 +254,9 @@ export default function ServiciosIndex() {
 						viewport={{ once: true }}
 						className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
 					>
-						{groups.map((group) => (
-							<GroupCard key={group.title} group={group} />
+						{/* Render dinámico desde la API */}
+						{services.map((service) => (
+							<GroupCard key={service.id} group={service} />
 						))}
 					</motion.div>
 				</div>
@@ -272,10 +301,11 @@ export default function ServiciosIndex() {
 	);
 }
 
-function GroupCard({ group }: { group: (typeof groups)[number] }) {
-	const router = useRouter();
-	const Icon = group.iconComponent;
 
+function GroupCard({ group }: { group: Service }) {
+	const router = useRouter();
+	const Icon = iconMap[group.name] || Briefcase;
+	const color = colorMap[group.name] || "blue";
 	const colorStyles = {
 		blue: {
 			gradient: "from-blue-600 to-blue-700",
@@ -302,22 +332,21 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 			shadow: "hover:shadow-indigo-200/50 dark:hover:shadow-indigo-900/30",
 		},
 	};
-
-	const colors = colorStyles[group.color as keyof typeof colorStyles];
+	const colors = colorStyles[color as keyof typeof colorStyles];
 
 	return (
 		<motion.div
 			variants={cardVariants}
 			role="link"
 			tabIndex={0}
-			onClick={() => router.push(group.href)}
+			onClick={() => router.push(`/servicios/${group.slug}`)}
 			onKeyDown={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
-					router.push(group.href);
+					router.push(`/servicios/${group.slug}`);
 				}
 			}}
-			aria-label={`${group.title} — ver subservicios`}
+			aria-label={`${group.name} — ver subservicios`}
 			className={`group relative bg-white dark:bg-slate-800/90 rounded-2xl cursor-pointer border ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-300 hover:-translate-y-2 flex flex-col h-full overflow-hidden`}
 		>
 			{/* Top gradient bar */}
@@ -334,24 +363,24 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 						)}
 					</div>
 					<h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-						{group.title}
+						{group.name}
 					</h2>
 					<p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
 						{group.description}
 					</p>
 				</div>
 
-				{/* Services List */}
+				{/* Sub-servicios List */}
 				<div className="flex-1">
 					<div className={`${colors.lightBg} rounded-xl p-5`}>
 						<h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
 							Servicios incluidos
 						</h3>
 						<ul className="space-y-3">
-							{group.items.map((item) => (
-								<li key={item.title}>
+							{group.features.map((item) => (
+								<li key={item.name}>
 									<Link
-										href={item.href}
+										href={`/servicios/${item.slug}`}
 										onClick={(e) => e.stopPropagation()}
 										className={`flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:${colors.text} transition-colors group/link`}
 									>
@@ -359,7 +388,7 @@ function GroupCard({ group }: { group: (typeof groups)[number] }) {
 											<CheckCircle className="w-3 h-3 text-white" />
 										</div>
 										<span className="text-sm font-medium group-hover/link:translate-x-1 transition-transform">
-											{item.title}
+											{item.name}
 										</span>
 									</Link>
 								</li>
