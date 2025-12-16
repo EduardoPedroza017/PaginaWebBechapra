@@ -27,6 +27,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
   const [role] = useState(initial?.role || "admin");
   const [roles, setRoles] = useState<string[]>(initial?.roles || (initial?.role ? [initial.role] : []));
   const [permissions, setPermissions] = useState<string[]>(initial?.permissions || []);
+  const [active, setActive] = useState<boolean>(initial?.active !== false);
   const [permInput, setPermInput] = useState("");
   const [error, setError] = useState("");
 
@@ -40,9 +41,24 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
     "user"
   ];
 
+  // obtener rol del admin actual para limitar opciones
+  const currentAdminRole = (typeof window !== 'undefined') ? (sessionStorage.getItem('role') || '') : '';
+  const isSuperAdmin = currentAdminRole === 'superadmin';
+  const filteredRoles = availableRoles.filter(r => isSuperAdmin ? true : r !== 'superadmin');
+
+  // Map default permissions per role (frontend mirror)
+  const ROLE_PERMISSIONS: Record<string, string[]> = {
+    superadmin: ['read','write','delete','export','manage_users','manage_roles','view_audit','block_user'],
+    admin: ['read','write','manage_users','view_audit','block_user'],
+    editor: ['read','write'],
+    viewer: ['read'],
+    moderator: ['read','block_user'],
+    user: []
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || (!isEdit && !password) || (roles.length === 0 && !role)) {
+    if (!email || (!isEdit && !password) || (roles.length === 0)) {
       setError("Todos los campos son obligatorios.");
       return;
     }
@@ -50,14 +66,26 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
     onSubmit({
       email,
       password: password || undefined,
-      role: roles.length === 1 ? roles[0] : undefined,
-      roles: roles.length > 1 ? roles : undefined,
+      roles: roles,
       permissions: permissions.length > 0 ? permissions : undefined,
+      active,
     });
   };
 
   const handleAddRole = (val: string) => {
-    if (val && !roles.includes(val)) setRoles([...roles, val]);
+    if (!val) return;
+    if (!roles.includes(val)) {
+      // only allow adding superadmin if current user is superadmin
+      if (val === 'superadmin' && !isSuperAdmin) return;
+      const next = [...roles, val];
+      setRoles(next);
+      // update derived permissions for non-superadmins (can't manually edit perms)
+      if (!isSuperAdmin) {
+        const perms = new Set<string>();
+        next.forEach(r => ROLE_PERMISSIONS[r]?.forEach(p => perms.add(p)));
+        setPermissions(Array.from(perms));
+      }
+    }
   };
   const handleRemoveRole = (r: string) => setRoles(roles.filter(x => x !== r));
 
@@ -98,6 +126,12 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
           />
         </div>
         <div className="mb-4">
+          <label className="inline-flex items-center gap-2">
+            <input type="checkbox" checked={active} onChange={e => setActive(e.target.checked)} className="w-4 h-4" />
+            <span className="text-sm"><TranslateText text="Activo" /></span>
+          </label>
+        </div>
+        <div className="mb-4">
           <label className="block mb-1 font-medium">
             <TranslateText text="Contraseña" />
             {isEdit ? <TranslateText text=" (dejar vacío para no cambiar)" /> : ""}
@@ -117,7 +151,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
             {roles.map(r => (
               <span key={r} className="inline-flex items-center bg-blue-100 text-blue-800 rounded px-2 py-0.5 text-xs mr-1">
                 {r}
-                <button type="button" className="ml-1 text-red-500 hover:text-red-700" onClick={() => handleRemoveRole(r)} title={undefined} aria-label="Quitar">
+                <button type="button" className="ml-1 text-red-500 hover:text-red-700" onClick={() => handleRemoveRole(r)} title={undefined} aria-label="Quitar" disabled={!isSuperAdmin}>
                   <span className="sr-only"><TranslateText text="Quitar" /></span>×
                 </button>
               </span>
@@ -128,6 +162,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
               onChange={e => {
                 handleAddRole(e.target.value);
               }}
+              disabled={!isSuperAdmin}
             >
               <option value="" disabled><TranslateText text="Seleccionar rol" asOption={true} /></option>
               {availableRoles.filter(r => !roles.includes(r)).map(r => (
@@ -153,12 +188,19 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
               onChange={e => {
                 handleAddPerm(e.target.value);
               }}
+              disabled={!isSuperAdmin}
             >
-              <option value="" disabled><TranslateText text="Seleccionar permiso" asOption={true} /></option>
-              {availablePermissions.filter(p => !permissions.includes(p)).map(p => (
-                <option key={p} value={p}>{p}</option>
-              ))}
+                <option value="" disabled><TranslateText text="Seleccionar permiso" asOption={true} /></option>
+                {availablePermissions.filter(p => !permissions.includes(p)).map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
             </select>
+              {/* Si no es superadmin, mostrar permisos derivados (solo lectura) */}
+              {!isSuperAdmin && (
+                <div className="mt-2 text-sm text-gray-600">
+                  <TranslateText text="Permisos asignados por rol" />: {permissions.join(', ') || <TranslateText text="Ninguno" />}
+                </div>
+              )}
             <input
               className="border px-1 py-0.5 rounded text-xs w-24"
               value={permInput}
@@ -166,6 +208,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
               onBlur={() => handleAddPerm()}
               onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleAddPerm(); } }}
               placeholder="Agregar permiso"
+              disabled={!isSuperAdmin}
             />
           </div>
         </div>

@@ -82,7 +82,7 @@ function OrganigramaNodeView({ node, theme = 'light', isLast = false }: { node: 
   const hasChildren = node.hijos && node.hijos.length > 0;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" data-node-id={node.id}>
       {/* Node Card */}
       <div className={`relative rounded-2xl border p-4 min-w-[200px] max-w-[280px] backdrop-blur-md transition-all hover:scale-105 cursor-pointer group ${
         theme === 'dark' 

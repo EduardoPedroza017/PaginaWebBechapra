@@ -10,6 +10,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
         'X-Role': role,
         'X-Admin': admin,
+        'cookie': request.headers.get('cookie') || ''
       },
       body: JSON.stringify(body),
       credentials: 'include',
@@ -39,12 +40,17 @@ export async function PUT(request: Request) {
     const role = request.headers.get('X-Role') || '';
     const admin = request.headers.get('X-Admin') || 'false';
 
-    const response = await fetch('http://localhost:5000/admin/users/', {
+    // If email is provided, forward to /admin/users/<email> as required by backend
+    const targetEmail = body?.email;
+    const putUrl = targetEmail ? `http://localhost:5000/admin/users/${encodeURIComponent(targetEmail)}` : 'http://localhost:5000/admin/users/';
+    if (targetEmail) delete body.email;
+    const response = await fetch(putUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'X-Role': role,
         'X-Admin': admin,
+        'cookie': request.headers.get('cookie') || ''
       },
       body: JSON.stringify(body),
       credentials: 'include',
@@ -75,11 +81,14 @@ export async function DELETE(request: Request) {
     const role = request.headers.get('X-Role') || '';
     const admin = request.headers.get('X-Admin') || 'false';
 
-    const response = await fetch(`http://localhost:5000/admin/users/?id=${userId}`, {
+    // Forward to backend route DELETE /admin/users/<email>
+    const deleteUrl = userId ? `http://localhost:5000/admin/users/${encodeURIComponent(userId)}` : `http://localhost:5000/admin/users/`;
+    const response = await fetch(deleteUrl, {
       method: 'DELETE',
       headers: {
         'X-Role': role,
         'X-Admin': admin,
+        'cookie': request.headers.get('cookie') || ''
       },
       credentials: 'include',
     });

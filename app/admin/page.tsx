@@ -59,7 +59,7 @@ export default function AdminLogin() {
       console.debug('Login response', res.status, data);
 
       if (res.ok && data.ok) {
-        sessionStorage.setItem('admin', String(data.admin));
+        sessionStorage.setItem('admin', String(data.admin).toLowerCase());
         sessionStorage.setItem('role', data.role);
         sessionStorage.setItem('admin_token', 'true');
         sessionStorage.setItem('user_email', data.email || usuario);

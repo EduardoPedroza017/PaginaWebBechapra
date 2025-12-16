@@ -1,18 +1,21 @@
 
 "use client";
-import { Moon, Sun, LogOut, Menu,  ChevronDown } from 'lucide-react';
+import { Moon, Sun, LogOut, Menu,  ChevronDown, Settings } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { TranslateText } from '@/components/TranslateText';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Palette } from '../../../src/theme/palettes';
+import Link from 'next/link';
 
 interface HeaderProps {
   onLogout: () => void;
   onToggleTheme: () => void;
   theme: 'light' | 'dark';
   palette?: Palette;
+  role?: string;
+  admin?: boolean;
 }
-export function Header({ onLogout, onToggleTheme, theme }: HeaderProps) {
+export function Header({ onLogout, onToggleTheme, theme, role, admin }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDark = theme === 'dark';
 
@@ -95,6 +98,20 @@ export function Header({ onLogout, onToggleTheme, theme }: HeaderProps) {
         </div>
 
         {/* Botón de logout */}
+        {/* Mostrar rol actual */}
+        {role && (
+          <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl font-medium text-sm ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
+            <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{role === 'superadmin' ? 'Super Admin' : role}</span>
+          </div>
+        )}
+        {/* Admin quick link */}
+        {admin && (
+          <Link href="/admin/config" className={`${buttonBase} ${theme === 'dark' ? 'bg-slate-800 text-white border border-slate-700' : 'bg-slate-100 text-slate-900 border border-slate-200'} text-sm`} title="Admin Settings">
+            <Settings size={16} />
+            <span className="hidden lg:inline"><TranslateText text="Ajustes" /></span>
+          </Link>
+        )}
+
         <button
           onClick={onLogout}
           className={`${buttonBase} ${logoutButtonClasses} text-sm`}

@@ -44,9 +44,11 @@ export const sidebarItems: SidebarItem[] = [
 interface SidebarProps {
   selected: string;
   theme?: 'light' | 'dark';
+  role?: string;
+  admin?: boolean;
 }
 
-export function Sidebar({ selected, theme }: SidebarProps) {
+export function Sidebar({ selected, theme, role, admin }: SidebarProps) {
   const isDark = theme === 'dark';
   
   // Diseño moderno y limpio sin gradientes agresivos
@@ -88,36 +90,54 @@ export function Sidebar({ selected, theme }: SidebarProps) {
 
       {/* Navegación principal */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
-        {sidebarItems.map((item) => {
-          const isActive = selected === item.path;
-          return (
-            <Link
-              key={item.path}
-              href={item.path}
-              className={`group flex items-center justify-between px-3.5 py-3 rounded-xl font-medium transition-all duration-200 ${
-                isActive
-                  ? isDark
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
-                    : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
-                  : isDark
-                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <span className={`flex-shrink-0 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}>
-                  {item.icon}
-                </span>
-                <span className="text-[13px] font-semibold truncate">
-                  <TranslateText text={item.label} />
-                </span>
-              </div>
-              {isActive && (
-                <ChevronRight size={16} className="flex-shrink-0 ml-2 animate-pulse" />
-              )}
-            </Link>
-          );
-        })}
+        {/**
+         * Si `admin` está explícitamente false, ocultamos elementos sensibles.
+         * Si `admin` es undefined (por compatibilidad), mostramos todo.
+         */}
+        {sidebarItems
+          .filter((item) => {
+            if (admin === false) {
+              // Rutas que sólo deberían ver administradores completos
+              const adminOnly = [
+                '/admin/usuarios',
+                '/admin/audit-log',
+                '/admin/config',
+                '/admin/branding',
+              ];
+              if (adminOnly.includes(item.path)) return false;
+            }
+            return true;
+          })
+          .map((item) => {
+            const isActive = selected === item.path;
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`group flex items-center justify-between px-3.5 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  isActive
+                    ? isDark
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30'
+                      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                    : isDark
+                      ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className={`flex-shrink-0 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="text-[13px] font-semibold truncate">
+                    <TranslateText text={item.label} />
+                  </span>
+                </div>
+                {isActive && (
+                  <ChevronRight size={16} className="flex-shrink-0 ml-2 animate-pulse" />
+                )}
+              </Link>
+            );
+          })}
       </nav>
 
       {/* Footer del sidebar */}

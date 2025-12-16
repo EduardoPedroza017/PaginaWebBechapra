@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
         search: '',
       },
       {
+        pathname: '/images/**',
+        search: '',
+      },
+      {
         pathname: '/api/proxy-image',
         search: '',
       },

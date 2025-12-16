@@ -2,6 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Service, ServiceTable, ServiceEditModal, DeleteServiceModal } from "./components";
+import ServicePageForm from "./components/ServicePageForm";
 import { Button } from "../components/shared/Button";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
@@ -14,6 +15,9 @@ export default function ServiciosAdminPage() {
   const [editData, setEditData] = useState<Service | undefined>(undefined);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteData, setDeleteData] = useState<Service | undefined>(undefined);
+  const [toggleLoading, setToggleLoading] = useState<string | null>(null);
+  const [pageFormOpen, setPageFormOpen] = useState(false);
+  const [pageInitialHandle, setPageInitialHandle] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     fetchServices();
@@ -21,7 +25,8 @@ export default function ServiciosAdminPage() {
 
   async function fetchServices() {
     setLoading(true);
-    const res = await fetch("http://localhost:5000/api/services");
+    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const res = await fetch(`${API}/api/services/cards`, { credentials: 'include' });
     const data = await res.json();
     setServices(data);
     setLoading(false);
@@ -32,24 +37,61 @@ export default function ServiciosAdminPage() {
     setEditOpen(true);
   }
 
-  function handleEdit(service: Service) {
-    setEditData(service);
+  async function handleEdit(service: Service) {
+    // Obtener detalle completo antes de abrir el modal
+    try {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API}/api/services/cards/${service.id}`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setEditData(data);
+      } else {
+        // fallback al objeto reducido
+        setEditData(service);
+      }
+    } catch (err) {
+      console.error('Error fetching service detail', err);
+      setEditData(service);
+    }
     setEditOpen(true);
   }
 
   async function handleSave(data: Service) {
+    const maybeSlug = (data as any).slug || (data as any).handle || (data.name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const payload: any = {
+      icon: data.icon,
+      image: data.image,
+      name: data.name,
+      description: data.description,
+      slug: maybeSlug,
+    };
     if (data.id) {
-      await fetch(`http://localhost:5000/admin/services/${data.id}`, {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      await fetch(`${API}/api/services/cards/${data.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        credentials: 'include',
+        body: JSON.stringify(payload),
       });
+      // after updating an existing service, open the page form for this handle
+      const maybeHandle = payload.slug;
+      setPageInitialHandle(maybeHandle);
+      setPageFormOpen(true);
     } else {
-      await fetch("http://localhost:5000/admin/services", {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API}/api/services/cards`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        credentials: 'include',
+        body: JSON.stringify(payload),
       });
+      if (res.ok) {
+        const created = await res.json();
+        // Open page creation form prefilled with handle (slug) from created service or generated from name
+        const maybeHandle = created.slug || created.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        setPageInitialHandle(maybeHandle);
+        setPageFormOpen(true);
+      }
     }
     setEditOpen(false);
     fetchServices();
@@ -62,20 +104,30 @@ export default function ServiciosAdminPage() {
 
   async function handleDeleteConfirm() {
     if (deleteData?.id) {
-      await fetch(`http://localhost:5000/admin/services/${deleteData.id}`, {
-        method: "DELETE" });
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      await fetch(`${API}/api/services/cards/${deleteData.id}`, {
+        method: "DELETE", credentials: 'include' });
     }
     setDeleteOpen(false);
     fetchServices();
   }
 
   async function handleToggleActive(service: Service) {
-    await fetch(`http://localhost:5000/admin/services/${service.id}/activate`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ active: !service.active }),
-    });
-    fetchServices();
+    setToggleLoading(service.id || null);
+    try {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      await fetch(`${API}/api/services/cards/${service.id}/activate`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify({ active: !service.active }),
+      });
+      await fetchServices();
+    } catch (err) {
+      console.error('Error toggling service active', err);
+    } finally {
+      setToggleLoading(null);
+    }
   }
 
   return (
@@ -100,6 +152,7 @@ export default function ServiciosAdminPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               onToggleActive={handleToggleActive}
+              toggleLoading={toggleLoading}
             />
           )}
           <ServiceEditModal
@@ -107,12 +160,19 @@ export default function ServiciosAdminPage() {
             initialData={editData}
             onClose={() => setEditOpen(false)}
             onSave={handleSave}
+            onContinue={(h) => { setPageInitialHandle(h); setPageFormOpen(true); setEditOpen(false); }}
           />
           <DeleteServiceModal
             open={deleteOpen}
             service={deleteData}
             onClose={() => setDeleteOpen(false)}
             onConfirm={handleDeleteConfirm}
+          />
+          <ServicePageForm
+            open={pageFormOpen}
+            initialHandle={pageInitialHandle}
+            onClose={() => setPageFormOpen(false)}
+            onCreated={(p) => { console.log('page created', p); setPageFormOpen(false); }}
           />
         </main>
       </div>

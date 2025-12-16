@@ -8,6 +8,7 @@ import { TranslateText } from "@/components/TranslateText";
 import type { OrganigramaNode } from "./OrganigramaAPI";
 import { NIVEL_OPTIONS, NIVEL_OPTIONS_DARK } from "./OrganigramaAPI";
 import DeleteNodeModal from "./DeleteNodeModal";
+import CreateNodeModal from "./CreateNodeModal";
 import { ValidationDisplay } from "./ValidationDisplay";
 import dynamic from "next/dynamic";
 // Importar CanvasEditor de forma dinámica para evitar problemas SSR
@@ -17,11 +18,16 @@ interface Props {
   nodes: OrganigramaNode[];
   onChange: (nodes: OrganigramaNode[]) => void;
   theme?: 'light' | 'dark';
+  onCreateNode?: (node: OrganigramaNode) => Promise<{ ok?: boolean; errors?: any[] } | void>;
 }
 
-export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
+export function OrganigramaEditor({ nodes, onChange, theme = 'light', onCreateNode }: Props) {
   const [deleteNode, setDeleteNode] = useState<OrganigramaNode | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createErrors, setCreateErrors] = useState<any[] | null>(null);
+  const [visible, setVisible] = useState(true); // for future editor animations
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -32,17 +38,8 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
   };
 
   const handleAdd = () => {
-    const nuevo: OrganigramaNode = {
-      id: Date.now().toString(),
-      nombre: "",
-      puesto: "",
-      descripcion: "",
-      imagen: "",
-      nivel: undefined,
-      padreid: undefined,
-      hijos: [],
-    };
-    onChange([...nodes, nuevo]);
+    // Open creation modal instead of immediate blank node to ensure creation-only fields are set
+    setShowCreateModal(true);
   };
 
   const handleRemove = (id: string) => {
@@ -56,31 +53,24 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
 
   const handleImage = async (id: string, file: File) => {
     setUploadingId(id);
-    const formData = new FormData();
-    formData.append('file', file);
-    return (
-      <div>
-        <div className="flex items-center gap-4 mb-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold shadow hover:bg-blue-700"
-            onClick={handleAdd}
-          >
-            <Plus className="inline-block w-5 h-5 mr-2" />
-            <TranslateText text="Agregar nodo" />
-          </button>
-          <ValidationDisplay nodes={nodes} />
-        </div>
-        {/* Canvas visual para organigrama */}
-        <div className="mb-8">
-          <CanvasEditor />
-        </div>
-        {/* Aquí va el editor de nodos tradicional */}
-        {/* ...existing code... */}
-      </div>
-    );
-    handleField(id, 'imagen', '');
+    const fd = new FormData();
+    fd.append('file', file);
+    try{
+      const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000'
+      const res = await fetch(`${API}/api/uploads`, { method: 'POST', body: fd })
+      const data = await res.json()
+      const url = data.url || data.filename || ''
+      handleField(id, 'imagen', url)
+    }catch(err){
+      console.error('upload error', err)
+    }finally{
+      setUploadingId(null)
+    }
   };
+
+  const removeImage = (id: string) => {
+    handleField(id, 'imagen', '')
+  }
 
   return (
     <>
@@ -116,7 +106,7 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
               theme === 'dark' ? 'bg-amber-600/20 text-amber-400' : 'bg-amber-100 text-amber-700'
             }`}>
-              {(Array.isArray(nodes) ? nodes.length : 0)} <TranslateText text="directivos" />
+              {nodes.length} <TranslateText text="directivos" />
             </span>
           </div>
         </div>
@@ -142,6 +132,7 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
                       <div
                         ref={dragProvided.innerRef}
                         {...dragProvided.draggableProps}
+                        data-node-id={n.id}
                         className={`rounded-xl border p-4 backdrop-blur-sm transition-all ${
                           theme === 'dark' 
                             ? 'bg-gray-800/90 border-gray-700/50 hover:border-gray-600' 
@@ -272,6 +263,7 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
                                   }`}
                                   value={n.nivel || ''}
                                   onChange={e => handleField(n.id, "nivel", e.target.value)}
+                                  disabled={!!n.nivel} /* nivel is creation-only: disable for existing nodes */
                                 >
                                   <option value="">-- Selecciona nivel --</option>
                                   {NIVEL_OPTIONS.map((opt) => (
@@ -346,10 +338,69 @@ export function OrganigramaEditor({ nodes, onChange, theme = 'light' }: Props) {
             <TranslateText text="Agregar Directivo" />
           </button>
         </div>
+
+        {/* Create Node Modal */}
+        {showCreateModal && (
+          <CreateNodeModal
+            existing={nodes}
+            theme={theme}
+            saving={creating}
+            onCancel={() => { if (!creating) { setShowCreateModal(false); setCreateErrors(null); } }}
+            onCreate={async (node) => {
+              if (onCreateNode) {
+                setCreating(true);
+                setCreateErrors(null);
+                try {
+                  const res = await onCreateNode(node);
+                  if (res && (res as any).errors && (res as any).errors.length) {
+                    setCreateErrors((res as any).errors || []);
+                    // keep modal open so user can fix
+                  } else {
+                    onChange([...nodes, node]);
+                    setShowCreateModal(false);
+                    setCreateErrors(null);
+                  }
+                } catch (err) {
+                  setCreateErrors([{ error: 'Error al guardar el nodo' }]);
+                } finally {
+                  setCreating(false);
+                }
+              } else {
+                onChange([...nodes, node]);
+                setShowCreateModal(false);
+              }
+            }}
+            serverErrors={createErrors}
+            onUploadImage={async (file: File) => {
+              // simple uploader: uses backend organigrama upload endpoint
+              try {
+                const fd = new FormData();
+                fd.append('file', file);
+                const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000';
+                const res = await fetch(`${API}/api/organigrama/upload`, { method: 'POST', body: fd });
+                const data = await res.json();
+                const url = data.url || data.filename || '';
+                return url || null;
+              } catch (err) {
+                console.error('upload error', err);
+                return null;
+              }
+            }}
+          />
+        )}
+
+        {createErrors && createErrors.length > 0 && (
+          <div className="mt-3 text-sm text-red-500">
+            <strong>Errores:</strong>
+            <ul className="list-disc ml-5 mt-2">
+              {createErrors.map((e, i) => <li key={i}>{e.error || JSON.stringify(e)}</li>)}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Validation Section */}
-      {Array.isArray(nodes) && nodes.length > 0 && (
+      {nodes.length > 0 && (
         <div className="mt-6">
           <ValidationDisplay nodes={nodes} theme={theme} />
         </div>

@@ -1,15 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { services } from "./data/homeData";
+import { useEffect, useState } from "react";
+// import { services } from "./data/homeData";
 import { ArrowUpRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import { services as staticServices } from "./data/homeData";
 
-function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+function ServiceCard({ service, index }: { service: any; index: number }) {
   return (
     <motion.a
-      href={service.href}
+      href={`/servicios/${encodeURIComponent(service.slug || service.name)}`}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -18,18 +19,18 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
     >
       {/* Image Container */}
       <div className="relative h-56 overflow-hidden">
-        <Image
-          src={service.image}
-          alt={service.title}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          priority={index === 0}
-        />
+        {service.image ? (
+          <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent dark:from-slate-950/80 dark:via-slate-900/40 dark:to-transparent" />
         
         {/* Icon Badge */}
         <div className="absolute top-4 left-4 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-white/95 backdrop-blur-sm dark:bg-slate-800/95 dark:border dark:border-slate-700">
-          <Image src={service.icon} alt="" width={36} height={36} className="object-contain" />
+          {service.icon ? <img src={service.icon} alt="" className="w-9 h-9 object-contain" /> : null}
         </div>
         
         {/* Arrow */}
@@ -39,12 +40,12 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-6 flex flex-col">
+        <div className="flex-1 p-6 flex flex-col">
         <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors text-slate-900 dark:text-white">
-          <TranslateText text={service.title} />
+          {service.name}
         </h3>
         <p className="text-sm leading-relaxed flex-1 text-slate-500 dark:text-slate-400">
-          <TranslateText text={service.description} />
+          {service.description}
         </p>
         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
@@ -58,6 +59,39 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 }
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    const mappedStatic = staticServices.map(s => ({ id: s.id, slug: s.id, name: s.title, description: s.description, image: s.image, icon: s.icon }));
+    (async () => {
+      try {
+        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${API}/api/services/cards?active=true`);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const data = await res.json();
+        if (mounted && Array.isArray(data)) {
+          const fetched = data;
+          const merged = [
+            ...fetched,
+            ...mappedStatic.filter(ms => !fetched.some(f => (f.id && ms.id && f.id === ms.id) || (f.slug && ms.slug && f.slug === ms.slug) || (f.name && ms.name && f.name === ms.name)))
+          ];
+          setServices(merged);
+        } else if (mounted) {
+          setServices(mappedStatic);
+        }
+      } catch (err) {
+        console.error('Error fetching services', err);
+        // Fallback to static services
+        if (mounted) setServices(mappedStatic);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
+
   return (
     <section id="servicios">
       <motion.div
@@ -80,9 +114,12 @@ export default function ServicesSection() {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {services.map((service, i) => (
+        {!loading && services.map((service, i) => (
           <ServiceCard key={service.id} service={service} index={i} />
         ))}
+        {loading && (
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 text-slate-500">Cargando servicios...</div>
+        )}
       </div>
     </section>
   );

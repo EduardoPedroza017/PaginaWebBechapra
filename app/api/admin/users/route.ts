@@ -8,6 +8,7 @@ export async function GET(request: Request) {
       headers: {
         'X-Role': role,
         'X-Admin': admin,
+        'cookie': request.headers.get('cookie') || ''
       },
       credentials: 'include',
     });

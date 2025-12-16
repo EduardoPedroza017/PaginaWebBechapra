@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [admin, setAdmin] = useState(false);
   const [role, setRole] = useState("");
+  const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [themeReady, setThemeReady] = useState(false);
@@ -49,16 +50,18 @@ export default function AdminDashboard() {
     // Obtener datos de sessionStorage
     const adminVal = sessionStorage.getItem('admin') === 'true';
     const roleVal = sessionStorage.getItem('role') || '';
-    fetch('http://localhost:5000/admin/check', {
+    fetch('/api/admin/check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin: adminVal, role: roleVal }),
       credentials: 'include',
+      body: JSON.stringify({ admin: adminVal, role: roleVal }),
     })
       .then(async (res) => {
         const data = await res.json();
-        setAdmin(data.admin);
-        setRole(data.role);
+        setAdmin(Boolean(data.admin));
+        setRole(data.role || '');
+        // Autorizar si el backend devuelve un role válido (cualquier rol autenticado)
+        setAuthorized(Boolean(data.role));
         setLoading(false);
       })
       .catch(() => {
@@ -115,7 +118,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!admin) {
+  if (!authorized) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${
         theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
@@ -153,9 +156,9 @@ export default function AdminDashboard() {
     <div className={`flex min-h-screen ${
       theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
     }`}>
-      <Sidebar selected="/admin/dashboard" theme={theme} />
+      <Sidebar selected="/admin/dashboard" theme={theme} role={role} admin={admin} />
       <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} role={role} admin={admin} />
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
           {/* Page Header con diseño mejorado */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

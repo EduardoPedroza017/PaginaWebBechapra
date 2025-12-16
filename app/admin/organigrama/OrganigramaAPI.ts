@@ -32,11 +32,42 @@ export interface OrganigramaData {
   estructura: OrganigramaNode[];
 }
 
+export function flattenStructure(nodes: OrganigramaNode[]): OrganigramaNode[] {
+  const result: OrganigramaNode[] = [];
+  const walk = (n: OrganigramaNode, parentId?: string) => {
+    const copy: OrganigramaNode = { ...n, padreid: parentId, hijos: [] };
+    // remove nested hijos from copy
+    const children = n.hijos || [];
+    result.push(copy);
+    children.forEach(c => walk(c, copy.id));
+  };
+  nodes.forEach(n => walk(n, undefined));
+  return result;
+}
+
+export function buildNestedFromFlat(flat: OrganigramaNode[]): OrganigramaNode[] {
+  const idMap: Record<string, OrganigramaNode> = {};
+  flat.forEach(n => { idMap[n.id] = { ...n, hijos: [] }; });
+  const roots: OrganigramaNode[] = [];
+  Object.values(idMap).forEach(n => {
+    if (n.padreid && idMap[n.padreid]) {
+      idMap[n.padreid].hijos!.push(n);
+    } else {
+      roots.push(n);
+    }
+  });
+  return roots;
+}
+
 export async function fetchOrganigrama(): Promise<OrganigramaData | null> {
   try {
-    const res = await fetch('http://localhost:5000/api/organigrama');
+    const res = await fetch('/api/admin/organigrama', { credentials: 'include' });
     if (!res.ok) return null;
-    return await res.json();
+    const parsed = await res.json();
+    const estructura = Array.isArray(parsed.estructura) ? parsed.estructura : [];
+    // If backend returns flat list, convert to nested for client UI
+    const nested = buildNestedFromFlat(estructura as OrganigramaNode[]);
+    return { id: parsed.id, estructura: nested } as OrganigramaData;
   } catch {
     return null;
   }
@@ -44,13 +75,21 @@ export async function fetchOrganigrama(): Promise<OrganigramaData | null> {
 
 export async function saveOrganigrama(estructura: OrganigramaNode[]): Promise<OrganigramaData | null> {
   try {
-    const res = await fetch('http://localhost:5000/api/organigrama', {
+    // ensure we send a flat structure to backend
+    const flat = flattenStructure(estructura);
+    const res = await fetch('/api/admin/organigrama', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estructura })
+      credentials: 'include',
+      body: JSON.stringify({ estructura: flat })
     });
-    if (!res.ok) return null;
-    return await res.json();
+    const text = await res.text();
+    const parsed = (() => { try { return JSON.parse(text); } catch { return { message: text }; } })();
+    if (!res.ok) return parsed as any;
+    // backend returns stored doc which contains estructura as flat list - convert to nested for client
+    const estructuraReturned = Array.isArray((parsed as any).estructura) ? (parsed as any).estructura : [];
+    const nested = buildNestedFromFlat(estructuraReturned as OrganigramaNode[]);
+    return { id: (parsed as any).id, estructura: nested } as OrganigramaData;
   } catch {
     return null;
   }

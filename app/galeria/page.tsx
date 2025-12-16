@@ -15,12 +15,13 @@ export default function GaleriaPage() {
   useEffect(() => {
     async function fetchImages() {
       try {
-        const res = await fetch("http://localhost:5000/api/gallery");
+        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${API}/api/gallery`);
         const data = await res.json();
         if (Array.isArray(data.images)) {
-          setImages(data.images.map((filename: string) => ({ filename, path: `http://localhost:5000/gallery/image/${filename}` })));
+          setImages(data.images.map((filename: string) => ({ filename, path: `${API}/gallery/image/${filename}` })));
         } else if (Array.isArray(data)) {
-          setImages(data.map((img: any) => ({ filename: img.filename, path: `http://localhost:5000/gallery/image/${img.filename}` })));
+          setImages(data.map((img: any) => ({ filename: img.filename, path: `${API}/gallery/image/${img.filename}` })));
         }
       } catch (e) {
         setImages([]);

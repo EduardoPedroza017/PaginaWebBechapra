@@ -9,11 +9,10 @@ interface OrganigramaStatsProps {
   theme: 'light' | 'dark';
 }
 
-function countAllNodes(nodes: OrganigramaNode[] | undefined | null): number {
-  if (!Array.isArray(nodes) || nodes.length === 0) return 0;
+function countAllNodes(nodes: OrganigramaNode[]): number {
   let count = nodes.length;
   for (const node of nodes) {
-    if (Array.isArray(node.hijos) && node.hijos.length > 0) {
+    if (node.hijos && node.hijos.length > 0) {
       count += countAllNodes(node.hijos);
     }
   }
@@ -32,12 +31,11 @@ function countLevels(nodes: OrganigramaNode[], level = 1): number {
   return maxLevel;
 }
 
-function countWithImage(nodes: OrganigramaNode[] | undefined | null): number {
-  if (!Array.isArray(nodes) || nodes.length === 0) return 0;
+function countWithImage(nodes: OrganigramaNode[]): number {
   let count = 0;
   for (const node of nodes) {
     if (node.imagen) count++;
-    if (Array.isArray(node.hijos) && node.hijos.length > 0) {
+    if (node.hijos && node.hijos.length > 0) {
       count += countWithImage(node.hijos);
     }
   }
@@ -45,11 +43,10 @@ function countWithImage(nodes: OrganigramaNode[] | undefined | null): number {
 }
 
 export default function OrganigramaStats({ nodes, theme }: OrganigramaStatsProps) {
-  const safeNodes = Array.isArray(nodes) ? nodes : [];
-  const totalDirectivos = countAllNodes(safeNodes);
-  const niveles = countLevels(safeNodes);
-  const conFoto = countWithImage(safeNodes);
-  const departamentos = safeNodes.length;
+  const totalDirectivos = countAllNodes(nodes);
+  const niveles = countLevels(nodes);
+  const conFoto = countWithImage(nodes);
+  const departamentos = nodes.length;
 
   const stats = [
     {

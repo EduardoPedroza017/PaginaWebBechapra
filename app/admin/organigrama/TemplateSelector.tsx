@@ -1,47 +1,129 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutTemplate, X, Check } from "lucide-react";
+import ConfirmModal from "./ConfirmModal";
 import { TranslateText } from "@/components/TranslateText";
 import { getTemplateList, getTemplate } from "./templates";
 import type { OrganigramaNode } from "./OrganigramaAPI";
 
-import type { Shape } from './CanvasEditor';
 interface Props {
-  onSelectTemplate: (structure: OrganigramaNode[], shapes?: Shape[]) => void;
+  onSelectTemplate: (structure: OrganigramaNode[]) => void;
+  onApplyAndSave?: (structure: OrganigramaNode[]) => void | Promise<void>;
   theme?: 'light' | 'dark';
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function TemplateSelector({ onSelectTemplate, theme = 'light', isOpen, onClose }: Props) {
+export function TemplateSelector({ onSelectTemplate, onApplyAndSave, theme = 'light', isOpen, onClose }: Props) {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const templates = getTemplateList();
 
+  const flattenAndBlank = (nodes: OrganigramaNode[], parentNewId?: string) => {
+    // return a flat list with padreid references suitable for backend validation
+    const result: OrganigramaNode[] = [];
+    let counter = 0;
+    const walk = (n: OrganigramaNode, parentId?: string) => {
+      const newId = `${Date.now().toString()}-${counter++}`;
+      const blankNode: OrganigramaNode = {
+        id: newId,
+        nombre: '',
+        puesto: '',
+        descripcion: '',
+        imagen: '',
+        nivel: n.nivel,
+        padreid: parentId,
+        hijos: [],
+      };
+      result.push(blankNode);
+      if (n.hijos && n.hijos.length) {
+        n.hijos.forEach(child => walk(child, newId));
+      }
+    };
+    nodes.forEach(n => walk(n, parentNewId));
+    return result.map(r => ({ ...r }));
+  };
+
+  const nestedBlank = (nodes: OrganigramaNode[]): OrganigramaNode[] => {
+    let counter = 0;
+    const walk = (n: OrganigramaNode): OrganigramaNode => {
+      const newId = `${Date.now().toString()}-${counter++}`;
+      return {
+        id: newId,
+        nombre: '',
+        puesto: '',
+        descripcion: '',
+        imagen: '',
+        nivel: n.nivel,
+        padreid: n.padreid,
+        hijos: (n.hijos || []).map(h => walk(h)),
+      };
+    };
+    return nodes.map(n => walk(n));
+  };
+
   const handleApply = () => {
     if (selectedTemplate) {
-      const template = getTemplate(selectedTemplate);
-      if (template) {
-        onSelectTemplate(template.structure, template.shapes);
+      const structure = getTemplate(selectedTemplate);
+      if (structure) {
+        // Convert to nested blank nodes so the tree view can show relationships
+        const nested = nestedBlank(structure);
+        onSelectTemplate(nested);
         setSelectedTemplate(null);
         onClose();
       }
     }
   };
 
-  if (!isOpen) return null;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleApplyAndSave = () => {
+    if (!selectedTemplate) return;
+    // Open confirm dialog
+    setConfirmOpen(true);
+  };
+
+  const doApplyAndSave = () => {
+    if (selectedTemplate) {
+      const structure = getTemplate(selectedTemplate);
+      if (structure) {
+        const flattened = flattenAndBlank(structure);
+        if (onApplyAndSave) onApplyAndSave(flattened);
+        else onSelectTemplate(flattened);
+        setSelectedTemplate(null);
+        setConfirmOpen(false);
+        onClose();
+      }
+    }
+  };
+
+  const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(isOpen);
+  React.useEffect(() => {
+    if (isOpen) {
+      setOpen(true);
+      setTimeout(() => setVisible(true), 10);
+    } else {
+      setVisible(false);
+      setTimeout(() => setOpen(false), 180);
+    }
+  }, [isOpen]);
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={() => {
+          setVisible(false);
+          setTimeout(() => { onClose(); setOpen(false); }, 180);
+        }}
       />
 
       {/* Modal */}
       <div
-        className={`relative rounded-2xl border overflow-hidden shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto transition-all ${
+        className={`relative rounded-2xl border overflow-hidden shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto transform transition-all duration-200 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} ${
           theme === 'dark'
             ? 'bg-gray-900/95 border-gray-700/50'
             : 'bg-white/95 border-white/20'
@@ -75,7 +157,7 @@ export function TemplateSelector({ onSelectTemplate, theme = 'light', isOpen, on
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => { setVisible(false); setTimeout(() => { onClose(); setOpen(false); }, 180); }}
             className={`p-2 rounded-lg transition-all ${
               theme === 'dark'
                 ? 'hover:bg-gray-800'
@@ -84,6 +166,8 @@ export function TemplateSelector({ onSelectTemplate, theme = 'light', isOpen, on
           >
             <X className="w-5 h-5" />
           </button>
+          
+          
         </div>
 
         {/* Content */}
@@ -159,6 +243,32 @@ export function TemplateSelector({ onSelectTemplate, theme = 'light', isOpen, on
             <Check className="w-4 h-4" />
             <TranslateText text="Aplicar" />
           </button>
+          <button
+            onClick={handleApplyAndSave}
+            disabled={!selectedTemplate}
+            className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+              selectedTemplate
+                ? theme === 'dark'
+                  ? 'bg-emerald-700/60 text-emerald-100 hover:bg-emerald-700/80'
+                  : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                : theme === 'dark'
+                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            <Check className="w-4 h-4" />
+            <TranslateText text="Aplicar y Guardar" />
+          </button>
+
+          {/* Confirmation dialog */}
+          <ConfirmModal
+            isOpen={confirmOpen}
+            title="Aplicar y Guardar plantilla"
+            message="¿Deseas aplicar esta plantilla y guardarla inmediatamente? Esto sobrescribirá los datos actuales en la estructura añadida."
+            onCancel={() => setConfirmOpen(false)}
+            onConfirm={doApplyAndSave}
+            theme={theme}
+          />
         </div>
       </div>
     </div>

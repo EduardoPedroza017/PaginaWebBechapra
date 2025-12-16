@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Network, RefreshCw, Save, Eye, Edit3, LayoutTemplate } from "lucide-react";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
 import { fetchOrganigrama, saveOrganigrama, OrganigramaNode } from "./OrganigramaAPI";
+import Toast from "../../components/Toast";
+import { getValidationSummary } from "./validation";
 import { OrganigramaTree } from "./OrganigramaTree";
 import { OrganigramaEditor } from "./OrganigramaEditor";
 import OrganigramaStats from "./OrganigramaStats";
 import { TemplateSelector } from "./TemplateSelector";
+import OrganigramaAuditPanel from "./OrganigramaAuditPanel";
 
 export default function OrganigramaAdminPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -21,7 +24,72 @@ export default function OrganigramaAdminPage() {
   const [edit, setEdit] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState<any[]>([]);
   const [templateOpen, setTemplateOpen] = useState(false);
+  const [auditOpen, setAuditOpen] = useState(false);
+  const [insertedCount, setInsertedCount] = useState<number | null>(null);
+  const [toasts, setToasts] = useState<Array<{ id: string; type: 'success'|'error'|'info'; message: string }>>([]);
+  const [pendingCount, setPendingCount] = useState<number>(0);
+  const PENDING_KEY = 'organigrama_pending';
+
+  const addToast = (type: 'success'|'error'|'info', message: string) => {
+    const id = `${Date.now().toString()}-${Math.random().toString(36).slice(2)}`;
+    setToasts((s) => [...s, { id, type, message }]);
+    // auto remove in 4.2s as fallback (Toast component also auto-hides)
+    setTimeout(() => setToasts((s) => s.filter(t => t.id !== id)), 4200);
+  };
+
+  const removeToast = (id?: string) => {
+    if (!id) return;
+    setToasts((s) => s.filter(t => t.id !== id));
+  };
+
+  // Pending local storage helpers: store nodes that couldn't be saved to server
+  const getPending = (): OrganigramaNode[] => {
+    try { const raw = localStorage.getItem(PENDING_KEY); if (!raw) return []; return JSON.parse(raw) as OrganigramaNode[]; } catch { return []; }
+  };
+  const savePending = (nodes: OrganigramaNode[]) => {
+    try {
+      const prev = getPending();
+      const merged = [...prev];
+      nodes.forEach(n => { if (!merged.some(m => m.id === n.id)) merged.push(n); });
+      localStorage.setItem(PENDING_KEY, JSON.stringify(merged));
+      setPendingCount(merged.length);
+    } catch (e) { /* ignore */ }
+  };
+  const clearPending = () => { try { localStorage.removeItem(PENDING_KEY); setPendingCount(0); } catch (e) {} };
+  const loadAndMergePending = () => {
+    const pending = getPending();
+    if (pending.length) {
+      setOrganigrama(prev => {
+        const merged = [...prev];
+        pending.forEach(n => { if (!merged.some(m => m.id === n.id)) merged.push(n); });
+        return merged;
+      });
+      setPendingCount(pending.length);
+      addToast('info', `Hay ${pending.length} cambios locales pendientes (no sincronizados)`);
+    }
+    return pending;
+  };
+  const retryPendingSave = async () => {
+    const pending = getPending();
+    if (!pending.length) { addToast('info', 'No hay cambios pendientes para sincronizar'); return; }
+    const merged = [...organigrama];
+    pending.forEach(n => { if (!merged.some(m => m.id === n.id)) merged.push(n); });
+    addToast('info', 'Reintentando sincronizar cambios pendientes...');
+    try {
+      const res = await saveOrganigrama(merged);
+      if (res && (res as any).estructura) {
+        setOrganigrama((res as any).estructura || []);
+        clearPending();
+        addToast('success', 'Cambios pendientes sincronizados');
+      } else {
+        addToast('error', 'No se pudo sincronizar cambios pendientes');
+      }
+    } catch {
+      addToast('error', 'Error al intentar sincronizar cambios pendientes');
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -46,6 +114,8 @@ export default function OrganigramaAdminPage() {
     try {
       const data = await fetchOrganigrama();
       setOrganigrama(data?.estructura || []);
+      // restore any locally pending nodes that couldn't be synced
+      if (typeof window !== "undefined") loadAndMergePending();
     } catch {
       setError("Error al cargar el organigrama");
     } finally {
@@ -58,13 +128,27 @@ export default function OrganigramaAdminPage() {
     loadOrganigrama();
   }, []);
 
+  const validationSummary = useMemo(() => getValidationSummary(organigrama), [organigrama]);
+
   const handleSave = async () => {
     setSuccess("");
     setError("");
     setSaving(true);
+    setValidationErrors([]);
+    // Client-side pre-validation to avoid unnecessary roundtrips
+    const summary = getValidationSummary(organigrama);
+    if (!summary.isValid) {
+      setValidationErrors(summary.errors);
+      setError('Hay errores en la estructura. Corrígelos antes de guardar.');
+      setSaving(false);
+      return;
+    }
     try {
       const res = await saveOrganigrama(organigrama);
-      if (res) {
+      if (res && (res as any).errors) {
+        setValidationErrors((res as any).errors || []);
+        setError('El servidor rechazó la estructura. Revisa los errores.');
+      } else if (res) {
         setSuccess("Guardado correctamente");
         setEdit(false);
         setTimeout(() => setSuccess(""), 3000);
@@ -77,10 +161,30 @@ export default function OrganigramaAdminPage() {
   };
 
   const handleApplyTemplate = (structure: OrganigramaNode[]) => {
-    setOrganigrama(structure);
-    setEdit(true);
-    setSuccess("Plantilla aplicada - Edita y guarda los cambios");
+    // Append template nodes to the existing structure (insert behavior)
+    const firstNewId = structure.length > 0 ? structure[0].id : null;
+    setOrganigrama(prev => [...prev, ...structure]);
+    setEdit(false); // switch to view so relationships are visible
+    setSuccess("Plantilla aplicada - Vista previa (edita si lo deseas)");
+    setInsertedCount(structure.length);
     setTimeout(() => setSuccess(""), 4000);
+
+    // Clear the inserted banner after a few seconds
+    setTimeout(() => setInsertedCount(null), 4000);
+
+    // Scroll to the first new node after render
+    if (firstNewId) {
+      setTimeout(() => {
+        try {
+          const el = document.querySelector(`[data-node-id="${firstNewId}"]`);
+          if (el && typeof (el as any).scrollIntoView === 'function') {
+            (el as any).scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } catch (err) {
+          // ignore
+        }
+      }, 150);
+    }
   };
 
   if (!mounted) return null;
@@ -138,6 +242,11 @@ export default function OrganigramaAdminPage() {
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 <TranslateText text="Actualizar" />
               </button>
+              {typeof window !== 'undefined' && sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true' && (
+                <button onClick={() => setAuditOpen(true)} className={`flex items-center gap-2 px-3 py-2.5 rounded-xl font-medium ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-800'}`}>
+                  <TranslateText text="Historial" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -152,14 +261,62 @@ export default function OrganigramaAdminPage() {
               </span>
             </div>
           )}
+          {auditOpen && (
+            <OrganigramaAuditPanel onClose={() => setAuditOpen(false)} onReverted={() => loadOrganigrama(true)} />
+          )}
           {error && (
-            <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
+            <div className={`mb-6 p-4 rounded-xl flex flex-col gap-3 ${
               theme === 'dark' ? 'bg-red-900/30 border border-red-800' : 'bg-red-50 border border-red-200'
             }`}>
-              <div className="w-2 h-2 rounded-full bg-red-500" />
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-red-400' : 'text-red-700'}`}>
-                {error}
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <span className={`text-sm font-medium ${theme === 'dark' ? 'text-red-400' : 'text-red-700'}`}>
+                  {error}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Inserted nodes banner */}
+          {insertedCount !== null && (
+            <div className={`mb-6 p-3 rounded-xl flex items-center gap-3 ${theme === 'dark' ? 'bg-emerald-900/30 border border-emerald-800' : 'bg-emerald-50 border border-emerald-200'}`}>
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                {`Se insertaron ${insertedCount} nodos`}
               </span>
+            </div>
+          )}
+
+          {/* Pending local changes banner */}
+          {pendingCount > 0 && (
+            <div className={`mb-6 p-3 rounded-xl flex items-center gap-3 ${theme === 'dark' ? 'bg-yellow-900/30 border border-yellow-800' : 'bg-yellow-50 border border-yellow-200'}`}>
+              <div className="w-2 h-2 rounded-full bg-yellow-500" />
+              <div className="flex-1 text-sm font-medium">
+                {`Hay ${pendingCount} cambios locales pendientes (no sincronizados)`}
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => retryPendingSave()} className={`px-3 py-1 rounded-md ${theme === 'dark' ? 'bg-yellow-700 text-white' : 'bg-yellow-100 text-yellow-800'}`}>Reintentar</button>
+                <button onClick={() => { clearPending(); addToast('info', 'Cambios pendientes descartados'); }} className={`px-3 py-1 rounded-md ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800 border'}`}>Descartar</button>
+              </div>
+            </div>
+          )} 
+          {validationErrors && validationErrors.length > 0 && (
+            <div className={`text-sm ${theme === 'dark' ? 'text-red-300' : 'text-red-600'}`}>
+              <strong><TranslateText text="Errores de validación:" /></strong>
+              <ul className="list-disc ml-5 mt-2">
+                {validationErrors.map((e, i) => (
+                  <li key={i}>{e.error || JSON.stringify(e)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Toast area */}
+          {toasts.length > 0 && (
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
+              {toasts.map(t => (
+                <Toast key={t.id} id={t.id} type={t.type} message={t.message} onClose={removeToast} />
+              ))}
             </div>
           )}
 
@@ -203,8 +360,8 @@ export default function OrganigramaAdminPage() {
 
             {edit && (
               <button
-                onClick={handleSave}
-                disabled={saving}
+                  onClick={handleSave}
+                  disabled={saving || !validationSummary.isValid}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all backdrop-blur-sm ${
                   saving ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg active:scale-95'
                 } bg-gradient-to-r from-emerald-600/40 to-green-600/40 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/50 shadow-lg shadow-emerald-500/20`}
@@ -235,7 +392,43 @@ export default function OrganigramaAdminPage() {
               </p>
             </div>
           ) : edit ? (
-            <OrganigramaEditor nodes={organigrama} onChange={setOrganigrama} theme={theme} />
+            <OrganigramaEditor
+              nodes={organigrama}
+              onChange={setOrganigrama}
+              theme={theme}
+              onCreateNode={async (node) => {
+                // Append node locally and save immediately
+                const updated = [...organigrama, node];
+                setOrganigrama(updated);
+                setEdit(true);
+                setSuccess('Guardando nodo...');
+                addToast('info', 'Guardando nodo...');
+                try {
+                  const res = await saveOrganigrama(updated);
+                  if (res && (res as any).errors) {
+                    setValidationErrors((res as any).errors || []);
+                    setError('El servidor rechazó el nodo. Revisa los errores.');
+                    addToast('error', 'El servidor rechazó el nodo');
+                    return { errors: (res as any).errors || [] };
+                  } else if (res) {
+                    setSuccess('Nodo guardado');
+                    addToast('success', 'Nodo guardado correctamente');
+                    setTimeout(() => setSuccess(''), 3000);
+                    return { ok: true };
+                  } else {
+                    setError('Error al guardar el nodo');
+                    addToast('error', 'Error al guardar nodo');
+                    return { errors: [{ error: 'Error al guardar' }] };
+                  }
+                } catch (err) {
+                  setError('Error al guardar el nodo');
+                  // Save node locally as pending so it is not lost
+                  try { savePending([node]); } catch (e) {}
+                  addToast('info', 'Nodo guardado localmente (pendiente)');
+                  return { ok: true };
+                }
+              }}
+            />
           ) : (
             <OrganigramaTree nodes={organigrama} theme={theme} />
           )}
@@ -247,6 +440,56 @@ export default function OrganigramaAdminPage() {
         isOpen={templateOpen}
         onClose={() => setTemplateOpen(false)}
         onSelectTemplate={handleApplyTemplate}
+        onApplyAndSave={async (structure) => {
+          // structure here is FLAT (for backend). Convert to nested for UI append.
+          const { buildNestedFromFlat } = await import('./OrganigramaAPI');
+          const nestedToAppend = buildNestedFromFlat ? buildNestedFromFlat(structure as any) : [];
+          const updated = [...organigrama, ...nestedToAppend];
+          setOrganigrama(updated);
+          setEdit(false); // switch to view so relationships are visible
+          addToast('info', 'Guardando plantilla...');
+          setInsertedCount(structure.length);
+          try {
+            // For saving, saveOrganigrama will flatten nested structure before sending
+            console.debug('Saving organigrama payload (nested):', updated);
+            const res = await saveOrganigrama(updated);
+            console.debug('Save response:', res);
+            if (res && (res as any).errors) {
+              setValidationErrors((res as any).errors || []);
+              setError('El servidor rechazó la estructura. Revisa los errores.');
+              addToast('error', 'El servidor rechazó la plantilla');
+              // Save locally as pending so user doesn't lose work
+              savePending(structure as any[]);
+            } else if (res && (res as any).estructura) {
+              // Update local state from server returned estructura (nested)
+              setOrganigrama((res as any).estructura || []);
+              setSuccess('Guardado correctamente');
+              clearPending();
+              addToast('success', 'Plantilla guardada correctamente');
+              setTimeout(() => setSuccess(''), 3000);
+            } else if (res && (res as any).ok === false) {
+              setError('Error al guardar');
+              addToast('error', 'Error al guardar plantilla');
+              savePending(structure as any[]);
+            } else {
+              // Fallback: if res is null or unexpected, perform a fresh load
+              await loadOrganigrama(true);
+              setSuccess('Guardado (actualizado)');
+              addToast('success', 'Plantilla aplicada');
+            }
+          } catch (err) {
+            console.error('Save organigrama error:', err);
+            // Store locally pending nodes so they remain visible to the user until sync
+            savePending(structure as any[]);
+            if ((err as any)?.status === 403) {
+              addToast('error', 'Acceso denegado (403). Se guardó localmente y está pendiente. Revisa tus permisos.');
+            } else {
+              setError('Error al guardar');
+              addToast('error', 'Error al guardar plantilla. Guardado local (pendiente)');
+            }
+          }
+          setTimeout(() => setInsertedCount(null), 4000);
+        }}
         theme={theme}
       />
     </div>

@@ -58,7 +58,8 @@ export default function UsuariosPage() {
       const storedAdmin = sessionStorage.getItem("admin") === "true";
       const res = await fetch(`${apiBase}/users`, {
         method: "GET",
-        headers: { 'X-Role': storedRole, 'X-Admin': storedAdmin.toString() }
+        headers: { 'X-Role': storedRole, 'X-Admin': storedAdmin.toString() },
+        credentials: 'include'
       });
       const data = await res.json();
       let userList = [];
@@ -79,16 +80,51 @@ export default function UsuariosPage() {
   };
 
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("role");
-    const storedAdmin = sessionStorage.getItem("admin") === "true";
-    if (storedRole !== "superadmin" || !storedAdmin) {
-      router.push("/admin/dashboard");
-      return;
+    async function validateAndFetch() {
+      const storedRoleRaw = sessionStorage.getItem("role") || "";
+      const storedAdminRaw = sessionStorage.getItem("admin") || "false";
+      const storedAdmin = String(storedAdminRaw).toLowerCase() === "true";
+      const roleLower = String(storedRoleRaw).toLowerCase();
+      const isSuperLocal = roleLower === 'superadmin' || roleLower.includes('superadmin');
+
+      if (isSuperLocal && storedAdmin) {
+        fetchUsers();
+        return;
+      }
+
+      // Si el storage no coincide, preguntar al backend por la sesión real (vía proxy)
+      try {
+        const res = await fetch(`/api/admin/check`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ admin: storedAdmin, role: storedRoleRaw })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const backendAdmin = Boolean(data.admin);
+          const backendRole = data.role || '';
+          const backendIsSuper = String(backendRole).toLowerCase().includes('superadmin');
+          if (backendAdmin && backendIsSuper) {
+            // sincronizar storage y continuar
+            sessionStorage.setItem('admin', String(backendAdmin));
+            sessionStorage.setItem('role', backendRole);
+            fetchUsers();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Error verificando sesión en backend', err);
+      }
+
+      // Si todo falla, redirigir al login del admin
+      router.push('/admin');
     }
-    fetchUsers();
+
+    validateAndFetch();
   }, [router]);
 
-  const filteredUsers = users.filter(u => {
+  const filteredUsers = users.filter((u: Usuario) => {
     const [campo, valor] = filter.split(":");
     if (!valor) return true;
     if (campo === 'role') {
@@ -126,7 +162,7 @@ export default function UsuariosPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setUsers(prev => prev.filter(u => u.email !== deleteUser.email));
+        setUsers((prev: Usuario[]) => prev.filter((u: Usuario) => u.email !== deleteUser.email));
         setDeleteUser(null);
       } else {
         alert(data.message || "Error eliminando usuario");
@@ -142,7 +178,11 @@ export default function UsuariosPage() {
       const method = editUser ? "PUT" : "POST";
       const url = `${apiBase}/users-mutations`;
       const payload = { ...form };
-      if (form.roles?.length === 1) { payload.role = form.roles[0]; delete payload.roles; }
+      // Always send roles as array (backend expects 'roles')
+      if (!payload.roles && form.role) payload.roles = Array.isArray(form.role) ? form.role : [form.role];
+      // If current user is not superadmin, do not send roles/permissions: backend will assign defaults
+      const isSuperLocal = (sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true');
+      if (!isSuperLocal) { delete payload.roles; delete payload.permissions; }
       
       const res = await fetch(url, {
         method,
@@ -151,6 +191,7 @@ export default function UsuariosPage() {
           'X-Role': sessionStorage.getItem("role") || "",
           'X-Admin': (sessionStorage.getItem("admin") === "true").toString()
         },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
       const data = await res.json();
@@ -171,12 +212,17 @@ export default function UsuariosPage() {
           'X-Role': sessionStorage.getItem("role") || "",
           'X-Admin': (sessionStorage.getItem("admin") === "true").toString()
         },
+        credentials: 'include',
         body: JSON.stringify({ email: user.email, block: !user.bloqueado })
       });
       const data = await res.json();
-      if (res.ok && data.ok) {
-        setUsers(users.map(u => u.email === user.email ? { ...u, bloqueado: !user.bloqueado } : u));
-      } else { alert(data.error || "No se pudo actualizar el estado de bloqueo."); }
+      if (res.status === 403) {
+        alert(data.error || 'No autorizado. Se requiere superadmin para bloquear usuarios.');
+      } else if (res.ok && data.ok) {
+        setUsers((users: Usuario[]) => users.map((u: Usuario) => u.email === user.email ? { ...u, bloqueado: !user.bloqueado } : u));
+      } else {
+        alert(data.error || "No se pudo actualizar el estado de bloqueo.");
+      }
     } catch { alert("Error de conexión con el servidor."); }
     finally { setProcessing(false); }
   };

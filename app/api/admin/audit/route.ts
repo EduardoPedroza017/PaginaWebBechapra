@@ -2,6 +2,9 @@ export async function GET() {
   try {
     const response = await fetch('http://localhost:5000/admin/audit', {
       method: 'GET',
+      headers: {
+        'cookie': request.headers.get('cookie') || ''
+      },
       credentials: 'include',
     });
 
