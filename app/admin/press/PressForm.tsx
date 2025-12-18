@@ -21,17 +21,33 @@ export default function PressForm({ onCreate, theme }: PressFormProps) {
     setTimeout(() => setMessage(null), 4000);
   };
 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = formRef.current;
     if (!form) return;
-    
+    // Validación de archivo
+    if (selectedFile) {
+      const allowedTypes = [
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml', 'application/pdf'
+      ];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        showMessage('error', 'Solo se permiten imágenes o PDF');
+        return;
+      }
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        showMessage('error', 'El archivo no debe superar los 5MB');
+        return;
+      }
+    }
     setLoading(true);
     try {
       const formData = new FormData(form);
       await onCreate(formData);
       form.reset();
       setSelectedFile(null);
+      setPreviewUrl(null);
       setIsExpanded(false);
       showMessage('success', 'Comunicado creado exitosamente');
     } catch {
@@ -158,7 +174,17 @@ export default function PressForm({ onCreate, theme }: PressFormProps) {
                   type="file"
                   className="hidden"
                   id="press-file-input"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  accept="image/*,application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setSelectedFile(file);
+                    if (file && file.type.startsWith('image/')) {
+                      const url = URL.createObjectURL(file);
+                      setPreviewUrl(url);
+                    } else {
+                      setPreviewUrl(null);
+                    }
+                  }}
                 />
                 <label 
                   htmlFor="press-file-input"
@@ -173,13 +199,22 @@ export default function PressForm({ onCreate, theme }: PressFormProps) {
                     {selectedFile ? selectedFile.name : 'Seleccionar archivo...'}
                   </span>
                   {selectedFile && (
-                    <button
-                      type="button"
-                      onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
-                      className="ml-auto p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30"
-                    >
-                      <X className="w-3 h-3 text-red-500" />
-                    </button>
+                    <>
+                      {previewUrl && (
+                        <img
+                          src={previewUrl}
+                          alt="Previsualización"
+                          className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-700 mr-2"
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); setSelectedFile(null); setPreviewUrl(null); }}
+                        className="ml-auto p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30"
+                      >
+                        <X className="w-3 h-3 text-red-500" />
+                      </button>
+                    </>
                   )}
                 </label>
               </div>

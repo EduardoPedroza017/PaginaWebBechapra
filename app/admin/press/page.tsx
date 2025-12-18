@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { FileText, RefreshCw } from "lucide-react";
 import PressTable from "./PressTable";
+import { PressCardList } from "./PressCardList";
+import PressPreviewModal from "./PressPreviewModal";
 import PressForm from "./PressForm";
 import PressEditModal from "./PressEditModal";
 import PressChart from "./PressChart";
@@ -11,6 +13,7 @@ import DeletePressModal from "./DeletePressModal";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
+import { PressSearchBar } from "./PressSearchBar";
 
 export interface PressItem {
   id: string;
@@ -32,6 +35,8 @@ export default function PressAdminApp() {
   const [deleteItem, setDeleteItem] = useState<PressItem | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [previewItem, setPreviewItem] = useState<PressItem | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
@@ -127,7 +132,7 @@ export default function PressAdminApp() {
 
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      <Sidebar selected="press" theme={theme} />
+      <Sidebar selected="/admin/press" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header theme={theme} onLogout={() => {}} onToggleTheme={handleToggleTheme} />
         <main className="flex-1 p-6 lg:p-8 overflow-auto">
@@ -175,7 +180,30 @@ export default function PressAdminApp() {
             <PressChart data={press} theme={theme} />
           </div>
 
-          {/* Table */}
+
+          {/* Barra de búsqueda */}
+          <PressSearchBar value={search} onChange={setSearch} theme={theme} />
+
+          {/* Cards visuales filtradas */}
+          <div className="mb-8">
+            <PressCardList
+              data={press.filter(item => {
+                const q = search.toLowerCase();
+                return (
+                  item.title.toLowerCase().includes(q) ||
+                  item.excerpt.toLowerCase().includes(q) ||
+                  (item.date && new Date(item.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }).toLowerCase().includes(q))
+                );
+              })}
+              theme={theme}
+              onEdit={(item) => { setEditItem(item); setShowEdit(true); }}
+              onDelete={openDeleteModal}
+              onPreview={setPreviewItem}
+            />
+          </div>
+
+          {/* Tabla clásica (puedes eliminarla si solo quieres cards) */}
+          {/*
           <PressTable
             data={press}
             loading={loading}
@@ -184,6 +212,14 @@ export default function PressAdminApp() {
               setShowEdit(true);
             }}
             onDelete={openDeleteModal}
+            theme={theme}
+          />
+          */}
+          {/* Modal de previsualización */}
+          <PressPreviewModal
+            open={!!previewItem}
+            onClose={() => setPreviewItem(null)}
+            press={previewItem}
             theme={theme}
           />
 

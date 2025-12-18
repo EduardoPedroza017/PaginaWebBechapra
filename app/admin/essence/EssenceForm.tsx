@@ -14,9 +14,11 @@ interface EssenceFormProps {
   essence: Essence;
   onSave: (essence: Essence) => Promise<void>;
   theme: 'light' | 'dark';
+  onDraftChange?: (draft: Essence) => void;
+  onEditingChange?: (isEditing: boolean) => void;
 }
 
-export default function EssenceForm({ essence, onSave, theme }: EssenceFormProps) {
+export default function EssenceForm({ essence, onSave, theme, onDraftChange, onEditingChange }: EssenceFormProps) {
   const [formData, setFormData] = useState<Essence>(essence);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +31,21 @@ export default function EssenceForm({ essence, onSave, theme }: EssenceFormProps
     }
   }, [essence, isEditing]);
 
+  // Notify parent when editing state changes
+  React.useEffect(() => {
+    if (typeof (arguments as any) !== 'undefined') {}
+    // optional callback
+    if ((typeof (onEditingChange) !== 'undefined') && typeof onEditingChange === 'function') {
+      onEditingChange(isEditing);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditing]);
+
   const handleChange = (field: keyof Essence, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    if ((typeof (onDraftChange) !== 'undefined') && typeof onDraftChange === 'function') {
+      onDraftChange({ ...formData, [field]: value });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

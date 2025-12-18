@@ -101,27 +101,68 @@ export function UserFilter({ value, onChange, theme = 'light' }: UserFilterProps
             </div>
           ) : (
             <div className="relative flex-1">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-              }`} />
-              <input
-                type="text"
-                placeholder={`Buscar por ${field}...`}
-                value={currentValue}
-                onChange={(e) => handleInput(e.target.value)}
-                className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm transition-all ${
-                  theme === 'dark'
-                    ? 'bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:border-blue-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
-              />
-              {currentValue && (
-                <button
-                  onClick={clearFilter}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700`}
+              {field === 'role' ? (
+                <select
+                  className={`w-full pl-3 pr-10 py-2.5 rounded-xl border text-sm transition-all appearance-none ${
+                    theme === 'dark'
+                      ? 'bg-gray-900 border-gray-700 text-white focus:border-blue-500'
+                      : 'bg-gray-50 border-gray-200 text-gray-900 focus:border-blue-500'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                  value={currentValue}
+                  onChange={e => handleInput(e.target.value)}
                 >
-                  <X className="w-3 h-3" />
-                </button>
+                  <option value="">Todos los roles</option>
+                  <option value="superadmin">Super Administrador</option>
+                  <option value="admin">Administrador</option>
+                  <option value="editor">Editor</option>
+                  <option value="viewer">Lector</option>
+                  <option value="moderator">Moderador</option>
+                </select>
+              ) : field === 'permission' ? (
+                <select
+                  className={`w-full pl-3 pr-10 py-2.5 rounded-xl border text-sm transition-all appearance-none ${
+                    theme === 'dark'
+                      ? 'bg-gray-900 border-gray-700 text-white focus:border-blue-500'
+                      : 'bg-gray-50 border-gray-200 text-gray-900 focus:border-blue-500'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                  value={currentValue}
+                  onChange={e => handleInput(e.target.value)}
+                >
+                  <option value="">Todos los permisos</option>
+                  <option value="read">Leer</option>
+                  <option value="write">Escribir</option>
+                  <option value="delete">Eliminar</option>
+                  <option value="export">Exportar</option>
+                  <option value="manage_users">Gestionar usuarios</option>
+                  <option value="manage_roles">Gestionar roles</option>
+                  <option value="view_audit">Ver auditoría</option>
+                  <option value="block_user">Bloquear usuario</option>
+                </select>
+              ) : (
+                <>
+                  <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
+                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                  }`} />
+                  <input
+                    type="text"
+                    placeholder={`Buscar por ${field}...`}
+                    value={currentValue}
+                    onChange={(e) => handleInput(e.target.value)}
+                    className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm transition-all ${
+                      theme === 'dark'
+                        ? 'bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:border-blue-500'
+                        : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500'
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                  />
+                  {currentValue && (
+                    <button
+                      onClick={clearFilter}
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700`}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}

@@ -5,13 +5,12 @@ import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { WelcomeCard } from "./WelcomeCard";
 import { TranslateText } from "@/components/TranslateText";
-import dynamic from "next/dynamic";
-import { LayoutDashboard, AlertCircle, RefreshCw, Activity, FileText } from "lucide-react";
+
+
+import { LayoutDashboard, AlertCircle, RefreshCw, Activity } from "lucide-react";
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
 import DashboardStats from "./DashboardStats";
 import QuickActions from "./QuickActions";
-
-const AuditLog = dynamic(() => import("./AuditLog"), { ssr: false });
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -240,14 +239,7 @@ export default function AdminDashboard() {
             <QuickActions theme={theme} role={role} />
           </div>
 
-          {/* Audit Log - Solo visible para superadmin */}
-          {(role === 'superadmin' || role === 'admin') && (
-            <div id="audit-log" className={`rounded-2xl border p-5 md:p-6 mb-6 ${
-              theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-200'
-            }`}>
-              <AuditLog key={`audit-${refreshKey}`} theme={theme} />
-            </div>
-          )}
+
 
           {/* Cookie Consent Section */}
           <CookieConsentAdmin key={`cookies-${refreshKey}`} theme={theme} />

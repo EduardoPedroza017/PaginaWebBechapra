@@ -213,7 +213,7 @@ export default function NewsDetailPage() {
 					{news.image_url && (
 						<div className="relative w-full aspect-video sm:aspect-[16/9] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
 							<Image 
-								src={`http://localhost:5000${news.image_url}`}
+								src={news.image_url.startsWith('http') ? news.image_url : `http://localhost:5000${news.image_url}`}
 								alt={news.altText || news.title}
 								fill
 								className="object-cover"

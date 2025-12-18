@@ -39,6 +39,7 @@ export const sidebarItems: SidebarItem[] = [
   { label: "Sucursales", path: "/admin/sucursales", icon: <Building2 size={20} /> },
   { label: "Branding / Logo", path: "/admin/branding", icon: <GalleryIcon size={20} /> },
   { label: "Servicios", path: "/admin/servicios", icon: <ClipboardList size={20} /> },
+  { label: "Sub-Servicios", path: "/admin/sub-servicio", icon: <ClipboardList size={20} /> },
 ];
 
 interface SidebarProps {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TranslateText } from "@/components/TranslateText";
 import { Cookie, RefreshCw, Table2, BarChart3, Box } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -18,6 +19,7 @@ interface CookieConsent {
   user_agent: string;
 }
 
+
 interface CookieConsentAdminProps {
   theme?: 'light' | 'dark';
 }
@@ -26,7 +28,12 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
   const [data, setData] = useState<CookieConsent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'table' | 'charts' | '3d'>('table');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'table' | 'charts' | '3d'>(
+    tabParam === 'charts' ? 'charts' : tabParam === '3d' ? '3d' : 'table'
+  );
 
   const fetchData = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -47,6 +54,17 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Sincronizar tab con la URL
+  useEffect(() => {
+    if (tabParam !== activeTab) {
+      // Actualiza la URL solo si es diferente
+      const params = new URLSearchParams(Array.from(searchParams.entries()));
+      params.set('tab', activeTab);
+      router.replace(`?${params.toString()}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   const tabs = [
     { id: 'table' as const, icon: Table2, label: 'Registros' },
@@ -118,6 +136,7 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
                         ? 'text-gray-400 hover:text-white'
                         : 'text-gray-600 hover:text-gray-900'
                   }`}
+                  aria-selected={activeTab === tab.id}
                 >
                   <tab.icon className="w-4 h-4" />
                   <span className="hidden sm:inline"><TranslateText text={tab.label} /></span>

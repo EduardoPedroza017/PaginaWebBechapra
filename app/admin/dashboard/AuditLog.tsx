@@ -9,8 +9,13 @@ type AuditLogEntry = {
   timestamp?: string;
   ip?: string | Record<string, unknown>;
   user_agent?: string | Record<string, unknown>;
-  success: boolean;
+  success?: boolean;
   reason?: string | Record<string, unknown>;
+  action?: string;
+  by?: string;
+  target?: string;
+  geo?: { country?: string; city?: string };
+  details?: any;
 };
 
 interface AuditLogProps {
@@ -24,7 +29,7 @@ export default function AuditLog({ theme = 'light' }: AuditLogProps) {
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'success' | 'failed'>('all');
-  const [filterDays, setFilterDays] = useState<number>(7);
+  const [filterDays, setFilterDays] = useState<number>(999); // Mostrar todos por defecto
   const pageSize = 5;
 
   const fetchLogs = async (isRefresh = false) => {
@@ -34,7 +39,7 @@ export default function AuditLog({ theme = 'light' }: AuditLogProps) {
     try {
       const admin = sessionStorage.getItem("admin") === "true";
       const role = sessionStorage.getItem("role") || "";
-      const res = await fetch('http://localhost:5000/admin/audit', {
+      const res = await fetch('http://localhost:5000/admin/audit-admin', {
         headers: {
           "Content-Type": "application/json",
           "X-Admin": String(admin),
@@ -252,6 +257,12 @@ export default function AuditLog({ theme = 'light' }: AuditLogProps) {
                     <TranslateText text="IP" />
                   </div>
                 </th>
+                <th className={`px-4 py-3 text-left font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    <TranslateText text="Ubicación" />
+                  </div>
+                </th>
                 <th className={`px-4 py-3 text-left font-semibold hidden lg:table-cell ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   <div className="flex items-center gap-2">
                     <Monitor className="w-4 h-4" />
@@ -288,6 +299,15 @@ export default function AuditLog({ theme = 'light' }: AuditLogProps) {
                     }`}>
                       {formatCell(log.ip)}
                     </span>
+                  </td>
+                  <td className={`px-4 py-3`}>
+                    {log.geo && (log.geo.country || log.geo.city) ? (
+                      <span className={`px-2 py-1 rounded-md text-xs ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                        {log.geo.city ? `${log.geo.city}, ` : ''}{log.geo.country || ''}
+                      </span>
+                    ) : (
+                      <span className={`px-2 py-1 rounded-md text-xs ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>-</span>
+                    )}
                   </td>
                   <td className={`px-4 py-3 hidden lg:table-cell max-w-[200px] truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                     {formatCell(log.user_agent)}

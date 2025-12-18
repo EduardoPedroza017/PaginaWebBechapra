@@ -5,6 +5,8 @@ import { Header } from "../dashboard/Header";
 import { Button } from "../components/shared/Button";
 import { TranslateText } from "@/components/TranslateText";
 import SubServiceTable from "./components/SubServiceTable";
+import SubServiceSkeleton from "./components/SubServiceSkeleton";
+import EmptyState from "./components/EmptyState";
 import SubServiceEditModal from "./components/SubServiceEditModal";
 import SubServicePageForm from "./components/SubServicePageForm";
 
@@ -78,8 +80,16 @@ export default function SubServicioAdminPage(){
             <h1 className="text-2xl font-bold"><TranslateText text="Subservicios"/></h1>
             <Button onClick={handleNew}><TranslateText text="Nuevo Subservicio"/></Button>
           </div>
-          {loading ? <div>Cargando...</div> : (
-            <SubServiceTable subservices={subs} onEdit={handleEdit} onDelete={handleDelete} servicesMap={servicesMap} />
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {Array.from({length:6}).map((_,i)=> <SubServiceSkeleton key={i} />)}
+            </div>
+          ) : (
+            subs.length === 0 ? (
+              <EmptyState onCreate={handleNew} />
+            ) : (
+              <SubServiceTable subservices={subs} onEdit={handleEdit} onDelete={handleDelete} servicesMap={servicesMap} />
+            )
           )}
 
           <SubServiceEditModal open={editOpen} initialData={editData} onClose={()=>setEditOpen(false)} onSave={handleSave} onContinue={(h)=>{ setPageInitialHandle(h); setPageSubserviceId(editData?.id); setPageFormOpen(true); setEditOpen(false) }} />

@@ -15,6 +15,11 @@ import { AuditLogCharts } from "./AuditLogCharts";
 import { AuditLogTable } from "./AuditLogTable";
 import { DbMetricsSection } from "./DbMetricsSection";
 
+import dynamic from "next/dynamic";
+
+// Importación dinámica para evitar problemas de SSR
+const AdminAuditLogSection = dynamic(() => import("../dashboard/AdminAuditLogSection"), { ssr: false });
+
 export type AuditLogFiltersState = {
   user: string;
   ip: string;
@@ -292,7 +297,7 @@ export default function AuditLogPage() {
                 theme={theme}
               />
 
-              {/* Tabla de logs */}
+              {/* Tabla de logs de accesos */}
               <AuditLogTable
                 logs={paginatedLogs}
                 theme={theme}
@@ -300,6 +305,11 @@ export default function AuditLogPage() {
                 setPage={setPage}
                 totalPages={totalPages}
               />
+
+              {/* Sección de acciones administrativas */}
+              <div className="mt-12">
+                <AdminAuditLogSection />
+              </div>
             </div>
           ) : null}
         </main>

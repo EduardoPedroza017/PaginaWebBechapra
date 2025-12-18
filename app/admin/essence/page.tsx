@@ -9,6 +9,7 @@ import EssenceStats from "./EssenceStats";
 import EssenceForm from "./EssenceForm";
 import EssenceHistory from "./EssenceHistory";
 import EssencePreview from "./EssencePreview";
+import ConfirmModal from "@/components/ConfirmModal";
 
 interface Essence {
   id?: string;
@@ -36,6 +37,8 @@ export default function EssenceAdminPage() {
   const [lastUpdate, setLastUpdate] = useState<string | undefined>();
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [draft, setDraft] = useState<Essence | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -93,6 +96,93 @@ export default function EssenceAdminPage() {
     }
   };
 
+  const handleRestore = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/essence/history/${id}/restore`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Error al restaurar');
+      const data = await res.json();
+      setEssence(data);
+      // Refresh history list
+      await fetchHistory();
+      setSuccess('Restaurado correctamente');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo restaurar la versión');
+      setTimeout(() => setError(''), 3000);
+      throw err;
+    }
+  };
+
+  // Confirm modal state for restores
+  const [restorePendingId, setRestorePendingId] = useState<string | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [undoRestoreId, setUndoRestoreId] = useState<string | null>(null);
+  const [undoTimer, setUndoTimer] = useState<number | null>(null);
+
+  const requestRestore = (id: string) => {
+    setRestorePendingId(id);
+  };
+
+  const confirmRestore = async () => {
+    if (!restorePendingId) return;
+    setConfirmLoading(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/essence/history/${restorePendingId}/restore`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Error al restaurar');
+      const data = await res.json();
+      setEssence(data);
+      // store created history id for undo
+      if (data.restored_history_id) {
+        setUndoRestoreId(data.restored_history_id);
+        // show undo for 8 seconds
+        if (undoTimer) window.clearTimeout(undoTimer);
+        const t = window.setTimeout(() => setUndoRestoreId(null), 8000);
+        setUndoTimer(t as unknown as number);
+      }
+      await fetchHistory();
+      setSuccess('Restaurado correctamente');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo restaurar la versión');
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setConfirmLoading(false);
+      setRestorePendingId(null);
+    }
+  };
+
+  const undoRestore = async () => {
+    if (!undoRestoreId) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/essence/history/${undoRestoreId}/restore`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Error al deshacer');
+      const data = await res.json();
+      setEssence(data);
+      setSuccess('Deshacer realizado');
+      setTimeout(() => setSuccess(''), 3000);
+      await fetchHistory();
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo deshacer');
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      if (undoTimer) window.clearTimeout(undoTimer);
+      setUndoRestoreId(null);
+      setUndoTimer(null);
+    }
+  };
+
   useEffect(() => {
     fetchEssence();
     fetchHistory();
@@ -114,6 +204,8 @@ export default function EssenceAdminPage() {
       if (!res.ok) throw new Error("Error al guardar");
       const data = await res.json();
       setEssence(data);
+      setDraft(null);
+      setIsEditing(false);
       setSuccess("Guardado correctamente");
       fetchHistory();
       setTimeout(() => setSuccess(""), 3000);
@@ -132,7 +224,7 @@ export default function EssenceAdminPage() {
 
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      <Sidebar selected="essence" theme={theme} />
+      <Sidebar selected="/admin/essence" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header onLogout={() => {}} onToggleTheme={handleToggleTheme} theme={theme} />
         <main className="flex-1 p-6 lg:p-8 overflow-auto">
@@ -208,13 +300,35 @@ export default function EssenceAdminPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <EssenceForm essence={essence} onSave={handleSave} theme={theme} />
-              <EssencePreview essence={essence} theme={theme} />
+              <EssenceForm essence={essence} onSave={handleSave} theme={theme} onDraftChange={(d) => setDraft(d)} onEditingChange={(e) => setIsEditing(e)} />
+              <EssencePreview essence={isEditing && draft ? draft : essence} theme={theme} />
             </div>
           )}
 
           {/* History */}
-          <EssenceHistory history={history} loading={loadingHistory} theme={theme} />
+          <EssenceHistory history={history} loading={loadingHistory} theme={theme} onRestore={handleRestore} onRequestRestore={requestRestore} />
+
+          {/* Confirm restore modal */}
+          <ConfirmModal
+            open={!!restorePendingId}
+            title="Restaurar versión"
+            description="¿Estás seguro de que quieres restaurar esta versión anterior? Esto reemplazará el contenido actual."
+            confirmLabel="Restaurar"
+            cancelLabel="Cancelar"
+            loading={confirmLoading}
+            onClose={() => setRestorePendingId(null)}
+            onConfirm={confirmRestore}
+          />
+
+          {/* Undo banner */}
+          {undoRestoreId && (
+            <div className="fixed bottom-6 right-6 z-50">
+              <div className={`rounded-lg p-3 shadow-lg flex items-center gap-3 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-900'}`}>
+                <div className="text-sm">Restaurado —</div>
+                <button onClick={undoRestore} className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm">Deshacer</button>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>

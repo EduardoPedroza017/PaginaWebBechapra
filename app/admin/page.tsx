@@ -16,30 +16,8 @@ export default function AdminLogin() {
   const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Verificar sesión OAuth o sesión previa
-  useEffect(() => {
-    fetch('http://localhost:5000/me', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        if (data && !data.error) {
-          // Sincroniza usuario OAuth en sessionStorage
-          sessionStorage.setItem('admin', 'true');
-          // Usa el campo 'role' si existe, si no, fallback a 'admin'
-          sessionStorage.setItem('role', data.role || 'admin');
-          sessionStorage.setItem('admin_token', 'true');
-          sessionStorage.setItem('user_email', data.email || '');
-          sessionStorage.setItem('user_name', data.name || '');
-          setLogueado(true);
-          setTimeout(() => router.push('/admin/dashboard'), 800);
-        } else {
-          setLogueado(false);
-        }
-        setChecking(false);
-      })
-      .catch(() => {
-        setChecking(false);
-      });
-  }, [router]);
+  // Ya no se verifica sesión automáticamente al montar el login
+  // Solo se hará después de un login exitoso si es necesario
 
   // Login manual con usuario y contraseña
   const handleLogin = async (e: React.FormEvent) => {
@@ -66,6 +44,12 @@ export default function AdminLogin() {
         sessionStorage.setItem('user_name', data.name || '');
 
         setLogueado(true);
+        // Si quieres, aquí puedes volver a consultar /me para refrescar datos
+        // fetch('http://localhost:5000/me', { credentials: 'include' })
+        //   .then(res => res.json())
+        //   .then(data => {
+        //     // ... refresca datos si es necesario
+        //   });
         setTimeout(() => router.push('/admin/dashboard'), 800);
       } else {
         const backendError = data.error || data.message;
@@ -80,25 +64,7 @@ export default function AdminLogin() {
     }
   };
 
-  // Pantalla cargando/verificando sesión
-  if (checking) {
-    return (
-      <div className="relative min-h-screen w-full flex items-center justify-center">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80)',
-          }}
-        />
-        <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-          <p className="text-white text-lg font-medium">Verificando sesión...</p>
-        </div>
-      </div>
-    );
-  }
+  // Ya no hay pantalla de "Verificando sesión..."
 
   // Pantalla acceso autorizado
   if (logueado) {

@@ -22,6 +22,9 @@ export default function SucursalesPage() {
   const [deleting, setDeleting] = useState<Branch | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState<string | null>(null);
+  const [showOnlyActive, setShowOnlyActive] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | null; visible: boolean }>({ message: '', type: null, visible: false });
+  const toastTimerRef = { current: null as number | null };
 
   useEffect(() => {
     setMounted(true);
@@ -59,19 +62,35 @@ export default function SucursalesPage() {
   const handleCreated = (newBranch: Branch) => {
     setBranches(prev => [newBranch, ...prev]);
     setShowForm(false);
+    setToast({ message: 'Sucursal creada correctamente', type: 'success', visible: true });
+    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => setToast({ message: '', type: null, visible: false }), 4000) as unknown as number;
   };
 
   const handleUpdated = (updated: Branch) => {
     setBranches(prev => prev.map(b => b.id === updated.id ? updated : b));
     setEditing(null);
+    setToast({ message: 'Sucursal actualizada', type: 'success', visible: true });
+    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => setToast({ message: '', type: null, visible: false }), 4000) as unknown as number;
   };
 
   const handleToggleActive = async (branch: Branch) => {
     setToggleLoading(branch.id);
     try {
+      const adminHeaders: Record<string, string> = {};
+      try {
+        const userEmail = sessionStorage.getItem('user_email');
+        const adminFlag = sessionStorage.getItem('admin');
+        const role = sessionStorage.getItem('role');
+        if (userEmail) adminHeaders['X-User'] = userEmail;
+        if (adminFlag) adminHeaders['X-Admin'] = adminFlag;
+        if (role) adminHeaders['X-Role'] = role;
+      } catch (e) {}
+
       const res = await fetch(`http://localhost:5000/api/admin/branches/${branch.id}/activate`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...adminHeaders },
         credentials: 'include',
         body: JSON.stringify({ isActive: !branch.isActive })
       });
@@ -80,6 +99,9 @@ export default function SucursalesPage() {
         // El backend devuelve el branch directamente
         const updatedBranch = data.data || data;
         setBranches(prev => prev.map(b => b.id === branch.id ? { ...b, isActive: updatedBranch.isActive } : b));
+        setToast({ message: updatedBranch.isActive ? 'Sucursal activada' : 'Sucursal desactivada', type: 'success', visible: true });
+        if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = window.setTimeout(() => setToast({ message: '', type: null, visible: false }), 4000) as unknown as number;
       }
     } catch (error) {
       console.error("Error toggling branch:", error);
@@ -92,12 +114,26 @@ export default function SucursalesPage() {
     if (!deleting) return;
     setDeleteLoading(true);
     try {
+      const adminHeaders: Record<string, string> = {};
+      try {
+        const userEmail = sessionStorage.getItem('user_email');
+        const adminFlag = sessionStorage.getItem('admin');
+        const role = sessionStorage.getItem('role');
+        if (userEmail) adminHeaders['X-User'] = userEmail;
+        if (adminFlag) adminHeaders['X-Admin'] = adminFlag;
+        if (role) adminHeaders['X-Role'] = role;
+      } catch (e) {}
+
       const res = await fetch(`http://localhost:5000/api/admin/branches/${deleting.id}`, {
         method: 'DELETE',
+        headers: { ...adminHeaders },
         credentials: 'include'
       });
       if (res.ok) {
         setBranches(prev => prev.filter(b => b.id !== deleting.id));
+        setToast({ message: 'Sucursal eliminada', type: 'success', visible: true });
+        if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = window.setTimeout(() => setToast({ message: '', type: null, visible: false }), 4000) as unknown as number;
       }
     } catch (error) {
       console.error("Error deleting branch:", error);
@@ -106,6 +142,14 @@ export default function SucursalesPage() {
       setDeleting(null);
     }
   };
+
+  // cleanup toast timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     sessionStorage.removeItem("admin");
@@ -126,11 +170,11 @@ export default function SucursalesPage() {
 
   return (
     <div className={`flex min-h-screen ${
-      theme === 'dark' ? 'bg-gray-950' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+      theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-blue-50 to-indigo-100'
     }`}>
       <Sidebar selected="/admin/sucursales" theme={theme} />
       <div className="flex-1 flex flex-col">
-        <Header theme={theme} onLogout={handleLogout} onToggleTheme={handleToggleTheme} />
+        <Header theme={theme} onToggleTheme={handleToggleTheme} onLogout={handleLogout} />
         <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header */}
           <div className="mb-6 md:mb-8">
@@ -166,6 +210,13 @@ export default function SucursalesPage() {
                 >
                   <Plus size={20} />
                   <TranslateText text="Nueva Sucursal" />
+                </button>
+                <button
+                  onClick={() => setShowOnlyActive(s => !s)}
+                  className={`ml-2 px-3 py-2 rounded-xl transition-all ${showOnlyActive ? 'bg-blue-600 text-white' : theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700 shadow-sm'}`}
+                  title={showOnlyActive ? 'Mostrar todas' : 'Mostrar sólo activas'}
+                >
+                  {showOnlyActive ? 'Activas' : 'Todas'}
                 </button>
                 <button
                   onClick={() => fetchBranches(true)}
@@ -228,6 +279,15 @@ export default function SucursalesPage() {
             </div>
           )}
 
+          {/* Toast */}
+          {toast.visible && (
+            <div className="fixed bottom-6 right-6 z-50">
+              <div className={`rounded-lg p-3 shadow-lg max-w-xs ${toast.type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`}>
+                <div className="text-sm font-medium">{toast.message}</div>
+              </div>
+            </div>
+          )}
+
           {/* Branches List */}
           {loading ? (
             <div className="flex justify-center py-12">
@@ -258,7 +318,7 @@ export default function SucursalesPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {branches.map((branch) => (
+              { (showOnlyActive ? branches.filter(b => b.isActive) : branches).map((branch) => (
                 <div
                   key={branch.id}
                   className={`rounded-xl overflow-hidden transition-all duration-300 ${
@@ -267,6 +327,14 @@ export default function SucursalesPage() {
                       : "bg-white shadow-sm hover:shadow-md"
                   } ${!branch.isActive ? 'opacity-60' : ''}`}
                 >
+                  {/* Active badge */}
+                  {branch.isActive && (
+                    <div className="absolute mt-3 mr-3 right-0 z-20">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${theme === 'dark' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
+                        Activa
+                      </span>
+                    </div>
+                  )}
                   {/* Map Preview */}
                   {branch.locationUrl && (
                     <div className="h-40 bg-gray-200 relative">
@@ -337,14 +405,14 @@ export default function SucursalesPage() {
                       <p className={`text-sm flex items-center gap-2 ${
                         theme === "dark" ? "text-gray-300" : "text-gray-700"
                       }`}>
-                        <MapPin size={14} className="text-red-500 flex-shrink-0" />
+                        <MapPin size={14} className="text-red-500 shrink-0" />
                         <span className="truncate">{branch.address}</span>
                       </p>
                       {branch.contact?.phone && (
                         <p className={`text-sm flex items-center gap-2 ${
                           theme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>
-                          <Phone size={14} className="flex-shrink-0" />
+                          <Phone size={14} className="shrink-0" />
                           {branch.contact.phone}
                         </p>
                       )}
@@ -352,7 +420,7 @@ export default function SucursalesPage() {
                         <p className={`text-sm flex items-center gap-2 ${
                           theme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>
-                          <Mail size={14} className="flex-shrink-0" />
+                          <Mail size={14} className="shrink-0" />
                           {branch.contact.email}
                         </p>
                       )}

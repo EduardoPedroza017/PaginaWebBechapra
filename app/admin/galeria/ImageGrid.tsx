@@ -1,5 +1,6 @@
-"use client";
 
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Trash2, Images, Eye, Download } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
@@ -16,6 +17,11 @@ interface ImageGridProps {
 }
 
 export function ImageGrid({ images, theme, onDelete, onPreview }: ImageGridProps) {
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.ceil(images.length / pageSize);
+  const paginatedImages = images.slice((page - 1) * pageSize, page * pageSize);
+
   const handleDownload = async (filename: string) => {
     const url = `http://localhost:5000/uploads/galery/${filename}`;
     const response = await fetch(url);
@@ -49,15 +55,16 @@ export function ImageGrid({ images, theme, onDelete, onPreview }: ImageGridProps
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {images.map((img, idx) => (
-        <div 
-          key={img.filename || idx} 
-          className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl ${
-            theme === "dark" ? "bg-gray-800/50" : "bg-gray-50"
-          }`}
-        >
-          {/* Imagen */}
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {paginatedImages.map((img, idx) => (
+          <div 
+            key={img.filename || idx} 
+            className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl ${
+              theme === "dark" ? "bg-gray-800/50" : "bg-gray-50"
+            }`}
+          >
+            {/* Imagen */}
           <div className="aspect-square relative">
             <Image
               src={`http://localhost:5000/uploads/galery/${img.filename}`}
@@ -107,8 +114,29 @@ export function ImageGrid({ images, theme, onDelete, onPreview }: ImageGridProps
               {img.filename}
             </p>
           </div>
+          </div>
+        ))}
+      </div>
+      {/* Paginador */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 gap-2">
+          <button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            className={`px-3 py-1 rounded-lg text-sm font-medium ${page === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+          >
+            Anterior
+          </button>
+          <span className="px-3 py-1 text-sm font-medium text-gray-500">Página {page} de {totalPages}</span>
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages}
+            className={`px-3 py-1 rounded-lg text-sm font-medium ${page === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+          >
+            Siguiente
+          </button>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }

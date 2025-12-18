@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { History, ChevronLeft, ChevronRight, Calendar, User, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import EssenceHistoryModal from "./EssenceHistoryModal";
 
 interface EssenceHistoryItem {
   id: string;
@@ -16,13 +17,16 @@ interface EssenceHistoryProps {
   history: EssenceHistoryItem[];
   loading: boolean;
   theme: 'light' | 'dark';
+  onRestore?: (id: string) => Promise<void>;
+  onRequestRestore?: (id: string) => void;
 }
 
-export default function EssenceHistory({ history, loading, theme }: EssenceHistoryProps) {
+export default function EssenceHistory({ history, loading, theme, onRestore, onRequestRestore }: EssenceHistoryProps) {
   const [page, setPage] = useState(1);
   const pageSize = 5;
   const totalPages = Math.ceil(history.length / pageSize);
   const paginated = history.slice((page - 1) * pageSize, page * pageSize);
+  const [viewingItem, setViewingItem] = useState<EssenceHistoryItem | null>(null);
 
   const getChangedFields = (item: EssenceHistoryItem) => {
     const changes: string[] = [];
@@ -174,6 +178,27 @@ export default function EssenceHistory({ history, loading, theme }: EssenceHisto
                   )}
                 </div>
               </div>
+              <div className="mt-3 flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setViewingItem(item)}
+                  className={`px-3 py-1 rounded-lg text-sm font-medium ${theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
+                  <TranslateText text="Ver" />
+                </button>
+                {(onRequestRestore || onRestore) && (
+                  <button
+                    onClick={() => {
+                      if (onRequestRestore) return onRequestRestore(item.id);
+                      // fallback behaviour
+                      if (!confirm('¿Restaurar esta versión anterior?')) return;
+                      if (onRestore) onRestore(item.id).catch(() => { alert('Error al restaurar'); });
+                    }}
+                    className={`px-3 py-1 rounded-lg text-sm font-medium ${theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  >
+                    <TranslateText text="Restaurar" />
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
@@ -213,6 +238,10 @@ export default function EssenceHistory({ history, loading, theme }: EssenceHisto
           </div>
         </div>
       )}
+
+      {/* Detail modal */}
+      <EssenceHistoryModal open={!!viewingItem} onClose={() => setViewingItem(null)} item={viewingItem} theme={theme} onRequestRestore={(id: string) => { if (onRequestRestore) onRequestRestore(id); setViewingItem(null); }} />
+
     </div>
   );
 }

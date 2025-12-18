@@ -9,7 +9,7 @@ import { Users, Plus, RefreshCw } from "lucide-react";
 
 import UserStats from "./UserStats";
 import { UserFilter } from "./UserFilterNew";
-import UserTable from "./UserTable";
+import UserCardList from "./UserCardList";
 import { UserFormModal } from "./UserFormModal";
 import { DeleteUserModal } from "./DeleteUserModalNew";
 import UserDetailsModal from "./UserDetailsModal";
@@ -27,6 +27,7 @@ export default function UsuariosPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [themeReady, setThemeReady] = useState(false);
   const [users, setUsers] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,6 +45,17 @@ export default function UsuariosPage() {
       if (savedPageSize) setPageSize(parseInt(savedPageSize));
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark' || savedTheme === 'light') setTheme(savedTheme);
+      setThemeReady(true);
+      // Escuchar cambios de theme en otras pestañas o páginas
+      const handleStorage = (e: StorageEvent) => {
+        if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) {
+          setTheme(e.newValue);
+        }
+      };
+      window.addEventListener('storage', handleStorage);
+      return () => window.removeEventListener('storage', handleStorage);
+    } else {
+      setThemeReady(true);
     }
   }, []);
 
@@ -174,16 +186,19 @@ export default function UsuariosPage() {
   const handleFormSubmit = async (form: { email: string; password?: string; role?: string; roles?: string[]; permissions?: string[] }) => {
     setProcessing(true);
     try {
-      const apiBase = "/api/admin";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const method = editUser ? "PUT" : "POST";
-      const url = `${apiBase}/users-mutations`;
+      // Usar endpoint RESTful: POST para crear, PUT para editar usuario específico
+      const url = editUser
+        ? `${apiBase}/admin/users/${encodeURIComponent(form.email)}`
+        : `${apiBase}/admin/users/`;
       const payload = { ...form };
       // Always send roles as array (backend expects 'roles')
       if (!payload.roles && form.role) payload.roles = Array.isArray(form.role) ? form.role : [form.role];
       // If current user is not superadmin, do not send roles/permissions: backend will assign defaults
       const isSuperLocal = (sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true');
       if (!isSuperLocal) { delete payload.roles; delete payload.permissions; }
-      
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -201,7 +216,7 @@ export default function UsuariosPage() {
     finally { setProcessing(false); }
   };
 
-  const handleBlock = async (user: Usuario) => {
+  const handleBlock = async (user: Usuario, newState: boolean) => {
     setProcessing(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -213,13 +228,13 @@ export default function UsuariosPage() {
           'X-Admin': (sessionStorage.getItem("admin") === "true").toString()
         },
         credentials: 'include',
-        body: JSON.stringify({ email: user.email, block: !user.bloqueado })
+        body: JSON.stringify({ email: user.email, block: newState })
       });
       const data = await res.json();
       if (res.status === 403) {
         alert(data.error || 'No autorizado. Se requiere superadmin para bloquear usuarios.');
       } else if (res.ok && data.ok) {
-        setUsers((users: Usuario[]) => users.map((u: Usuario) => u.email === user.email ? { ...u, bloqueado: !user.bloqueado } : u));
+        setUsers((users: Usuario[]) => users.map((u: Usuario) => u.email === user.email ? { ...u, bloqueado: newState } : u));
       } else {
         alert(data.error || "No se pudo actualizar el estado de bloqueo.");
       }
@@ -231,6 +246,8 @@ export default function UsuariosPage() {
     setTheme(prev => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', newTheme);
+      // Notificar a otras pestañas
+      window.dispatchEvent(new StorageEvent('storage', { key: 'theme', newValue: newTheme }));
       return newTheme;
     });
   };
@@ -241,12 +258,22 @@ export default function UsuariosPage() {
     router.push('/admin');
   };
 
+  if (!themeReady) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-gray-50 to-blue-50'}`}>
+        <div className="text-center">
+          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${theme === 'dark' ? 'border-blue-500' : 'border-blue-600'}`}></div>
+          <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Cargando tema...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-gray-50 to-blue-50'}`}>
       <Sidebar selected="/admin/usuarios" theme={theme} />
       <div className="flex-1 flex flex-col">
         <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-400 mx-auto w-full">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
@@ -304,8 +331,14 @@ export default function UsuariosPage() {
                   <option value={50}>50</option>
                 </select>
               </div>
-              <UserTable users={filteredUsers} page={page} pageSize={pageSize} onPageChange={setPage}
-                onEdit={handleEdit} onDelete={handleDelete} onBlock={handleBlock} onViewDetails={setDetailsUser} theme={theme} />
+              <UserCardList
+                users={filteredUsers}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onBlock={handleBlock}
+                onViewDetails={setDetailsUser}
+                theme={theme}
+              />
             </>
           )}
 

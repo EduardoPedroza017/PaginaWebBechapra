@@ -1,7 +1,7 @@
 
 "use client";
 import React, { useEffect, useState } from "react";
-import { Service, ServiceTable, ServiceEditModal, DeleteServiceModal } from "./components";
+import { Service, ServiceEditModal, DeleteServiceModal, ServiceCardList, SearchBar } from "./components";
 import ServicePageForm from "./components/ServicePageForm";
 import { Button } from "../components/shared/Button";
 import { Sidebar } from "../dashboard/Sidebar";
@@ -11,6 +11,9 @@ import { TranslateText } from "@/components/TranslateText";
 export default function ServiciosAdminPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
+  const [onlyActive, setOnlyActive] = useState(false);
+  const [searchDebounceTimer, setSearchDebounceTimer] = useState<number | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<Service | undefined>(undefined);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -18,18 +21,30 @@ export default function ServiciosAdminPage() {
   const [toggleLoading, setToggleLoading] = useState<string | null>(null);
   const [pageFormOpen, setPageFormOpen] = useState(false);
   const [pageInitialHandle, setPageInitialHandle] = useState<string | undefined>(undefined);
+  const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+  const toastTimerRef = { current: null as number | null };
 
   useEffect(() => {
     fetchServices();
   }, []);
 
   async function fetchServices() {
-    setLoading(true);
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const res = await fetch(`${API}/api/services/cards`, { credentials: 'include' });
-    const data = await res.json();
-    setServices(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const params = new URLSearchParams();
+      if (query) params.set('search', query);
+      if (onlyActive) params.set('active', 'true');
+      const res = await fetch(`${API}/api/services/cards?${params.toString()}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      const data = await res.json();
+      setServices(data);
+    } catch (err) {
+      console.error('Error fetching services', err);
+      setServices([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleNew() {
@@ -41,7 +56,14 @@ export default function ServiciosAdminPage() {
     // Obtener detalle completo antes de abrir el modal
     try {
       const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API}/api/services/cards/${service.id}`, { credentials: 'include' });
+      const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+      const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+      const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+      const headers: Record<string, string> = {};
+      if (storedUser) headers['X-User'] = storedUser;
+      if (storedRole) headers['X-Role'] = storedRole;
+      if (storedAdmin) headers['X-Admin'] = storedAdmin;
+      const res = await fetch(`${API}/api/services/cards/${service.id}`, { credentials: 'include', headers });
       if (res.ok) {
         const data = await res.json();
         setEditData(data);
@@ -65,14 +87,25 @@ export default function ServiciosAdminPage() {
       description: data.description,
       slug: maybeSlug,
     };
+    // Attach admin headers stored in sessionStorage as fallback when server session isn't available
+    const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+    const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+    const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (storedUser) headers['X-User'] = storedUser;
+    if (storedRole) headers['X-Role'] = storedRole;
+    if (storedAdmin) headers['X-Admin'] = storedAdmin;
+
     if (data.id) {
       const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       await fetch(`${API}/api/services/cards/${data.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers,
         credentials: 'include',
         body: JSON.stringify(payload),
       });
+      // Note: handle errors
+      // (For now we optimistically continue; errors will be shown by toast below)
       // after updating an existing service, open the page form for this handle
       const maybeHandle = payload.slug;
       setPageInitialHandle(maybeHandle);
@@ -81,7 +114,7 @@ export default function ServiciosAdminPage() {
       const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${API}/api/services/cards`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         credentials: 'include',
         body: JSON.stringify(payload),
       });
@@ -91,11 +124,21 @@ export default function ServiciosAdminPage() {
         const maybeHandle = created.slug || created.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         setPageInitialHandle(maybeHandle);
         setPageFormOpen(true);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setToast({ message: body.error || 'Error al crear servicio', visible: true });
+        if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = window.setTimeout(() => setToast({ message: '', visible: false }), 4000) as unknown as number;
       }
     }
     setEditOpen(false);
     fetchServices();
   }
+
+  // cleanup
+  useEffect(() => {
+    return () => { if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current); };
+  }, []);
 
   function handleDelete(service: Service) {
     setDeleteData(service);
@@ -105,8 +148,14 @@ export default function ServiciosAdminPage() {
   async function handleDeleteConfirm() {
     if (deleteData?.id) {
       const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      await fetch(`${API}/api/services/cards/${deleteData.id}`, {
-        method: "DELETE", credentials: 'include' });
+      const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+      const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+      const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+      const headers: Record<string, string> = {};
+      if (storedUser) headers['X-User'] = storedUser;
+      if (storedRole) headers['X-Role'] = storedRole;
+      if (storedAdmin) headers['X-Admin'] = storedAdmin;
+      await fetch(`${API}/api/services/cards/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
     }
     setDeleteOpen(false);
     fetchServices();
@@ -116,9 +165,17 @@ export default function ServiciosAdminPage() {
     setToggleLoading(service.id || null);
     try {
       const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      await fetch(`${API}/api/services/cards/${service.id}/activate`, {
+      const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+      const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+      const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (storedUser) headers['X-User'] = storedUser;
+      if (storedRole) headers['X-Role'] = storedRole;
+      if (storedAdmin) headers['X-Admin'] = storedAdmin;
+
+      const res = await fetch(`${API}/api/services/cards/${service.id}/activate`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers,
         credentials: 'include',
         body: JSON.stringify({ active: !service.active }),
       });
@@ -140,20 +197,40 @@ export default function ServiciosAdminPage() {
             <h1 className="text-2xl font-bold">
               <TranslateText text="Servicios" />
             </h1>
-            <Button onClick={handleNew}>
-              <TranslateText text="Nuevo Servicio" />
-            </Button>
+            <div className="flex items-center gap-3">
+                <div className="w-72">
+                <SearchBar value={query} onChange={(q) => {
+                  // update query and debounce the network call to avoid loops and excessive requests
+                  setQuery(q);
+                  if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
+                  const t = window.setTimeout(() => { fetchServices(); setSearchDebounceTimer(null); }, 300);
+                  setSearchDebounceTimer(t as unknown as number);
+                }} />
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-sm mr-2">Activas</label>
+                <input type="checkbox" checked={onlyActive} onChange={(e) => { setOnlyActive(e.target.checked); fetchServices(); }} />
+              </div>
+              <Button onClick={handleNew}>
+                <TranslateText text="Nuevo Servicio" />
+              </Button>
+            </div>
           </div>
-          {loading ? (
-            <div><TranslateText text="Cargando..." /></div>
-          ) : (
-            <ServiceTable
-              services={services}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onToggleActive={handleToggleActive}
-              toggleLoading={toggleLoading}
-            />
+          <ServiceCardList
+            services={services}
+            loading={loading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onToggleActive={handleToggleActive}
+            toggleLoading={toggleLoading}
+          />
+          {/* Toast */}
+          {toast.visible && (
+            <div className="fixed bottom-6 right-6 z-50">
+              <div className="rounded-lg p-3 shadow-lg max-w-xs bg-red-600 text-white">
+                <div className="text-sm font-medium">{toast.message}</div>
+              </div>
+            </div>
           )}
           <ServiceEditModal
             open={editOpen}

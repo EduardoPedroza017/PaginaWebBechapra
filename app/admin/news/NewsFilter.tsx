@@ -19,7 +19,7 @@ export interface NewsItem {
 
 interface Props {
   news: NewsItem[];
-  onFilter: (filtered: NewsItem[]) => void;
+  onFilter: (filtered: NewsItem[], searchValue?: string) => void;
   theme: 'light' | 'dark';
 }
 
@@ -29,17 +29,23 @@ export default function NewsFilter({ news, onFilter, theme }: Props) {
 
   const hasFilters = title || date;
 
+
   function handleFilter() {
-    let filtered = news;
-    if (title.trim()) filtered = filtered.filter(n => n.title.toLowerCase().includes(title.toLowerCase()));
-    if (date) filtered = filtered.filter(n => n.date.startsWith(date));
-    onFilter(filtered);
+    // Si hay título, usar búsqueda backend
+    if (title.trim()) {
+      onFilter([], title.trim());
+    } else {
+      // Si no hay título, filtrar por fecha localmente
+      let filtered = news;
+      if (date) filtered = filtered.filter(n => n.date.startsWith(date));
+      onFilter(filtered);
+    }
   }
 
   function clearFilters() {
     setTitle("");
     setDate("");
-    onFilter(news);
+    onFilter(news, "");
   }
 
   const inputClass = `w-full rounded-xl border px-4 py-2.5 text-sm transition-all focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
