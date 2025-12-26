@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Dialog } from "@headlessui/react";
-import { X } from "lucide-react";
+import { X, Check } from "lucide-react";
 
 interface ConfirmModalProps {
   open: boolean;
@@ -28,7 +28,7 @@ export default function ConfirmModal({ open, title = "Confirmar", description, c
           {description && <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{description}</p>}
           <div className="flex justify-end gap-3">
             <button onClick={onClose} className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">{cancelLabel}</button>
-            <button disabled={loading} onClick={() => onConfirm()} className="px-4 py-2 rounded-xl bg-emerald-600 text-white">{loading ? 'Procesando...' : confirmLabel}</button>
+            <button disabled={loading} onClick={() => onConfirm()} className="px-4 py-2 rounded-xl bg-emerald-600 text-white inline-flex items-center gap-2">{loading ? 'Procesando...' : <><Check className="w-4 h-4" />{confirmLabel}</>}</button>
           </div>
         </div>
       </div>

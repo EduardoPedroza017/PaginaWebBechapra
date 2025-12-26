@@ -100,13 +100,24 @@ export default function ServiceHero({
             className="relative hidden lg:block"
           >
             <div className="relative w-full max-w-[520px] h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/25">
-              <Image
-                src={imageSrc}
-                alt={imageAlt}
-                fill
-                className="object-cover"
-                priority
-              />
+              {imageSrc ? (
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  fill
+                  className="object-cover"
+                  priority
+                  unoptimized={String(imageSrc).startsWith('http')}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
+                  <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
+                    <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

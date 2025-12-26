@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import { Button } from "../../components/shared/Button"
+import { CheckCircle, AlertTriangle, Loader2, Zap } from 'lucide-react'
 
 interface Props { open: boolean; initialHandle?: string; subserviceId?: string; onClose: ()=>void; onCreated?: (p:any)=>void }
 
@@ -13,8 +14,52 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
   const [heroImage, setHeroImage] = useState('')
   const [benefits, setBenefits] = useState<any[]>([])
   const [uploading, setUploading] = useState(false)
+  const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null)
+  const [checkingHandle, setCheckingHandle] = useState(false)
+  const [suggestion, setSuggestion] = useState<string | null>(null)
+  const [handleCheckTimer, setHandleCheckTimer] = useState<number | null>(null)
 
   useEffect(()=>{ setHandle(initialHandle||'') }, [initialHandle])
+
+  // When handle changes, debounce and check availability
+  useEffect(()=>{
+    setSuggestion(null)
+    setHandleAvailable(null)
+    if (handleCheckTimer) window.clearTimeout(handleCheckTimer)
+    if (!handle || !handle.trim()) return undefined
+    const t = window.setTimeout(async ()=>{
+      setCheckingHandle(true)
+      try{
+        const res = await fetch(`${API}/api/sub_service_pages/${encodeURIComponent(handle.trim())}`)
+        if (res.ok){
+          // exists -> fetch all handles and compute a smart suggestion
+          setHandleAvailable(false)
+          try{
+            const listRes = await fetch(`${API}/api/sub_service_pages` + (subserviceId ? `?subservice_id=${encodeURIComponent(subserviceId)}` : ''))
+            if (listRes.ok){
+              const pages = await listRes.json()
+              const handles = pages.map((p:any)=>p.handle)
+              // dynamic import of helper
+              const { findSuggestion } = await import('../../../../utils/findSuggestion')
+              const s = findSuggestion(handle, handles)
+              setSuggestion(s)
+            }
+          }catch(e){
+            // fallback: leave suggestion null
+            setSuggestion(null)
+          }
+        } else {
+          setHandleAvailable(true)
+        }
+      }catch(e){
+        setHandleAvailable(null)
+      }finally{
+        setCheckingHandle(false)
+      }
+    }, 400)
+    setHandleCheckTimer(t as unknown as number)
+    return () => { if (t) window.clearTimeout(t) }
+  }, [handle])
 
   async function uploadFile(file: File){
     setUploading(true)
@@ -39,11 +84,41 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
   async function createPage(){
     const finalHandle = handle && handle.trim() ? handle.trim() : slugify(heroTitle)
     const payload = { handle: finalHandle, heroTitle, heroSubtitle, heroImage, benefits, subservice_id: subserviceId }
+    // Pre-check existing handle to provide better UX
+    try{
+      const check = await fetch(`${API}/api/sub_service_pages/${encodeURIComponent(finalHandle)}`)
+      if (check.ok){
+        const existing = await check.json()
+        const open = window.confirm('El handle "' + finalHandle + '" ya existe. ¿Quieres abrir la página existente?')
+        if (open){ if (onCreated) onCreated(existing); return }
+        // otherwise let user edit handle
+        return
+      }
+    }catch(e){ /* ignore, continue to creation */ }
+
     const res = await fetch(`${API}/api/sub_service_pages`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     if (res.ok){ const data = await res.json(); if (onCreated) onCreated(data) }
     else {
       try{
         const err = await res.json()
+        if (err.error && err.error.toLowerCase().includes('handle ya existe')){
+          // try to suggest an alternative handle using existing list
+          try{
+            const listRes = await fetch(`${API}/api/sub_service_pages` + (subserviceId ? `?subservice_id=${encodeURIComponent(subserviceId)}` : ''))
+            if (listRes.ok){
+              const pages = await listRes.json()
+              const handles = pages.map((p:any)=>p.handle)
+              const { findSuggestion } = await import('../../../../utils/findSuggestion')
+              const suggested = findSuggestion(finalHandle, handles)
+              if (suggested){
+                const use = window.confirm('El handle ya existe. Sugerencia disponible: "' + suggested + '". ¿Quieres usarla?')
+                if (use){ setHandle(suggested); // retry automatically once
+                  return createPage()
+                }
+              }
+            }
+          }catch(e){ /* ignore suggestion failure */ }
+        }
         alert('Error creating page: ' + (err.error || JSON.stringify(err)))
       }catch(e){ alert('Error creating page') }
     }
@@ -61,6 +136,21 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
             <div>
               <label className="block text-sm font-medium mb-1">Handle</label>
               <input value={handle} onChange={e=>setHandle(e.target.value)} className="w-full rounded border px-2 py-1" />
+              <div className="mt-1 text-sm">
+                {checkingHandle && <span className="text-slate-500 flex items-center gap-2" aria-live="polite"><Loader2 className="w-4 h-4 animate-spin text-slate-400" />Comprobando disponibilidad…</span>}
+                {handleAvailable === true && !checkingHandle && <span className="text-green-600 flex items-center gap-2"><CheckCircle className="w-4 h-4" />Disponible</span>}
+                {handleAvailable === false && !checkingHandle && (
+                  <div className="text-red-600">
+                    <div className="flex items-center gap-2"><AlertTriangle className="w-4 h-4" /><span>No disponible</span></div>
+                    {suggestion && (
+                      <div className="mt-1 flex items-center gap-3">
+                        <span className="mr-2">Sugerencia: <code className="bg-slate-100 px-1 rounded">{suggestion}</code></span>
+                        <button className="text-sm text-blue-600 hover:underline flex items-center gap-2" onClick={()=>{ setHandle(suggestion || ''); setSuggestion(null); }}><Zap className="w-4 h-4" />Usar sugerencia</button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Hero Title</label>
@@ -123,7 +213,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
 
         <div className="mt-4 flex gap-2 justify-end">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
-          <Button onClick={createPage}>Crear Página</Button>
+          <Button onClick={createPage} disabled={handleAvailable === false}>Crear Página</Button>
         </div>
       </div>
     </div>

@@ -47,7 +47,9 @@ export default function NewsCards() {
       try {
         const response = await fetch('/api/news');
         const data = await response.json();
-        setNews(data.slice(0, 3));
+        // API may return { news: [...], total, page } or a raw array; normalize it
+        const items = Array.isArray(data) ? data : (Array.isArray(data.news) ? data.news : []);
+        setNews(items.slice(0, 3));
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {

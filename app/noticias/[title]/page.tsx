@@ -37,12 +37,9 @@ export default function NewsDetailPage() {
 				return res.json();
 			})
 			.then(data => {
-				if (Array.isArray(data)) {
-					const found = data.find((item: NewsItem) => item.title === title);
-					setNews(found || null);
-				} else {
-					setNews(null);
-				}
+				const items = Array.isArray(data) ? data : (Array.isArray((data as any).news) ? (data as any).news : []);
+				const found = items.find((item: NewsItem) => item.title === title);
+				setNews(found || null);
 			})
 			.catch(err => {
 				console.error("Error fetching news:", err);

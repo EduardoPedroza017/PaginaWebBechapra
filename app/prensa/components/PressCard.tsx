@@ -67,6 +67,12 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
           />
 
           <div className="relative z-10 flex flex-col h-full">
+            {/* Decorative Thumbnail */}
+            <div className="absolute -right-8 -top-8 w-48 h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 bg-gradient-to-br from-blue-700 to-indigo-600/80 opacity-95">
+              <div className="w-full h-full flex items-center justify-center text-white/90">
+                <FileText size={48} />
+              </div>
+            </div>
             {/* Featured Badge */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
@@ -99,15 +105,17 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
               {item.excerpt}
             </p>
 
-            {/* CTA Arrow */}
-            <div className="flex items-center gap-3 text-cyan-300 font-bold group-hover:gap-4 transition-all duration-300">
-              <span className="text-sm uppercase tracking-wide"><TranslateText text="Leer comunicado completo" /></span>
-              <motion.div
-                whileHover={{ x: 4, y: -4 }}
-                className="p-2 rounded-full bg-cyan-400/20 group-hover:bg-cyan-400/40 transition-colors duration-300"
-              >
-                <ArrowUpRight size={18} />
-              </motion.div>
+            <div className="flex items-center gap-4 mt-4">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-white rounded-full font-semibold shadow-sm hover:bg-white/20 transition-colors duration-300">
+                <span className="text-sm"><TranslateText text="Leer comunicado completo" /></span>
+                <ArrowUpRight size={16} />
+              </span>
+              {item.link && (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-white rounded-full font-semibold shadow-sm hover:bg-white/20 transition-colors duration-300">
+                  <span className="text-sm"><TranslateText text="Ver fuente" /></span>
+                  <FileText size={16} />
+                </a>
+              )}
             </div>
           </div>
         </motion.article>
@@ -143,6 +151,22 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
 
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
+          {/* Thumbnail left on md+ */}
+          <div className="hidden md:flex items-start gap-4 mb-4">
+            <div className="w-20 h-20 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md flex-shrink-0">
+              <FileText size={20} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-1 leading-snug group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2">
+                {item.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-2 line-clamp-2">
+                {item.excerpt}
+              </p>
+            </div>
+          </div>
+
+          {/* Small screens: regular flow title/excerpt */}
           {/* Date Badge */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -154,28 +178,29 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
             <span className="text-blue-700 dark:text-blue-300 text-xs font-semibold">{formattedDate}</span>
           </motion.div>
 
-          {/* Title */}
-          <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 leading-snug group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 flex-grow">
+          {/* Title (for small screens) */}
+          <h3 className="text-lg md:hidden font-bold text-gray-900 dark:text-white mb-3 leading-snug group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 flex-grow">
             {item.title}
           </h3>
 
-          {/* Excerpt */}
-          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-5 line-clamp-2">
+          {/* Excerpt (for small screens) */}
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-5 md:hidden line-clamp-2">
             {item.excerpt}
           </p>
 
           {/* Read More CTA */}
-          <motion.div 
-            className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold text-sm group-hover:gap-3 transition-all duration-300 mt-auto"
-            whileHover={{ x: 2 }}
-          >
-            <span><TranslateText text="Leer más" /></span>
-            <motion.div
-              whileHover={{ x: 2, y: -1 }}
-            >
+          <div className="flex items-center gap-4 mt-auto">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-full font-semibold hover:bg-blue-100 transition-colors duration-300">
+              <span className="text-sm"><TranslateText text="Leer más" /></span>
               <ArrowUpRight size={16} />
-            </motion.div>
-          </motion.div>
+            </span>
+            {item.link && (
+              <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-gray-700 dark:text-gray-200 rounded-full font-semibold hover:bg-white/20 transition-colors duration-300">
+                <span className="text-sm"><TranslateText text="Fuente" /></span>
+                <FileText size={14} />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Shine Effect on Hover */}

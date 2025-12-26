@@ -72,7 +72,10 @@ export default function ServicesSection() {
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
         if (mounted && Array.isArray(data)) {
-          const fetched = data;
+          const fetched = data.map((s: any) => {
+            const normalize = (url: string | undefined) => url && String(url).startsWith('/uploads/') ? `${API}${url}` : url;
+            return { ...s, icon: normalize(s.icon), image: normalize(s.image) };
+          });
           const merged = [
             ...fetched,
             ...mappedStatic.filter(ms => !fetched.some(f => (f.id && ms.id && f.id === ms.id) || (f.slug && ms.slug && f.slug === ms.slug) || (f.name && ms.name && f.name === ms.name)))

@@ -35,15 +35,12 @@ export default function NoticiasPage() {
         return res.json();
       })
       .then((data) => {
-        if (Array.isArray(data)) {
-          const sorted = data.sort(
-            (a: NewsItem, b: NewsItem) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
-          setNews(sorted);
-        } else {
-          setNews([]);
-        }
+        const items = Array.isArray(data) ? data : (Array.isArray((data as any).news) ? (data as any).news : []);
+        const sorted = items.sort(
+          (a: NewsItem, b: NewsItem) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setNews(sorted);
       })
       .catch((err) => {
         console.error("Error fetching news:", err);

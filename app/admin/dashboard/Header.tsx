@@ -25,6 +25,21 @@ export function Header({ onLogout, onToggleTheme, theme, role, admin }: HeaderPr
   }, [theme]);
 
   const { lang, setLang } = useLanguage();
+  // WhoAmI state
+  const [whoamiOpen, setWhoamiOpen] = useState(false);
+  const [whoami, setWhoami] = useState<any | null>(null);
+
+  async function fetchWhoami() {
+    try {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API}/admin/me`, { credentials: 'include' });
+      const data = await res.json();
+      if (data.ok) setWhoami(data.user);
+      else setWhoami({ error: data.error || 'No session' });
+    } catch (err) {
+      setWhoami({ error: 'Network error' });
+    }
+  }
 
   // Diseño moderno y limpio
   const headerClasses = isDark
@@ -112,6 +127,12 @@ export function Header({ onLogout, onToggleTheme, theme, role, admin }: HeaderPr
           </Link>
         )}
 
+        {/* WhoAmI button */}
+        <button onClick={() => { setWhoamiOpen(!whoamiOpen); if (!whoamiOpen) fetchWhoami(); }} className={`${buttonBase} ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'} text-sm`} title="Mi cuenta">
+          <span className="text-sm">Cuenta</span>
+          <ChevronDown size={14} />
+        </button>
+
         <button
           onClick={onLogout}
           className={`${buttonBase} ${logoutButtonClasses} text-sm`}
@@ -197,6 +218,24 @@ export function Header({ onLogout, onToggleTheme, theme, role, admin }: HeaderPr
               <span><TranslateText text="Cerrar sesión" /></span>
             </button>
           </div>
+        </div>
+      )}
+      {/* WhoAmI dropdown */}
+      {whoamiOpen && (
+        <div className="absolute right-4 top-16 z-50 w-72 rounded-lg shadow-lg p-4 bg-white dark:bg-slate-900 border">
+          {!whoami && <div className="text-sm">Cargando...</div>}
+          {whoami?.error && <div className="text-sm text-rose-600">{whoami.error}</div>}
+          {whoami && !whoami.error && (
+            <div className="text-sm">
+              <div className="font-medium">{whoami.email}</div>
+              <div className="text-xs text-slate-500">Rol: {whoami.role}</div>
+              <div className="text-xs text-slate-500">Admin: {String(whoami.admin)}</div>
+              <div className="mt-2 text-xs font-medium">Permisos</div>
+              <div className="mt-1 text-xs text-slate-600 max-h-32 overflow-auto">
+                {(whoami.permissions || []).length === 0 ? <div className="text-xs text-slate-400">(ninguno)</div> : (whoami.permissions || []).map((p:string)=> <div key={p} className="py-0.5">{p}</div>)}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </header>
