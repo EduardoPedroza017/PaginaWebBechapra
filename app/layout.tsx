@@ -1,58 +1,122 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Montserrat } from 'next/font/google';
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+// Context Providers
+import { LanguageProvider } from "@/lib/LanguageContext";
+import { ThemeProvider } from "@/lib/ThemeContext";
+
+// Components
 import NavbarConditional from "@/components/NavbarConditional";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
-import { Montserrat } from 'next/font/google';
-import { Geist, Geist_Mono } from "next/font/google";
-import { LanguageProvider } from "@/lib/LanguageContext";
-import { ThemeProvider } from "@/lib/ThemeContext";
+
+// ============================================================================
+// FONT CONFIGURATION
+// ============================================================================
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
 });
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
 });
+
 const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-montserrat',
   display: 'swap',
 });
 
+const fontVariables = `${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`;
+
+// ============================================================================
+// METADATA & VIEWPORT CONFIGURATION
+// ============================================================================
+
 export const metadata: Metadata = {
-  title: "Bechapra — Soluciones Empresariales",
-  description: "Capital Humano, Desarrollo Organizacional y Management Services",
+  title: {
+    default: "Bechapra — Soluciones Empresariales Integrales",
+    template: "%s | Bechapra"
+  },
+  description: "Capital Humano, Desarrollo Organizacional y Management Services para empresas modernas",
+  keywords: [
+    "capital humano",
+    "desarrollo organizacional", 
+    "consultoría empresarial",
+    "management services",
+    "recursos humanos",
+    "transformación digital"
+  ],
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#0057D9' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a1627' },
+  ],
+  colorScheme: 'light dark',
 };
 
+// ============================================================================
+// ROOT LAYOUT COMPONENT
+// ============================================================================
 
-
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ 
+  children,
+}: { 
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="es" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}>
+    <html 
+      lang="es" 
+      suppressHydrationWarning 
+      className={`${fontVariables}`}
+    >
       <head>
-        {/* Adobe Fonts - Mundial */}
-        {/* <link rel="stylesheet" href="https://use.typekit.net/abc1def.css" /> */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="antialiased">
+      
+      <body className="antialiased bg-background text-foreground min-h-screen">
         <ThemeProvider>
           <LanguageProvider>
-            <NavbarConditional />
-            <main className="min-h-screen w-full overflow-x-hidden">
+            {/* Skip link for accessibility */}
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg"
+            >
+              Saltar al contenido principal
+            </a>
+            
+            {/* Navigation - Wrapped to ensure proper positioning */}
+            <div className="fixed top-0 left-0 right-0 z-50">
+              <NavbarConditional />
+            </div>
+            
+            {/* Main content with proper spacing */}
+            <main 
+              id="main-content"
+              className="min-h-screen pt-20"  /* Increased padding to ensure navbar doesn't cover content */
+            >
               {children}
             </main>
+            
+            {/* Analytics */}
             <Analytics />
+            
+            {/* Cookie Consent */}
             <CookieConsent />
           </LanguageProvider>
         </ThemeProvider>

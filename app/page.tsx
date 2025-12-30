@@ -10,48 +10,57 @@ import NewsCards from "./components/NewsCards";
 import CtaRedes from "./components/CtaRedes";
 import AwardsSection from "./components/AwardsSection";
 import ContactSection from "./components/ContactSection";
-import Footer from "../components/Footer";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-x-hidden transition-colors duration-300 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <>
+      {/* Hero Section - Full width, no container */}
       <HeroSection />
-
+      
+      {/* Services Section */}
       <Section>
         <ServicesSection />
       </Section>
 
+      {/* Press Cards - Blue Background */}
       <Section variant="blue">
         <AnimatedSection delay={0.1}>
           <PressCards />
         </AnimatedSection>
       </Section>
 
+      {/* Training Center */}
       <Section>
         <TrainingCenterSection />
       </Section>
 
+      {/* News Cards - Blue Background */}
       <Section variant="blue">
         <AnimatedSection>
           <NewsCards />
         </AnimatedSection>
       </Section>
 
+      {/* CTA Social Media */}
       <Section>
         <AnimatedSection delay={0.2}>
           <CtaRedes />
         </AnimatedSection>
       </Section>
 
+      {/* Awards - Blue Background */}
       <Section variant="blue">
         <AwardsSection />
       </Section>
 
+      {/* Contact Section */}
       <Section id="contacto">
         <ContactSection />
       </Section>
 
+      {/* Footer */}
       <Footer />
-    </main>
+    </>
   );
 }

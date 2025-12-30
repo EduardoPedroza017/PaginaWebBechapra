@@ -1,4 +1,4 @@
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const response = await fetch('http://localhost:5000/admin/audit', {
       method: 'GET',

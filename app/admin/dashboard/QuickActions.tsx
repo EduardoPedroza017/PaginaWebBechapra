@@ -10,170 +10,377 @@ import {
   Network, 
   MessageSquare,
   ArrowRight,
-  BarChart3
+  BarChart3,
+  ExternalLink,
+  Zap,
+  Shield
 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 interface QuickActionsProps {
   theme: 'light' | 'dark';
   role: string;
 }
 
+interface ActionItem {
+  label: string;
+  description: string;
+  icon: any;
+  href: string;
+  count?: number;
+  color: string;
+  iconBg: string;
+  iconColor: string;
+  borderColor: string;
+  badgeColor: string;
+  isNew?: boolean;
+  requiresSuperAdmin?: boolean;
+}
+
 export default function QuickActions({ theme, role }: QuickActionsProps) {
-  const actions = [
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<{ [key: string]: number }>({});
+  
+  // Cargar estadísticas reales desde las APIs
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      try {
+        // Aquí puedes hacer fetch a tus endpoints reales
+        // Por ahora usamos datos estáticos como tienes
+        setStats({
+          news: 3,
+          gallery: 12,
+          press: 2,
+          contacts: 5,
+          organigrama: 1,
+          usuarios: 4,
+          audit: 0
+        });
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const baseActions: ActionItem[] = [
     {
       label: "Noticias",
       description: "Gestionar publicaciones",
       icon: Newspaper,
       href: "/admin/news",
-      count: 3,
-      color: theme === 'dark' ? 'from-blue-600/20 to-blue-600/5' : 'from-blue-50 to-blue-100',
-      iconBg: theme === 'dark' ? 'bg-blue-600/30' : 'bg-blue-100',
+      count: stats.news,
+      color: theme === 'dark' ? 'bg-blue-900/20' : 'bg-blue-50',
+      iconBg: theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100',
       iconColor: theme === 'dark' ? 'text-blue-400' : 'text-blue-600',
-      borderColor: theme === 'dark' ? 'border-blue-600/30 hover:border-blue-500/50' : 'border-blue-200 hover:border-blue-300',
+      borderColor: theme === 'dark' ? 'border-blue-800/50 hover:border-blue-700' : 'border-blue-200 hover:border-blue-300',
+      badgeColor: theme === 'dark' ? 'bg-blue-600/30 text-blue-400' : 'bg-blue-100 text-blue-700'
     },
     {
       label: "Galería",
       description: "Administrar imágenes",
       icon: Image,
       href: "/admin/galeria",
-      count: 12,
-      color: theme === 'dark' ? 'from-pink-600/20 to-pink-600/5' : 'from-pink-50 to-pink-100',
-      iconBg: theme === 'dark' ? 'bg-pink-600/30' : 'bg-pink-100',
+      count: stats.gallery,
+      color: theme === 'dark' ? 'bg-pink-900/20' : 'bg-pink-50',
+      iconBg: theme === 'dark' ? 'bg-pink-600/20' : 'bg-pink-100',
       iconColor: theme === 'dark' ? 'text-pink-400' : 'text-pink-600',
-      borderColor: theme === 'dark' ? 'border-pink-600/30 hover:border-pink-500/50' : 'border-pink-200 hover:border-pink-300',
+      borderColor: theme === 'dark' ? 'border-pink-800/50 hover:border-pink-700' : 'border-pink-200 hover:border-pink-300',
+      badgeColor: theme === 'dark' ? 'bg-pink-600/30 text-pink-400' : 'bg-pink-100 text-pink-700'
     },
     {
       label: "Prensa",
       description: "Comunicados oficiales",
       icon: FileText,
       href: "/admin/press",
-      count: 2,
-      color: theme === 'dark' ? 'from-emerald-600/20 to-emerald-600/5' : 'from-emerald-50 to-emerald-100',
-      iconBg: theme === 'dark' ? 'bg-emerald-600/30' : 'bg-emerald-100',
+      count: stats.press,
+      color: theme === 'dark' ? 'bg-emerald-900/20' : 'bg-emerald-50',
+      iconBg: theme === 'dark' ? 'bg-emerald-600/20' : 'bg-emerald-100',
       iconColor: theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600',
-      borderColor: theme === 'dark' ? 'border-emerald-600/30 hover:border-emerald-500/50' : 'border-emerald-200 hover:border-emerald-300',
+      borderColor: theme === 'dark' ? 'border-emerald-800/50 hover:border-emerald-700' : 'border-emerald-200 hover:border-emerald-300',
+      badgeColor: theme === 'dark' ? 'bg-emerald-600/30 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
     },
     {
       label: "Contactos",
       description: "Mensajes recibidos",
       icon: MessageSquare,
       href: "/admin/conctform",
-      count: 5,
-      color: theme === 'dark' ? 'from-amber-600/20 to-amber-600/5' : 'from-amber-50 to-amber-100',
-      iconBg: theme === 'dark' ? 'bg-amber-600/30' : 'bg-amber-100',
+      count: stats.contacts,
+      isNew: true,
+      color: theme === 'dark' ? 'bg-amber-900/20' : 'bg-amber-50',
+      iconBg: theme === 'dark' ? 'bg-amber-600/20' : 'bg-amber-100',
       iconColor: theme === 'dark' ? 'text-amber-400' : 'text-amber-600',
-      borderColor: theme === 'dark' ? 'border-amber-600/30 hover:border-amber-500/50' : 'border-amber-200 hover:border-amber-300',
+      borderColor: theme === 'dark' ? 'border-amber-800/50 hover:border-amber-700' : 'border-amber-200 hover:border-amber-300',
+      badgeColor: theme === 'dark' ? 'bg-amber-600/30 text-amber-400' : 'bg-amber-100 text-amber-700'
     },
     {
       label: "Esencia",
       description: "Misión y valores",
       icon: Sparkles,
       href: "/admin/essence",
-      color: theme === 'dark' ? 'from-purple-600/20 to-purple-600/5' : 'from-purple-50 to-purple-100',
-      iconBg: theme === 'dark' ? 'bg-purple-600/30' : 'bg-purple-100',
+      color: theme === 'dark' ? 'bg-purple-900/20' : 'bg-purple-50',
+      iconBg: theme === 'dark' ? 'bg-purple-600/20' : 'bg-purple-100',
       iconColor: theme === 'dark' ? 'text-purple-400' : 'text-purple-600',
-      borderColor: theme === 'dark' ? 'border-purple-600/30 hover:border-purple-500/50' : 'border-purple-200 hover:border-purple-300',
+      borderColor: theme === 'dark' ? 'border-purple-800/50 hover:border-purple-700' : 'border-purple-200 hover:border-purple-300',
+      badgeColor: theme === 'dark' ? 'bg-purple-600/30 text-purple-400' : 'bg-purple-100 text-purple-700'
     },
     {
       label: "Organigrama",
       description: "Estructura empresarial",
       icon: Network,
       href: "/admin/organigrama",
-      count: 1,
-      color: theme === 'dark' ? 'from-cyan-600/20 to-cyan-600/5' : 'from-cyan-50 to-cyan-100',
-      iconBg: theme === 'dark' ? 'bg-cyan-600/30' : 'bg-cyan-100',
+      count: stats.organigrama,
+      color: theme === 'dark' ? 'bg-cyan-900/20' : 'bg-cyan-50',
+      iconBg: theme === 'dark' ? 'bg-cyan-600/20' : 'bg-cyan-100',
       iconColor: theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600',
-      borderColor: theme === 'dark' ? 'border-cyan-600/30 hover:border-cyan-500/50' : 'border-cyan-200 hover:border-cyan-300',
+      borderColor: theme === 'dark' ? 'border-cyan-800/50 hover:border-cyan-700' : 'border-cyan-200 hover:border-cyan-300',
+      badgeColor: theme === 'dark' ? 'bg-cyan-600/30 text-cyan-400' : 'bg-cyan-100 text-cyan-700'
     },
   ];
 
-  // Acciones exclusivas de superadmin
-  const superadminActions = [
+  const superadminActions: ActionItem[] = [
     {
       label: "Usuarios",
       description: "Gestión de accesos",
       icon: Users,
       href: "/admin/usuarios",
-      count: 4,
-      color: theme === 'dark' ? 'from-red-600/20 to-red-600/5' : 'from-red-50 to-red-100',
-      iconBg: theme === 'dark' ? 'bg-red-600/30' : 'bg-red-100',
+      count: stats.usuarios,
+      requiresSuperAdmin: true,
+      color: theme === 'dark' ? 'bg-red-900/20' : 'bg-red-50',
+      iconBg: theme === 'dark' ? 'bg-red-600/20' : 'bg-red-100',
       iconColor: theme === 'dark' ? 'text-red-400' : 'text-red-600',
-      borderColor: theme === 'dark' ? 'border-red-600/30 hover:border-red-500/50' : 'border-red-200 hover:border-red-300',
+      borderColor: theme === 'dark' ? 'border-red-800/50 hover:border-red-700' : 'border-red-200 hover:border-red-300',
+      badgeColor: theme === 'dark' ? 'bg-red-600/30 text-red-400' : 'bg-red-100 text-red-700'
     },
     {
       label: "Auditoría",
       description: "Logs del sistema",
       icon: BarChart3,
       href: "/admin/audit-log",
-      count: 0,
-      color: theme === 'dark' ? 'from-indigo-600/20 to-indigo-600/5' : 'from-indigo-50 to-indigo-100',
-      iconBg: theme === 'dark' ? 'bg-indigo-600/30' : 'bg-indigo-100',
+      count: stats.audit,
+      requiresSuperAdmin: true,
+      color: theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-50',
+      iconBg: theme === 'dark' ? 'bg-indigo-600/20' : 'bg-indigo-100',
       iconColor: theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600',
-      borderColor: theme === 'dark' ? 'border-indigo-600/30 hover:border-indigo-500/50' : 'border-indigo-200 hover:border-indigo-300',
+      borderColor: theme === 'dark' ? 'border-indigo-800/50 hover:border-indigo-700' : 'border-indigo-200 hover:border-indigo-300',
+      badgeColor: theme === 'dark' ? 'bg-indigo-600/30 text-indigo-400' : 'bg-indigo-100 text-indigo-700'
     },
     {
       label: "Configuración",
-      description: "Base de datos",
+      description: "Ajustes del sistema",
       icon: Settings,
       href: "/admin/config",
-      count: undefined,
-      color: theme === 'dark' ? 'from-gray-600/20 to-gray-600/5' : 'from-gray-50 to-gray-100',
-      iconBg: theme === 'dark' ? 'bg-gray-600/30' : 'bg-gray-200',
+      requiresSuperAdmin: true,
+      color: theme === 'dark' ? 'bg-gray-800/40' : 'bg-gray-50',
+      iconBg: theme === 'dark' ? 'bg-gray-700/50' : 'bg-gray-200',
       iconColor: theme === 'dark' ? 'text-gray-400' : 'text-gray-600',
-      borderColor: theme === 'dark' ? 'border-gray-600/30 hover:border-gray-500/50' : 'border-gray-200 hover:border-gray-300',
+      borderColor: theme === 'dark' ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300',
+      badgeColor: theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'
     },
   ];
 
-  const allActions = role === 'superadmin' ? [...actions, ...superadminActions] : actions;
+  const allActions = role === 'superadmin' 
+    ? [...baseActions, ...superadminActions]
+    : baseActions;
+
+  const getGridCols = () => {
+    const count = allActions.length;
+    if (count <= 4) return "grid-cols-2 md:grid-cols-2 lg:grid-cols-4";
+    if (count <= 6) return "grid-cols-2 md:grid-cols-3 lg:grid-cols-6";
+    if (count <= 8) return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
+    return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
+  };
 
   return (
-    <div className={`rounded-2xl border p-5 ${
-      theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
-    }`}>
-      <div className="flex items-center gap-3 mb-5">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-          theme === 'dark' ? 'bg-emerald-600/20' : 'bg-emerald-100'
-        }`}>
-          <ArrowRight className={`w-5 h-5 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`} />
+    <div className="space-y-4">
+      {/* Header */}
+      <div className={`flex items-center justify-between p-4 rounded-xl ${
+        theme === 'dark' ? 'bg-gray-800/30 border border-gray-700' : 'bg-gray-50 border border-gray-200'
+      }`}>
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-lg ${
+            theme === 'dark' ? 'bg-emerald-900/20' : 'bg-emerald-100'
+          }`}>
+            <Zap className={`w-5 h-5 ${
+              theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'
+            }`} />
+          </div>
+          <div>
+            <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <TranslateText text="Accesos Rápidos" />
+            </h3>
+            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+              {role === 'superadmin' 
+                ? <TranslateText text="Acceso completo al sistema" />
+                : <TranslateText text="Navegación principal del sistema" />
+              }
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-            <TranslateText text="Accesos Rápidos" />
-          </h3>
-          <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-            <TranslateText text="Navega a las secciones principales" />
-          </p>
+        
+        {role === 'superadmin' && (
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
+            theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+          }`}>
+            <Shield className="w-4 h-4" />
+            <span className="font-medium">
+              <TranslateText text="Super Admin" />
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className={`rounded-xl border overflow-hidden ${
+        theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-200'
+      }`}>
+        <div className="p-4">
+          {/* Sección principal */}
+          <div className="mb-4">
+            <h4 className={`text-sm font-medium mb-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              <TranslateText text="Contenido" />
+            </h4>
+            <div className={`grid gap-3 ${getGridCols()}`}>
+              {baseActions.map((action, idx) => (
+                <ActionCard 
+                  key={idx}
+                  action={action}
+                  theme={theme}
+                  loading={loading}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Sección de administración (solo para superadmin) */}
+          {role === 'superadmin' && (
+            <div>
+              <div className={`h-px w-full mb-4 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`} />
+              <h4 className={`text-sm font-medium mb-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <TranslateText text="Administración" />
+              </h4>
+              <div className={`grid gap-3 ${getGridCols()}`}>
+                {superadminActions.map((action, idx) => (
+                  <ActionCard 
+                    key={idx}
+                    action={action}
+                    theme={theme}
+                    loading={loading}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className={`px-4 py-3 border-t ${
+          theme === 'dark' ? 'bg-gray-800/30 border-gray-800' : 'bg-gray-50 border-gray-100'
+        }`}>
+          <div className="flex items-center justify-between">
+            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              <TranslateText text="Accesos directos a las secciones principales" />
+            </p>
+            <ArrowRight className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`} />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-        {allActions.map((action, idx) => (
-          <Link
-            key={idx}
-            href={action.href}
-            className={`group rounded-xl p-4 border bg-gradient-to-br transition-all hover:scale-[1.02] active:scale-[0.98] ${action.color} ${action.borderColor}`}
-          >
-            <div className={`w-10 h-10 rounded-xl mb-3 flex items-center justify-center ${action.iconBg}`}>
-              <action.icon className={`w-5 h-5 ${action.iconColor}`} />
-            </div>
-            <h4 className={`font-semibold text-sm mb-0.5 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              <TranslateText text={action.label} />
-            </h4>
-            <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-              <TranslateText text={action.description} />
-            </p>
-            {typeof action.count === 'number' && (
-              <span className={`mt-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold ${
-                theme === 'dark' ? 'bg-white/5 text-white border border-white/10' : 'bg-white text-gray-800 border border-gray-100 shadow-sm'
-              }`}>
-                {action.count}
-              </span>
-            )}
-          </Link>
-        ))}
-      </div>
+      {/* Nota de uso */}
+      {loading && (
+        <div className={`p-3 rounded-lg text-sm text-center ${
+          theme === 'dark' ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'
+        }`}>
+          <TranslateText text="Cargando estadísticas..." />
+        </div>
+      )}
     </div>
+  );
+}
+
+// Componente de tarjeta de acción reutilizable
+function ActionCard({ 
+  action, 
+  theme, 
+  loading 
+}: { 
+  action: ActionItem; 
+  theme: 'light' | 'dark';
+  loading: boolean;
+}) {
+  return (
+    <Link
+      href={action.href}
+      className={`group relative flex flex-col p-4 rounded-lg border transition-all duration-200 hover:shadow-md ${
+        action.color
+      } ${action.borderColor} ${action.requiresSuperAdmin ? 'ring-1 ring-inset ring-yellow-500/20' : ''}`}
+    >
+      {/* Indicador de nuevo */}
+      {action.isNew && (
+        <span className={`absolute -top-1 -right-1 px-2 py-0.5 rounded-full text-xs font-medium z-10 ${
+          theme === 'dark' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'
+        }`}>
+          Nuevo
+        </span>
+      )}
+
+      {/* Icono */}
+      <div className="flex items-start justify-between mb-3">
+        <div className={`p-2.5 rounded-lg ${action.iconBg}`}>
+          <action.icon className={`w-5 h-5 ${action.iconColor}`} />
+        </div>
+        
+        {/* Badge de contador o superadmin */}
+        {action.count !== undefined && action.count > 0 ? (
+          <span className={`px-2 py-0.5 rounded-md text-xs font-medium min-w-[24px] text-center ${
+            action.badgeColor
+          }`}>
+            {loading ? '...' : action.count}
+          </span>
+        ) : action.requiresSuperAdmin ? (
+          <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+            theme === 'dark' ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-700'
+          }`}>
+            Admin
+          </span>
+        ) : null}
+      </div>
+
+      {/* Contenido */}
+      <div className="flex-1">
+        <h4 className={`font-semibold text-sm mb-1.5 group-hover:underline ${
+          theme === 'dark' ? 'text-white' : 'text-gray-900'
+        }`}>
+          <TranslateText text={action.label} />
+        </h4>
+        <p className={`text-xs leading-tight line-clamp-2 ${
+          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+        }`}>
+          <TranslateText text={action.description} />
+        </p>
+      </div>
+
+      {/* Indicador de acción */}
+      <div className={`mt-3 pt-3 border-t ${
+        theme === 'dark' ? 'border-gray-800/50' : 'border-gray-100'
+      }`}>
+        <div className="flex items-center justify-between">
+          <span className={`text-xs ${
+            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+          }`}>
+            <TranslateText text="Acceder" />
+          </span>
+          <ExternalLink className={`w-3.5 h-3.5 ${
+            theme === 'dark' ? 'text-gray-600 group-hover:text-gray-400' : 'text-gray-400 group-hover:text-gray-600'
+          } transition-colors`} />
+        </div>
+      </div>
+    </Link>
   );
 }

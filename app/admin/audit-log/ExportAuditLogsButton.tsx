@@ -12,7 +12,7 @@ interface AuditLogEntry {
   reason?: string;
 }
 
-export function ExportAuditLogsButton({ logs }: { logs: AuditLogEntry[] }) {
+export function ExportAuditLogsButton({ logs, theme }: { logs: AuditLogEntry[]; theme: "light" | "dark" }) {
   const handleExport = () => {
     if (!logs || logs.length === 0) return;
     const csvRows = [

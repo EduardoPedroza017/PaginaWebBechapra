@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { TranslateText } from "@/components/TranslateText";
 
 interface UserFormProps {
-  initial?: { email?: string; role?: string; roles?: string[]; permissions?: string[] };
-  onSubmit: (data: { email: string; password?: string; role?: string; roles?: string[]; permissions?: string[] }) => void;
+  initial?: { email?: string; role?: string; roles?: string[]; permissions?: string[]; active?: boolean }; // Added `active` property
+  onSubmit: (data: { email: string; password?: string; role?: string; roles?: string[]; permissions?: string[]; active?: boolean }) => void;
   onClose: () => void;
   isEdit?: boolean;
 }
-
 
 export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormProps) {
     // Lista de permisos sugeridos (modifica según tu sistema)

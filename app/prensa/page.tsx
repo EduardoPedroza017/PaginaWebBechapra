@@ -10,7 +10,7 @@ import {
   PressSkeleton,
   EmptyState,
 } from "./components";
-import { ChevronDown, Loader2 } from "lucide-react";
+import { ChevronDown, Loader2, Newspaper, Calendar, Download, ExternalLink, Mail, Phone, Megaphone, TrendingUp } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
@@ -19,14 +19,24 @@ interface PressItem {
   date: string;
   excerpt: string;
   link?: string;
+  category?: string;
+  type?: 'press-release' | 'article' | 'interview' | 'announcement';
+  mediaOutlet?: string;
+  views?: number;
 }
 
 export default function PrensaPage() {
   const [press, setPress] = useState<PressItem[]>([]);
   const [filtered, setFiltered] = useState<PressItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(9);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [stats, setStats] = useState({
+    total: 0,
+    thisMonth: 0,
+    mediaOutlets: 0,
+    featured: 0
+  });
 
   useEffect(() => {
     fetch("/api/press")
@@ -38,6 +48,17 @@ export default function PrensaPage() {
         );
         setPress(sorted);
         setFiltered(sorted);
+        
+        // Calculate stats
+        const now = new Date();
+        const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        setStats({
+          total: sorted.length,
+          thisMonth: sorted.filter(item => new Date(item.date) >= thisMonth).length,
+          mediaOutlets: new Set(sorted.map(item => item.mediaOutlet).filter(Boolean)).size,
+          featured: sorted.filter(item => item.type === 'press-release').length
+        });
       })
       .catch((err) => {
         console.error("Error fetching press:", err);
@@ -48,30 +69,206 @@ export default function PrensaPage() {
   // Reset pagination on filter
   const handleFilter = useCallback((filteredList: PressItem[]) => {
     setFiltered(filteredList);
-    setVisibleCount(8);
+    setVisibleCount(9);
   }, []);
 
   // Load more with animation
   const handleLoadMore = () => {
     setLoadingMore(true);
     setTimeout(() => {
-      setVisibleCount((c) => c + 6);
+      setVisibleCount((c) => c + 9);
       setLoadingMore(false);
     }, 300);
   };
 
-  // Split items: first 2 featured, rest regular
-  const featuredItems = filtered.slice(0, 2);
-  const regularItems = filtered.slice(2, visibleCount);
+  // Split items: first 3 featured (large), next 6 regular
+  const featuredItems = filtered.slice(0, 3);
+  const regularItems = filtered.slice(3, visibleCount);
   const hasMore = filtered.length > visibleCount;
 
   return (
-    <main className="min-h-screen transition-colors duration-300 bg-slate-50 dark:bg-slate-900">
+    <main className="min-h-screen bg-linear-to-b from-slate-50 via-white to-blue-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/10">
       {/* Hero Section */}
-      <PressHero />
+      <section className="relative overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-indigo-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-blue-600/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-semibold mb-8 border border-white/20"
+            >
+              <Megaphone className="w-4 h-4" />
+              <TranslateText text="Sala de Prensa Oficial" />
+            </motion.div>
+
+            {/* Main Title */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight tracking-tight">
+              <span className="bg-linear-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                <TranslateText text="Sala de" />
+              </span>
+              <br />
+              <span className="bg-linear-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                <TranslateText text="Prensa" />
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-xl sm:text-2xl text-blue-100/90 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+              <TranslateText text="Comunicados oficiales, coberturas mediáticas y recursos para periodistas y medios de comunicación." />
+            </p>
+
+            {/* Stats Grid */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-12"
+            >
+              {[
+                { label: "Comunicados", value: stats.total, icon: Newspaper, color: "from-blue-500 to-cyan-500" },
+                { label: "Este Mes", value: stats.thisMonth, icon: Calendar, color: "from-emerald-500 to-green-500" },
+                { label: "Medios", value: stats.mediaOutlets, icon: TrendingUp, color: "from-amber-500 to-orange-500" },
+                { label: "Destacados", value: stats.featured, icon: Megaphone, color: "from-purple-500 to-pink-500" },
+              ].map((stat, i) => (
+                <div key={i} className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                  <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${stat.color} flex items-center justify-center mx-auto mb-3`}>
+                    <stat.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-white">{stat.value}</div>
+                    <div className="text-sm text-blue-200/70">{stat.label}</div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Quick Actions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <a
+                href="#comunicados"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-white to-blue-50 text-blue-900 font-bold rounded-2xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all duration-300"
+              >
+                <Newspaper className="w-5 h-5" />
+                <TranslateText text="Ver Comunicados" />
+                <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+              </a>
+              <a
+                href="#media-kit"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-2xl border-2 border-white/30 hover:border-white/60 hover:bg-white/20 transition-all duration-300"
+              >
+                <Download className="w-5 h-5" />
+                <TranslateText text="Kit de Medios" />
+              </a>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Wave separator */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" className="w-full h-auto">
+            <path
+              d="M0,120L48,112C96,104,192,88,288,80C384,72,480,72,576,80C672,88,768,104,864,112C960,120,1056,120,1152,112C1248,104,1344,88,1392,80L1440,72L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+              className="fill-white dark:fill-slate-900"
+            />
+          </svg>
+        </div>
+      </section>
+
+      {/* Media Kit Section */}
+      <section id="media-kit" className="py-16 bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden">
+            <div className="grid lg:grid-cols-2 gap-8 p-8">
+              <div>
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">
+                  <TranslateText text="Recursos para" />{" "}
+                  <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    <TranslateText text="Medios" />
+                  </span>
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 mb-6">
+                  <TranslateText text="Todo lo que necesitan los periodistas y medios de comunicación para cubrir nuestras actividades." />
+                </p>
+                <div className="space-y-4">
+                  <a href="#" className="flex items-center gap-3 p-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
+                    <Download className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        <TranslateText text="Kit de Prensa Completo" />
+                      </div>
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
+                        <TranslateText text="Logos, fotos, biografías (ZIP, 45MB)" />
+                      </div>
+                    </div>
+                  </a>
+                  <a href="#" className="flex items-center gap-3 p-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
+                    <ExternalLink className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        <TranslateText text="Galeria de Fotos" />
+                      </div>
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
+                        <TranslateText text="Imágenes de alta resolución" />
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-8 text-white">
+                <h3 className="text-2xl font-bold mb-4">
+                  <TranslateText text="Contacto Directo" />
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <div className="font-medium">prensa@bechapra.com</div>
+                      <div className="text-sm text-blue-200">
+                        <TranslateText text="Respuesta en 24h" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <Phone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <div className="font-medium">+52 55 1234 5678</div>
+                      <div className="text-sm text-blue-200">
+                        <TranslateText text="Línea directa prensa" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Press Releases Section */}
-      <section id="comunicados" className="py-20 px-6">
+      <section id="comunicados" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <motion.div
@@ -79,20 +276,21 @@ export default function PrensaPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-4 transition-colors duration-300 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-semibold mb-6">
+              <Newspaper className="w-4 h-4" />
               <TranslateText text="Comunicados Oficiales" />
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black mb-4 transition-colors duration-300 text-gray-900 dark:text-white">
-              <TranslateText text="Nuestros" /> {" "}
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                <TranslateText text="Comunicados" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black mb-6 text-slate-900 dark:text-white">
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 bg-clip-text text-transparent">
+                <TranslateText text="Últimos Comunicados" />
               </span>
             </h2>
-            <p className="text-xl max-w-2xl mx-auto transition-colors duration-300 text-gray-600 dark:text-slate-300">
-              <TranslateText text="Información oficial sobre nuestras actividades, logros y novedades." />
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              <TranslateText text="Información oficial verificada y recursos exclusivos para medios de comunicación." />
             </p>
+            <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mx-auto mt-6" />
           </motion.div>
 
           {/* Filter */}
@@ -103,23 +301,36 @@ export default function PrensaPage() {
             filteredCount={filtered.length}
           />
 
+          {/* Results Summary */}
+          <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-slate-700 dark:text-slate-300">
+              <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span>{" "}
+              <TranslateText text="comunicados encontrados" />
+            </div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">
+              <TranslateText text={`Mostrando ${Math.min(visibleCount, filtered.length)} de ${filtered.length}`} />
+            </div>
+          </div>
+
           {/* Content */}
           {loading ? (
             <PressSkeleton />
           ) : filtered.length === 0 ? (
             <EmptyState />
           ) : (
-            <div className="space-y-8">
-              {/* Featured Press Items */}
+            <div className="space-y-12">
+              {/* Featured Press Items (Large Cards) */}
               {featuredItems.length > 0 && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {featuredItems.map((item, i) => (
-                    <PressCard
-                      key={item.id}
-                      item={item}
-                      index={i}
-                      isFeatured={true}
-                    />
+                    <div key={item.id} className={i === 0 ? "lg:col-span-2" : ""}>
+                      <PressCard
+                        item={item}
+                        index={i}
+                        isFeatured={true}
+                        size={i === 0 ? "large" : "medium"}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
@@ -130,14 +341,15 @@ export default function PrensaPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                   {regularItems.map((item, i) => (
                     <PressCard
                       key={item.id}
                       item={item}
-                      index={i + 2}
+                      index={i + 3}
                       isFeatured={false}
+                      size="small"
                     />
                   ))}
                 </motion.div>
@@ -148,124 +360,100 @@ export default function PrensaPage() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex justify-center pt-8"
+                  className="flex justify-center pt-12"
                 >
                   <motion.button
                     onClick={handleLoadMore}
                     disabled={loadingMore}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-600/30"
+                    className="group relative overflow-hidden px-10 py-5 rounded-2xl font-bold text-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-2xl shadow-blue-600/30"
                   >
-                    {loadingMore ? (
-                      <>
-                        <Loader2 size={20} className="animate-spin" />
-                        <span><TranslateText text="Cargando..." /></span>
-                      </>
-                    ) : (
-                      <>
-                        <span><TranslateText text="Ver más comunicados" /></span>
-                        <ChevronDown
-                          size={20}
-                          className="group-hover:translate-y-1 transition-transform duration-300"
-                        />
-                      </>
-                    )}
+                    <span className="relative z-10 flex items-center gap-3">
+                      {loadingMore ? (
+                        <>
+                          <Loader2 size={20} className="animate-spin" />
+                          <span><TranslateText text="Cargando más..." /></span>
+                        </>
+                      ) : (
+                        <>
+                          <span><TranslateText text="Ver más comunicados" /></span>
+                          <ChevronDown
+                            size={20}
+                            className="group-hover:translate-y-1 transition-transform duration-300"
+                          />
+                        </>
+                      )}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 </motion.div>
               )}
-
-              {/* Results Summary */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center text-sm pt-4 transition-colors duration-300 text-gray-400 dark:text-slate-400"
-              >
-                <TranslateText text={`Mostrando ${Math.min(visibleCount, filtered.length)} de ${filtered.length} comunicados`} />
-              </motion.div>
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-6 relative overflow-hidden transition-colors duration-300 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
-        {/* Background Decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-1/2 -left-1/4 w-full h-full bg-gradient-to-br from-white/5 to-transparent rounded-full"
-          />
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            className="absolute -bottom-1/2 -right-1/4 w-full h-full bg-gradient-to-tl from-cyan-400/10 to-transparent rounded-full"
-          />
+      {/* Media Contact CTA */}
+      <section className="py-20 relative overflow-hidden bg-linear-to-br from-slate-900 via-blue-950 to-indigo-950">
+        {/* Animated background */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="bg-white/5 backdrop-blur-lg rounded-3xl p-12 border border-white/10"
           >
+            {/* Badge */}
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white text-sm font-semibold mb-6">
+              <Megaphone className="w-4 h-4" />
+              <TranslateText text="Para Medios de Comunicación" />
+            </span>
+
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              <TranslateText text="¿Eres medio de" /> {" "}
-              <span className="bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
-                <TranslateText text="comunicación" />
-              </span>
-              ?
+              <TranslateText text="¿Eres" />{" "}
+              <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                <TranslateText text="Periodista" />
+              </span>{" "}
+              <TranslateText text="o Medio?" />
             </h2>
+
             <p className="text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
-              <TranslateText text="Contáctanos para solicitar información, entrevistas o material de prensa. Nuestro equipo de comunicación está disponible para atenderte." />
+              <TranslateText text="Solicita entrevistas exclusivas, acceso a fuentes directas o agenda una sesión informativa con nuestro equipo directivo." />
             </p>
 
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <motion.a
                 href="/#contacto"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-white to-blue-50 text-blue-900 font-bold rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300"
               >
-                <TranslateText text="Contacto de Prensa" />
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
+                <Mail className="w-5 h-5" />
+                <TranslateText text="Solicitar Entrevista" />
+                <ExternalLink className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.a>
+
               <motion.a
                 href="mailto:prensa@bechapra.com"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                prensa@bechapra.com
+                <Phone className="w-5 h-5" />
+                <span className="font-mono">+52 55 1234 5678</span>
               </motion.a>
             </div>
+
+            <p className="text-blue-200/70 text-sm mt-8">
+              <TranslateText text="Horario de atención para prensa: Lunes a Viernes de 9:00 a 18:00 hrs" />
+            </p>
           </motion.div>
         </div>
       </section>

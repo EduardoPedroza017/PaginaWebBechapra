@@ -27,24 +27,25 @@ const nextConfig: NextConfig = {
         port: '5000',
         pathname: '/uploads/organigrama/**',
       },
-    ],
-    domains: ['localhost'],
-    localPatterns: [
       {
+        protocol: 'http',
+        hostname: 'localhost',
         pathname: '/image/**',
-        search: '',
       },
       {
+        protocol: 'http',
+        hostname: 'localhost',
         pathname: '/images/**',
-        search: '',
       },
       {
+        protocol: 'http',
+        hostname: 'localhost',
         pathname: '/api/proxy-image',
-        search: '',
       },
       {
+        protocol: 'http',
+        hostname: 'localhost',
         pathname: '/uploads/branding/**',
-        search: '',
       },
     ],
   },

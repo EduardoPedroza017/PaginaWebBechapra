@@ -8,6 +8,7 @@ interface Props {
   initialHandle?: string
   onClose: () => void
   onCreated?: (page: any) => void
+  onContinue?: (handle?: string) => void
 }
 
 export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose, onCreated }) => {

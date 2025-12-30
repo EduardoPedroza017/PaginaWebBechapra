@@ -1,7 +1,10 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
-import { Service, ServiceEditModal, DeleteServiceModal, ServiceCardList, SearchBar } from "./components";
+import { Service } from "./components/ServiceForm";
+import { ServiceEditModal } from "./components/ServiceEditModal";
+import { DeleteServiceModal } from "./components/DeleteServiceModal";
+import { ServiceCardList } from "./components/ServiceCardList";
+import { SearchBar } from "./components/SearchBar";
 import ServicePageForm from "./components/ServicePageForm";
 import { Button } from "../components/shared/Button";
 import { Sidebar } from "../dashboard/Sidebar";
@@ -199,7 +202,7 @@ export default function ServiciosAdminPage() {
             </h1>
             <div className="flex items-center gap-3">
                 <div className="w-72">
-                <SearchBar value={query} onChange={(q) => {
+                <SearchBar value={query} onChange={(q: string) => {
                   // update query and debounce the network call to avoid loops and excessive requests
                   setQuery(q);
                   if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
@@ -237,7 +240,7 @@ export default function ServiciosAdminPage() {
             initialData={editData}
             onClose={() => setEditOpen(false)}
             onSave={handleSave}
-            onContinue={(h) => { setPageInitialHandle(h); setPageFormOpen(true); setEditOpen(false); }}
+            onContinue={(h?: string) => { if (h) { setPageInitialHandle(h); setPageFormOpen(true); setEditOpen(false); } }}
           />
           <DeleteServiceModal
             open={deleteOpen}
@@ -249,7 +252,7 @@ export default function ServiciosAdminPage() {
             open={pageFormOpen}
             initialHandle={pageInitialHandle}
             onClose={() => setPageFormOpen(false)}
-            onCreated={(p) => { console.log('page created', p); setPageFormOpen(false); }}
+            onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
           />
         </main>
       </div>

@@ -2,9 +2,24 @@
 
 import { useMemo } from "react";
 import { TranslateText } from "@/components/TranslateText";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, type ScriptableContext } from 'chart.js';
+import { 
+  Chart as ChartJS, 
+  ArcElement, 
+  Tooltip, 
+  Legend, 
+  CategoryScale, 
+  LinearScale, 
+  BarElement, 
+  PointElement, 
+  LineElement, 
+  Filler, 
+  type ScriptableContext,
+  ChartOptions 
+} from 'chart.js';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
-import { PieChart, BarChart3, TrendingUp } from "lucide-react";
+import { PieChart, BarChart3, TrendingUp, Info } from "lucide-react";
+import { CheckCircle, XCircle } from "@heroicons/react/solid";
+import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler);
 
@@ -18,47 +33,54 @@ interface CookieConsent {
 interface CookieChartsProps {
   data: CookieConsent[];
   theme?: 'light' | 'dark';
+  className?: string;
 }
 
-export default function CookieCharts({ data, theme = 'dark' }: CookieChartsProps) {
+export default function CookieCharts({ data, theme = 'dark', className }: CookieChartsProps) {
   const accepted = data.filter(d => d.accepted).length;
   const rejected = data.filter(d => !d.accepted).length;
+  const total = data.length;
 
-  // Datos para gráfico de dona con gradientes futuristas
+  // Datos para gráfico de dona con gradientes mejorados
   const doughnutData = {
-    labels: ['Aceptados', 'Rechazados'],
+    labels: [<TranslateText key="accepted" text="Aceptados" />, <TranslateText key="rejected" text="Rechazados" />],
     datasets: [{
       data: [accepted, rejected],
       backgroundColor: [
-        'rgba(16, 185, 129, 0.9)',    // Verde neón
-        'rgba(244, 63, 94, 0.9)',      // Rosa neón
+        'rgba(16, 185, 129, 0.95)',
+        'rgba(244, 63, 94, 0.95)',
       ],
       borderColor: [
-        'rgba(16, 185, 129, 1)',
-        'rgba(244, 63, 94, 1)',
+        theme === 'dark' ? 'rgba(16, 185, 129, 1)' : 'rgba(16, 185, 129, 0.8)',
+        theme === 'dark' ? 'rgba(244, 63, 94, 1)' : 'rgba(244, 63, 94, 0.8)',
       ],
-      borderWidth: 4,
-      hoverOffset: 20,
-      hoverBorderWidth: 5,
+      borderWidth: 2,
+      hoverOffset: 15,
+      hoverBorderWidth: 4,
       hoverBorderColor: [
-        'rgba(16, 185, 129, 1)',
-        'rgba(244, 63, 94, 1)',
+        theme === 'dark' ? 'rgba(16, 185, 129, 0.8)' : 'rgba(16, 185, 129, 1)',
+        theme === 'dark' ? 'rgba(244, 63, 94, 0.8)' : 'rgba(244, 63, 94, 1)',
       ],
     }]
   };
 
-  // Datos por día (últimos 7 días)
+  // Datos por día (últimos 7 días) con mejor formato
   const dailyData = useMemo(() => {
     const last7Days: { [key: string]: { accepted: number, rejected: number } } = {};
     const today = new Date();
     
-    for (let i = 6; i >= 0; i--) {
+    // Crear 7 días incluyendo hoy
+    for (let i = 0; i < 7; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const key = date.toISOString().split('T')[0];
       last7Days[key] = { accepted: 0, rejected: 0 };
     }
 
+    // Ordenar días cronológicamente
+    const sortedDays = Object.keys(last7Days).sort();
+
+    // Procesar datos
     data.forEach(item => {
       const date = new Date(item.timestamp).toISOString().split('T')[0];
       if (last7Days[date]) {
@@ -70,306 +92,384 @@ export default function CookieCharts({ data, theme = 'dark' }: CookieChartsProps
       }
     });
 
-    return last7Days;
+    // Retornar objeto ordenado
+    const orderedData: typeof last7Days = {};
+    sortedDays.forEach(key => {
+      orderedData[key] = last7Days[key];
+    });
+
+    return orderedData;
   }, [data]);
 
   const barChartData = {
     labels: Object.keys(dailyData).map(date => {
       const d = new Date(date);
-      return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (d.toDateString() === today.toDateString()) return 'Hoy';
+      if (d.toDateString() === yesterday.toDateString()) return 'Ayer';
+      
+      return d.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit' });
     }),
     datasets: [
       {
-        label: 'Aceptados',
+        label: "Aceptados",
         data: Object.values(dailyData).map(d => d.accepted),
-        backgroundColor: 'rgba(16, 185, 129, 0.95)', // Verde neón más intenso
+        backgroundColor: theme === 'dark' 
+          ? 'rgba(16, 185, 129, 0.9)' 
+          : 'rgba(16, 185, 129, 0.8)',
         borderColor: 'rgba(16, 185, 129, 1)',
-        borderWidth: 3,
-        borderRadius: 12,
+        borderWidth: 1,
+        borderRadius: 6,
         borderSkipped: false,
         hoverBackgroundColor: 'rgba(16, 185, 129, 1)',
-        hoverBorderColor: 'rgba(5, 150, 105, 1)',
-        hoverBorderWidth: 4,
+        hoverBorderColor: theme === 'dark' ? '#059669' : '#10b981',
+        hoverBorderWidth: 2,
       },
       {
-        label: 'Rechazados',
+        label: "Rechazados",
         data: Object.values(dailyData).map(d => d.rejected),
-        backgroundColor: 'rgba(244, 63, 94, 0.95)', // Rosa neón más intenso
+        backgroundColor: theme === 'dark' 
+          ? 'rgba(244, 63, 94, 0.9)' 
+          : 'rgba(244, 63, 94, 0.8)',
         borderColor: 'rgba(244, 63, 94, 1)',
-        borderWidth: 3,
-        borderRadius: 12,
+        borderWidth: 1,
+        borderRadius: 6,
         borderSkipped: false,
         hoverBackgroundColor: 'rgba(244, 63, 94, 1)',
-        hoverBorderColor: 'rgba(225, 29, 72, 1)',
-        hoverBorderWidth: 4,
+        hoverBorderColor: theme === 'dark' ? '#be123c' : '#f43f5e',
+        hoverBorderWidth: 2,
       }
     ]
   };
 
-  // Datos acumulados para línea de tendencia futurista
+  // Datos para línea de tendencia con gradiente mejorado
   const lineData = {
-    labels: Object.keys(dailyData).map(date => {
-      const d = new Date(date);
-      return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-    }),
+    labels: barChartData.labels,
     datasets: [{
-      label: 'Total Diario',
+      label: "Total Diario",
       data: Object.values(dailyData).map(d => d.accepted + d.rejected),
       fill: true,
       backgroundColor: (context: ScriptableContext<'line'>) => {
         const ctx = context.chart.ctx;
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Azul superior
-        gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.3)'); // Morado medio
-        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.1)'); // Rosa inferior
+        if (theme === 'dark') {
+          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+          gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.2)');
+          gradient.addColorStop(1, 'rgba(236, 72, 153, 0.1)');
+        } else {
+          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+          gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.1)');
+          gradient.addColorStop(1, 'rgba(236, 72, 153, 0.05)');
+        }
         return gradient;
       },
-      borderColor: 'rgba(59, 130, 246, 1)',
-      borderWidth: 4,
+      borderColor: theme === 'dark' ? 'rgba(59, 130, 246, 0.9)' : 'rgba(59, 130, 246, 0.8)',
+      borderWidth: 3,
       tension: 0.4,
       pointBackgroundColor: 'rgba(59, 130, 246, 1)',
-      pointBorderColor: '#0f172a',
-      pointBorderWidth: 4,
-      pointRadius: 7,
-      pointHoverRadius: 12,
-      pointHoverBorderWidth: 5,
+      pointBorderColor: theme === 'dark' ? '#0f172a' : '#ffffff',
+      pointBorderWidth: 2,
+      pointRadius: 5,
+      pointHoverRadius: 8,
+      pointHoverBorderWidth: 3,
       pointHoverBackgroundColor: 'rgba(96, 165, 250, 1)',
       pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
-      shadowOffsetX: 0,
-      shadowOffsetY: 0,
-      shadowBlur: 20,
-      shadowColor: 'rgba(59, 130, 246, 0.5)',
     }]
   };
 
-  const chartOptions = {
+  // Opciones base mejoradas
+  const chartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     animation: {
-      duration: 2000,
-      easing: 'easeInOutCubic' as const,
+      duration: 1000,
+      easing: 'easeInOutQuart' as const,
     },
     plugins: {
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: theme === 'dark' ? '#e2e8f0' : '#475569',
+          color: theme === 'dark' ? '#cbd5e1' : '#475569',
           font: { 
-            size: 13, 
-            weight: 700 as const, 
-            family: "'Inter', 'Segoe UI', sans-serif" 
+            size: 12, 
+            family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           },
-          padding: 20,
+          padding: 15,
           usePointStyle: true,
-          pointStyle: 'circle' as const,
-          boxWidth: 12,
-          boxHeight: 12,
+          pointStyle: 'circle',
+          boxWidth: 10,
+          boxHeight: 10,
         }
       },
       tooltip: {
-        backgroundColor: 'rgba(15, 23, 42, 0.98)',
-        titleColor: '#f1f5f9',
-        bodyColor: '#e2e8f0',
-        borderColor: 'rgba(59, 130, 246, 0.8)',
-        borderWidth: 3,
-        padding: 16,
-        cornerRadius: 12,
-        titleFont: { size: 15, weight: 'bold' as const },
-        bodyFont: { size: 14, weight: 600 as const },
+        backgroundColor: theme === 'dark' ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        titleColor: theme === 'dark' ? '#f1f5f9' : '#1e293b',
+        bodyColor: theme === 'dark' ? '#cbd5e1' : '#475569',
+        borderColor: theme === 'dark' ? 'rgba(59, 130, 246, 0.5)' : 'rgba(59, 130, 246, 0.3)',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
+        titleFont: { size: 13, weight: "bold" },
+        bodyFont: { size: 12, weight: "normal" },
         displayColors: true,
-        boxPadding: 8,
-        caretSize: 8,
+        boxPadding: 6,
+        caretSize: 6,
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            const value = context.raw;
+            return `${label}: ${value}`;
+          },
+        },
       }
     }
   };
 
-  const barOptions = {
-    ...chartOptions,
+  const barOptions: ChartOptions<'bar'> = {
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "#000",
+          font: {
+            size: 12,
+            weight: "normal",
+          },
+          maxRotation: 0,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "#ddd",
+          lineWidth: 1,
+        },
+        ticks: {
+          color: "#000",
+          font: {
+            size: 12,
+            weight: "normal",
+          },
+        },
+      },
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    elements: {
+      bar: {
+        borderRadius: 6,
+      }
+    }
+  };
+
+  const lineOptions: ChartOptions<'line'> = {
     scales: {
       x: {
         grid: { 
           display: false,
         },
         ticks: { 
-          color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-          font: { size: 12, weight: 600 as const }
+          color: theme === 'dark' ? '#94a3b8' : '#64748b',
+          font: { size: 11, weight: "normal" },
+          maxRotation: 0,
         }
       },
       y: {
+        beginAtZero: true,
         grid: { 
-          color: theme === 'dark' ? 'rgba(71, 85, 105, 0.3)' : 'rgba(226, 232, 240, 0.8)',
-          lineWidth: 2,
-          drawBorder: false,
+          color: theme === 'dark' ? 'rgba(71, 85, 105, 0.2)' : 'rgba(226, 232, 240, 0.6)',
+          lineWidth: 1,
         },
         ticks: { 
-          color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-          font: { size: 12, weight: 600 as const }
+          color: theme === 'dark' ? '#94a3b8' : '#64748b',
+          font: { size: 11, weight: "normal" },
+          precision: 0,
         }
       }
     },
     interaction: {
-      mode: 'index' as const,
+      mode: 'index',
       intersect: false,
     },
   };
 
-  const lineOptions = {
-    ...chartOptions,
-    scales: {
-      x: {
-        grid: { 
-          display: false,
+  const doughnutOptions: ChartOptions<'doughnut'> = {
+    cutout: '70%',
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (context: TooltipItem<'doughnut'>) => {
+            const label = context.dataset.label || "";
+            const value = context.raw as number;
+            return `${label}: ${value}`;
+          },
         },
-        ticks: { 
-          color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-          font: { size: 12, weight: 600 as const }
-        }
       },
-      y: {
-        grid: { 
-          color: theme === 'dark' ? 'rgba(71, 85, 105, 0.3)' : 'rgba(226, 232, 240, 0.8)',
-          lineWidth: 2,
-          drawBorder: false,
-        },
-        ticks: { 
-          color: theme === 'dark' ? '#cbd5e1' : '#64748b',
-          font: { size: 12, weight: 600 as const }
-        }
-      }
     },
     interaction: {
-      mode: 'index' as const,
+      mode: 'index',
       intersect: false,
     },
   };
-  const doughnutOptions = {
-    ...chartOptions,
-    cutout: '75%',
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-      duration: 2500,
-      easing: 'easeInOutCubic' as const,
-    },
+
+  // Función para obtener color de porcentaje
+  const getAcceptanceColor = (rate: number) => {
+    if (rate >= 70) return 'text-emerald-400';
+    if (rate >= 50) return 'text-amber-400';
+    return 'text-rose-400';
   };
+
+  const acceptanceRate = total > 0 ? ((accepted / total) * 100).toFixed(1) : '0';
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      {/* Gráfico de Dona - Futurista */}
-      <div className={`group rounded-3xl border p-7 transition-all duration-700 hover:scale-[1.03] relative overflow-hidden ${
+    <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${className}`}>
+      {/* Gráfico de Dona - Card mejorado */}
+      <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
-          ? 'bg-gradient-to-br from-slate-900/90 via-purple-900/10 to-slate-900/90 border-purple-500/30 shadow-2xl shadow-purple-500/20 hover:shadow-purple-500/40 hover:border-purple-400/50' 
-          : 'bg-gradient-to-br from-white via-purple-50/30 to-white border-purple-200 shadow-xl hover:shadow-2xl hover:shadow-purple-300/30'
+          ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
+          : "bg-linear-to-br from-white via-gray-50/50 to-white border-gray-200 shadow-lg hover:shadow-xl hover:border-gray-300"
       }`}>
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <div className={`p-3 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 ${
+        <div className="p-6 relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl transition-all duration-500 ${
+                theme === 'dark' 
+                  ? 'bg-emerald-600/20 shadow-lg shadow-emerald-500/20' 
+                  : 'bg-emerald-100 shadow-md shadow-emerald-200/50'
+              }`}>
+                <PieChart className={`w-5 h-5 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`} />
+              </div>
+              <div>
+                <h3 className={`font-bold text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  <TranslateText text="Distribución" />
+                </h3>
+                <p className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <TranslateText text="Consentimientos totales" />
+                </p>
+              </div>
+            </div>
+            <div className={`text-xs px-3 py-1 rounded-full font-medium ${
               theme === 'dark' 
-                ? 'bg-gradient-to-br from-purple-600/40 to-pink-600/30 shadow-lg shadow-purple-500/30' 
-                : 'bg-gradient-to-br from-purple-100 to-pink-100 shadow-md shadow-purple-200/50'
+                ? 'bg-gray-800 text-gray-300' 
+                : 'bg-gray-100 text-gray-700'
             }`}>
-              <PieChart className={`w-6 h-6 ${theme === 'dark' ? 'text-purple-300' : 'text-purple-700'}`} />
-            </div>
-            <div>
-              <h3 className={`font-bold text-xl ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                <TranslateText text="Distribución" />
-              </h3>
-              <p className={`text-xs font-medium ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-                <TranslateText text="Porcentaje de consentimientos" />
-              </p>
+              <TranslateText text="Total" />: {total}
             </div>
           </div>
-          <div className="h-[220px] flex items-center justify-center mb-5 relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className={`w-32 h-32 rounded-full blur-2xl opacity-50 ${
-                theme === 'dark' ? 'bg-purple-500/20' : 'bg-purple-300/30'
-              }`} />
-            </div>
+          
+          <div className="h-50 flex items-center justify-center mb-6 relative">
             <Doughnut data={doughnutData} options={doughnutOptions} />
-          </div>
-          <div className="flex justify-center gap-10 mt-6 pt-5 border-t border-purple-500/20">
-            <div className="text-center transform transition-all duration-500 hover:scale-125">
-              <span className="text-4xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent block drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">{accepted}</span>
-              <p className={`text-xs mt-2 font-bold uppercase tracking-wider ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                <TranslateText text="Aceptados" />
-              </p>
+            <div className="absolute inset-0 flex items-center justify-center flex-col">
+              <span className={`text-2xl font-bold ${getAcceptanceColor(parseFloat(acceptanceRate))}`}>
+                {acceptanceRate}%
+              </span>
+              <span className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <TranslateText text="Tasa de aceptación" />
+              </span>
             </div>
-            <div className="text-center transform transition-all duration-500 hover:scale-125">
-              <span className="text-4xl font-black bg-gradient-to-r from-rose-400 to-pink-500 bg-clip-text text-transparent block drop-shadow-[0_0_15px_rgba(244,63,94,0.5)]">{rejected}</span>
-              <p className={`text-xs mt-2 font-bold uppercase tracking-wider ${theme === 'dark' ? 'text-rose-400' : 'text-rose-600'}`}>
-                <TranslateText text="Rechazados" />
-              </p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-700/30">
+            <div className={`p-3 rounded-xl transition-all duration-300 hover:scale-[1.02] ${
+              theme === 'dark' ? 'bg-emerald-900/20' : 'bg-emerald-50'
+            }`}>
+              <div className="flex items-center justify-between mb-1">
+                <span className={`text-sm font-medium ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                  <TranslateText text="Aceptados" />
+                </span>
+                <CheckCircle className={`w-4 h-4 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`} />
+              </div>
+              <span className="text-2xl font-bold text-emerald-500">{accepted}</span>
+            </div>
+            <div className={`p-3 rounded-xl transition-all duration-300 hover:scale-[1.02] ${
+              theme === 'dark' ? 'bg-rose-900/20' : 'bg-rose-50'
+            }`}>
+              <div className="flex items-center justify-between mb-1">
+                <span className={`text-sm font-medium ${theme === 'dark' ? 'text-rose-400' : 'text-rose-700'}`}>
+                  <TranslateText text="Rechazados" />
+                </span>
+                <XCircle className={`w-4 h-4 ${theme === 'dark' ? 'text-rose-400' : 'text-rose-600'}`} />
+              </div>
+              <span className="text-2xl font-bold text-rose-500">{rejected}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Gráfico de Barras - Futurista */}
-      <div className={`group rounded-3xl border p-7 transition-all duration-700 hover:scale-[1.03] relative overflow-hidden ${
+      {/* Gráfico de Barras - Card mejorado */}
+      <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
-          ? 'bg-gradient-to-br from-slate-900/90 via-blue-900/10 to-slate-900/90 border-blue-500/30 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:border-blue-400/50' 
-          : 'bg-gradient-to-br from-white via-blue-50/30 to-white border-blue-200 shadow-xl hover:shadow-2xl hover:shadow-blue-300/30'
+          ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
+          : "bg-linear-to-br from-white via-gray-50/50 to-white border-gray-200 shadow-lg hover:shadow-xl hover:border-gray-300"
       }`}>
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <div className={`p-3 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 ${
-              theme === 'dark' 
-                ? 'bg-gradient-to-br from-blue-600/40 to-cyan-600/30 shadow-lg shadow-blue-500/30' 
-                : 'bg-gradient-to-br from-blue-100 to-cyan-100 shadow-md shadow-blue-200/50'
-            }`}>
-              <BarChart3 className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-300' : 'text-blue-700'}`} />
+        <div className="p-6 relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl transition-all duration-500 ${
+                theme === 'dark' 
+                  ? 'bg-blue-600/20 shadow-lg shadow-blue-500/20' 
+                  : 'bg-blue-100 shadow-md shadow-blue-200/50'
+              }`}>
+                <BarChart3 className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+              </div>
+              <div>
+                <h3 className={`font-bold text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  <TranslateText text="Actividad Diaria" />
+                </h3>
+                <p className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <TranslateText text="Últimos 7 días" />
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className={`font-bold text-xl ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                <TranslateText text="Por Día" />
-              </h3>
-              <p className={`text-xs font-medium ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-                <TranslateText text="Últimos 7 días" />
-              </p>
+            <div className={`text-xs px-3 py-1 rounded-full font-medium flex items-center gap-1 ${
+              theme === 'dark' 
+                ? 'bg-blue-900/30 text-blue-300' 
+                : 'bg-blue-100 text-blue-700'
+            }`}>
+              <Info className="w-3 h-3" />
+              <TranslateText text="Doble eje" />
             </div>
           </div>
-          <div className="h-[280px] relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent rounded-xl opacity-50" />
+          <div className="h-62.5">
             <Bar data={barChartData} options={barOptions} />
           </div>
         </div>
       </div>
 
-      {/* Gráfico de Línea - Futurista */}
-      <div className={`group rounded-3xl border p-7 transition-all duration-700 hover:scale-[1.03] relative overflow-hidden ${
+      {/* Gráfico de Línea - Card mejorado */}
+      <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
-          ? 'bg-gradient-to-br from-slate-900/90 via-cyan-900/10 to-slate-900/90 border-cyan-500/30 shadow-2xl shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:border-cyan-400/50' 
-          : 'bg-gradient-to-br from-white via-cyan-50/30 to-white border-cyan-200 shadow-xl hover:shadow-2xl hover:shadow-cyan-300/30'
+          ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
+          : "bg-linear-to-br from-white via-gray-50/50 to-white border-gray-200 shadow-lg hover:shadow-xl hover:border-gray-300"
       }`}>
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <div className={`p-3 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 ${
-              theme === 'dark' 
-                ? 'bg-gradient-to-br from-cyan-600/40 to-blue-600/30 shadow-lg shadow-cyan-500/30' 
-                : 'bg-gradient-to-br from-cyan-100 to-blue-100 shadow-md shadow-cyan-200/50'
-            }`}>
-              <TrendingUp className={`w-6 h-6 ${theme === 'dark' ? 'text-cyan-300' : 'text-cyan-700'}`} />
-            </div>
-            <div>
-              <h3 className={`font-bold text-xl ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                <TranslateText text="Tendencia" />
-              </h3>
-              <p className={`text-xs font-medium ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-                <TranslateText text="Actividad total por día" />
-              </p>
+        <div className="p-6 relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl transition-all duration-500 ${
+                theme === 'dark' 
+                  ? 'bg-purple-600/20 shadow-lg shadow-purple-500/20' 
+                  : 'bg-purple-100 shadow-md shadow-purple-200/50'
+              }`}>
+                <TrendingUp className={`w-5 h-5 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`} />
+              </div>
+              <div>
+                <h3 className={`font-bold text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  <TranslateText text="Tendencia" />
+                </h3>
+                <p className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <TranslateText text="Últimos 7 días" />
+                </p>
+              </div>
             </div>
           </div>
-          <div className="h-[280px] relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 via-blue-500/5 to-transparent rounded-xl opacity-50" />
+          <div className="h-62.5">
             <Line data={lineData} options={lineOptions} />
           </div>
         </div>

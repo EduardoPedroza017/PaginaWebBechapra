@@ -187,17 +187,56 @@ export default function NewsForm({ onCreated, theme }: Props) {
     form.append("publishDate", `${publishDate} ${publishTime}`);
     if (image) form.append("image", image);
     
+    // Added console logs for debugging
+    console.log('Submitting form data:', {
+      title,
+      subtitle,
+      description,
+      category,
+      tags,
+      featured,
+      altText,
+      seoDescription,
+      seoKeywords,
+      publishDate,
+      publishTime,
+      image,
+    });
+
     try {
       const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
       const res = await fetch("http://localhost:5000/api/news", {
         method: "POST",
         body: form,
         headers: {
-          ...(userEmail ? { "X-User": userEmail } : {})
+          ...(userEmail ? { "X-User": userEmail } : {}),
+          "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}` // Added auth token
         },
         credentials: 'include',
       });
-      if (!res.ok) throw new Error("Error al crear noticia");
+      // Improved error handling for permission errors
+      console.log('Server response status:', res.status);
+      console.log('Server response body:', await res.text());
+
+      // Added success message handling
+      if (res.ok) {
+        const responseData = await res.json();
+        showMessage('success', `Noticia creada exitosamente: ${responseData.news.title}`);
+      } else {
+        const errorResponse = await res.json();
+        showMessage('error', `Error al crear noticia: ${errorResponse.error}`);
+      }
+
+      if (!res.ok) {
+        const errorResponse = await res.json();
+        if (errorResponse.error === 'Se requiere permiso: news.create') {
+          showMessage('error', 'No tienes permisos para crear noticias.');
+        } else {
+          showMessage('error', 'Error al crear la noticia');
+        }
+        console.error("Server Response:", errorResponse);
+        throw new Error(errorResponse.error || "Error desconocido");
+      }
       const data = await res.json();
       onCreated(data.news);
       resetForm();

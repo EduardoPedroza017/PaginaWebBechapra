@@ -1,12 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { WelcomeCard } from "./WelcomeCard";
 import { TranslateText } from "@/components/TranslateText";
-
-
 import { LayoutDashboard, AlertCircle, RefreshCw, Activity } from "lucide-react";
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
 import DashboardStats from "./DashboardStats";
@@ -21,95 +19,106 @@ export default function AdminDashboard() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [themeReady, setThemeReady] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [systemStatus, setSystemStatus] = useState({
+    online: true,
+    latency: 42,
+    lastSync: "hoy 09:15"
+  });
 
-  // Sincronizar theme con localStorage SOLO en cliente, y mostrar loader hasta que esté listo
+  // Optimizar sincronización del tema
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
+    const initializeTheme = () => {
+      if (typeof window !== 'undefined') {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark' || savedTheme === 'light') {
           setTheme(savedTheme);
         }
-        setThemeReady(true);
-      }, 0);
-    } else {
-      setTimeout(() => setThemeReady(true), 0);
-    }
+      }
+      setThemeReady(true);
+    };
+
+    // Pequeño timeout para evitar bloqueo del render
+    const timer = setTimeout(initializeTheme, 0);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleToggleTheme = () => {
+  const handleToggleTheme = useCallback(() => {
     setTheme((prev) => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', newTheme);
       return newTheme;
     });
-  };
-
-  useEffect(() => {
-    // Obtener datos de sessionStorage
-    const adminVal = sessionStorage.getItem('admin') === 'true';
-    const roleVal = sessionStorage.getItem('role') || '';
-    fetch('/api/admin/check', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ admin: adminVal, role: roleVal }),
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        setAdmin(Boolean(data.admin));
-        setRole(data.role || '');
-        // Autorizar si el backend devuelve un role válido (cualquier rol autenticado)
-        setAuthorized(Boolean(data.role));
-        setLoading(false);
-      })
-      .catch(() => {
-        setAdmin(false);
-        setLoading(false);
-      });
   }, []);
 
-  const handleLogout = async () => {
+  // Verificar autenticación
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        const adminVal = sessionStorage.getItem('admin') === 'true';
+        const roleVal = sessionStorage.getItem('role') || '';
+        
+        const response = await fetch('http://localhost:5000/api/admin/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ admin: adminVal, role: roleVal }),
+        });
+
+        const data = await response.json();
+        setAdmin(Boolean(data.admin));
+        setRole(data.role || '');
+        setAuthorized(Boolean(data.role));
+      } catch (error) {
+        console.error('Error de autenticación:', error);
+        setAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyAuth();
+  }, []);
+
+  const handleLogout = useCallback(async () => {
     sessionStorage.removeItem('admin');
     sessionStorage.removeItem('role');
     router.push('/admin');
-  };
+  }, [router]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setRefreshKey(prev => prev + 1);
-  };
+  }, []);
 
-  const scrollToAuditLog = () => {
-    // Pequeño delay para asegurar que el DOM esté listo
+  const scrollToAuditLog = useCallback(() => {
     setTimeout(() => {
       const element = document.getElementById('audit-log');
-      console.log('Buscando elemento audit-log:', element);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        console.log('Scroll ejecutado hacia audit-log');
-      } else {
-        console.log('Elemento audit-log no encontrado');
       }
     }, 100);
-  };
+  }, []);
 
-  // Detectar hash en la URL y hacer scroll automático
   useEffect(() => {
     if (typeof window !== 'undefined' && window.location.hash === '#audit-log') {
       scrollToAuditLog();
     }
-  }, []);
+  }, [scrollToAuditLog]);
 
+  // Estado de carga optimizado
   if (loading || !themeReady) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
+          : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
       }`}>
-        <div className="text-center">
-          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${
+        <div className="text-center space-y-4">
+          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 ${
             theme === 'dark' ? 'border-blue-500' : 'border-blue-600'
           }`}></div>
-          <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>
+          <p className={`text-lg font-semibold animate-pulse ${
+            theme === 'dark' ? 'text-white' : 'text-slate-800'
+          }`}>
             <TranslateText text="Cargando panel de administración..." />
           </p>
         </div>
@@ -117,30 +126,41 @@ export default function AdminDashboard() {
     );
   }
 
+  // Vista de acceso denegado
   if (!authorized) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
+          : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
       }`}>
-        <div className={`max-w-md w-full mx-4 rounded-2xl shadow-2xl p-8 text-center ${
-          theme === 'dark' ? 'bg-slate-900/90 backdrop-blur-xl border border-slate-700/50' : 'bg-white/80 backdrop-blur-xl border border-slate-200/60'
+        <div className={`max-w-md w-full mx-4 rounded-2xl p-8 text-center transition-all duration-300 ${
+          theme === 'dark' 
+            ? 'bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 shadow-2xl' 
+            : 'bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-2xl'
         }`}>
-          <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
+          <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
             theme === 'dark' ? 'bg-rose-500/20' : 'bg-rose-100'
           }`}>
-            <AlertCircle className={`w-8 h-8 ${theme === 'dark' ? 'text-rose-400' : 'text-rose-600'}`} />
+            <AlertCircle className={`w-8 h-8 transition-colors duration-300 ${
+              theme === 'dark' ? 'text-rose-400' : 'text-rose-600'
+            }`} />
           </div>
-          <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${
+            theme === 'dark' ? 'text-white' : 'text-slate-900'
+          }`}>
             <TranslateText text="Acceso Denegado" />
           </h2>
-          <p className={`mb-6 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`mb-6 transition-colors duration-300 ${
+            theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             <TranslateText text="No tienes permisos para acceder a esta página." />
           </p>
           <button
             onClick={() => router.push('/admin')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
               theme === 'dark' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30' 
                 : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30'
             }`}
           >
@@ -152,56 +172,76 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className={`flex min-h-screen ${
-      theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
+    <div className={`flex min-h-screen transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
+        : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
     }`}>
       <Sidebar selected="/admin/dashboard" theme={theme} role={role} admin={admin} />
-      <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} role={role} admin={admin} />
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
-          {/* Page Header con diseño mejorado */}
+      
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header 
+          onLogout={handleLogout} 
+          onToggleTheme={handleToggleTheme} 
+          theme={theme} 
+          role={role} 
+          admin={admin} 
+        />
+        
+        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full overflow-y-auto">
+          {/* Encabezado de página */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
-              <div className={`p-4 rounded-2xl shadow-lg ${
+              <div className={`p-4 rounded-2xl shadow-lg transition-all duration-300 ${
                 theme === 'dark' 
                   ? 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/30' 
                   : 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
               }`}>
-                <LayoutDashboard className="w-7 h-7 text-white" />
+                <LayoutDashboard className="w-7 h-7 text-white transition-transform duration-300 hover:scale-110" />
               </div>
               <div>
-                <h1 className={`text-2xl md:text-3xl font-bold ${
+                <h1 className={`text-2xl md:text-3xl font-bold transition-colors duration-300 ${
                   theme === 'dark' ? 'text-white' : 'text-slate-900'
                 }`}>
                   <TranslateText text="Panel de Control" />
                 </h1>
-                <p className={`text-sm font-medium mt-0.5 ${
+                <p className={`text-sm font-medium mt-0.5 transition-colors duration-300 ${
                   theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
                 }`}>
                   <TranslateText text="Resumen general del sistema" />
                 </p>
+                
+                {/* Indicadores de estado */}
                 <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                    theme === 'dark' ? 'bg-green-900/40 text-green-300 border border-green-700/50' : 'bg-green-50 text-green-700 border border-green-200'
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
+                    theme === 'dark' 
+                      ? 'bg-green-900/40 text-green-300 border border-green-700/50' 
+                      : 'bg-green-50 text-green-700 border border-green-200'
                   }`}>
                     <Activity className="w-3.5 h-3.5" />
-                    <TranslateText text="Online" />
+                    <TranslateText text={systemStatus.online ? "Online" : "Offline"} />
                   </span>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                    theme === 'dark' ? 'bg-blue-900/40 text-blue-200 border border-blue-700/50' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
+                    theme === 'dark' 
+                      ? 'bg-blue-900/40 text-blue-200 border border-blue-700/50' 
+                      : 'bg-blue-50 text-blue-700 border border-blue-200'
                   }`}>
                     <TranslateText text="Latencia" />
-                    <span>42 ms</span>
+                    <span>{systemStatus.latency} ms</span>
                   </span>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                    theme === 'dark' ? 'bg-amber-900/40 text-amber-200 border border-amber-700/50' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
+                    theme === 'dark' 
+                      ? 'bg-amber-900/40 text-amber-200 border border-amber-700/50' 
+                      : 'bg-amber-50 text-amber-700 border border-amber-200'
                   }`}>
                     <TranslateText text="Última sync" />
-                    <span>hoy 09:15</span>
+                    <span>{systemStatus.lastSync}</span>
                   </span>
                 </div>
               </div>
             </div>
+            
+            {/* Botones de acción */}
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleRefresh}
@@ -211,37 +251,24 @@ export default function AdminDashboard() {
                     : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
                 }`}
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className={`w-4 h-4 transition-transform duration-300 ${refreshKey > 0 ? 'rotate-180' : ''}`} />
                 <TranslateText text="Actualizar" />
               </button>
-              {/* <button
-                onClick={scrollToAuditLog}
-                className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
-                  theme === 'dark'
-                    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
-                    : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
-                }`}
-              >
-                <FileText className="w-4 h-4" />
-                <TranslateText text="Ver logs" />
-              </button> */}
             </div>
           </div>
 
-          {/* Welcome Card */}
+          {/* Tarjeta de bienvenida */}
           <WelcomeCard role={role} theme={theme} />
           
-          {/* Dashboard Stats */}
+          {/* Estadísticas */}
           <DashboardStats key={`stats-${refreshKey}`} theme={theme} role={role} />
 
-          {/* Quick Actions */}
+          {/* Acciones rápidas */}
           <div className="mb-6">
             <QuickActions theme={theme} role={role} />
           </div>
 
-
-
-          {/* Cookie Consent Section */}
+          {/* Consentimiento de cookies */}
           <CookieConsentAdmin key={`cookies-${refreshKey}`} theme={theme} />
         </main>
       </div>

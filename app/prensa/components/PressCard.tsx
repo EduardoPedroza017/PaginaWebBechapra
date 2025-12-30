@@ -17,24 +17,27 @@ interface PressCardProps {
   item: PressItem;
   index: number;
   isFeatured?: boolean;
+  size?: string; // Added 'size' property
 }
 
-export default function PressCard({ item, index, isFeatured = false }: PressCardProps) {
+export default function PressCard({ item, index, isFeatured = false, size }: PressCardProps) {
   const formattedDate = new Date(item.date).toLocaleDateString('es-MX', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
   });
 
+  const sizeClasses = size === 'large' ? 'p-10 text-2xl' : size === 'medium' ? 'p-6 text-xl' : 'p-4 text-lg';
+
   if (isFeatured) {
     return (
-      <Link href={`/prensa/${item.id}`} className="block group h-full">
+      <Link href={`/prensa/${item.id}`} className={`block group h-full ${sizeClasses}`}>
         <motion.article
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: index * 0.1 }}
-          className="relative h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-3xl p-8 md:p-10 overflow-hidden flex flex-col"
+          className="relative h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-3xl overflow-hidden flex flex-col"
         >
           {/* Animated Background Elements */}
           <div className="absolute inset-0 opacity-20">
@@ -124,13 +127,13 @@ export default function PressCard({ item, index, isFeatured = false }: PressCard
   }
 
   return (
-    <Link href={`/prensa/${item.id}`} className="block group h-full">
+    <Link href={`/prensa/${item.id}`} className={`block group h-full ${sizeClasses}`}>
       <motion.article
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.08 }}
-        className="relative h-full bg-white dark:bg-slate-800/50 rounded-2xl p-6 border border-gray-150 dark:border-slate-700/50 backdrop-blur-sm shadow-lg shadow-blue-900/5 hover:shadow-xl hover:shadow-blue-600/15 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+        transition={{ duration: 0.6, delay: index * 0.1 }}
+        className="relative h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-3xl overflow-hidden flex flex-col"
       >
         {/* Top Gradient Accent */}
         <motion.div 
