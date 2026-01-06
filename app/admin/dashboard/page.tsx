@@ -1,275 +1,222 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { WelcomeCard } from "./WelcomeCard";
 import { TranslateText } from "@/components/TranslateText";
-import { LayoutDashboard, AlertCircle, RefreshCw, Activity } from "lucide-react";
+import {
+  LayoutDashboard,
+  AlertCircle,
+  RefreshCw,
+  Activity,
+  Zap,
+  BarChart3,
+  Shield,
+  ChevronRight,
+  Loader2,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react";
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
 import DashboardStats from "./DashboardStats";
 import QuickActions from "./QuickActions";
+import { WebVitalsWidget } from "@/lib/web-vitals";
+import { useAuth, useTheme } from "../hooks";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Auditoría
+import AuditLog from "./AuditLog";
+import AdminAuditLogSection from "./AdminAuditLogSection";
+
+type TabId = "dashboard" | "actions" | "audit" | "monitoring" | "cookies";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [admin, setAdmin] = useState(false);
-  const [role, setRole] = useState("");
-  const [authorized, setAuthorized] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [themeReady, setThemeReady] = useState(false);
+  const { admin, role, authorized, loading: authLoading, logout } = useAuth();
+  const { theme, toggleTheme, themeReady } = useTheme();
+
   const [refreshKey, setRefreshKey] = useState(0);
-  const [systemStatus, setSystemStatus] = useState({
-    online: true,
-    latency: 42,
-    lastSync: "hoy 09:15"
+  const [activeTab, setActiveTab] = useState<TabId>("dashboard");
+
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    dashboard: false,
+    actions: false,
+    audit: false,
+    monitoring: false,
+    cookies: false,
   });
 
-  // Optimizar sincronización del tema
-  useEffect(() => {
-    const initializeTheme = () => {
-      if (typeof window !== 'undefined') {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          setTheme(savedTheme);
-        }
-      }
-      setThemeReady(true);
-    };
-
-    // Pequeño timeout para evitar bloqueo del render
-    const timer = setTimeout(initializeTheme, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleToggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const newTheme = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
-  }, []);
-
-  // Verificar autenticación
-  useEffect(() => {
-    const verifyAuth = async () => {
-      try {
-        const adminVal = sessionStorage.getItem('admin') === 'true';
-        const roleVal = sessionStorage.getItem('role') || '';
-        
-        const response = await fetch('http://localhost:5000/api/admin/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ admin: adminVal, role: roleVal }),
-        });
-
-        const data = await response.json();
-        setAdmin(Boolean(data.admin));
-        setRole(data.role || '');
-        setAuthorized(Boolean(data.role));
-      } catch (error) {
-        console.error('Error de autenticación:', error);
-        setAdmin(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    verifyAuth();
-  }, []);
-
-  const handleLogout = useCallback(async () => {
-    sessionStorage.removeItem('admin');
-    sessionStorage.removeItem('role');
-    router.push('/admin');
-  }, [router]);
+  const [systemStatus] = useState({
+    online: true,
+    latency: 42,
+    lastSync: "hoy 09:15",
+  });
 
   const handleRefresh = useCallback(() => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   }, []);
 
-  const scrollToAuditLog = useCallback(() => {
-    setTimeout(() => {
-      const element = document.getElementById('audit-log');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
-  }, []);
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
+  };
+
+  const getTabs = () => {
+    const baseTabs = [
+      {
+        id: "dashboard" as TabId,
+        label: "Dashboard",
+        icon: <LayoutDashboard size={18} />,
+        description: "Estadísticas generales del sistema",
+      },
+      {
+        id: "actions" as TabId,
+        label: "Acciones",
+        icon: <Zap size={18} />,
+        description: "Accesos rápidos y atajos",
+      },
+      {
+        id: "monitoring" as TabId,
+        label: "Monitoreo",
+        icon: <BarChart3 size={18} />,
+        description: "Métricas y rendimiento en tiempo real",
+      },
+      {
+        id: "cookies" as TabId,
+        label: "Cookies",
+        icon: <Shield size={18} />,
+        description: "Privacidad y consentimiento",
+      },
+    ];
+
+    if (role === "superadmin" || role === "admin") {
+      baseTabs.splice(2, 0, {
+        id: "audit" as TabId,
+        label: "Auditoría",
+        icon: <Activity size={18} />,
+        description: "Logs y seguridad",
+      });
+    }
+
+    return baseTabs;
+  };
+
+  const tabs = getTabs();
+  const activeTabInfo = tabs.find((t) => t.id === activeTab);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#audit-log') {
-      scrollToAuditLog();
+    if (typeof window !== "undefined" && window.location.hash === "#audit-log") {
+      handleTabChange("audit");
     }
-  }, [scrollToAuditLog]);
+  }, []);
 
-  // Estado de carga optimizado
-  if (loading || !themeReady) {
+  if (authLoading || !themeReady) {
     return (
-      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
-          : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
-      }`}>
-        <div className="text-center space-y-4">
-          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 ${
-            theme === 'dark' ? 'border-blue-500' : 'border-blue-600'
-          }`}></div>
-          <p className={`text-lg font-semibold animate-pulse ${
-            theme === 'dark' ? 'text-white' : 'text-slate-800'
-          }`}>
-            <TranslateText text="Cargando panel de administración..." />
-          </p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin" />
       </div>
     );
   }
 
-  // Vista de acceso denegado
   if (!authorized) {
     return (
-      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
-          : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
-      }`}>
-        <div className={`max-w-md w-full mx-4 rounded-2xl p-8 text-center transition-all duration-300 ${
-          theme === 'dark' 
-            ? 'bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 shadow-2xl' 
-            : 'bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-2xl'
-        }`}>
-          <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
-            theme === 'dark' ? 'bg-rose-500/20' : 'bg-rose-100'
-          }`}>
-            <AlertCircle className={`w-8 h-8 transition-colors duration-300 ${
-              theme === 'dark' ? 'text-rose-400' : 'text-rose-600'
-            }`} />
-          </div>
-          <h2 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${
-            theme === 'dark' ? 'text-white' : 'text-slate-900'
-          }`}>
-            <TranslateText text="Acceso Denegado" />
-          </h2>
-          <p className={`mb-6 transition-colors duration-300 ${
-            theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-          }`}>
-            <TranslateText text="No tienes permisos para acceder a esta página." />
-          </p>
-          <button
-            onClick={() => router.push('/admin')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
-              theme === 'dark' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30' 
-                : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30'
-            }`}
-          >
-            <TranslateText text="Volver al Login" />
-          </button>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-10 h-10 mx-auto text-red-500" />
+          <p>No tienes permisos</p>
+          <button onClick={() => router.push("/admin")}>Volver</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${
-      theme === 'dark' 
-        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
-        : 'bg-gradient-to-br from-white via-slate-50 to-slate-100'
-    }`}>
+    <div className="flex min-h-screen">
       <Sidebar selected="/admin/dashboard" theme={theme} role={role} admin={admin} />
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header 
-          onLogout={handleLogout} 
-          onToggleTheme={handleToggleTheme} 
-          theme={theme} 
-          role={role} 
-          admin={admin} 
+
+      <div className="flex-1 flex flex-col">
+        <Header
+          onLogout={logout}
+          onToggleTheme={toggleTheme}
+          theme={theme}
+          role={role}
+          admin={admin}
         />
-        
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full overflow-y-auto">
-          {/* Encabezado de página */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <div className="flex items-center gap-4">
-              <div className={`p-4 rounded-2xl shadow-lg transition-all duration-300 ${
-                theme === 'dark' 
-                  ? 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-500/30' 
-                  : 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
-              }`}>
-                <LayoutDashboard className="w-7 h-7 text-white transition-transform duration-300 hover:scale-110" />
-              </div>
-              <div>
-                <h1 className={`text-2xl md:text-3xl font-bold transition-colors duration-300 ${
-                  theme === 'dark' ? 'text-white' : 'text-slate-900'
-                }`}>
-                  <TranslateText text="Panel de Control" />
-                </h1>
-                <p className={`text-sm font-medium mt-0.5 transition-colors duration-300 ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-                }`}>
-                  <TranslateText text="Resumen general del sistema" />
-                </p>
-                
-                {/* Indicadores de estado */}
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
-                    theme === 'dark' 
-                      ? 'bg-green-900/40 text-green-300 border border-green-700/50' 
-                      : 'bg-green-50 text-green-700 border border-green-200'
-                  }`}>
-                    <Activity className="w-3.5 h-3.5" />
-                    <TranslateText text={systemStatus.online ? "Online" : "Offline"} />
-                  </span>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
-                    theme === 'dark' 
-                      ? 'bg-blue-900/40 text-blue-200 border border-blue-700/50' 
-                      : 'bg-blue-50 text-blue-700 border border-blue-200'
-                  }`}>
-                    <TranslateText text="Latencia" />
-                    <span>{systemStatus.latency} ms</span>
-                  </span>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors duration-300 ${
-                    theme === 'dark' 
-                      ? 'bg-amber-900/40 text-amber-200 border border-amber-700/50' 
-                      : 'bg-amber-50 text-amber-700 border border-amber-200'
-                  }`}>
-                    <TranslateText text="Última sync" />
-                    <span>{systemStatus.lastSync}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Botones de acción */}
-            <div className="flex flex-wrap gap-3">
+
+        <main className="flex-1 p-6 overflow-y-auto">
+          <WelcomeCard role={role} theme={theme} />
+
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6">
+            {tabs.map((tab) => (
               <button
-                onClick={handleRefresh}
-                className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-md ${
-                  theme === 'dark'
-                    ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
-                    : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200'
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                disabled={loadingTabs[tab.id]}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 dark:bg-gray-800"
                 }`}
               >
-                <RefreshCw className={`w-4 h-4 transition-transform duration-300 ${refreshKey > 0 ? 'rotate-180' : ''}`} />
-                <TranslateText text="Actualizar" />
+                {loadingTabs[tab.id] ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  tab.icon
+                )}
+                {tab.label}
               </button>
-            </div>
+            ))}
           </div>
 
-          {/* Tarjeta de bienvenida */}
-          <WelcomeCard role={role} theme={theme} />
-          
-          {/* Estadísticas */}
-          <DashboardStats key={`stats-${refreshKey}`} theme={theme} role={role} />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === "dashboard" && (
+                <DashboardStats key={refreshKey} theme={theme} role={role} />
+              )}
 
-          {/* Acciones rápidas */}
-          <div className="mb-6">
-            <QuickActions theme={theme} role={role} />
+              {activeTab === "actions" && (
+                <QuickActions theme={theme} role={role} />
+              )}
+
+              {activeTab === "audit" && (
+                <div id="audit-log">
+                  {role === "superadmin" ? (
+                    <AdminAuditLogSection />
+                  ) : (
+                    <AuditLog theme={theme} />
+                  )}
+                </div>
+              )}
+
+              {activeTab === "monitoring" && (
+                <WebVitalsWidget theme={theme} />
+              )}
+
+              {activeTab === "cookies" && (
+                <CookieConsentAdmin key={refreshKey} theme={theme} />
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Nota */}
+          <div className="mt-6 p-4 border rounded-xl flex gap-3">
+            <AlertTriangle className="w-5 h-5 text-blue-500" />
+            <p className="text-sm">
+              Consejo: navega por las pestañas para acceder a cada sección del
+              panel.
+            </p>
           </div>
-
-          {/* Consentimiento de cookies */}
-          <CookieConsentAdmin key={`cookies-${refreshKey}`} theme={theme} />
         </main>
       </div>
     </div>

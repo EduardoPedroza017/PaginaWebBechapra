@@ -8,17 +8,16 @@ import { TranslateText } from "@/components/TranslateText";
 import { Users, Plus, RefreshCw } from "lucide-react";
 
 import UserStats from "./UserStats";
-import { UserFilter } from "./UserFilterNew";
+import { UserFilter } from "./UserFilter";
 import UserCardList from "./UserCardList";
 import { UserFormModal } from "./UserFormModal";
-import { DeleteUserModal } from "./DeleteUserModalNew";
+import { DeleteUserModal } from "./DeleteUserModal";
 import UserDetailsModal from "./UserDetailsModal";
 
 export interface Usuario {
   email: string;
   role: string | string[];
   roles?: string[];
-  permissions?: string[];
   bloqueado?: boolean;
 }
 
@@ -39,19 +38,25 @@ export default function UsuariosPage() {
   const [detailsUser, setDetailsUser] = useState<Usuario | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  // Theme initialization
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedPageSize = window.localStorage.getItem('usuarios_pageSize');
       if (savedPageSize) setPageSize(parseInt(savedPageSize));
+      
       const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') setTheme(savedTheme);
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        setTheme(savedTheme);
+      }
+      
       setThemeReady(true);
-      // Escuchar cambios de theme en otras pestañas o páginas
+
       const handleStorage = (e: StorageEvent) => {
         if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) {
           setTheme(e.newValue);
         }
       };
+      
       window.addEventListener('storage', handleStorage);
       return () => window.removeEventListener('storage', handleStorage);
     } else {
@@ -68,20 +73,46 @@ export default function UsuariosPage() {
       const apiBase = "/api/admin";
       const storedRole = sessionStorage.getItem("role") || "";
       const storedAdmin = sessionStorage.getItem("admin") === "true";
+      
+      // Obtener token de autenticación si existe
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+      
+      const headers: Record<string, string> = { 
+        'X-Role': storedRole, 
+        'X-Admin': storedAdmin.toString(),
+        'Content-Type': 'application/json'
+      };
+      
+      // Agregar token si existe
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const res = await fetch(`${apiBase}/users`, {
         method: "GET",
-        headers: { 'X-Role': storedRole, 'X-Admin': storedAdmin.toString() },
+        headers,
         credentials: 'include'
       });
+      
       const data = await res.json();
+      // console.log('API Response:', res.status, res.ok, data);
       let userList = [];
-      if (res.ok && data.ok && Array.isArray(data.users)) {
+      
+      if (res.ok && data.items && Array.isArray(data.items)) {
+        userList = data.items;
+        // console.log('Using data.items (paginated response):', userList.length, 'users');
+      } else if (res.ok && data.ok && Array.isArray(data.users)) {
         userList = data.users;
+        // console.log('Using data.users:', userList.length, 'users');
       } else if (res.ok && Array.isArray(data)) {
         userList = data;
+        // console.log('Using data as array:', userList.length, 'users');
       } else {
-        setError(data.message || "No se pudieron obtener los usuarios.");
+        // console.error('Unexpected response structure:', data);
+        setError(data.message || data.error || "No se pudieron obtener los usuarios.");
+        return;
       }
+      
       setUsers(userList.slice().reverse());
     } catch {
       setError("Error de conexión con el servidor.");
@@ -91,6 +122,7 @@ export default function UsuariosPage() {
     }
   };
 
+  // Fetch users on mount
   useEffect(() => {
     async function validateAndFetch() {
       const storedRoleRaw = sessionStorage.getItem("role") || "";
@@ -104,7 +136,6 @@ export default function UsuariosPage() {
         return;
       }
 
-      // Si el storage no coincide, preguntar al backend por la sesión real (vía proxy)
       try {
         const res = await fetch(`/api/admin/check`, {
           method: 'POST',
@@ -112,13 +143,14 @@ export default function UsuariosPage() {
           credentials: 'include',
           body: JSON.stringify({ admin: storedAdmin, role: storedRoleRaw })
         });
+        
         if (res.ok) {
           const data = await res.json();
           const backendAdmin = Boolean(data.admin);
           const backendRole = data.role || '';
           const backendIsSuper = String(backendRole).toLowerCase().includes('superadmin');
+          
           if (backendAdmin && backendIsSuper) {
-            // sincronizar storage y continuar
             sessionStorage.setItem('admin', String(backendAdmin));
             sessionStorage.setItem('role', backendRole);
             fetchUsers();
@@ -129,34 +161,44 @@ export default function UsuariosPage() {
         console.warn('Error verificando sesión en backend', err);
       }
 
-      // Si todo falla, redirigir al login del admin
       router.push('/admin');
     }
 
     validateAndFetch();
   }, [router]);
 
+  // Filter users
   const filteredUsers = users.filter((u: Usuario) => {
     const [campo, valor] = filter.split(":");
     if (!valor) return true;
+    
     if (campo === 'role') {
       const rolesArr = Array.isArray(u.role) ? u.role : (u.roles || [u.role as string]);
       return rolesArr.join(", ").toLowerCase().includes(valor.toLowerCase());
     }
-    if (campo === 'permission') {
-      return u.permissions?.join(", ").toLowerCase().includes(valor.toLowerCase()) || false;
-    }
+    
     if (campo === 'bloqueado') {
       if (valor === 'true') return u.bloqueado === true;
       if (valor === 'false') return u.bloqueado === false;
       return true;
     }
+    
     return u.email.toLowerCase().includes(valor.toLowerCase());
   });
 
-  const handleAdd = () => { setEditUser(null); setShowForm(true); };
-  const handleEdit = (user: Usuario) => { setEditUser(user); setShowForm(true); };
-  const handleDelete = (user: Usuario) => { setDeleteUser(user); };
+  const handleAdd = () => { 
+    setEditUser(null); 
+    setShowForm(true); 
+  };
+
+  const handleEdit = (user: Usuario) => { 
+    setEditUser(user); 
+    setShowForm(true); 
+  };
+
+  const handleDelete = (user: Usuario) => { 
+    setDeleteUser(user); 
+  };
 
   const confirmDeleteUser = async () => {
     if (!deleteUser) return;
@@ -172,6 +214,7 @@ export default function UsuariosPage() {
         },
         credentials: 'include',
       });
+      
       const data = await res.json();
       if (data.success) {
         setUsers((prev: Usuario[]) => prev.filter((u: Usuario) => u.email !== deleteUser.email));
@@ -179,25 +222,28 @@ export default function UsuariosPage() {
       } else {
         alert(data.message || "Error eliminando usuario");
       }
-    } catch { alert("Error eliminando usuario"); }
-    finally { setProcessing(false); }
+    } catch { 
+      alert("Error eliminando usuario"); 
+    } finally { 
+      setProcessing(false); 
+    }
   };
 
-  const handleFormSubmit = async (form: { email: string; password?: string; role?: string; roles?: string[]; permissions?: string[] }) => {
+  const handleFormSubmit = async (form: { email: string; password?: string; roles?: string[]; active?: boolean }) => {
     setProcessing(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const method = editUser ? "PUT" : "POST";
-      // Usar endpoint RESTful: POST para crear, PUT para editar usuario específico
       const url = editUser
         ? `${apiBase}/admin/users/${encodeURIComponent(form.email)}`
         : `${apiBase}/admin/users/`;
+      
       const payload = { ...form };
-      // Always send roles as array (backend expects 'roles')
-      if (!payload.roles && form.role) payload.roles = Array.isArray(form.role) ? form.role : [form.role];
-      // If current user is not superadmin, do not send roles/permissions: backend will assign defaults
       const isSuperLocal = (sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true');
-      if (!isSuperLocal) { delete payload.roles; delete payload.permissions; }
+      
+      if (!isSuperLocal) { 
+        delete payload.roles; 
+      }
 
       const res = await fetch(url, {
         method,
@@ -209,11 +255,19 @@ export default function UsuariosPage() {
         credentials: 'include',
         body: JSON.stringify(payload)
       });
+      
       const data = await res.json();
-      if (res.ok && data.ok) { setShowForm(false); fetchUsers(); }
-      else { alert(data.message || "No se pudo guardar el usuario."); }
-    } catch { alert("Error de conexión con el servidor."); }
-    finally { setProcessing(false); }
+      if (res.ok && data.ok) { 
+        setShowForm(false); 
+        fetchUsers(); 
+      } else { 
+        alert(data.message || "No se pudo guardar el usuario."); 
+      }
+    } catch { 
+      alert("Error de conexión con el servidor."); 
+    } finally { 
+      setProcessing(false); 
+    }
   };
 
   const handleBlock = async (user: Usuario, newState: boolean) => {
@@ -230,24 +284,29 @@ export default function UsuariosPage() {
         credentials: 'include',
         body: JSON.stringify({ email: user.email, block: newState })
       });
+      
       const data = await res.json();
       if (res.status === 403) {
         alert(data.error || 'No autorizado. Se requiere superadmin para bloquear usuarios.');
       } else if (res.ok && data.ok) {
-        setUsers((users: Usuario[]) => users.map((u: Usuario) => u.email === user.email ? { ...u, bloqueado: newState } : u));
+        setUsers((users: Usuario[]) => users.map((u: Usuario) => 
+          u.email === user.email ? { ...u, bloqueado: newState } : u
+        ));
       } else {
         alert(data.error || "No se pudo actualizar el estado de bloqueo.");
       }
-    } catch { alert("Error de conexión con el servidor."); }
-    finally { setProcessing(false); }
+    } catch { 
+      alert("Error de conexión con el servidor."); 
+    } finally { 
+      setProcessing(false); 
+    }
   };
 
   const handleToggleTheme = () => {
     setTheme(prev => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', newTheme);
-      // Notificar a otras pestañas
-      window.dispatchEvent(new StorageEvent('storage', { key: 'theme', newValue: newTheme }));
+      // No necesitamos dispatchEvent aquí ya que el cambio es local
       return newTheme;
     });
   };
@@ -260,42 +319,83 @@ export default function UsuariosPage() {
 
   if (!themeReady) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-gray-50 to-blue-50'}`}>
+      <div className={`min-h-screen flex items-center justify-center ${
+        theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
+      }`}>
         <div className="text-center">
-          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${theme === 'dark' ? 'border-blue-500' : 'border-blue-600'}`}></div>
-          <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Cargando tema...</p>
+          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${
+            theme === 'dark' ? 'border-blue-500' : 'border-blue-600'
+          }`}></div>
+          <p className={`text-lg font-semibold ${
+            theme === 'dark' ? 'text-white' : 'text-slate-800'
+          }`}>
+            Cargando...
+          </p>
         </div>
       </div>
     );
   }
+
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-gray-50 to-blue-50'}`}>
+    <div className={`flex min-h-screen ${
+      theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
+    }`}>
       <Sidebar selected="/admin/usuarios" theme={theme} />
+      
       <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-400 mx-auto w-full">
+        <Header 
+          onLogout={handleLogout} 
+          onToggleTheme={handleToggleTheme} 
+          theme={theme} 
+        />
+        
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl ${theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'}`}>
-                <Users className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+              <div className={`p-3 rounded-lg ${
+                theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
+              }`}>
+                <Users className={`w-6 h-6 ${
+                  theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+                }`} />
               </div>
               <div>
-                <h1 className={`text-xl md:text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <h1 className={`text-xl md:text-2xl font-bold ${
+                  theme === 'dark' ? 'text-white' : 'text-slate-900'
+                }`}>
                   <TranslateText text="Gestión de Usuarios" />
                 </h1>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                  <TranslateText text="Administra roles, permisos y accesos" />
+                <p className={`text-sm ${
+                  theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                }`}>
+                  <TranslateText text="Administra usuarios y permisos" />
                 </p>
               </div>
             </div>
+            
             <div className="flex items-center gap-3">
-              <button onClick={() => fetchUsers(true)} disabled={refreshing}
-                className={`p-2.5 rounded-xl transition-all ${refreshing ? 'opacity-50' : ''} ${theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm border border-gray-200'}`}>
-                <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+              <button 
+                onClick={() => fetchUsers(true)} 
+                disabled={refreshing}
+                className={`p-2.5 rounded-lg transition-colors ${
+                  refreshing ? 'opacity-50' : ''
+                } ${
+                  theme === 'dark' 
+                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
+                    : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                }`}
+              >
+                <RefreshCw className={`w-5 h-5 ${
+                  refreshing ? 'animate-spin' : ''
+                }`} />
               </button>
-              <button onClick={handleAdd} disabled={processing}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-600/25">
+              
+              <button 
+                onClick={handleAdd} 
+                disabled={processing}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
+              >
                 <Plus className="w-4 h-4" />
                 <TranslateText text="Agregar Usuario" />
               </button>
@@ -303,36 +403,66 @@ export default function UsuariosPage() {
           </div>
 
           {loading ? (
-            <div className={`rounded-2xl border p-12 ${theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-200'}`}>
+            <div className={`rounded-lg border p-12 ${
+              theme === 'dark' ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200'
+            }`}>
               <div className="flex flex-col items-center justify-center">
                 <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-blue-600 mb-4"></div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className={`text-sm ${
+                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                }`}>
                   <TranslateText text="Cargando usuarios..." />
                 </p>
               </div>
             </div>
           ) : error ? (
-            <div className={`rounded-2xl border p-6 ${theme === 'dark' ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'}`}>
-              <p className={`text-sm ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+            <div className={`rounded-lg border p-6 ${
+              theme === 'dark' ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'
+            }`}>
+              <p className={`text-sm ${
+                theme === 'dark' ? 'text-red-400' : 'text-red-600'
+              }`}>
+                {error}
+              </p>
             </div>
           ) : (
             <>
               <UserStats users={users} theme={theme} />
+              
               <UserFilter value={filter} onChange={setFilter} theme={theme} />
+              
+              {/* Page Size Selector */}
               <div className="flex items-center justify-end gap-3 mb-4">
-                <label className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <label className={`text-sm ${
+                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                }`}>
                   <TranslateText text="Mostrar:" />
                 </label>
-                <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); localStorage.setItem('usuarios_pageSize', e.target.value); setPage(1); }}
-                  className={`px-3 py-1.5 rounded-lg border text-sm ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-900'}`}>
+                <select 
+                  value={pageSize} 
+                  onChange={e => { 
+                    setPageSize(Number(e.target.value)); 
+                    localStorage.setItem('usuarios_pageSize', e.target.value); 
+                    setPage(1); 
+                  }}
+                  className={`px-3 py-1.5 rounded-lg border text-sm ${
+                    theme === 'dark' 
+                      ? 'bg-slate-800 border-slate-700 text-white' 
+                      : 'bg-white border-slate-300 text-slate-900'
+                  }`}
+                >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
                   <option value={20}>20</option>
                   <option value={50}>50</option>
                 </select>
               </div>
+
               <UserCardList
                 users={filteredUsers}
+                page={page}
+                pageSize={pageSize}
+                onPageChange={setPage}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onBlock={handleBlock}
@@ -342,14 +472,36 @@ export default function UsuariosPage() {
             </>
           )}
 
+          {/* Modals */}
           {showForm && (
             <UserFormModal
-              initial={editUser ? { email: editUser.email, role: typeof editUser.role === 'string' ? editUser.role : (Array.isArray(editUser.role) ? editUser.role[0] : ''), roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []), permissions: editUser.permissions } : undefined}
-              isEdit={!!editUser} onSubmit={handleFormSubmit} onClose={() => setShowForm(false)} />
+              initial={editUser ? { 
+                email: editUser.email, 
+                roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []),
+              } : undefined}
+              isEdit={!!editUser} 
+              onSubmit={handleFormSubmit} 
+              onClose={() => setShowForm(false)} 
+            />
           )}
-          <UserDetailsModal user={detailsUser} onClose={() => setDetailsUser(null)} theme={theme} />
-          <DeleteUserModal userEmail={deleteUser?.email || ""} open={!!deleteUser} onConfirm={confirmDeleteUser}
-            onCancel={() => { setDeleteUser(null); setProcessing(false); }} processing={processing} theme={theme} />
+          
+          <UserDetailsModal 
+            user={detailsUser} 
+            onClose={() => setDetailsUser(null)} 
+            theme={theme} 
+          />
+          
+          <DeleteUserModal 
+            userEmail={deleteUser?.email || ""} 
+            open={!!deleteUser} 
+            onConfirm={confirmDeleteUser}
+            onCancel={() => { 
+              setDeleteUser(null); 
+              setProcessing(false); 
+            }} 
+            processing={processing} 
+            theme={theme} 
+          />
         </main>
       </div>
     </div>

@@ -1,6 +1,22 @@
 import type { NextConfig } from "next";
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/backend/:path*',
+        destination: 'http://localhost:5000/api/:path*',
+      },
+      {
+        source: '/api/backend/uploads/:path*',
+        destination: 'http://localhost:5000/uploads/:path*',
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -51,4 +67,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

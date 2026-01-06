@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { 
   Upload, Image as ImageIcon, X, Check, 
   AlertCircle, Compass, Zap, Settings, 
   Filter, Clock, HardDrive, CloudUpload,
-  Sparkles, Tag
+  Sparkles, Tag, PauseCircle, PlayCircle,
+  AlertTriangle, Loader2, RefreshCw
 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
@@ -18,14 +19,16 @@ interface ImageUploaderProps {
 }
 
 interface UploadFile {
+  id: string;
   file: File;
   preview: string;
   size: number;
-  dimensions?: { width: number; height: number };
+  dimensions: { width: number; height: number };
   estimatedCompression: number;
-  status: 'pending' | 'uploading' | 'success' | 'error';
+  status: 'pending' | 'uploading' | 'success' | 'error' | 'paused';
   progress: number;
   tags: string[];
+  errorMessage?: string;
 }
 
 interface CompressionStats {
@@ -34,6 +37,18 @@ interface CompressionStats {
   savings: number;
   percentage: number;
 }
+
+// Configuración optimizada para upload masivo
+const UPLOAD_CONFIG = {
+  MAX_CONCURRENT_UPLOADS: 5, // Aumentado de 3 a 5
+  MAX_BATCH_SIZE: 100,
+  MAX_FILE_SIZE: 20 * 1024 * 1024,
+  MAX_TOTAL_SIZE: 500 * 1024 * 1024,
+  RETRY_ATTEMPTS: 3,
+  RETRY_DELAY: 1500, // Reducido de 2000ms a 1500ms
+  CHUNK_SIZE: 1024 * 1024, // Aumentado de 512KB a 1MB
+  UPLOAD_TIMEOUT: 15000, // Reducido a 15s para una imagen
+} as const;
 
 export function ImageUploader({ 
   theme, 
@@ -46,107 +61,295 @@ export function ImageUploader({
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [compressionLevel, setCompressionLevel] = useState<'low' | 'medium' | 'high'>('medium');
+  const [compressionLevel, setCompressionLevel] = useState<'low' | 'medium' | 'high'>('low');
   const [autoResize, setAutoResize] = useState(true);
   const [maxDimension, setMaxDimension] = useState(1920);
   const [newTag, setNewTag] = useState('');
   const [batchTags, setBatchTags] = useState<string[]>([]);
+  const [isPaused, setIsPaused] = useState(false);
+  const [uploadQueue, setUploadQueue] = useState<string[]>([]);
+  const [activeUploads, setActiveUploads] = useState<Set<string>>(new Set());
+  const [uploadStats, setUploadStats] = useState({
+    total: 0,
+    success: 0,
+    failed: 0,
+    pending: 0,
+    speed: 0,
+    remainingTime: 0,
+  });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const abortControllers = useRef<Map<string, AbortController>>(new Map());
+  const uploadStartTime = useRef<number>(0);
+  const uploadBytes = useRef<number>(0);
+  const uploadingRef = useRef(false);
+  const uploadQueueRef = useRef<string[]>([]);
+  const completedUploadsRef = useRef<Set<string>>(new Set());
+  const uploadFilesRef = useRef<UploadFile[]>([]);
 
-  const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
+  // Limpiar memoria al desmontar
+  useEffect(() => {
+    return () => {
+      uploadFiles.forEach(file => {
+        if (file.preview.startsWith('blob:')) {
+          URL.revokeObjectURL(file.preview);
+        }
+      });
+      abortControllers.current.forEach(controller => controller.abort());
+      abortControllers.current.clear();
+    };
+  }, []);
+
+  // Generar ID único
+  const generateId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
+
+  // Optimizar obtención de dimensiones
+  const getImageDimensions = useCallback((file: File): Promise<{ width: number; height: number }> => {
     return new Promise((resolve) => {
+      console.time(`Dimensiones ${file.name}`);
+      
+      // Para TODOS los archivos, usar valores por defecto primero para velocidad máxima
+      // Solo obtener dimensiones reales si es necesario para compresión
+      if (file.size > 10 * 1024 * 1024) { // Solo para archivos muy grandes >10MB
+        console.timeEnd(`Dimensiones ${file.name}`);
+        resolve({ width: 1920, height: 1080 });
+        return;
+      }
+
       const img = new Image();
+      const url = URL.createObjectURL(file);
+
+      const timeout = setTimeout(() => {
+        console.warn(`Timeout obteniendo dimensiones de ${file.name}`);
+        URL.revokeObjectURL(url);
+        console.timeEnd(`Dimensiones ${file.name}`);
+        resolve({ width: 1920, height: 1080 });
+      }, 1000); // Reducido a 1 segundo
+
       img.onload = () => {
+        clearTimeout(timeout);
+        console.timeEnd(`Dimensiones ${file.name}`);
         resolve({
           width: img.width,
           height: img.height
         });
+        URL.revokeObjectURL(url);
       };
-      img.src = URL.createObjectURL(file);
-    });
-  };
 
-  const estimateCompression = (file: File, dimensions?: { width: number; height: number }): number => {
-    // Estimación basada en tipo de archivo y tamaño
-    const sizeMB = file.size / (1024 * 1024);
+      img.onerror = () => {
+        clearTimeout(timeout);
+        console.warn(`Error obteniendo dimensiones de ${file.name}`);
+        URL.revokeObjectURL(url);
+        console.timeEnd(`Dimensiones ${file.name}`);
+        resolve({ width: 1920, height: 1080 });
+      };
+
+      img.src = url;
+    });
+  }, []);
+
+  const estimateCompression = useCallback((file: File, dimensions?: { width: number; height: number }): number => {
     const ext = file.name.split('.').pop()?.toLowerCase();
     
-    let savings = 0;
+    let savings = 0.3; // Valor por defecto
     
-    if (ext === 'png') {
-      savings = 0.4; // 40% de compresión estimada
-    } else if (ext === 'jpg' || ext === 'jpeg') {
-      savings = 0.2; // 20% de compresión estimada
-    } else if (ext === 'webp') {
-      savings = 0.3; // 30% de compresión estimada
-    }
+    if (ext === 'png') savings = 0.4;
+    else if (ext === 'jpg' || ext === 'jpeg') savings = 0.2;
+    else if (ext === 'webp') savings = 0.1; // WebP ya es eficiente
     
-    // Ajustar basado en nivel de compresión
     if (compressionLevel === 'low') savings *= 0.5;
     if (compressionLevel === 'high') savings *= 1.5;
     
-    // Ajustar basado en dimensiones
-    if (dimensions && autoResize) {
+    if (dimensions && autoResize && maxDimension > 0) {
       const maxPixels = maxDimension * maxDimension;
       const currentPixels = dimensions.width * dimensions.height;
       if (currentPixels > maxPixels) {
-        savings += 0.2; // Reducción adicional por resize
+        savings += 0.15;
       }
     }
     
-    return Math.min(savings, 0.7); // Máximo 70% de compresión
-  };
+    return Math.min(savings, 0.8);
+  }, [compressionLevel, autoResize, maxDimension]);
+
+  const validateFiles = useCallback((files: File[]): { valid: File[], errors: string[] } => {
+    const valid: File[] = [];
+    const errors: string[] = [];
+    let totalSize = 0;
+
+    for (const file of files) {
+      // Validar tipo
+      if (!file.type.startsWith('image/')) {
+        errors.push(`${file.name}: No es una imagen válida`);
+        continue;
+      }
+      
+      // Validar tamaño individual
+      if (file.size > UPLOAD_CONFIG.MAX_FILE_SIZE) {
+        errors.push(`${file.name}: Supera los 20MB límite`);
+        continue;
+      }
+      
+      // Validar tamaño total del batch
+      totalSize += file.size;
+      if (totalSize > UPLOAD_CONFIG.MAX_TOTAL_SIZE) {
+        errors.push(`Batch supera los 500MB totales`);
+        break;
+      }
+      
+      // Validar extensión
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      const allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+      if (!ext || !allowedExts.includes(ext)) {
+        errors.push(`${file.name}: Formato no soportado`);
+        continue;
+      }
+      
+      valid.push(file);
+    }
+    
+    return { valid, errors };
+  }, []);
 
   const handleFileSelect = async (files: FileList | File[]) => {
-    const validFiles: UploadFile[] = [];
+    console.log('🚀 handleFileSelect called with:', files.length, 'files');
+    const fileArray = Array.from(files);
+    const newFiles: UploadFile[] = [];
     
-    for (const file of Array.from(files)) {
-      // Validaciones
-      if (!file.type.startsWith('image/')) {
-        onMessage('error', `Archivo no válido: ${file.name}`);
-        continue;
-      }
-      
-      if (file.size > 20 * 1024 * 1024) { // 20MB límite
-        onMessage('error', `La imagen ${file.name} supera los 20MB`);
-        continue;
-      }
-      
-      try {
-        const preview = URL.createObjectURL(file);
-        const dimensions = await getImageDimensions(file);
-        const estimatedCompression = estimateCompression(file, dimensions);
-        
-        validFiles.push({
-          file,
-          preview,
-          size: file.size,
-          dimensions,
-          estimatedCompression,
-          status: 'pending',
-          progress: 0,
-          tags: [...batchTags]
-        });
-      } catch (error) {
-        onMessage('error', `Error al procesar: ${file.name}`);
+    // Validar cantidad máxima
+    if (fileArray.length > UPLOAD_CONFIG.MAX_BATCH_SIZE) {
+      console.log('❌ Too many files:', fileArray.length, '>', UPLOAD_CONFIG.MAX_BATCH_SIZE);
+      onMessage('error', `Máximo ${UPLOAD_CONFIG.MAX_BATCH_SIZE} imágenes por lote`);
+      return;
+    }
+    
+    // Validar archivos
+    const { valid, errors } = validateFiles(fileArray);
+    console.log('📋 Validation result:', { valid: valid.length, errors: errors.length });
+    
+    // Mostrar errores
+    if (errors.length > 0) {
+      console.log('⚠️ Validation errors:', errors);
+      errors.slice(0, 3).forEach(error => onMessage('error', error));
+      if (errors.length > 3) {
+        onMessage('error', `Y ${errors.length - 3} errores más...`);
       }
     }
     
-    if (validFiles.length === 0) return;
+    if (valid.length === 0) {
+      console.log('❌ No valid files to process');
+      return;
+    }
     
-    setUploadFiles(prev => [...prev, ...validFiles]);
+    console.log('✅ Processing', valid.length, 'valid files');
     
-    if (validFiles.length === 1) {
+    // Procesar archivos validados en paralelo con límite optimizado
+    const batchSize = Math.min(10, valid.length); // Procesar hasta 10 imágenes a la vez, o todas si son menos
+    const batches = [];
+    
+    for (let i = 0; i < valid.length; i += batchSize) {
+      batches.push(valid.slice(i, i + batchSize));
+    }
+    
+    // Si solo hay un lote pequeño, procesarlo directamente sin esperar
+    if (batches.length === 1 && batches[0].length <= 5) {
+      const batchPromises = batches[0].map(async (file) => {
+        try {
+          console.time(`Procesando ${file.name}`);
+          const preview = URL.createObjectURL(file);
+          
+          // Usar dimensiones por defecto para velocidad máxima
+          // Solo obtener reales si se necesita para compresión avanzada
+          const dimensions = { width: 1920, height: 1080 };
+          
+          const estimatedCompression = estimateCompression(file, dimensions);
+          
+          console.timeEnd(`Procesando ${file.name}`);
+          return {
+            id: generateId(),
+            file,
+            preview,
+            size: file.size,
+            dimensions,
+            estimatedCompression,
+            status: 'pending' as const,
+            progress: 0,
+            tags: [...batchTags]
+          };
+        } catch (error) {
+          console.error(`Error procesando ${file.name}:`, error);
+          return null;
+        }
+      });
+      
+      const batchResults = await Promise.all(batchPromises);
+      const validResults = batchResults.filter(f => f !== null) as UploadFile[];
+      newFiles.push(...validResults);
+      
+      // Actualizar UI inmediatamente
+      setUploadFiles(prev => {
+        const newFiles = [...prev, ...validResults];
+        uploadFilesRef.current = newFiles;
+        return newFiles;
+      });
+    } else {
+      // Para lotes múltiples, procesar secuencialmente
+      
+      for (const batch of batches) {
+        const batchPromises = batch.map(async (file) => {
+          try {
+            console.time(`Procesando ${file.name}`);
+            const preview = URL.createObjectURL(file);
+            
+            // Usar dimensiones por defecto para velocidad máxima
+            const dimensions = { width: 1920, height: 1080 };
+            
+            const estimatedCompression = estimateCompression(file, dimensions);
+            
+            console.timeEnd(`Procesando ${file.name}`);
+            return {
+              id: generateId(),
+              file,
+              preview,
+              size: file.size,
+              dimensions,
+              estimatedCompression,
+              status: 'pending' as const,
+              progress: 0,
+              tags: [...batchTags]
+            };
+          } catch (error) {
+            console.error(`Error procesando ${file.name}:`, error);
+            return null;
+          }
+        });
+        
+        const batchResults = await Promise.all(batchPromises);
+        const validResults = batchResults.filter(f => f !== null) as UploadFile[];
+        newFiles.push(...validResults);
+        
+        // Actualizar UI progresivamente
+        setUploadFiles(prev => {
+          const newFiles = [...prev, ...validResults];
+          uploadFilesRef.current = newFiles;
+          return newFiles;
+        });
+      }
+    }
+    
+    // Mostrar mensaje de éxito
+    if (newFiles.length === 1) {
       onMessage('success', `1 imagen añadida para subir`);
     } else {
-      onMessage('success', `${validFiles.length} imágenes añadidas para subir`);
+      onMessage('success', `${newFiles.length} imágenes añadidas para subir`);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       handleFileSelect(e.target.files);
+      e.target.value = ''; // Reset input
     }
   };
 
@@ -169,19 +372,453 @@ export function ImageUploader({
     }
   }, []);
 
-  const removeFile = (index: number) => {
+  const removeFile = (id: string) => {
     setUploadFiles(prev => {
-      const newFiles = [...prev];
-      URL.revokeObjectURL(newFiles[index].preview);
-      newFiles.splice(index, 1);
+      const newFiles = prev.filter(f => f.id !== id);
+      uploadFilesRef.current = newFiles;
+      const fileToRemove = prev.find(f => f.id === id);
+      
+      if (fileToRemove && fileToRemove.preview.startsWith('blob:')) {
+        URL.revokeObjectURL(fileToRemove.preview);
+      }
+      
+      // Cancelar upload si está activo
+      const controller = abortControllers.current.get(id);
+      if (controller) {
+        controller.abort();
+        abortControllers.current.delete(id);
+      }
+      
       return newFiles;
     });
+    
+    // Actualizar cola y uploads activos
+    setUploadQueue(prev => prev.filter(fileId => fileId !== id));
+    uploadQueueRef.current = uploadQueueRef.current.filter(fileId => fileId !== id);
+    setActiveUploads(prev => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    
+    // Actualizar estadísticas
+    updateUploadStats();
   };
 
   const clearAll = () => {
-    uploadFiles.forEach(file => URL.revokeObjectURL(file.preview));
+    // Cancelar todas las subidas activas
+    abortControllers.current.forEach(controller => controller.abort());
+    abortControllers.current.clear();
+    
+    // Liberar memoria de todas las previews
+    uploadFiles.forEach(file => {
+      if (file.preview.startsWith('blob:')) {
+        URL.revokeObjectURL(file.preview);
+      }
+    });
+    
+    // Resetear estado
     setUploadFiles([]);
+    uploadFilesRef.current = [];
+    setUploadQueue([]);
+    setActiveUploads(new Set());
+    uploadingRef.current = false;
+    setUploading(false);
+    setIsPaused(false);
+    completedUploadsRef.current.clear();
+    setUploadStats({
+      total: 0,
+      success: 0,
+      failed: 0,
+      pending: 0,
+      speed: 0,
+      remainingTime: 0,
+    });
+    
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const toggleUploadPause = () => {
+    const newPausedState = !isPaused;
+    setIsPaused(newPausedState);
+    
+    if (newPausedState) {
+      // Pausar: cancelar todos los uploads activos
+      abortControllers.current.forEach(controller => controller.abort());
+      abortControllers.current.clear();
+      setActiveUploads(new Set());
+      
+      // Cambiar estado de uploads activos a pausados
+      setUploadFiles(prev => {
+        const newFiles = prev.map(file => 
+          file.status === 'uploading' ? { ...file, status: 'paused' as const } : file
+        );
+        uploadFilesRef.current = newFiles;
+        return newFiles;
+      });
+      
+      onMessage('success', 'Upload pausado');
+    } else {
+      // Reanudar
+      onMessage('success', 'Upload reanudado');
+      processUploadQueue();
+    }
+  };
+
+  const updateUploadStats = useCallback(() => {
+    const total = uploadFiles.length;
+    const success = uploadFiles.filter(f => f.status === 'success').length;
+    const failed = uploadFiles.filter(f => f.status === 'error').length;
+    const pending = uploadFiles.filter(f => 
+      f.status === 'pending' || f.status === 'uploading' || f.status === 'paused'
+    ).length;
+    
+    // Calcular velocidad si hay upload en progreso
+    let speed = 0;
+    let remainingTime = 0;
+    
+    if (uploadStartTime.current > 0 && uploadBytes.current > 0) {
+      const elapsedSeconds = (Date.now() - uploadStartTime.current) / 1000;
+      if (elapsedSeconds > 0) {
+        speed = uploadBytes.current / elapsedSeconds; // bytes por segundo
+        
+        const remainingBytes = uploadFiles
+          .filter(f => f.status === 'pending' || f.status === 'paused')
+          .reduce((sum, f) => sum + f.size, 0);
+        
+        remainingTime = remainingBytes / speed;
+      }
+    }
+    
+    setUploadStats({
+      total,
+      success,
+      failed,
+      pending,
+      speed,
+      remainingTime,
+    });
+  }, [uploadFiles]);
+
+  useEffect(() => {
+    updateUploadStats();
+  }, [uploadFiles, updateUploadStats]);
+
+  const processUploadQueue = useCallback(async () => {
+    console.log('🔄 processUploadQueue called', { isPaused, uploading: uploadingRef.current, activeUploadsSize: activeUploads.size, queueLength: uploadQueueRef.current.length });
+    if (isPaused || !uploadingRef.current) {
+      console.log('⏸️ Queue processing paused or not uploading');
+      return;
+    }
+    
+    const availableSlots = UPLOAD_CONFIG.MAX_CONCURRENT_UPLOADS - activeUploads.size;
+    console.log(`📊 Available slots: ${availableSlots}`);
+    
+    if (availableSlots <= 0 || uploadQueueRef.current.length === 0) {
+      console.log('⏳ No available slots or empty queue');
+      // Verificar si terminó todo
+      if (activeUploads.size === 0 && uploadQueueRef.current.length === 0) {
+        console.log(`🏁 Checking completion: completed=${completedUploadsRef.current.size}, total=${uploadFiles.length}`);
+        
+        if (completedUploadsRef.current.size === uploadFilesRef.current.length) {
+          console.log('🎊 All uploads completed!');
+          finishUpload();
+        }
+      }
+      return;
+    }
+    
+    // Tomar los próximos archivos disponibles
+    const nextBatch = uploadQueueRef.current.slice(0, availableSlots);
+    console.log(`📦 Processing next batch:`, nextBatch);
+    uploadQueueRef.current = uploadQueueRef.current.slice(availableSlots);
+    setUploadQueue(uploadQueueRef.current);
+    
+    for (const fileId of nextBatch) {
+      console.log(`▶️ Starting upload for fileId: ${fileId}`);
+      setActiveUploads(prev => new Set([...prev, fileId]));
+      await uploadSingleFile(fileId);
+    }
+  }, [isPaused, activeUploads.size, uploadFiles]);
+
+  const uploadSingleFile = async (fileId: string, retryCount = 0): Promise<void> => {
+    console.log(`📤 Starting upload for fileId: ${fileId}, retry: ${retryCount}`);
+    const fileIndex = uploadFiles.findIndex(f => f.id === fileId);
+    if (fileIndex === -1) {
+      console.log(`❌ File not found in uploadFiles: ${fileId}`);
+      setActiveUploads(prev => {
+        const next = new Set(prev);
+        next.delete(fileId);
+        return next;
+      });
+      return;
+    }
+    
+    const uploadFile = uploadFiles[fileIndex];
+    console.log(`📄 Uploading file: ${uploadFile.file.name} (${formatFileSize(uploadFile.file.size)})`);
+    
+    if (!uploadFile || uploadFile.status === 'success' || (isPaused && uploadFile.status !== 'uploading')) {
+      console.log(`⏭️ Skipping file ${fileId} - status: ${uploadFile?.status}, paused: ${isPaused}`);
+      setActiveUploads(prev => {
+        const next = new Set(prev);
+        next.delete(fileId);
+        return next;
+      });
+      return;
+    }
+    
+    console.time(`Upload ${uploadFile.file.name}`);
+    
+    try {
+      // Crear abort controller
+      const controller = new AbortController();
+      abortControllers.current.set(fileId, controller);
+      
+      // Iniciar timeout
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, UPLOAD_CONFIG.UPLOAD_TIMEOUT);
+      
+      // Actualizar estado a uploading
+      setUploadFiles(prev => {
+        const newFiles = prev.map(f => 
+          f.id === fileId ? { ...f, status: 'uploading' as const, progress: 0 } : f
+        );
+        uploadFilesRef.current = newFiles;
+        return newFiles;
+      });
+      
+      const formData = new FormData();
+      formData.append("image", uploadFile.file);
+      formData.append("compression", compressionLevel);
+      formData.append("maxDimension", autoResize ? maxDimension.toString() : "0");
+      formData.append("tags", JSON.stringify(uploadFile.tags));
+      
+      console.log(`📋 FormData prepared for ${uploadFile.file.name}:`, {
+        fileName: uploadFile.file.name,
+        fileSize: uploadFile.file.size,
+        compression: compressionLevel,
+        maxDimension: autoResize ? maxDimension : 0,
+        tags: uploadFile.tags
+      });
+      
+      // Configurar progress tracking
+      let uploadedBytes = 0;
+      const xhr = new XMLHttpRequest();
+      
+      const uploadPromise = new Promise<void>((resolve, reject) => {
+        xhr.open("POST", "http://localhost:5000/admin/upload-image");
+        
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            uploadedBytes = event.loaded;
+            const progress = Math.round((event.loaded / event.total) * 100);
+            
+            setUploadFiles(prev => {
+              const newFiles = prev.map(f => 
+                f.id === fileId ? { ...f, progress } : f
+              );
+              uploadFilesRef.current = newFiles;
+              return newFiles;
+            });
+            
+            // Actualizar estadísticas de velocidad
+            uploadBytes.current += event.loaded - uploadedBytes;
+          }
+        };
+        
+        xhr.onload = () => {
+          clearTimeout(timeoutId);
+          console.log(`✅ XHR onload for ${uploadFile.file.name}: status ${xhr.status}`);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            console.log(`🎉 Upload successful for ${uploadFile.file.name}`);
+            resolve();
+          } else {
+            console.error(`❌ XHR error for ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
+            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+          }
+        };
+        
+        xhr.onerror = () => {
+          clearTimeout(timeoutId);
+          console.error(`🔥 XHR network error for ${uploadFile.file.name}`);
+          reject(new Error('Network error'));
+        };
+        
+        xhr.onabort = () => {
+          clearTimeout(timeoutId);
+          console.log(`🛑 XHR aborted for ${uploadFile.file.name}`);
+          reject(new Error('Upload aborted'));
+        };
+        
+        console.time(`XHR ${uploadFile.file.name}`);
+        xhr.send(formData);
+      });
+      
+      await uploadPromise;
+      console.timeEnd(`XHR ${uploadFile.file.name}`);
+      
+      // Éxito
+      console.timeEnd(`Upload ${uploadFile.file.name}`);
+      setUploadFiles(prev => {
+        const newFiles = prev.map(f => 
+          f.id === fileId ? { ...f, status: 'success' as const, progress: 100 } : f
+        );
+        uploadFilesRef.current = newFiles;
+        return newFiles;
+      });
+      completedUploadsRef.current.add(fileId);
+      
+      onMessage('success', `${uploadFile.file.name} subida exitosamente`);
+      
+    } catch (error: any) {
+      console.error(`💥 Upload failed for ${uploadFile.file.name}:`, error);
+      // Cancelar el abort controller si existe
+      const controller = abortControllers.current.get(fileId);
+      if (controller) {
+        controller.abort();
+      }
+      
+      if (error.name === 'AbortError' || error.message === 'Upload aborted') {
+        // Upload cancelado por pausa o timeout
+        console.log(`⏸️ Upload paused/aborted for ${uploadFile.file.name}`);
+        setUploadFiles(prev => {
+          const newFiles = prev.map(f => 
+            f.id === fileId ? { ...f, status: 'paused' as const } : f
+          );
+          uploadFilesRef.current = newFiles;
+          return newFiles;
+        });
+      } else if (retryCount < UPLOAD_CONFIG.RETRY_ATTEMPTS) {
+        // Reintentar
+        console.log(`🔄 Retrying upload for ${uploadFile.file.name} (attempt ${retryCount + 1}/${UPLOAD_CONFIG.RETRY_ATTEMPTS})`);
+        await new Promise(resolve => 
+          setTimeout(resolve, UPLOAD_CONFIG.RETRY_DELAY * (retryCount + 1))
+        );
+        return uploadSingleFile(fileId, retryCount + 1);
+      } else {
+        // Error definitivo
+        const errorMsg = error.message || 'Error desconocido';
+        console.error(`💀 Final upload failure for ${uploadFile.file.name}: ${errorMsg}`);
+        setUploadFiles(prev => {
+          const newFiles = prev.map(f => 
+            f.id === fileId ? { 
+              ...f, 
+              status: 'error' as const, 
+              errorMessage: errorMsg 
+            } : f
+          );
+          uploadFilesRef.current = newFiles;
+          return newFiles;
+        });
+        onMessage('error', `Falló ${uploadFile.file.name}: ${errorMsg}`);
+      }
+    } finally {
+      // Limpiar
+      abortControllers.current.delete(fileId);
+      setActiveUploads(prev => {
+        const next = new Set(prev);
+        next.delete(fileId);
+        return next;
+      });
+      
+      // Procesar siguiente en la cola
+      setTimeout(() => processUploadQueue(), 100);
+    }
+  };
+
+  const finishUpload = () => {
+    uploadingRef.current = false;
+    setUploading(false);
+    setIsPaused(false);
+    
+    const successCount = uploadFiles.filter(f => f.status === 'success').length;
+    const errorCount = uploadFiles.filter(f => f.status === 'error').length;
+    const totalTime = uploadStartTime.current > 0 
+      ? (Date.now() - uploadStartTime.current) / 1000 
+      : 0;
+    
+    if (successCount > 0) {
+      onMessage('success', 
+        `${successCount} imágenes subidas exitosamente en ${Math.round(totalTime)} segundos`
+      );
+      
+      if (errorCount > 0) {
+        onMessage('error', 
+          `${errorCount} imágenes fallaron. Puedes reintentarlas.`
+        );
+      }
+      
+      // Refrescar galería
+      setTimeout(() => {
+        if (successCount > 0) {
+          onUploadSuccess();
+        }
+        
+        // Mantener solo las que fallaron
+        setUploadFiles(prev => prev.filter(f => f.status === 'error'));
+      }, 3000);
+    } else {
+      onMessage('error', 'Todas las imágenes fallaron al subir');
+    }
+    
+    // Resetear estadísticas
+    uploadStartTime.current = 0;
+    uploadBytes.current = 0;
+  };
+
+  const handleUpload = async () => {
+    console.log('🚀 handleUpload called');
+    if (uploadFiles.length === 0) {
+      console.log('❌ No files to upload');
+      return;
+    }
+    
+    console.log(`📤 Starting upload process for ${uploadFilesRef.current.length} files`);
+    uploadingRef.current = true;
+    setUploading(true);
+    setIsPaused(false);
+    
+    // Inicializar estadísticas
+    uploadStartTime.current = Date.now();
+    uploadBytes.current = 0;
+    
+    // Crear cola con archivos pendientes
+    const pendingFiles = uploadFilesRef.current
+      .filter(f => f.status === 'pending' || f.status === 'error')
+      .map(f => f.id);
+    
+    console.log(`📋 Pending files queue:`, pendingFiles);
+    uploadQueueRef.current = pendingFiles;
+    setUploadQueue(pendingFiles);
+    setActiveUploads(new Set());
+    completedUploadsRef.current.clear();
+    
+    // Iniciar procesamiento
+    processUploadQueue();
+  };
+
+  const retryFailed = () => {
+    const failedFiles = uploadFiles.filter(f => f.status === 'error');
+    if (failedFiles.length === 0) return;
+    
+    // Resetear archivos fallidos
+    setUploadFiles(prev => {
+      const newFiles = prev.map(f => 
+        f.status === 'error' ? { ...f, status: 'pending' as const, progress: 0 } : f
+      );
+      uploadFilesRef.current = newFiles;
+      return newFiles;
+    });
+    
+    // Agregar a la cola si ya está subiendo
+    if (uploading) {
+      const failedIds = failedFiles.map(f => f.id);
+      failedIds.forEach(id => completedUploadsRef.current.delete(id)); // Remove from completed if retrying
+      setUploadQueue(prev => [...prev, ...failedIds]);
+      uploadQueueRef.current = [...uploadQueueRef.current, ...failedIds];
+      processUploadQueue();
+    }
   };
 
   const addTagToAll = (tag: string) => {
@@ -193,7 +830,7 @@ export function ImageUploader({
     setUploadFiles(prev => 
       prev.map(file => ({
         ...file,
-        tags: [...file.tags, tag.trim()]
+        tags: [...new Set([...file.tags, tag.trim()])]
       }))
     );
     
@@ -212,34 +849,18 @@ export function ImageUploader({
     );
   };
 
-  const toggleTagOnFile = (fileIndex: number, tag: string) => {
-    setUploadFiles(prev => 
-      prev.map((file, idx) => {
-        if (idx !== fileIndex) return file;
-        
-        if (file.tags.includes(tag)) {
-          return {
-            ...file,
-            tags: file.tags.filter(t => t !== tag)
-          };
-        } else {
-          return {
-            ...file,
-            tags: [...file.tags, tag]
-          };
-        }
-      })
-    );
-  };
-
   const calculateStats = (): CompressionStats => {
-    const originalSize = uploadFiles.reduce((sum, file) => sum + file.size, 0);
-    const compressedSize = uploadFiles.reduce((sum, file) => 
+    const filesToUpload = uploadFiles.filter(f => 
+      f.status === 'pending' || f.status === 'error'
+    );
+    
+    const originalSize = filesToUpload.reduce((sum, file) => sum + file.size, 0);
+    const compressedSize = filesToUpload.reduce((sum, file) => 
       sum + file.size * (1 - file.estimatedCompression), 0
     );
     
     const savings = originalSize - compressedSize;
-    const percentage = (savings / originalSize) * 100;
+    const percentage = originalSize > 0 ? (savings / originalSize) * 100 : 0;
     
     return { originalSize, compressedSize, savings, percentage };
   };
@@ -250,98 +871,10 @@ export function ImageUploader({
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const handleUpload = async () => {
-    if (uploadFiles.length === 0) return;
-    
-    setUploading(true);
-    let successCount = 0;
-    let failedCount = 0;
-    
-    // Actualizar estado a uploading
-    setUploadFiles(prev => prev.map(file => ({ ...file, status: 'uploading' as const, progress: 0 })));
-    
-    for (let i = 0; i < uploadFiles.length; i++) {
-      const uploadFile = uploadFiles[i];
-      
-      try {
-        const formData = new FormData();
-        formData.append("image", uploadFile.file);
-        formData.append("compression", compressionLevel);
-        formData.append("maxDimension", autoResize ? maxDimension.toString() : "0");
-        formData.append("tags", JSON.stringify(uploadFile.tags));
-        
-        const xhr = new XMLHttpRequest();
-        
-        // Actualizar progreso
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const progress = Math.round((event.loaded / event.total) * 100);
-            setUploadFiles(prev => 
-              prev.map((f, idx) => 
-                idx === i ? { ...f, progress } : f
-              )
-            );
-          }
-        };
-        
-        const uploadPromise = new Promise((resolve, reject) => {
-          xhr.open("POST", "http://localhost:5000/admin/upload-image");
-          
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(xhr.response);
-            } else {
-              reject(new Error(`Upload failed with status ${xhr.status}`));
-            }
-          };
-          
-          xhr.onerror = () => reject(new Error('Network error'));
-          xhr.send(formData);
-        });
-        
-        await uploadPromise;
-        
-        // Actualizar a éxito
-        setUploadFiles(prev => 
-          prev.map((f, idx) => 
-            idx === i ? { ...f, status: 'success' as const, progress: 100 } : f
-          )
-        );
-        
-        successCount++;
-        
-      } catch (error) {
-        console.error(`Error uploading ${uploadFile.file.name}:`, error);
-        
-        // Actualizar a error
-        setUploadFiles(prev => 
-          prev.map((f, idx) => 
-            idx === i ? { ...f, status: 'error' as const } : f
-          )
-        );
-        
-        failedCount++;
-      }
-    }
-    
-    // Mostrar resultados
-    if (successCount > 0) {
-      onMessage('success', `${successCount} imagen(es) subidas correctamente`);
-      
-      if (failedCount > 0) {
-        onMessage('error', `${failedCount} imagen(es) fallaron al subir`);
-      }
-      
-      // Limpiar después de 2 segundos
-      setTimeout(() => {
-        clearAll();
-        onUploadSuccess();
-      }, 2000);
-    } else {
-      onMessage('error', 'Todas las imágenes fallaron al subir');
-    }
-    
-    setUploading(false);
+  const formatTime = (seconds: number) => {
+    if (seconds < 60) return `${Math.round(seconds)}s`;
+    if (seconds < 3600) return `${Math.round(seconds / 60)}m`;
+    return `${Math.round(seconds / 3600)}h`;
   };
 
   const stats = calculateStats();
@@ -351,39 +884,168 @@ export function ImageUploader({
     ...uploadFiles.flatMap(f => f.tags)
   ])).sort();
 
+  const uploadingCount = uploadFiles.filter(f => f.status === 'uploading').length;
+  const pendingCount = uploadFiles.filter(f => f.status === 'pending' || f.status === 'paused').length;
+
   return (
     <div className={`rounded-2xl p-6 border ${
       theme === "dark" 
         ? "bg-gradient-to-br from-gray-900/80 to-gray-800/60 border-gray-800" 
         : "bg-gradient-to-br from-white to-blue-50/30 border-blue-100"
     }`}>
-      {/* Encabezado */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Encabezado con controles */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className={`text-lg font-semibold mb-1 ${
             theme === "dark" ? "text-white" : "text-gray-900"
           }`}>
-            <TranslateText text="Subida Inteligente de Imágenes" />
+            <TranslateText text="Subida Masiva de Imágenes" />
           </h2>
           <p className={`text-sm ${
             theme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}>
-            <TranslateText text="Optimización automática y gestión de etiquetas" />
+            <TranslateText text="Gestión inteligente con control de concurrencia" />
           </p>
         </div>
         
-        <button
-          onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-            theme === "dark"
-              ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
-              : "bg-blue-100 hover:bg-blue-200 text-blue-700"
-          }`}
-        >
-          <Settings className="w-4 h-4" />
-          <span>{showAdvanced ? "Ocultar" : "Avanzado"}</span>
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {uploading && (
+            <>
+              <button
+                onClick={toggleUploadPause}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isPaused
+                    ? theme === "dark"
+                      ? "bg-emerald-800 hover:bg-emerald-700 text-emerald-200"
+                      : "bg-emerald-100 hover:bg-emerald-200 text-emerald-700"
+                    : theme === "dark"
+                      ? "bg-amber-800 hover:bg-amber-700 text-amber-200"
+                      : "bg-amber-100 hover:bg-amber-200 text-amber-700"
+                }`}
+              >
+                {isPaused ? (
+                  <>
+                    <PlayCircle className="w-4 h-4" />
+                    <span>Reanudar</span>
+                  </>
+                ) : (
+                  <>
+                    <PauseCircle className="w-4 h-4" />
+                    <span>Pausar</span>
+                  </>
+                )}
+              </button>
+              
+              {uploadStats.failed > 0 && (
+                <button
+                  onClick={retryFailed}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    theme === "dark"
+                      ? "bg-red-800 hover:bg-red-700 text-red-200"
+                      : "bg-red-100 hover:bg-red-200 text-red-700"
+                  }`}
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Reintentar ({uploadStats.failed})</span>
+                </button>
+              )}
+            </>
+          )}
+          
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+              theme === "dark"
+                ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                : "bg-blue-100 hover:bg-blue-200 text-blue-700"
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            <span>{showAdvanced ? "Ocultar" : "Avanzado"}</span>
+          </button>
+        </div>
       </div>
+
+      {/* Panel de control de uploads */}
+      {uploading && (
+        <div className={`mb-6 p-4 rounded-xl ${
+          theme === "dark" 
+            ? "bg-gray-800/60 border border-gray-700" 
+            : "bg-blue-50/60 border border-blue-200"
+        }`}>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-4">
+              <div className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                theme === "dark" ? "bg-blue-800/40 text-blue-300" : "bg-blue-100 text-blue-700"
+              }`}>
+                {UPLOAD_CONFIG.MAX_CONCURRENT_UPLOADS} simultáneos
+              </div>
+              
+              <div className="flex flex-wrap gap-3 text-sm">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>
+                    {uploadStats.success} exitosas
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                  <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>
+                    {uploadingCount} activas
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                  <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>
+                    {pendingCount} pendientes
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                  <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>
+                    {uploadStats.failed} fallidas
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-sm">
+              {uploadStats.speed > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                    Velocidad: {formatFileSize(uploadStats.speed)}/s
+                  </span>
+                  <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                    | Tiempo restante: {formatTime(uploadStats.remainingTime)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Barra de progreso general */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                Progreso general
+              </span>
+              <span className="font-medium">
+                {uploadStats.success + uploadStats.failed} / {uploadStats.total}
+              </span>
+            </div>
+            <div className={`h-2.5 rounded-full overflow-hidden ${
+              theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+            }`}>
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500 transition-all duration-500"
+                style={{ 
+                  width: `${((uploadStats.success + uploadStats.failed) / uploadStats.total) * 100}%` 
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Estadísticas de compresión */}
       {uploadFiles.length > 0 && (
@@ -392,7 +1054,7 @@ export function ImageUploader({
             ? "bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-800/30" 
             : "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
         }`}>
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className={`p-2 rounded-lg ${
                 theme === "dark" ? "bg-blue-800/30" : "bg-blue-100"
@@ -402,18 +1064,20 @@ export function ImageUploader({
                 }`} />
               </div>
               <div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-1">
                   <span className={`text-sm font-medium ${
                     theme === "dark" ? "text-blue-300" : "text-blue-700"
                   }`}>
                     {uploadFiles.length} imágenes seleccionadas
                   </span>
-                  <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
-                    theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-600"
-                  }`}>
-                    <Sparkles className="w-3 h-3" />
-                    <span>Compresión: {stats.percentage.toFixed(0)}%</span>
-                  </div>
+                  {stats.percentage > 0 && (
+                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+                      theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-600"
+                    }`}>
+                      <Sparkles className="w-3 h-3" />
+                      <span>Compresión: {stats.percentage.toFixed(0)}%</span>
+                    </div>
+                  )}
                 </div>
                 <div className={`text-sm ${
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -430,19 +1094,21 @@ export function ImageUploader({
               </div>
             </div>
             
-            {uploadFiles.length > 0 && (
-              <button
-                onClick={clearAll}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  theme === "dark"
-                    ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                }`}
-              >
-                <X className="w-4 h-4" />
-                <TranslateText text="Limpiar todo" />
-              </button>
-            )}
+            <div className="flex gap-2">
+              {uploadFiles.length > 0 && (
+                <button
+                  onClick={clearAll}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    theme === "dark"
+                      ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  <X className="w-4 h-4" />
+                  <TranslateText text="Limpiar todo" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -460,7 +1126,7 @@ export function ImageUploader({
             <TranslateText text="Configuración de Optimización" />
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Nivel de compresión */}
             <div>
               <label className={`block text-sm font-medium mb-2 ${
@@ -505,7 +1171,7 @@ export function ImageUploader({
               }`}>
                 <TranslateText text="Redimensionar" />
               </label>
-              <div className="flex items-center gap-3">
+              <div className="space-y-2">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -516,28 +1182,26 @@ export function ImageUploader({
                   <span className={`text-sm ${
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
-                    <TranslateText text="Automático" />
+                    <TranslateText text="Redimensionar automáticamente" />
                   </span>
                 </label>
                 
                 {autoResize && (
-                  <div className="flex-1">
-                    <select
-                      value={maxDimension}
-                      onChange={(e) => setMaxDimension(Number(e.target.value))}
-                      className={`w-full px-3 py-2 rounded-lg text-sm border ${
-                        theme === "dark"
-                          ? "bg-gray-800 border-gray-700 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
-                      }`}
-                    >
-                      <option value={1024}>1024px (Pequeño)</option>
-                      <option value={1920}>1920px (HD)</option>
-                      <option value={2560}>2560px (2K)</option>
-                      <option value={3840}>3840px (4K)</option>
-                      <option value={0}>Original</option>
-                    </select>
-                  </div>
+                  <select
+                    value={maxDimension}
+                    onChange={(e) => setMaxDimension(Number(e.target.value))}
+                    className={`w-full px-3 py-2 rounded-lg text-sm border ${
+                      theme === "dark"
+                        ? "bg-gray-800 border-gray-700 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
+                    }`}
+                  >
+                    <option value={800}>800px (Móvil)</option>
+                    <option value={1024}>1024px (Tablet)</option>
+                    <option value={1920}>1920px (HD)</option>
+                    <option value={2560}>2560px (2K)</option>
+                    <option value={0}>Mantener original</option>
+                  </select>
                 )}
               </div>
               {autoResize && (
@@ -556,7 +1220,7 @@ export function ImageUploader({
               }`}>
                 <TranslateText text="Etiquetas de Lote" />
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={newTag}
@@ -600,7 +1264,7 @@ export function ImageUploader({
                       {tag}
                       <button
                         onClick={() => removeTagFromAll(tag)}
-                        className="hover:text-red-400"
+                        className="hover:text-red-400 transition-colors"
                       >
                         ×
                       </button>
@@ -610,24 +1274,48 @@ export function ImageUploader({
               )}
             </div>
           </div>
+          
+          {/* Información de límites */}
+          <div className={`mt-4 pt-4 border-t ${
+            theme === "dark" ? "border-gray-800" : "border-gray-200"
+          }`}>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className={`w-3 h-3 ${
+                  theme === "dark" ? "text-amber-500" : "text-amber-600"
+                }`} />
+                <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                  Máx. {UPLOAD_CONFIG.MAX_BATCH_SIZE} imágenes/lote
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className={`w-3 h-3 ${
+                  theme === "dark" ? "text-amber-500" : "text-amber-600"
+                }`} />
+                <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                  Máx. {UPLOAD_CONFIG.MAX_CONCURRENT_UPLOADS} simultáneas
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Área de subida */}
-      <div className={`border-2 border-dashed rounded-xl p-6 transition-all cursor-pointer mb-6 ${
+      <div className={`border-2 border-dashed rounded-xl p-6 transition-all mb-6 ${
         dragActive 
           ? theme === "dark"
             ? 'border-blue-500 bg-blue-500/10'
             : 'border-blue-500 bg-blue-50'
           : theme === "dark"
-            ? 'border-gray-700 hover:border-gray-600 hover:bg-gray-800/30'
-            : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50/50'
-      }`}
+            ? 'border-gray-700 hover:border-gray-600'
+            : 'border-gray-300 hover:border-blue-400'
+      } ${uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => !uploading && fileInputRef.current?.click()}
       >
         <input
           type="file"
@@ -662,32 +1350,8 @@ export function ImageUploader({
             <p className={`text-xs ${
               theme === "dark" ? "text-gray-500" : "text-gray-500"
             }`}>
-              <TranslateText text="Soporta JPG, PNG, WebP, GIF • Máx. 20MB c/u • Hasta 50 imágenes por lote" />
+              <TranslateText text={`Soporta JPG, PNG, WebP, GIF • Máx. ${UPLOAD_CONFIG.MAX_FILE_SIZE / (1024*1024)}MB c/u • Hasta ${UPLOAD_CONFIG.MAX_BATCH_SIZE} imágenes`} />
             </p>
-            
-            {/* Ejemplos de tamaños */}
-            <div className={`mt-4 grid grid-cols-3 gap-2 max-w-md mx-auto ${
-              theme === "dark" ? "text-gray-500" : "text-gray-400"
-            }`}>
-              <div className="text-center">
-                <div className={`w-full h-1 mx-auto mb-1 rounded ${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-300"
-                }`} />
-                <span className="text-xs">Móvil (1MB)</span>
-              </div>
-              <div className="text-center">
-                <div className={`w-full h-1 mx-auto mb-1 rounded ${
-                  theme === "dark" ? "bg-gray-600" : "bg-gray-400"
-                }`} />
-                <span className="text-xs">Web (3MB)</span>
-              </div>
-              <div className="text-center">
-                <div className={`w-full h-1 mx-auto mb-1 rounded ${
-                  theme === "dark" ? "bg-gray-500" : "bg-gray-500"
-                }`} />
-                <span className="text-xs">Impresión (10MB)</span>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -731,12 +1395,17 @@ export function ImageUploader({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    fileInputRef.current?.click();
+                    !uploading && fileInputRef.current?.click();
                   }}
+                  disabled={uploading}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                    theme === "dark"
-                      ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
-                      : "bg-blue-100 hover:bg-blue-200 text-blue-700"
+                    uploading
+                      ? theme === "dark"
+                        ? "bg-gray-800 text-gray-600 cursor-not-allowed"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : theme === "dark"
+                        ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                        : "bg-blue-100 hover:bg-blue-200 text-blue-700"
                   }`}
                 >
                   <TranslateText text="Añadir más" />
@@ -744,11 +1413,11 @@ export function ImageUploader({
               </div>
             </div>
             
-            {/* Lista de imágenes */}
-            <div className="max-h-64 overflow-y-auto space-y-2">
-              {uploadFiles.map((file, index) => (
+            {/* Lista de imágenes con scroll virtualizado */}
+            <div className="max-h-80 overflow-y-auto space-y-2 pr-2">
+              {uploadFiles.map((file) => (
                 <div
-                  key={index}
+                  key={file.id}
                   className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                     file.status === 'success'
                       ? theme === "dark" ? "bg-emerald-900/20" : "bg-emerald-50"
@@ -756,7 +1425,9 @@ export function ImageUploader({
                       ? theme === "dark" ? "bg-red-900/20" : "bg-red-50"
                       : file.status === 'uploading'
                       ? theme === "dark" ? "bg-blue-900/20" : "bg-blue-50"
-                      : theme === "dark" ? "bg-gray-800/30 hover:bg-gray-800/50" : "bg-gray-50 hover:bg-gray-100"
+                      : file.status === 'paused'
+                      ? theme === "dark" ? "bg-amber-900/20" : "bg-amber-50"
+                      : theme === "dark" ? "bg-gray-800/30" : "bg-gray-50"
                   }`}
                 >
                   {/* Miniatura */}
@@ -765,12 +1436,22 @@ export function ImageUploader({
                       src={file.preview}
                       alt={file.file.name}
                       className="w-full h-full object-cover"
+                      onLoad={() => {
+                        // Liberar memoria después de cargar
+                        if (file.status === 'success' || file.status === 'error') {
+                          setTimeout(() => {
+                            if (file.preview.startsWith('blob:')) {
+                              URL.revokeObjectURL(file.preview);
+                            }
+                          }, 1000);
+                        }
+                      }}
                     />
                     
                     {/* Indicador de estado */}
                     {file.status === 'uploading' && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       </div>
                     )}
                     {file.status === 'success' && (
@@ -783,6 +1464,11 @@ export function ImageUploader({
                         <AlertCircle className="w-4 h-4 text-red-500" />
                       </div>
                     )}
+                    {file.status === 'paused' && (
+                      <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
+                        <PauseCircle className="w-4 h-4 text-amber-500" />
+                      </div>
+                    )}
                   </div>
                   
                   {/* Información */}
@@ -790,17 +1476,24 @@ export function ImageUploader({
                     <div className="flex items-start justify-between mb-1">
                       <p className={`text-sm font-medium truncate ${
                         theme === "dark" ? "text-white" : "text-gray-900"
-                      }`}>
+                      }`} title={file.file.name}>
                         {file.file.name}
                       </p>
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-600"
-                      }`}>
-                        {formatFileSize(file.size)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-gray-100 text-gray-600"
+                        }`}>
+                          {formatFileSize(file.size)}
+                        </span>
+                        {file.errorMessage && (
+                          <span className="text-xs text-red-500" title={file.errorMessage}>
+                            Error
+                          </span>
+                        )}
+                      </div>
                     </div>
                     
-                    {/* Detalles */}
+                    {/* Detalles y progreso */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {file.dimensions && (
@@ -858,7 +1551,7 @@ export function ImageUploader({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeFile(index);
+                            removeFile(file.id);
                           }}
                           className={`p-1 rounded ${
                             theme === "dark"
@@ -889,12 +1582,11 @@ export function ImageUploader({
               }`}>
                 <TranslateText text="Etiquetas disponibles:" />
               </p>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto p-1">
                 {allUniqueTags.map(tag => (
                   <button
                     key={tag}
                     onClick={() => {
-                      // Si ya está en batchTags, quitarlo, sino añadirlo a todas
                       if (batchTags.includes(tag)) {
                         removeTagFromAll(tag);
                       } else {
@@ -922,9 +1614,9 @@ export function ImageUploader({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={clearAll}
-            disabled={uploadFiles.length === 0 || uploading}
+            disabled={uploading && !isPaused}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
-              uploadFiles.length === 0 || uploading
+              uploading && !isPaused
                 ? theme === "dark"
                   ? "bg-gray-800 text-gray-600 cursor-not-allowed"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -938,25 +1630,30 @@ export function ImageUploader({
           
           <button
             onClick={handleUpload}
-            disabled={uploadFiles.length === 0 || uploading}
+            disabled={uploadFiles.length === 0 || (uploading && !isPaused)}
             className={`px-6 py-3 rounded-xl font-medium transition-all relative overflow-hidden group ${
-              uploadFiles.length === 0 || uploading
+              uploadFiles.length === 0 || (uploading && !isPaused)
                 ? theme === "dark"
                   ? "bg-gray-800 text-gray-600 cursor-not-allowed"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg shadow-blue-500/25"
             }`}
           >
-            {uploading ? (
+            {uploading && !isPaused ? (
               <div className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span><TranslateText text="Subiendo..." /></span>
+              </div>
+            ) : isPaused ? (
+              <div className="flex items-center justify-center gap-2">
+                <PlayCircle className="w-5 h-5" />
+                <span><TranslateText text="Continuar Subida" /></span>
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2">
                 <Upload className="w-5 h-5" />
                 <span>
-                  <TranslateText text="Subir" /> ({uploadFiles.length})
+                  <TranslateText text="Iniciar Subida" /> ({uploadFiles.length})
                 </span>
                 <span className={`text-xs px-2 py-0.5 rounded ${
                   theme === "dark" ? "bg-blue-600/50" : "bg-white/20"
@@ -988,7 +1685,7 @@ export function ImageUploader({
               }`} />
             </div>
             <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-              <TranslateText text="Optimización automática" />
+              <TranslateText text="Upload optimizado" />
             </span>
           </div>
           <div className="flex items-center gap-2">

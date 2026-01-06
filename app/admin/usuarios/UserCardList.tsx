@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Shield, Crown, Edit2, Trash2, MoreVertical } from "lucide-react";
+import { Mail, Shield, Crown, Edit2, Trash2, MoreVertical, Lock, Unlock } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 interface Usuario {
@@ -23,19 +23,8 @@ interface UserCardListProps {
   theme?: 'light' | 'dark';
 }
 
-const permissionLabels: Record<string, string> = {
-  read: "Leer",
-  write: "Escribir",
-  delete: "Eliminar",
-  export: "Exportar",
-  manage_users: "Gestionar usuarios",
-  manage_roles: "Gestionar roles",
-  view_audit: "Ver auditoría",
-  block_user: "Bloquear usuario"
-};
-
 const roleLabels: Record<string, string> = {
-  superadmin: "Super Administrador",
+  superadmin: "Super Admin",
   admin: "Administrador",
   editor: "Editor",
   viewer: "Lector",
@@ -53,87 +42,193 @@ export default function UserCardList({
   onViewDetails,
   theme = 'light'
 }: UserCardListProps) {
+  const isDark = theme === 'dark';
+  
   let paginatedUsers = users;
   let totalPages = 1;
+  
   if (page !== undefined && pageSize !== undefined) {
     totalPages = Math.ceil(users.length / pageSize);
     paginatedUsers = users.slice((page - 1) * pageSize, page * pageSize);
   }
 
+  const getRoleDisplay = (role: string) => {
+    return roleLabels[role] || role;
+  };
+
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-2 md:px-0">
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {paginatedUsers.length === 0 ? (
-        <div className="col-span-full text-center py-12 text-gray-400">
+        <div className={`col-span-full text-center py-12 rounded-lg ${
+          isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-500'
+        }`}>
           <TranslateText text="No se encontraron usuarios" />
         </div>
       ) : (
         paginatedUsers.map((user) => {
           const roles = Array.isArray(user.role) ? user.role : (user.roles || [user.role as string]);
-          // Si no tiene permisos explícitos, mostrar los permisos por defecto del rol principal
-          let displayPerms = user.permissions && user.permissions.length > 0 ? user.permissions : [];
-          if (displayPerms.length === 0 && roles.length > 0) {
-            // Mostrar permisos por defecto del primer rol
-            const defaultPerms: Record<string, string[]> = {
-              superadmin: ['read','write','delete','export','manage_users','manage_roles','view_audit','block_user'],
-              admin: ['read','write','manage_users','view_audit','block_user'],
-              editor: ['read','write'],
-              viewer: ['read'],
-              moderator: ['read','block_user']
-            };
-            displayPerms = defaultPerms[roles[0]] || [];
-          }
+          const isBlocked = user.bloqueado || false;
+
           return (
             <div
               key={user.email}
-              className={`min-w-[220px] max-w-full sm:max-w-[340px] rounded-2xl border shadow-xl p-7 flex flex-col gap-5 transition-all
-                ${user.bloqueado ? 'opacity-60 scale-[0.97]' : 'opacity-100'}
-                hover:scale-[1.025]
-                ${theme === 'dark' ? 'bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 border-blue-900' : 'bg-linear-to-br from-white via-blue-50 to-white border-blue-200'}`}
-              style={{ minHeight: 260 }}
+              className={`rounded-lg border p-4 flex flex-col gap-3 transition-colors ${
+                isBlocked ? 'opacity-70' : ''
+              } ${
+                isDark 
+                  ? 'bg-slate-800 border-slate-700 hover:bg-slate-700/50' 
+                  : 'bg-white border-slate-200 hover:bg-slate-50'
+              }`}
             >
-              <div className="flex items-center gap-3">
-                <div className={`rounded-full p-3 shadow-md ${theme === 'dark' ? 'bg-blue-700/40' : 'bg-blue-100'}`}> <Mail className="w-6 h-6 text-blue-500" /> </div>
-                <div className="min-w-0">
-                  <div className={`font-bold text-lg truncate max-w-[180px] ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{user.email}</div>
-                  <div className="flex gap-2 mt-1 flex-wrap">
-                    {roles.map(r => (
-                      <span key={r} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border shadow-sm ${theme === 'dark' ? 'bg-gray-900/80 text-blue-200 border-blue-700' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                        {r === 'superadmin' ? <Crown className="w-3.5 h-3.5" /> : <Shield className="w-3.5 h-3.5" />} {roleLabels[r] || r}
-                      </span>
-                    ))}
+              {/* Header with Email */}
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${
+                    isDark ? 'bg-slate-700' : 'bg-slate-100'
+                  }`}>
+                    <Mail className={`w-5 h-5 ${
+                      isDark ? 'text-blue-400' : 'text-blue-600'
+                    }`} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className={`font-medium truncate max-w-[180px] ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>
+                      {user.email}
+                    </div>
                   </div>
                 </div>
+                
+                {/* Status Badge */}
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                  isBlocked
+                    ? isDark ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-700'
+                    : isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
+                }`}>
+                  {isBlocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                  <span>{isBlocked ? 'Bloqueado' : 'Activo'}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 mt-2">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
-                  <span className={`text-xs font-semibold ${user.bloqueado ? 'text-red-600' : 'text-green-600'}`}>{user.bloqueado ? 'Bloqueado' : 'Activo'}</span>
-                  <span className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+
+              {/* Roles */}
+              <div className="flex flex-wrap gap-1.5">
+                {roles.map(role => (
+                  <span 
+                    key={role}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                      role === 'superadmin' 
+                        ? isDark ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-700'
+                        : role === 'admin'
+                        ? isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'
+                        : isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-700'
+                    }`}
+                  >
+                    {role === 'superadmin' ? <Crown className="w-3 h-3" /> : <Shield className="w-3 h-3" />}
+                    {getRoleDisplay(role)}
+                  </span>
+                ))}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 mt-2">
+                <button 
+                  onClick={() => onEdit(user)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                    isDark 
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                  }`}
+                >
+                  <Edit2 className="w-4 h-4" />
+                  <span><TranslateText text="Editar" /></span>
+                </button>
+                
+                <button 
+                  onClick={() => onDelete(user)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                    isDark 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span><TranslateText text="Eliminar" /></span>
+                </button>
+                
+                <button 
+                  onClick={() => onViewDetails(user)}
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                    isDark 
+                      ? 'bg-slate-700 hover:bg-slate-600 text-slate-300' 
+                      : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                  }`}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Block Toggle */}
+              <div className="mt-3 pt-3 border-t border-slate-700/30">
+                <label className="flex items-center justify-between cursor-pointer select-none">
+                  <span className={`text-sm ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}>
+                    {isBlocked ? 'Desbloquear usuario' : 'Bloquear usuario'}
+                  </span>
+                  <div className="relative">
                     <input
                       type="checkbox"
-                      checked={!user.bloqueado}
+                      checked={!isBlocked}
                       onChange={e => onBlock(user, !e.target.checked)}
-                      className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 top-0 shadow"
-                      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.12)' }}
+                      className="sr-only"
                     />
-                    <span className={`toggle-label block overflow-hidden h-6 rounded-full ${user.bloqueado ? 'bg-red-400' : 'bg-green-400'}`}></span>
-                  </span>
+                    <div className={`w-10 h-5 rounded-full transition-colors ${
+                      isBlocked 
+                        ? isDark ? 'bg-red-600/50' : 'bg-red-300'
+                        : isDark ? 'bg-green-600/50' : 'bg-green-300'
+                    }`}>
+                      <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+                        isBlocked ? 'translate-x-0' : 'translate-x-5'
+                      }`} />
+                    </div>
+                  </div>
                 </label>
-              </div>
-              <div className="flex gap-2 mt-4 flex-wrap">
-                <button onClick={() => onEdit(user)} className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-all"><Edit2 className="w-4 h-4 inline" /> Editar</button>
-                <button onClick={() => onDelete(user)} className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition-all"><Trash2 className="w-4 h-4 inline" /> Eliminar</button>
-                <button onClick={() => onViewDetails(user)} className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-800 text-xs font-semibold hover:bg-gray-300 transition-all"><MoreVertical className="w-4 h-4 inline" /> Detalles</button>
               </div>
             </div>
           );
         })
       )}
-      {/* Paginación */}
+
+      {/* Pagination */}
       {page !== undefined && pageSize !== undefined && onPageChange && totalPages > 1 && (
         <div className="col-span-full flex justify-center mt-6 gap-2">
-          <button onClick={() => onPageChange(page - 1)} disabled={page === 1} className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-800 text-xs font-semibold disabled:opacity-50">Anterior</button>
-          <span className="px-2 py-1 text-xs">Página {page} de {totalPages}</span>
-          <button onClick={() => onPageChange(page + 1)} disabled={page === totalPages} className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-800 text-xs font-semibold disabled:opacity-50">Siguiente</button>
+          <button 
+            onClick={() => onPageChange(page - 1)} 
+            disabled={page === 1}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              isDark 
+                ? 'bg-slate-700 text-slate-300 disabled:opacity-50' 
+                : 'bg-slate-100 text-slate-700 disabled:opacity-50'
+            }`}
+          >
+            <TranslateText text="Anterior" />
+          </button>
+          <div className={`px-3 py-1.5 text-sm ${
+            isDark ? 'text-slate-400' : 'text-slate-600'
+          }`}>
+            Página {page} de {totalPages}
+          </div>
+          <button 
+            onClick={() => onPageChange(page + 1)} 
+            disabled={page === totalPages}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              isDark 
+                ? 'bg-slate-700 text-slate-300 disabled:opacity-50' 
+                : 'bg-slate-100 text-slate-700 disabled:opacity-50'
+            }`}
+          >
+            <TranslateText text="Siguiente" />
+          </button>
         </div>
       )}
     </div>

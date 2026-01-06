@@ -1,18 +1,8 @@
+"use client";
 
 import React from "react";
-import { Mail, Shield, Crown, Lock, Unlock } from "lucide-react";
+import { Mail, Shield, Crown, Lock, Unlock, X } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
-
-const permissionLabels: Record<string, string> = {
-  read: "Leer",
-  write: "Escribir",
-  delete: "Eliminar",
-  export: "Exportar",
-  manage_users: "Gestionar usuarios",
-  manage_roles: "Gestionar roles",
-  view_audit: "Ver auditoría",
-  block_user: "Bloquear usuario"
-};
 
 const roleLabels: Record<string, string> = {
   superadmin: "Super Administrador",
@@ -22,73 +12,156 @@ const roleLabels: Record<string, string> = {
   moderator: "Moderador"
 };
 
-export default function UserDetailsModal({ user, onClose, theme = 'light' }: { user: any, onClose: () => void, theme?: 'light' | 'dark' }) {
-  if (!user) return null;
-  const roles = Array.isArray(user.role) ? user.role : (user.roles || [user.role as string]);
-  let displayPerms = user.permissions && user.permissions.length > 0 ? user.permissions : [];
-  if (displayPerms.length === 0 && roles.length > 0) {
-    const defaultPerms: Record<string, string[]> = {
-      superadmin: ['read','write','delete','export','manage_users','manage_roles','view_audit','block_user'],
-      admin: ['read','write','manage_users','view_audit','block_user'],
-      editor: ['read','write'],
-      viewer: ['read'],
-      moderator: ['read','block_user']
-    };
-    displayPerms = defaultPerms[roles[0]] || [];
-  }
+interface UserDetailsModalProps {
+  user: {
+    email: string;
+    role: string | string[];
+    roles?: string[];
+    bloqueado?: boolean;
+  } | null;
+  onClose: () => void;
+  theme?: 'light' | 'dark';
+}
 
-  // Historial de sesiones (logs)
-  const [logs, setLogs] = React.useState<any[]>(user.logs || []);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string>("");
-  const [page, setPage] = React.useState(1);
-  const pageSize = 10;
-  const totalPages = Math.ceil(logs.length / pageSize);
-  const paginatedLogs = logs.slice((page - 1) * pageSize, page * pageSize);
-  const successCount = logs.filter((l: any) => l.success).length;
-  const failCount = logs.filter((l: any) => !l.success).length;
+export default function UserDetailsModal({ user, onClose, theme = 'light' }: UserDetailsModalProps) {
+  if (!user) return null;
+
+  const isDark = theme === 'dark';
+  const roles = Array.isArray(user.role) ? user.role : (user.roles || [user.role as string]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div
-        className="absolute inset-0"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Overlay */}
+      <div 
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
-        aria-label="Cerrar fondo modal"
-        tabIndex={-1}
-        style={{ cursor: 'pointer' }}
       />
-      <div className={`rounded-2xl p-8 max-w-md w-full shadow-2xl relative z-10 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}
+      
+      {/* Modal */}
+      <div 
+        className={`relative rounded-lg p-6 w-full max-w-md ${
+          isDark ? 'bg-slate-900 border border-slate-700' : 'bg-white border border-slate-200'
+        }`}
         onClick={e => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl">×</button>
-        <div className="flex items-center gap-3 mb-4">
-          <div className={`rounded-full p-3 ${theme === 'dark' ? 'bg-blue-700/40' : 'bg-blue-100'}`}> <Mail className="w-6 h-6 text-blue-500" /> </div>
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className={`absolute top-4 right-4 p-1 rounded ${
+            isDark ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-100 text-slate-500'
+          }`}
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className={`p-3 rounded-lg ${
+            isDark ? 'bg-slate-800' : 'bg-slate-100'
+          }`}>
+            <Mail className={`w-6 h-6 ${
+              isDark ? 'text-blue-400' : 'text-blue-600'
+            }`} />
+          </div>
+          <div className="min-w-0">
+            <h3 className={`font-bold text-lg ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}>
+              Detalles del Usuario
+            </h3>
+            <p className={`text-sm mt-1 ${
+              isDark ? 'text-slate-400' : 'text-slate-600'
+            }`}>
+              {user.email}
+            </p>
+          </div>
+        </div>
+
+        {/* User Info */}
+        <div className="space-y-4">
+          {/* Email */}
           <div>
-            <div className="font-bold text-lg">{user.email}</div>
-            <div className="flex gap-2 mt-1 flex-wrap">
-              {roles.map((r: string) => (
-                <span key={r} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${theme === 'dark' ? 'bg-gray-900/80 text-blue-200 border-blue-700' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                  {r === 'superadmin' ? <Crown className="w-3.5 h-3.5" /> : <Shield className="w-3.5 h-3.5" />} {roleLabels[r] || r}
+            <label className={`block text-sm font-medium mb-2 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
+              Correo electrónico
+            </label>
+            <div className={`px-3 py-2 rounded ${
+              isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
+            }`}>
+              {user.email}
+            </div>
+          </div>
+
+          {/* Roles */}
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
+              Roles
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {roles.map((role) => (
+                <span
+                  key={role}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${
+                    role === 'superadmin'
+                      ? isDark ? 'bg-purple-900/30 text-purple-400 border border-purple-800/50' : 'bg-purple-100 text-purple-700 border border-purple-200'
+                      : role === 'admin'
+                      ? isDark ? 'bg-blue-900/30 text-blue-400 border border-blue-800/50' : 'bg-blue-100 text-blue-700 border border-blue-200'
+                      : isDark ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-slate-100 text-slate-700 border border-slate-300'
+                  }`}
+                >
+                  {role === 'superadmin' ? (
+                    <Crown className="w-4 h-4" />
+                  ) : (
+                    <Shield className="w-4 h-4" />
+                  )}
+                  {roleLabels[role] || role}
                 </span>
               ))}
             </div>
           </div>
-        </div>
-        <div className="mb-4">
-          <div className="font-semibold mb-1">Permisos:</div>
-          <div className="flex flex-wrap gap-2">
-            {displayPerms.length > 0 ? displayPerms.map((p: string) => (
-              <span key={p} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${theme === 'dark' ? 'bg-green-900/60 text-green-200 border-green-700' : 'bg-green-50 text-green-700 border-green-200'}`}>{permissionLabels[p] || p}</span>
-            )) : <span className="text-xs text-gray-400">Sin permisos</span>}
+
+          {/* Status */}
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
+              Estado
+            </label>
+            <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg ${
+              user.bloqueado
+                ? isDark ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-700'
+                : isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
+            }`}>
+              {user.bloqueado ? (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span className="font-medium">Bloqueado</span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-4 h-4" />
+                  <span className="font-medium">Activo</span>
+                </>
+              )}
+            </div>
           </div>
         </div>
-        <div className="mb-4">
-          <div className="font-semibold mb-1">Estado:</div>
-          {user.bloqueado ? (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700"><Lock className="w-3.5 h-3.5" /> Bloqueado</span>
-          ) : (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700"><Unlock className="w-3.5 h-3.5" /> Activo</span>
-          )}
+
+        {/* Footer */}
+        <div className="mt-6 pt-6 border-t border-slate-700/30">
+          <button
+            onClick={onClose}
+            className={`w-full py-2.5 rounded-lg font-medium ${
+              isDark
+                ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+            }`}
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     </div>

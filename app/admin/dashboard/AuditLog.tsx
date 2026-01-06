@@ -67,21 +67,21 @@ export default function AuditLog({ theme = 'light', compact = false }: AuditLogP
   const fetchLogs = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
-
     try {
-      const admin = sessionStorage.getItem("admin") === "true";
-      const role = sessionStorage.getItem("role") || "";
-      const res = await fetch('http://localhost:5000/admin/audit-admin', {
+      const admin = sessionStorage.getItem('admin') === 'true';
+      const role = sessionStorage.getItem('role') || '';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/admin/audit-admin`, {
         headers: {
-          "Content-Type": "application/json",
-          "X-Admin": String(admin),
-          "X-Role": role,
+          'Content-Type': 'application/json',
+          'X-Admin': String(admin),
+          'X-Role': role,
         },
       });
-      if (!res.ok) throw new Error("No autorizado");
+      if (!res.ok) throw new Error('No autorizado');
       const data = await res.json();
       setLogs(data.logs || []);
-      setError("");
+      setError('');
     } catch {
       setError("No autorizado o error de servidor");
     } finally {
@@ -642,13 +642,13 @@ export default function AuditLog({ theme = 'light', compact = false }: AuditLogP
             }`}
           >
             <option value="all">
-              <TranslateText text="Todos los estados" />
+              Todos los estados
             </option>
             <option value="success">
-              <TranslateText text="Solo exitosos" />
+              Solo exitosos
             </option>
             <option value="failed">
-              <TranslateText text="Solo fallidos" />
+              Solo fallidos
             </option>
           </select>
 
@@ -665,19 +665,19 @@ export default function AuditLog({ theme = 'light', compact = false }: AuditLogP
             }`}
           >
             <option value="1">
-              <TranslateText text="Hoy" />
+              Hoy
             </option>
             <option value="7">
-              <TranslateText text="7 días" />
+              7 días
             </option>
             <option value="30">
-              <TranslateText text="30 días" />
+              30 días
             </option>
             <option value="90">
-              <TranslateText text="90 días" />
+              90 días
             </option>
             <option value="999">
-              <TranslateText text="Todos" />
+              Todos
             </option>
           </select>
 

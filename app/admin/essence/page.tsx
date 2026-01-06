@@ -10,7 +10,7 @@ import EssenceForm from "./EssenceForm";
 import EssenceHistory from "./EssenceHistory";
 import EssencePreview from "./EssencePreview";
 import ConfirmModal from "@/components/ConfirmModal";
-
+import { adminApi } from "../utils/admin-api";
 interface Essence {
   id?: string;
   mision: string;
@@ -61,13 +61,14 @@ export default function EssenceAdminPage() {
     else setLoading(true);
     
     try {
-      const res = await fetch("http://localhost:5000/api/essence");
-      if (!res.ok) throw new Error("No se pudo cargar la esencia");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/essence`);
+      if (!res.ok) throw new Error('No se pudo cargar la esencia');
       const data = await res.json();
       setEssence(data);
-      setError("");
+      setError('');
     } catch {
-      setError("No se pudo cargar la esencia");
+      setError('No se pudo cargar la esencia');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -77,7 +78,8 @@ export default function EssenceAdminPage() {
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
-      const res = await fetch("http://localhost:5000/api/essence/history");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/essence/history`);
       if (!res.ok) throw new Error();
       const data = await res.json();
       setHistory(Array.isArray(data) ? data : []);
@@ -98,7 +100,8 @@ export default function EssenceAdminPage() {
 
   const handleRestore = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/essence/history/${id}/restore`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/essence/history/${id}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -192,7 +195,8 @@ export default function EssenceAdminPage() {
     setSuccess("");
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/essence", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/essence`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

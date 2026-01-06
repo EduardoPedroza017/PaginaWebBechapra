@@ -1,9 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Typography from "@tiptap/extension-typography";
-import TextAlign from "@tiptap/extension-text-align";
+import React, { useCallback, useState } from "react";
 import {
   Bold,
   Italic,
@@ -31,53 +28,47 @@ interface Props {
   charCount?: number;
 }
 
+/**
+ * Componente de editor de texto rico simplificado
+ * Utiliza contentEditable + document.execCommand para evitar conflictos de dependencias con Tiptap
+ */
 export default function RichTextEditor({
   value,
   onChange,
   theme,
   placeholder = "Escribe tu contenido aquí...",
   maxLength = 2000,
-  charCount = 0,
 }: Props) {
+  const [isOverLimit, setIsOverLimit] = useState(false);
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-      }),
-      Typography,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-    ],
-    content: value,
-    immediatelyRender: false,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      const text = editor.getText();
-      // Mantener el contenido en HTML para almacenamiento, pero validar longitud de texto
-      if (text.length <= maxLength) {
-        onChange(html);
+  const handleInput = useCallback(
+    (e: React.FormEvent<HTMLDivElement>) => {
+      const html = e.currentTarget.innerHTML;
+      const text = e.currentTarget.textContent || "";
+
+      if (text.length > maxLength) {
+        setIsOverLimit(true);
+        return;
       }
-    },
-    editorProps: {
-      attributes: {
-        class: `prose prose-sm max-w-none focus:outline-none ${
-          theme === "dark" ? "prose-invert" : ""
-        }`,
-      },
-    },
-  });
 
-  // Sin auto-guardado: no se lee ni escribe en localStorage
-  if (!editor) {
-    return null;
-  }
+      setIsOverLimit(false);
+      onChange(html);
+    },
+    [maxLength, onChange]
+  );
 
-  const textLength = editor.getText().length;
-  const isOverLimit = textLength > maxLength;
+  const handleCommand = useCallback((command: string) => {
+    document.execCommand(command, false);
+  }, []);
+
+  const handleAlignment = useCallback((align: string) => {
+    document.execCommand("justifyLeft", false);
+    if (align === "center") {
+      document.execCommand("justifyCenter", false);
+    } else if (align === "right") {
+      document.execCommand("justifyRight", false);
+    }
+  }, []);
 
   const buttonClass = (isActive: boolean) =>
     `p-2 rounded-lg transition-all ${
@@ -94,6 +85,8 @@ export default function RichTextEditor({
     theme === "dark" ? "bg-gray-700" : "bg-gray-200"
   }`;
 
+  const textLength = value.replace(/<[^>]*>/g, "").length;
+
   return (
     <div
       className={`rounded-xl border overflow-hidden ${
@@ -108,26 +101,34 @@ export default function RichTextEditor({
           theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-50 border-gray-200"
         }`}
       >
-        {/* Text formatting */}
         <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={buttonClass(editor.isActive("bold"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("bold");
+          }}
+          className={buttonClass(false)}
           title="Negrita (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={buttonClass(editor.isActive("italic"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("italic");
+          }}
+          className={buttonClass(false)}
           title="Cursiva (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={buttonClass(editor.isActive("strike"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("strikeThrough");
+          }}
+          className={buttonClass(false)}
           title="Tachado"
         >
           <Strikethrough className="w-4 h-4" />
@@ -135,26 +136,34 @@ export default function RichTextEditor({
 
         <div className={separatorClass} />
 
-        {/* Headings */}
         <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={buttonClass(editor.isActive("heading", { level: 1 }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand("formatBlock", false, "<h1>");
+          }}
+          className={buttonClass(false)}
           title="Encabezado 1"
         >
           <Heading1 className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={buttonClass(editor.isActive("heading", { level: 2 }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand("formatBlock", false, "<h2>");
+          }}
+          className={buttonClass(false)}
           title="Encabezado 2"
         >
           <Heading2 className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={buttonClass(editor.isActive("heading", { level: 3 }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand("formatBlock", false, "<h3>");
+          }}
+          className={buttonClass(false)}
           title="Encabezado 3"
         >
           <Heading3 className="w-4 h-4" />
@@ -162,26 +171,34 @@ export default function RichTextEditor({
 
         <div className={separatorClass} />
 
-        {/* Alignment */}
         <button
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={buttonClass(editor.isActive({ textAlign: "left" }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleAlignment("left");
+          }}
+          className={buttonClass(false)}
           title="Alinear a la izquierda"
         >
           <AlignLeft className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={buttonClass(editor.isActive({ textAlign: "center" }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleAlignment("center");
+          }}
+          className={buttonClass(false)}
           title="Alinear al centro"
         >
           <AlignCenter className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={buttonClass(editor.isActive({ textAlign: "right" }))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleAlignment("right");
+          }}
+          className={buttonClass(false)}
           title="Alinear a la derecha"
         >
           <AlignRight className="w-4 h-4" />
@@ -189,63 +206,69 @@ export default function RichTextEditor({
 
         <div className={separatorClass} />
 
-        {/* Lists */}
         <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={buttonClass(editor.isActive("bulletList"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("insertUnorderedList");
+          }}
+          className={buttonClass(false)}
           title="Lista de puntos"
         >
           <List className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={buttonClass(editor.isActive("orderedList"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("insertOrderedList");
+          }}
+          className={buttonClass(false)}
           title="Lista numerada"
         >
           <ListOrdered className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={buttonClass(editor.isActive("blockquote"))}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand("formatBlock", false, "<blockquote>");
+          }}
+          className={buttonClass(false)}
           title="Cita"
         >
           <Quote className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={buttonClass(editor.isActive("codeBlock"))}
-          title="Bloque de código"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("createLink");
+          }}
+          className={buttonClass(false)}
+          title="Insertar enlace"
         >
           <Code className="w-4 h-4" />
         </button>
 
         <div className={separatorClass} />
 
-        {/* History */}
         <button
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-          className={`p-2 rounded-lg transition-all disabled:opacity-50 ${
-            theme === "dark"
-              ? "text-gray-400 hover:bg-gray-700/50 hover:text-white disabled:hover:bg-transparent"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 disabled:hover:bg-transparent"
-          }`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("undo");
+          }}
+          className={buttonClass(false)}
           title="Deshacer (Ctrl+Z)"
         >
           <Undo className="w-4 h-4" />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-          className={`p-2 rounded-lg transition-all disabled:opacity-50 ${
-            theme === "dark"
-              ? "text-gray-400 hover:bg-gray-700/50 hover:text-white disabled:hover:bg-transparent"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 disabled:hover:bg-transparent"
-          }`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCommand("redo");
+          }}
+          className={buttonClass(false)}
           title="Rehacer (Ctrl+Y)"
         >
           <Redo className="w-4 h-4" />
@@ -260,11 +283,15 @@ export default function RichTextEditor({
             : "bg-white text-gray-900"
         }`}
       >
-        <EditorContent
-          editor={editor}
-          className={`prose prose-sm max-w-none ${
+        <div
+          contentEditable
+          onInput={handleInput}
+          dangerouslySetInnerHTML={{ __html: value }}
+          className={`prose prose-sm max-w-none focus:outline-none ${
             theme === "dark" ? "prose-invert" : ""
           } ${isOverLimit ? "text-red-500" : ""}`}
+          style={{ outline: "none", minHeight: "250px" }}
+          suppressContentEditableWarning
         />
       </div>
 
@@ -278,7 +305,13 @@ export default function RichTextEditor({
       >
         <div className="flex items-center gap-2">
           <span>
-            Palabras: <strong>{editor.getText().split(/\s+/).filter(w => w).length}</strong>
+            Palabras:{" "}
+            <strong>
+              {value
+                .replace(/<[^>]*>/g, "")
+                .split(/\s+/)
+                .filter((w) => w).length}
+            </strong>
           </span>
         </div>
         <span className={isOverLimit ? "text-red-500 font-medium" : ""}>
@@ -289,3 +322,4 @@ export default function RichTextEditor({
     </div>
   );
 }
+

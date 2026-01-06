@@ -17,8 +17,7 @@ import {
   ChartOptions 
 } from 'chart.js';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
-import { PieChart, BarChart3, TrendingUp, Info } from "lucide-react";
-import { CheckCircle, XCircle } from "@heroicons/react/solid";
+import { PieChart, BarChart3, TrendingUp, Info, CheckCircle, XCircle } from "lucide-react";
 import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler);

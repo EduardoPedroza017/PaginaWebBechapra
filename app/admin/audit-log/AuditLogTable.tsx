@@ -18,9 +18,11 @@ import {
   Search,
   Filter
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import VirtualizedTable, { Column } from "@/app/admin/components/VirtualizedTable";
 
 interface AuditLogEntry {
+  id?: string | number;
   user_id: string;
   timestamp?: string;
   ip?: string;
@@ -109,13 +111,10 @@ export function AuditLogTable({
     return result;
   }, [logs, searchTerm, sortField, sortOrder]);
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('desc');
-    }
+  const handleSort = (key: 'timestamp' | 'user_id' | 'success') => {
+    const newOrder = sortField === key && sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newOrder);
+    setSortField(key as SortField);
   };
 
   const formatTimeAgo = (timestamp?: string) => {
@@ -135,6 +134,14 @@ export function AuditLogTable({
       return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
     }
   };
+
+  // Preparar datos para VirtualizedTable
+  const tableData = useMemo(() => {
+    return processedLogs.map((log, index) => ({
+      id: `${log.user_id}-${log.timestamp}-${index}`,
+      ...log
+    }));
+  }, [processedLogs]);
 
   const getBrowserInfo = (userAgent?: string) => {
     if (!userAgent) return '';

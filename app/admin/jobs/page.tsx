@@ -7,8 +7,7 @@ import JobsForm from './JobsForm';
 import { TranslateText } from '@/components/TranslateText';
 import { Sidebar } from '../dashboard/Sidebar';
 import { Header } from '../dashboard/Header';
-import { Briefcase, Plus, RefreshCw, AlertCircle } from 'lucide-react';
-
+import { Briefcase, Plus, RefreshCw, AlertCircle } from 'lucide-react';import { adminApi } from '../utils/admin-api';
 // Adjust the `Job` type to ensure `updatedAt` is consistently optional
 interface Job {
   _id?: string; // Make `_id` optional
@@ -64,14 +63,8 @@ const JobsPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/jobs');
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      setJobs(data.jobs || []);
+      const data = await adminApi.getJobs();
+      setJobs(Array.isArray(data) ? data : data.jobs || []);
     } catch (error) {
       console.error('Error fetching jobs:', error);
       setError('No se pudieron cargar las vacantes. Intenta de nuevo.');
@@ -91,7 +84,8 @@ const JobsPage = () => {
       setSubmitting(true);
       setError(null);
       
-      const response = await fetch('http://localhost:5000/api/jobs', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/jobs`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

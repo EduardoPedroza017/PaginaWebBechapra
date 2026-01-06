@@ -14,6 +14,7 @@ import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
 import { PressSearchBar } from "./PressSearchBar";
+import { adminApi } from "../utils/admin-api";
 
 export interface PressItem {
   id: string;
@@ -56,10 +57,7 @@ export default function PressAdminApp() {
     else setLoading(true);
     
     try {
-      const res = await fetch("http://localhost:5000/api/press", {
-        credentials: 'include',
-      });
-      const data = await res.json();
+      const data = await adminApi.getPress();
       setPress(data);
     } catch (error) {
       console.error("Error fetching press:", error);
@@ -76,7 +74,8 @@ export default function PressAdminApp() {
   // Create
   const handleCreate = async (formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    await fetch("http://localhost:5000/api/press", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    await fetch(`${apiUrl}/api/press`, {
       method: "POST",
       body: formData,
       headers: {
@@ -90,7 +89,8 @@ export default function PressAdminApp() {
   // Update
   const handleUpdate = async (id: string, formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    await fetch(`http://localhost:5000/api/press/${id}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    await fetch(`${apiUrl}/api/press/${id}`, {
       method: "PUT",
       body: formData,
       headers: {

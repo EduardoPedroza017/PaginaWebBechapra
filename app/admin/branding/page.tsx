@@ -1,156 +1,239 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
-import { useLanguage } from '@/lib/LanguageContext';
 import { CurrentLogo } from "./CurrentLogo";
 import { LogoUploadForm } from "./LogoUploadForm";
 import { LogoHistory } from "./LogoHistory";
-import { CheckCircle, Loader, Palette, RefreshCw } from 'lucide-react';
+import { 
+  CheckCircle, Loader2, Palette, RefreshCw, 
+  Zap, Package, TrendingUp, Shield, 
+  AlertCircle, X
+} from 'lucide-react';
+import { adminApi } from "../utils/admin-api";
+import { TranslateText } from "@/components/TranslateText";
 
 interface Logo {
   filename: string;
   path?: string;
-  thumbnail?: string | null;
-  webp?: string | null;
-  avif?: string | null;
-  width?: number | null;
-  height?: number | null;
+  thumbnail?: string;
+  webp?: string;
+  avif?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
   upload_date?: string;
   size?: number;
+  tags?: string[];
+  is_active?: boolean;
+}
+
+interface Toast {
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+  visible: boolean;
+}
+
+interface BrandingStats {
+  totalLogos: number;
+  activeLogo: string | null;
+  totalSize: number;
+  optimizedCount: number;
+  variantsGenerated: number;
 }
 
 export default function BrandingPage() {
   const [currentLogo, setCurrentLogo] = useState<Logo | null>(null);
   const [logoHistory, setLogoHistory] = useState<Logo[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info'; visible: boolean }>({ 
+  const [uploading, setUploading] = useState(false);
+  const [toast, setToast] = useState<Toast>({ 
     message: '', 
     type: 'success', 
     visible: false 
   });
-  const toastTimerRef = { current: null as number | null };
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
-  const { lang, setLang } = useLanguage();
+  const [stats, setStats] = useState<BrandingStats>({
+    totalLogos: 0,
+    activeLogo: null,
+    totalSize: 0,
+    optimizedCount: 0,
+    variantsGenerated: 0
+  });
 
+  // Inicializar página
   useEffect(() => {
     initializePage();
   }, []);
 
-  async function initializePage() {
+  const initializePage = async () => {
     setLoading(true);
     try {
-      await Promise.all([fetchCurrentLogo(), fetchLogoHistory()]);
+      await Promise.all([
+        fetchCurrentLogo(),
+        fetchLogoHistory(),
+        // fetchBrandingStats() - commented out since endpoint doesn't exist yet
+      ]);
     } catch (error) {
-      showToast('Error al cargar los logos', 'error');
+      showToast('Error al cargar los datos', 'error');
     } finally {
       setLoading(false);
       const storedTheme = localStorage.getItem('theme');
       setTheme(storedTheme === 'dark' ? 'dark' : 'light');
       setMounted(true);
     }
-  }
+  };
 
-  async function fetchCurrentLogo() {
-    const res = await fetch("http://localhost:5000/api/logo");
-    if (!res.ok) throw new Error('Failed to fetch current logo');
-    const data = await res.json();
-    setCurrentLogo(data?.filename ? data : null);
-  }
+  // Obtener logo actual
+  const fetchCurrentLogo = async () => {
+    try {
+      const data = await adminApi.getCurrentLogo();
+      setCurrentLogo(data);
+    } catch (error) {
+      showToast('Error de conexión al cargar logo', 'error');
+    }
+  };
 
-  async function fetchLogoHistory() {
-    const res = await fetch("http://localhost:5000/api/logo/history");
-    if (!res.ok) throw new Error('Failed to fetch logo history');
-    const data = await res.json();
-    setLogoHistory(data.logos || []);
-  }
+  // Obtener historial de logos
+  const fetchLogoHistory = async () => {
+    try {
+      const data = await adminApi.getLogoHistory();
+      setLogoHistory(data);
+    } catch (error) {
+      showToast('Error de conexión al cargar historial', 'error');
+    }
+  };
 
-  async function handleRefresh() {
+  // Obtener estadísticas
+  // const fetchBrandingStats = async () => {
+  //   try {
+  //     const data = await adminApi.getBrandingStats();
+  //     setStats(data);
+  //   } catch (error) {
+  //     // Stats endpoint not available, use default stats
+  //     console.warn('Branding stats not available:', error);
+  //   }
+  // };
+
+  // Refrescar todo
+  const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      await Promise.all([fetchCurrentLogo(), fetchLogoHistory()]);
+      await Promise.all([
+        fetchCurrentLogo(),
+        fetchLogoHistory(),
+        // fetchBrandingStats() - commented out since endpoint doesn't exist yet
+      ]);
       showToast('Datos actualizados', 'success');
     } catch (error) {
       showToast('Error al actualizar', 'error');
     } finally {
       setRefreshing(false);
     }
-  }
+  };
 
-  async function handleUpload(file: File) {
+  // Subir logos (múltiples)
+  const handleUpload = async (files: File[]) => {
     setUploading(true);
     try {
-      await Promise.all([fetchCurrentLogo(), fetchLogoHistory()]);
-      showToast('Logo subido correctamente', 'success');
+      await adminApi.uploadMultipleLogos(files, {
+        generateVariants: true,
+        tags: ['uploaded']
+      });
+
+      showToast(`${files.length} logo(s) subido(s) exitosamente`, 'success');
+
+      // Refrescar datos
+      await Promise.all([
+        fetchCurrentLogo(),
+        fetchLogoHistory(),
+        // fetchBrandingStats() - commented out since endpoint doesn't exist yet
+      ]);
     } catch (error) {
-      showToast('Error al actualizar después de subir', 'error');
+      // Endpoint doesn't exist yet, show error but don't crash
+      console.warn('Logo upload endpoint not available:', error);
+      showToast('Función de subida no disponible aún', 'error');
     } finally {
       setUploading(false);
     }
-  }
+  };
 
-  function showToast(message: string, type: 'success' | 'error' | 'info' = 'success') {
-    setToast({ message, type, visible: true });
-    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = window.setTimeout(() => {
-      setToast({ message: '', type: 'success', visible: false });
-    }, 4000) as unknown as number;
-  }
-
-  useEffect(() => {
-    return () => {
-      if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
-    };
-  }, []);
-
-  async function handleSelectLogo(filename: string) {
+  // Actualizar metadatos
+  const updateLogoMeta = async (filename: string, alt: string) => {
     try {
-      await fetch("http://localhost:5000/admin/select-logo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename }),
-      });
-      await fetchCurrentLogo();
-      showToast('Logo actualizado correctamente', 'success');
-    } catch (error) {
-      showToast('Error al seleccionar el logo', 'error');
-    }
-  }
-
-  async function updateLogoMeta(filename: string, alt: string) {
-    try {
-      await fetch(`http://localhost:5000/admin/logo/${filename}/meta`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ alt }),
-      });
+      await adminApi.updateLogoMeta({ filename, alt });
       await Promise.all([fetchLogoHistory(), fetchCurrentLogo()]);
       showToast('Texto alternativo actualizado', 'success');
     } catch (error) {
-      showToast('Error al actualizar el texto alternativo', 'error');
+      console.warn('Update logo meta endpoint not available:', error);
+      showToast('Función no disponible aún', 'error');
     }
-  }
+  };
 
-  function handleToggleTheme() {
+  // Seleccionar logo activo
+  const handleSelectLogo = async (filename: string) => {
+    try {
+      await adminApi.setActiveLogo(filename);
+      await fetchCurrentLogo();
+      showToast('Logo actualizado correctamente', 'success');
+    } catch (error) {
+      console.warn('Set active logo endpoint not available:', error);
+      showToast('Función no disponible aún', 'error');
+    }
+  };
+
+  // Optimizar todos los logos
+  const handleOptimizeAll = async () => {
+    try {
+      await adminApi.optimizeAllLogos();
+      showToast('Todos los logos optimizados', 'success');
+      await Promise.all([fetchLogoHistory(), fetchCurrentLogo(), /* fetchBrandingStats() - commented out since endpoint doesn't exist yet */]);
+    } catch (error) {
+      console.warn('Optimize all logos endpoint not available:', error);
+      showToast('Función no disponible aún', 'error');
+    }
+  };
+
+  // Mostrar toast
+  const showToast = useCallback((message: string, type: Toast['type'] = 'success') => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, visible: false }));
+    }, 4000);
+  }, []);
+
+  // Wrapper para LogoUploadForm
+  const handleMessage = useCallback((type: 'success' | 'error' | 'info', text: string) => {
+    showToast(text, type);
+  }, [showToast]);
+
+  // Toggle tema
+  const handleToggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     showToast(`Tema cambiado a ${newTheme === 'dark' ? 'oscuro' : 'claro'}`, 'info');
-  }
+  };
 
-  function handleLogout() {
-    // Implementa tu lógica de logout aquí
-  }
+  const handleLogout = () => {
+    // Implementar lógica de logout
+  };
+
+  // Formatear tamaño
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-950">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-950">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 animate-pulse mx-auto mb-4 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-linear-to-r from-emerald-500 to-blue-500 animate-pulse mx-auto mb-4 flex items-center justify-center">
             <Palette size={32} className="text-white" />
           </div>
           <p className="text-gray-600 dark:text-gray-400">Cargando gestión de logos...</p>
@@ -162,33 +245,47 @@ export default function BrandingPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${
       theme === 'dark' 
-        ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950' 
-        : 'bg-gradient-to-br from-blue-50 via-indigo-50/50 to-white'
+        ? 'bg-linear-to-br from-gray-900 via-gray-900 to-gray-950' 
+        : 'bg-linear-to-br from-blue-50 via-indigo-50/50 to-white'
     }`}>
       <Sidebar selected="/admin/branding" theme={theme} />
       
       <div className="flex-1 flex flex-col">
         <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
         
-        <main className="flex-1 max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <main className="flex-1 w-full py-8 px-4 sm:px-6 lg:px-8">
           {/* Header de página */}
           <div className="mb-10">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg">
+                <div className="p-3 rounded-xl bg-linear-to-r from-emerald-500 to-blue-500 shadow-lg">
                   <Palette size={28} className="text-white" />
                 </div>
                 <div>
                   <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Gestión de Logo
+                    <TranslateText text="Gestión de Marca" />
                   </h1>
                   <p className={`mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                    Administra y personaliza el logo de tu marca
+                    <TranslateText text="Administra logos, colores e identidad visual" />
                   </p>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
+                <button
+                  onClick={handleOptimizeAll}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 ${
+                    theme === 'dark'
+                      ? 'bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
+                      : 'bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
+                  }`}
+                >
+                  <Zap size={16} />
+                  <span className="text-sm font-medium">
+                    <TranslateText text="Optimizar Todo" />
+                  </span>
+                </button>
+                
                 <button
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -202,30 +299,75 @@ export default function BrandingPage() {
                 >
                   <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
                   <span className="text-sm font-medium">
-                    {refreshing ? 'Actualizando...' : 'Actualizar'}
+                    {refreshing ? <TranslateText text="Actualizando..." /> : <TranslateText text="Actualizar" />}
                   </span>
                 </button>
               </div>
             </div>
             
-            {/* Estadísticas rápidas */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {/* Estadísticas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-white'} border ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Logo Actual</div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-                  {currentLogo ? '✓ Activo' : 'No hay logo'}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <TranslateText text="Logo Activo" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                      {currentLogo ? '✓ Activo' : '—'}
+                    </div>
+                  </div>
+                  <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-emerald-900/30' : 'bg-emerald-100'}`}>
+                    <CheckCircle className={theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'} size={20} />
+                  </div>
                 </div>
               </div>
+              
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-white'} border ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">En Historial</div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-                  {logoHistory.length} logos
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <TranslateText text="Logos Totales" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                      {logoHistory.length}
+                    </div>
+                  </div>
+                  <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
+                    <Package className={theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} size={20} />
+                  </div>
                 </div>
               </div>
+              
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-white'} border ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Tamaño Máx.</div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-                  5 MB
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <TranslateText text="Tamaño Total" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                      {formatFileSize(stats.totalSize)}
+                    </div>
+                  </div>
+                  <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
+                    <TrendingUp className={theme === 'dark' ? 'text-purple-400' : 'text-purple-600'} size={20} />
+                  </div>
+                </div>
+              </div>
+              
+              <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-white'} border ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <TranslateText text="Optimizados" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                      {stats.optimizedCount}
+                    </div>
+                  </div>
+                  <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-amber-900/30' : 'bg-amber-100'}`}>
+                    <Shield className={theme === 'dark' ? 'text-amber-400' : 'text-amber-600'} size={20} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,56 +376,105 @@ export default function BrandingPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 rounded-full border-4 border-emerald-200 dark:border-emerald-900 border-t-emerald-600 dark:border-t-emerald-500 animate-spin mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Cargando gestión de logos...</p>
+              <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <TranslateText text="Cargando gestión de logos..." />
+              </p>
             </div>
           ) : (
-            <div className="space-y-10">
-              <CurrentLogo 
-                currentLogo={currentLogo} 
-                logoHistory={logoHistory} 
-                onSelect={handleSelectLogo} 
-                onUpdateMeta={updateLogoMeta} 
-              />
+            <div className="space-y-8">
+              {/* Layout horizontal para tablets y desktop */}
+              <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                {/* Logo actual - ocupa 1 columna */}
+                <div className="xl:col-span-1">
+                  <div className="h-full">
+                    <CurrentLogo 
+                      currentLogo={currentLogo} 
+                      logoHistory={logoHistory} 
+                      onSelect={handleSelectLogo} 
+                      onUpdateMeta={updateLogoMeta} 
+                    />
+                  </div>
+                </div>
+                
+                {/* Subida masiva - ocupa 1 columna */}
+                <div className="xl:col-span-1">
+                  <div className="h-full">
+                    <LogoUploadForm 
+                      uploading={uploading} 
+                      onUpload={handleUpload}
+                      onMessage={handleMessage}
+                      theme={theme}
+                    />
+                  </div>
+                </div>
+                
+                {/* Historial - ocupa 1 columna en xl, pero puede expandirse */}
+                {logoHistory.length > 0 && (
+                  <div className="xl:col-span-1 lg:col-span-2 xl:col-span-1">
+                    <div className="h-full">
+                      <LogoHistory 
+                        logoHistory={logoHistory} 
+                        onSelectLogo={handleSelectLogo} 
+                        onUpdateMeta={updateLogoMeta} 
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
               
-              <LogoUploadForm 
-                uploading={uploading} 
-                onUpload={handleUpload} 
-              />
-              
-              {logoHistory.length > 0 && (
-                <LogoHistory 
+              {/* Layout vertical para móviles y tablets pequeñas */}
+              <div className="lg:hidden space-y-6">
+                {/* Logo actual */}
+                <CurrentLogo 
+                  currentLogo={currentLogo} 
                   logoHistory={logoHistory} 
-                  onSelectLogo={handleSelectLogo} 
+                  onSelect={handleSelectLogo} 
                   onUpdateMeta={updateLogoMeta} 
                 />
-              )}
+                
+                {/* Subida masiva */}
+                <LogoUploadForm 
+                  uploading={uploading} 
+                  onUpload={handleUpload}
+                  onMessage={handleMessage}
+                  theme={theme}
+                />
+                
+                {/* Historial */}
+                {logoHistory.length > 0 && (
+                  <LogoHistory 
+                    logoHistory={logoHistory} 
+                    onSelectLogo={handleSelectLogo} 
+                    onUpdateMeta={updateLogoMeta} 
+                  />
+                )}
+              </div>
             </div>
           )}
 
           {/* Toast mejorado */}
           {toast.visible && (
             <div className="fixed bottom-6 right-6 z-50 animate-slideInUp">
-              <div className={`rounded-xl p-4 shadow-2xl max-w-sm border transform transition-all duration-300 ${
+              <div className={`rounded-xl p-4 shadow-2xl max-w-sm border transform transition-all duration-300 flex items-start gap-3 ${
                 toast.type === 'success' 
-                  ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 border-emerald-800 text-white' 
+                  ? 'bg-linear-to-r from-emerald-600 to-emerald-700 border-emerald-800 text-white' 
                   : toast.type === 'error'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 border-red-800 text-white'
-                  : 'bg-gradient-to-r from-blue-600 to-blue-700 border-blue-800 text-white'
+                  ? 'bg-linear-to-r from-red-600 to-red-700 border-red-800 text-white'
+                  : toast.type === 'warning'
+                  ? 'bg-linear-to-r from-amber-600 to-amber-700 border-amber-800 text-white'
+                  : 'bg-linear-to-r from-blue-600 to-blue-700 border-blue-800 text-white'
               }`}>
-                <div className="flex items-center gap-3">
-                  {toast.type === 'success' && <CheckCircle size={20} className="text-emerald-100" />}
-                  {toast.type === 'error' && <Loader size={20} className="animate-spin text-red-100" />}
-                  <div className="flex-1">
-                    <div className="font-medium">{toast.message}</div>
-                  </div>
-                  <button 
-                    onClick={() => setToast({ ...toast, visible: false })}
-                    className="p-1 rounded-full hover:bg-white/20 transition-colors duration-150"
-                  >
-                    <span className="sr-only">Cerrar</span>
-                    <span className="text-sm font-bold opacity-80">×</span>
-                  </button>
+                {toast.type === 'success' && <CheckCircle size={20} className="mt-0.5 shrink-0" />}
+                {toast.type === 'error' && <AlertCircle size={20} className="mt-0.5 shrink-0" />}
+                <div className="flex-1">
+                  <div className="font-medium">{toast.message}</div>
                 </div>
+                <button 
+                  onClick={() => setToast({ ...toast, visible: false })}
+                  className="p-1 rounded-full hover:bg-white/20 transition-colors duration-150 shrink-0"
+                >
+                  <X size={16} />
+                </button>
               </div>
             </div>
           )}
@@ -291,10 +482,22 @@ export default function BrandingPage() {
         
         {/* Footer */}
         <footer className={`py-4 px-8 border-t ${theme === 'dark' ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white/50'}`}>
-          <div className="max-w-6xl mx-auto text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gestión de Logos • {new Date().getFullYear()} • Todos los formatos son optimizados automáticamente
-            </p>
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                <TranslateText text="Gestión de Marca" /> • {new Date().getFullYear()} • 
+                <span className="mx-2">|</span>
+                <TranslateText text="Subida masiva optimizada" />
+              </p>
+              <div className="flex items-center gap-4 text-xs">
+                <span className={`px-2 py-1 rounded ${theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
+                  <TranslateText text="Máx. 20 logos/lote" />
+                </span>
+                <span className={`px-2 py-1 rounded ${theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
+                  <TranslateText text="5MB por archivo" />
+                </span>
+              </div>
+            </div>
           </div>
         </footer>
       </div>

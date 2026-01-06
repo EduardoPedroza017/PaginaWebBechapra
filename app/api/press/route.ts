@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 
+// Cache por 1 hora (3600 segundos)
+export const revalidate = 3600;
+
 export async function GET() {
   try {
     const response = await fetch('http://localhost:5000/api/press', {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { revalidate: 3600 }, // ISR: regenerar cada hora
     });
 
     if (!response.ok) {

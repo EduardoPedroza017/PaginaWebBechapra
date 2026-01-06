@@ -46,7 +46,8 @@ export default function EssenceSection() {
   const [essence, setEssence] = useState<EssenceData | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/essence")
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    fetch(`${apiUrl}/api/essence`)
       .then((res) => res.json())
       .then((data) => setEssence(data))
       .catch(() => setEssence(null));

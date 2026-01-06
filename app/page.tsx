@@ -1,16 +1,33 @@
 "use client";
 
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import Section from "./components/Section";
 import AnimatedSection from "./components/AnimatedSection";
 import HeroSection from "./components/HeroSection";
 import ServicesSection from "./components/ServicesSection";
-import PressCards from "./components/PressCards";
-import TrainingCenterSection from "./components/TrainingCenterSection";
-import NewsCards from "./components/NewsCards";
-import CtaRedes from "./components/CtaRedes";
-import AwardsSection from "./components/AwardsSection";
-import ContactSection from "./components/ContactSection";
 import Footer from "@/components/Footer";
+
+// Lazy load componentes debajo del fold
+const PressCards = dynamic(() => import('./components/PressCards'), {
+  loading: () => <div className="w-full h-96 bg-slate-100 animate-pulse rounded-lg" />,
+});
+
+const TrainingCenterSection = dynamic(() => import('./components/TrainingCenterSection'), {
+  loading: () => <div className="w-full h-64 bg-slate-100 animate-pulse rounded-lg" />,
+});
+
+const NewsCards = dynamic(() => import('./components/NewsCards'), {
+  loading: () => <div className="w-full h-96 bg-slate-100 animate-pulse rounded-lg" />,
+});
+
+const CtaRedes = dynamic(() => import('./components/CtaRedes'));
+
+const AwardsSection = dynamic(() => import('./components/AwardsSection'));
+
+const ContactSection = dynamic(() => import('./components/ContactSection'), {
+  loading: () => <div className="w-full h-[600px] bg-slate-100 animate-pulse rounded-lg" />,
+});
 
 export default function Home() {
   return (

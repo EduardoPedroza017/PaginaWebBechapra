@@ -43,7 +43,8 @@ function useLogoUrl() {
   useEffect(() => {
     async function fetchLogo() {
       try {
-        const res = await fetch('http://localhost:5000/api/logo');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${apiUrl}/api/logo`);
         const data = await res.json();
         if (data.url) {
           setLogoUrl(data.url);

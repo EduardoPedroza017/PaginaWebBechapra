@@ -65,7 +65,8 @@ export default function BranchForm({ onCreated, onCancel, theme }: BranchFormPro
         // ignore
       }
 
-      const res = await fetch('http://localhost:5000/api/admin/branches', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/admin/branches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...adminHeaders },
         credentials: 'include',

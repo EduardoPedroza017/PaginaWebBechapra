@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { Plus, Upload, X, AlertCircle, CheckCircle, Eye, Tag, ImagePlus, Sparkles, Type, Clock, FileText, Zap } from "lucide-react";
 import { NewsItem } from "./NewsFilter";
 import RichTextEditor from "./RichTextEditor";
+import { adminApi } from "../utils/admin-api";
 
 interface Props {
   onCreated: (news: NewsItem) => void;
@@ -18,7 +19,7 @@ const MAX_DESCRIPTION_LENGTH = 2000;
 const MAX_SEO_DESCRIPTION = 160;
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
-export default function NewsForm({ onCreated, theme }: Props) {
+function NewsFormComponent({ onCreated, theme }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTab, setCurrentTab] = useState<'content' | 'image' | 'meta' | 'seo'>('content');
   const [title, setTitle] = useState("");
@@ -205,7 +206,8 @@ export default function NewsForm({ onCreated, theme }: Props) {
 
     try {
       const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const res = await fetch("http://localhost:5000/api/news", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/news`, {
         method: "POST",
         body: form,
         headers: {
@@ -860,3 +862,9 @@ export default function NewsForm({ onCreated, theme }: Props) {
     </>
   );
 }
+
+// Memoize NewsForm para prevenir re-renders innecesarios
+const NewsForm = memo(NewsFormComponent);
+NewsForm.displayName = 'NewsForm';
+
+export default NewsForm;

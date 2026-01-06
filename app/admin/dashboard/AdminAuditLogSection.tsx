@@ -55,12 +55,13 @@ export default function AdminAuditLogSection() {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/admin/audit-admin");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/admin/audit-admin`);
       const data = await res.json();
       setLogs(data.logs || []);
-      setError("");
+      setError('');
     } catch {
-      setError("No se pudo cargar el registro de auditoría");
+      setError('No se pudo cargar el registro de auditoría');
     } finally {
       setLoading(false);
     }

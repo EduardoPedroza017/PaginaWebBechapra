@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
+import { OptimizedImage } from '@/lib/image-utils';
 
 interface NewsItem {
   title: string;
@@ -104,12 +104,12 @@ export default function NewsCards() {
                 <div className="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 transition-all duration-300">
                   {item.image_url && (
                     <div className="relative h-48 w-full overflow-hidden">
-                      <Image
-                        src={item.image_url.startsWith('/uploads/') ? `http://localhost:5000${item.image_url}` : item.image_url}
+                      <OptimizedImage
+                        src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${item.image_url}` : item.image_url}
                         alt={item.title}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        unoptimized={item.image_url.startsWith('/uploads/')}
+                        priority={index === 0}
                       />
                     </div>
                   )}

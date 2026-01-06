@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TranslateText } from "@/components/TranslateText";
 import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle } from "lucide-react";
@@ -8,12 +8,13 @@ import dynamic from "next/dynamic";
 import CookieStats from "./CookieStats";
 import CookieTable from "./CookieTable";
 import CookieCharts from "./CookieCharts";
+import { adminApi } from "../utils/admin-api";
 
 // Cargar componentes dinámicamente
 const Chart3D = dynamic(() => import("./CookieConsent3DChartNew"), { 
   ssr: false,
   loading: () => (
-    <div className="w-full h-[550px] rounded-2xl bg-gray-800/20 animate-pulse flex items-center justify-center">
+    <div className="w-full h-137.5 rounded-2xl bg-gray-800/20 animate-pulse flex items-center justify-center">
       <div className="text-center">
         <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
         <p className="text-gray-400">Cargando visualización 3D...</p>
@@ -35,7 +36,7 @@ interface CookieConsentAdminProps {
 
 type ActiveTab = 'table' | 'charts' | '3d';
 
-export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdminProps) {
+function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProps) {
   const [data, setData] = useState<CookieConsent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -60,18 +61,7 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/cookies/list?limit=200", {
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const result = await response.json();
+      const result = await adminApi.getCookieConsents({ limit: 200 });
       setData(Array.isArray(result) ? result : []);
       setLastUpdated(new Date());
       setError(null);
@@ -177,8 +167,8 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
             <div className="flex items-center gap-4 mb-3">
               <div className={`p-3 rounded-xl ${
                 theme === 'dark' 
-                  ? 'bg-gradient-to-br from-amber-600/20 to-amber-500/10 shadow-lg shadow-amber-500/10' 
-                  : 'bg-gradient-to-br from-amber-100 to-amber-50 shadow-md shadow-amber-200/50'
+                  ? 'bg-linear-to-br from-amber-600/20 to-amber-500/10 shadow-lg shadow-amber-500/10' 
+                  : 'bg-linear-to-br from-amber-100 to-amber-50 shadow-md shadow-amber-200/50'
               }`}>
                 <Cookie className={`w-6 h-6 ${
                   theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
@@ -241,10 +231,10 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex flex-col items-center px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[80px] ${
+                  className={`flex flex-col items-center px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-20 ${
                     activeTab === tab.id
                       ? theme === 'dark'
-                        ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-lg'
+                        ? 'bg-linear-to-br from-blue-600 to-blue-500 text-white shadow-lg'
                         : 'bg-white text-blue-600 shadow-md'
                       : theme === 'dark'
                         ? 'text-gray-400 hover:text-white hover:bg-gray-700'
@@ -449,8 +439,8 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
                 <div className="space-y-6">
                   <div className={`p-4 rounded-xl ${
                     theme === 'dark' 
-                      ? 'bg-gradient-to-r from-gray-800/40 to-blue-900/20 border border-gray-700' 
-                      : 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200'
+                      ? 'bg-linear-to-r from-gray-800/40 to-blue-900/20 border border-gray-700' 
+                      : 'bg-linear-to-r from-blue-50 to-cyan-50 border border-blue-200'
                   }`}>
                     <div className="flex items-start gap-4">
                       <div className={`p-3 rounded-xl ${
@@ -550,3 +540,10 @@ export default function CookieConsentAdmin({ theme = 'light' }: CookieConsentAdm
     </div>
   );
 }
+
+// Memoize para prevenir re-renders innecesarios
+// Solo re-renderiza si theme prop cambia
+const CookieConsentAdmin = memo(CookieConsentAdminComponent);
+CookieConsentAdmin.displayName = 'CookieConsentAdmin';
+
+export default CookieConsentAdmin;

@@ -2,20 +2,33 @@ export async function GET(request: Request) {
   try {
     const role = request.headers.get('X-Role') || '';
     const admin = request.headers.get('X-Admin') || 'false';
+    const authHeader = request.headers.get('Authorization') || '';
+    const cookieHeader = request.headers.get('cookie') || '';
+
+    const headers: Record<string, string> = {
+      'X-Role': role,
+      'X-Admin': admin,
+    };
+
+    // Agregar cookie si existe
+    if (cookieHeader) {
+      headers['cookie'] = cookieHeader;
+    }
+
+    // Agregar token de autorización si existe
+    if (authHeader) {
+      headers['Authorization'] = authHeader;
+    }
 
     const response = await fetch('http://localhost:5000/admin/users/', {
       method: 'GET',
-      headers: {
-        'X-Role': role,
-        'X-Admin': admin,
-        'cookie': request.headers.get('cookie') || ''
-      },
+      headers,
       credentials: 'include',
     });
 
     if (!response.ok) {
       return Response.json(
-        { error: `Backend error: ${response.statusText}` },
+        { error: `Backend error: ${response.statusText}`, ok: false },
         { status: response.status }
       );
     }

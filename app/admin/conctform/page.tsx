@@ -45,7 +45,8 @@ export default function AdminContactPage() {
   const fetchMessages = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     try {
-      const res = await fetch("http://localhost:5000/api/contact");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/contact`);
       const data = await res.json();
       setMessages(data);
       setFiltered(data);

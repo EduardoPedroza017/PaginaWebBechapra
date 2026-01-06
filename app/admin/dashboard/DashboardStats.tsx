@@ -1,31 +1,28 @@
 "use client";
 
-import { 
-  Shield, 
-  Clock, 
-  Server, 
-  Newspaper, 
-  Image as ImageIcon, 
-  FileText, 
-  TrendingUp, 
-  TrendingDown,
-  Users,
-  BarChart3,
-  Activity,
-  RefreshCw,
-  Globe,
-  Database,
+import React, { useState, useMemo, useCallback, memo } from "react";
+import {
   CheckCircle,
   AlertCircle,
-  Calendar,
-  Eye,
+  Clock,
+  RefreshCw,
+  Newspaper,
+  TrendingUp,
+  TrendingDown,
+  ImageIcon,
+  FileText,
+  Users,
   Download,
+  Shield,
+  Eye,
   ChevronRight,
-  Zap
+  BarChart3,
+  Activity
 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
-import { useEffect, useState, useMemo } from "react";
-import { StatCard } from "../components/shared";
+import { useStats } from "../hooks";
+import { QuickStatsGrid } from "./components/QuickStatsGrid";
+import { DashboardStatsHeader } from "./components/DashboardStatsHeader";
 
 interface DashboardStatsProps {
   role: string;
@@ -59,124 +56,19 @@ interface SystemStatus {
   }[];
 }
 
-export default function DashboardStats({ role, theme, compact = false }: DashboardStatsProps) {
-  const [stats, setStats] = useState<Stats>({ 
-    news: 0, 
-    gallery: 0, 
-    press: 0, 
-    users: 0,
-    uptime: 99.8,
-    systemStatus: 'operational'
-  });
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+function DashboardStatsComponent({ role, theme, compact = false }: DashboardStatsProps) {
+  const { stats, systemStatus, loading, refreshing, refreshStats } = useStats();
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month'>('week');
-  const [systemStatus, setSystemStatus] = useState<SystemStatus>({
-    status: 'operational',
-    message: 'Todos los sistemas operan normalmente',
-    updatedAt: new Date().toISOString(),
-    services: [
-      { name: 'API Backend', status: 'up', responseTime: 120 },
-      { name: 'Base de Datos', status: 'up', responseTime: 45 },
-      { name: 'Servidor de Archivos', status: 'up', responseTime: 80 },
-      { name: 'Cache Redis', status: 'up', responseTime: 12 },
-      { name: 'Servicio de Email', status: 'up', responseTime: 200 },
-    ]
-  });
 
-  const fetchStats = async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
+  const handleTimeRangeChange = useCallback((range: 'today' | 'week' | 'month') => {
+    setTimeRange(range);
+  }, []);
 
-    try {
-      // Simular diferentes estadísticas basadas en el rango de tiempo
-      const baseStats = {
-        today: { news: 5, gallery: 12, press: 3, users: 42 },
-        week: { news: 28, gallery: 85, press: 15, users: 243 },
-        month: { news: 124, gallery: 420, press: 68, users: 1250 },
-      };
+  const handleRefresh = useCallback(async () => {
+    await refreshStats();
+  }, [refreshStats]);
 
-      const [newsRes, galleryRes, pressRes] = await Promise.all([
-        fetch('http://localhost:5000/api/news', { credentials: 'include' }),
-        fetch('http://localhost:5000/api/gallery', { credentials: 'include' }),
-        fetch('http://localhost:5000/api/press', { credentials: 'include' }),
-      ]);
-
-      const [news, gallery, press] = await Promise.all([
-        newsRes.json(),
-        galleryRes.json(),
-        pressRes.json(),
-      ]);
-
-      const base = baseStats[timeRange];
-      
-      // Calcular tendencias
-      const calculateTrend = (current: number, previous: number) => {
-        if (previous === 0) return current > 0 ? 100 : 0;
-        return Math.round(((current - previous) / previous) * 100);
-      };
-
-      setStats({
-        news: Array.isArray(news) ? news.length : base.news,
-        gallery: Array.isArray(gallery) ? gallery.length : base.gallery,
-        press: Array.isArray(press) ? press.length : base.press,
-        users: base.users,
-        newsDelta: calculateTrend(Array.isArray(news) ? news.length : base.news, base.news - 3),
-        galleryDelta: calculateTrend(Array.isArray(gallery) ? gallery.length : base.gallery, base.gallery - 8),
-        pressDelta: calculateTrend(Array.isArray(press) ? press.length : base.press, base.press - 2),
-        usersDelta: 12,
-        uptime: 99.8,
-        systemStatus: 'operational',
-        lastUpdated: new Date().toISOString(),
-        peakHours: [
-          { hour: 8, requests: 45 },
-          { hour: 9, requests: 120 },
-          { hour: 10, requests: 185 },
-          { hour: 11, requests: 150 },
-          { hour: 12, requests: 95 },
-          { hour: 13, requests: 65 },
-          { hour: 14, requests: 110 },
-          { hour: 15, requests: 165 },
-          { hour: 16, requests: 140 },
-          { hour: 17, requests: 100 },
-        ]
-      });
-
-      // Actualizar estado del sistema
-      setSystemStatus(prev => ({
-        ...prev,
-        updatedAt: new Date().toISOString(),
-        services: prev.services.map(service => ({
-          ...service,
-          responseTime: Math.floor(Math.random() * 50) + 20,
-        }))
-      }));
-
-    } catch {
-      // Fallback con datos estáticos
-      setStats({
-        news: 28,
-        gallery: 85,
-        press: 15,
-        users: 243,
-        newsDelta: 12,
-        galleryDelta: 8,
-        pressDelta: -5,
-        usersDelta: 12,
-        uptime: 99.8,
-        systemStatus: 'operational',
-        lastUpdated: new Date().toISOString(),
-      });
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStats();
-  }, [timeRange]);
-
+  // Renderizar componente usando hooks y componentes extraídos
   const getStatusColor = (status: 'operational' | 'degraded' | 'maintenance') => {
     switch (status) {
       case 'operational': return 'green';
@@ -232,8 +124,8 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
   };
 
   const getPeakHour = useMemo(() => {
-    if (!stats.peakHours) return null;
-    return stats.peakHours.reduce((prev, current) => 
+    if (!stats.peakHours || stats.peakHours.length === 0) return null;
+    return stats.peakHours.reduce((prev, current) =>
       prev.requests > current.requests ? prev : current
     );
   }, [stats.peakHours]);
@@ -251,7 +143,7 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
             <TranslateText text="Resumen" />
           </h3>
           <button
-            onClick={() => fetchStats(true)}
+            onClick={() => refreshStats()}
             disabled={refreshing}
             className={`p-1.5 rounded-lg transition-colors ${
               theme === 'dark' 
@@ -386,10 +278,10 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
           }`}>
             <div className="flex items-center gap-2 mb-2">
               <div className={`p-1.5 rounded-lg ${
-                theme === 'dark' ? 'bg-orange-900/30' : 'bg-orange-50'
+                theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-50'
               }`}>
                 <Users className={`w-3.5 h-3.5 ${
-                  theme === 'dark' ? 'text-orange-400' : 'text-orange-600'
+                  theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
                 }`} />
               </div>
               <span className={`text-xs font-medium ${
@@ -429,10 +321,10 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             <TranslateText text="Panel de Control" />
           </h2>
-          <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className={`text-sm mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
             <TranslateText text="Resumen y métricas del sistema" />
           </p>
         </div>
@@ -440,17 +332,17 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
         <div className="flex items-center gap-3">
           {/* Time Range Selector */}
           <div className={`flex rounded-lg border ${
-            theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
+            theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'
           }`}>
             {(['today', 'week', 'month'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
                   timeRange === range
                     ? theme === 'dark'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-blue-600 text-white'
+                      ? 'bg-gray-700 text-white'
+                      : 'bg-white text-gray-900 shadow-sm'
                     : theme === 'dark'
                       ? 'text-gray-400 hover:text-gray-300'
                       : 'text-gray-600 hover:text-gray-900'
@@ -466,48 +358,54 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
           </div>
 
           <button
-            onClick={() => fetchStats(true)}
+            onClick={() => refreshStats()}
             disabled={refreshing}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              theme === 'dark' 
-                ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+              theme === 'dark'
+                ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
             } ${refreshing ? 'opacity-50' : ''}`}
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline"><TranslateText text="Actualizar" /></span>
           </button>
 
-          <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-            theme === 'dark' 
-              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          <button className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+            theme === 'dark'
+              ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+              : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
           }`}>
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
             <span className="hidden sm:inline"><TranslateText text="Exportar" /></span>
           </button>
         </div>
       </div>
 
       {/* System Status Banner */}
-      <div className={`p-4 rounded-xl border ${
-        theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-gradient-to-r from-blue-50 to-gray-50 border-gray-200'
+      <div className={`p-6 rounded-lg border ${
+        theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-gray-50 border-gray-100'
       }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className={`p-2 rounded-lg ${
-              theme === 'dark' ? 'bg-green-900/30' : 'bg-green-100'
+              theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
             }`}>
               {getStatusIcon(systemStatus.status)}
             </div>
             <div>
-              <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                <TranslateText text="Estado del Sistema" />: <span className="text-green-500">
-                  <TranslateText text="Operativo" />
+              <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <TranslateText text="Estado del Sistema" />: <span className={`${
+                  systemStatus.status === 'operational' ? 'text-green-600 dark:text-green-400' :
+                  systemStatus.status === 'degraded' ? 'text-yellow-600 dark:text-yellow-400' :
+                  'text-red-600 dark:text-red-400'
+                }`}>
+                  {systemStatus.status === 'operational' && <TranslateText text="Operativo" />}
+                  {systemStatus.status === 'degraded' && <TranslateText text="Degradado" />}
+                  {systemStatus.status === 'maintenance' && <TranslateText text="Mantenimiento" />}
                 </span>
               </h3>
               <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                {systemStatus.message}
+                {systemStatus.message || <TranslateText text="Cargando estado del sistema..." />}
               </p>
             </div>
           </div>
@@ -547,184 +445,28 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
         <div className="lg:col-span-2 space-y-6">
           {/* Quick Stats */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                <TranslateText text="Métricas Rápidas" />
-              </h3>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
-                <Calendar className="w-3.5 h-3.5" />
-                {timeRange === 'today' ? 'Hoy' : 
-                 timeRange === 'week' ? 'Últimos 7 días' : 
-                 'Últimos 30 días'}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className={`p-4 rounded-xl border ${
-                theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
-              }`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
-                  }`}>
-                    <Newspaper className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <TranslateText text="Noticias" />
-                    </div>
-                    <div className={`text-2xl font-bold mt-1 ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {loading ? '...' : stats.news}
-                    </div>
-                  </div>
-                </div>
-                {stats.newsDelta !== undefined && (
-                  <div className={`flex items-center gap-1 text-xs ${
-                    stats.newsDelta >= 0 
-                      ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                      : theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                  }`}>
-                    {stats.newsDelta >= 0 ? 
-                      <TrendingUp className="w-3 h-3" /> : 
-                      <TrendingDown className="w-3 h-3" />
-                    }
-                    {Math.abs(stats.newsDelta)}% vs período anterior
-                  </div>
-                )}
-              </div>
+            <DashboardStatsHeader
+              theme={theme}
+              timeRange={timeRange}
+              onTimeRangeChange={handleTimeRangeChange}
+              onRefresh={handleRefresh}
+              refreshing={refreshing}
+            />
 
-              <div className={`p-4 rounded-xl border ${
-                theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
-              }`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-purple-900/30' : 'bg-purple-100'
-                  }`}>
-                    <ImageIcon className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <TranslateText text="Imágenes" />
-                    </div>
-                    <div className={`text-2xl font-bold mt-1 ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {loading ? '...' : stats.gallery}
-                    </div>
-                  </div>
-                </div>
-                {stats.galleryDelta !== undefined && (
-                  <div className={`flex items-center gap-1 text-xs ${
-                    stats.galleryDelta >= 0 
-                      ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                      : theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                  }`}>
-                    {stats.galleryDelta >= 0 ? 
-                      <TrendingUp className="w-3 h-3" /> : 
-                      <TrendingDown className="w-3 h-3" />
-                    }
-                    {Math.abs(stats.galleryDelta)}% vs período anterior
-                  </div>
-                )}
-              </div>
-
-              <div className={`p-4 rounded-xl border ${
-                theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
-              }`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-green-900/30' : 'bg-green-100'
-                  }`}>
-                    <FileText className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <TranslateText text="Comunicados" />
-                    </div>
-                    <div className={`text-2xl font-bold mt-1 ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {loading ? '...' : stats.press}
-                    </div>
-                  </div>
-                </div>
-                {stats.pressDelta !== undefined && (
-                  <div className={`flex items-center gap-1 text-xs ${
-                    stats.pressDelta >= 0 
-                      ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                      : theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                  }`}>
-                    {stats.pressDelta >= 0 ? 
-                      <TrendingUp className="w-3 h-3" /> : 
-                      <TrendingDown className="w-3 h-3" />
-                    }
-                    {Math.abs(stats.pressDelta)}% vs período anterior
-                  </div>
-                )}
-              </div>
-
-              <div className={`p-4 rounded-xl border ${
-                theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
-              }`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-orange-900/30' : 'bg-orange-100'
-                  }`}>
-                    <Users className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-orange-400' : 'text-orange-600'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <TranslateText text="Usuarios Activos" />
-                    </div>
-                    <div className={`text-2xl font-bold mt-1 ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {loading ? '...' : stats.users}
-                    </div>
-                  </div>
-                </div>
-                {stats.usersDelta !== undefined && (
-                  <div className={`flex items-center gap-1 text-xs ${
-                    stats.usersDelta >= 0 
-                      ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                      : theme === 'dark' ? 'text-red-400' : 'text-red-600'
-                  }`}>
-                    {stats.usersDelta >= 0 ? 
-                      <TrendingUp className="w-3 h-3" /> : 
-                      <TrendingDown className="w-3 h-3" />
-                    }
-                    {Math.abs(stats.usersDelta)}% vs período anterior
-                  </div>
-                )}
-              </div>
-            </div>
+            <QuickStatsGrid
+              stats={stats}
+              theme={theme}
+              loading={loading}
+            />
           </div>
 
           {/* Performance & Activity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Services Status */}
-            <div className={`p-4 rounded-xl border ${
-              theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
+            <div className={`p-6 rounded-lg border ${
+              theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-100'
             }`}>
-              <h4 className={`font-medium mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <h4 className={`text-lg font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                 <TranslateText text="Estado de Servicios" />
               </h4>
               <div className="space-y-3">
@@ -758,10 +500,10 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
             </div>
 
             {/* Content Summary */}
-            <div className={`p-4 rounded-xl border ${
-              theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
+            <div className={`p-6 rounded-lg border ${
+              theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-100'
             }`}>
-              <h4 className={`font-medium mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <h4 className={`text-lg font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                 <TranslateText text="Resumen de Contenido" />
               </h4>
               <div className="space-y-4">
@@ -841,19 +583,19 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
         {/* Side Panel - User & System Info */}
         <div className="space-y-6">
           {/* User Profile Card */}
-          <div className={`p-5 rounded-xl border ${
-            theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
+          <div className={`p-6 rounded-lg border ${
+            theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-100'
           }`}>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                theme === 'dark' ? 'bg-purple-900/30' : 'bg-purple-100'
+                theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
               }`}>
                 <Shield className={`w-6 h-6 ${
-                  theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                 }`} />
               </div>
               <div>
-                <h4 className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <h4 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {getRoleDisplay(role)}
                 </h4>
                 <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -889,10 +631,10 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
               </div>
             </div>
 
-            <button className={`w-full mt-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-              theme === 'dark' 
-                ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            <button className={`w-full mt-4 py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors border ${
+              theme === 'dark'
+                ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
             }`}>
               <Eye className="w-4 h-4" />
               <TranslateText text="Ver Actividad Completa" />
@@ -901,41 +643,41 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
           </div>
 
           {/* Quick Actions */}
-          <div className={`p-5 rounded-xl border ${
-            theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
+          <div className={`p-6 rounded-lg border ${
+            theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-100'
           }`}>
-            <h4 className={`font-medium mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            <h4 className={`text-lg font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
               <TranslateText text="Acciones Rápidas" />
             </h4>
-            <div className="space-y-2">
-              <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                theme === 'dark' 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            <div className="space-y-3">
+              <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border ${
+                theme === 'dark'
+                  ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                  : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
               }`}>
                 <Newspaper className="w-4 h-4" />
                 <TranslateText text="Nueva Noticia" />
               </button>
-              <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                theme === 'dark' 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border ${
+                theme === 'dark'
+                  ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                  : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
               }`}>
                 <ImageIcon className="w-4 h-4" />
                 <TranslateText text="Subir Imágenes" />
               </button>
-              <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                theme === 'dark' 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border ${
+                theme === 'dark'
+                  ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                  : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
               }`}>
                 <FileText className="w-4 h-4" />
                 <TranslateText text="Publicar Comunicado" />
               </button>
-              <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                theme === 'dark' 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border ${
+                theme === 'dark'
+                  ? 'border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300'
+                  : 'border-gray-200 bg-white hover:bg-gray-50 text-gray-700'
               }`}>
                 <BarChart3 className="w-4 h-4" />
                 <TranslateText text="Ver Reportes" />
@@ -944,15 +686,15 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
           </div>
 
           {/* System Health */}
-          <div className={`p-5 rounded-xl border ${
-            theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
+          <div className={`p-6 rounded-lg border ${
+            theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-100'
           }`}>
             <div className="flex items-center justify-between mb-4">
-              <h4 className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <h4 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                 <TranslateText text="Salud del Sistema" />
               </h4>
-              <Activity className={`w-4 h-4 ${
-                theme === 'dark' ? 'text-green-400' : 'text-green-600'
+              <Activity className={`w-5 h-5 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
               }`} />
             </div>
             
@@ -1034,3 +776,17 @@ export default function DashboardStats({ role, theme, compact = false }: Dashboa
     </div>
   );
 }
+
+// Memoize para prevenir re-renders innecesarios
+// Solo re-renderiza si role, theme, o compact cambian
+const DashboardStats = memo(DashboardStatsComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.role === nextProps.role &&
+    prevProps.theme === nextProps.theme &&
+    prevProps.compact === nextProps.compact
+  );
+});
+
+DashboardStats.displayName = 'DashboardStats';
+
+export default DashboardStats;

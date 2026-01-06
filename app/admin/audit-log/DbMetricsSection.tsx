@@ -81,18 +81,19 @@ export function DbMetricsSection({ theme, compact = false }: DbMetricsSectionPro
     else setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/admin/db/metrics", {
-        credentials: "include"
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/admin/db/metrics`, {
+        credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();
         setDbMetrics(data);
         setError(null);
       } else {
-        throw new Error("Error al cargar métricas");
+        throw new Error('Error al cargar métricas');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo conectar con el servidor");
+      setError(err instanceof Error ? err.message : 'No se pudo conectar con el servidor');
     } finally {
       setLoading(false);
       setRefreshing(false);

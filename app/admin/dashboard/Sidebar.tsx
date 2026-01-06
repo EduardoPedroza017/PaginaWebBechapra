@@ -26,14 +26,6 @@ import {
   X,
   LogOut,
   HelpCircle,
-  Bell,
-  Sparkles,
-  Zap,
-  Globe,
-  Target,
-  BarChart3,
-  Calendar,
-  Mail,
   Layers,
   Code,
   Palette,
@@ -42,19 +34,18 @@ import {
   Users2,
   FileCode,
   BookOpen,
-  Clock
+  Clock,
+  Target
 } from "lucide-react";
 
 export type SidebarItem = {
   label: string;
   icon: React.ReactNode;
   path: string;
-  badge?: number;
-  isNew?: boolean;
   section?: string;
 };
 
-// Organizado por secciones
+// Organizado por secciones - Solo datos reales
 export const sidebarItems: SidebarItem[] = [
   // Sección Principal
   { 
@@ -69,15 +60,13 @@ export const sidebarItems: SidebarItem[] = [
     label: "Gestión de Noticias", 
     path: "/admin/news", 
     icon: <Newspaper size={20} />,
-    section: "Contenido",
-    badge: 3
+    section: "Contenido"
   },
   { 
     label: "Comunicados", 
     path: "/admin/press", 
     icon: <Megaphone size={20} />,
-    section: "Contenido",
-    isNew: true
+    section: "Contenido"
   },
   { 
     label: "Servicios", 
@@ -103,8 +92,7 @@ export const sidebarItems: SidebarItem[] = [
     label: "Usuarios", 
     path: "/admin/usuarios", 
     icon: <Users2 size={20} />,
-    section: "Usuarios",
-    badge: 5
+    section: "Usuarios"
   },
   { 
     label: "Directivos", 
@@ -144,8 +132,7 @@ export const sidebarItems: SidebarItem[] = [
     label: "Formularios de Contacto", 
     path: "/admin/conctform", 
     icon: <MessageCircle size={20} />,
-    section: "Comunicación",
-    badge: 12
+    section: "Comunicación"
   },
   { 
     label: "Sucursales", 
@@ -216,12 +203,12 @@ export function Sidebar({
 
   // Theme-based styles
   const sidebarClasses = isDark
-    ? 'bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-slate-800 shadow-2xl shadow-slate-900/50'
-    : 'bg-gradient-to-b from-white via-slate-50 to-white border-slate-200 shadow-2xl shadow-slate-200/30';
+    ? 'bg-slate-900 border-slate-700'
+    : 'bg-white border-slate-200';
 
   const headerClasses = isDark
-    ? 'bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900 border-slate-700'
-    : 'bg-gradient-to-r from-blue-50 via-white to-blue-50 border-slate-200';
+    ? 'bg-slate-800 border-slate-700'
+    : 'bg-white border-slate-200';
 
   const mobileOverlayClasses = isMobileOpen
     ? 'fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden'
@@ -232,24 +219,16 @@ export function Sidebar({
     : '-translate-x-full md:translate-x-0';
 
   const sectionLabelClasses = isDark
-    ? 'text-slate-500 font-semibold'
-    : 'text-slate-500 font-semibold';
+    ? 'text-slate-400 font-medium'
+    : 'text-slate-500 font-medium';
 
   const activeItemClasses = isDark
-    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/50'
-    : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30';
+    ? 'bg-blue-600 text-white'
+    : 'bg-blue-600 text-white';
 
   const inactiveItemClasses = isDark
-    ? 'text-slate-400 hover:text-white hover:bg-slate-800/50 hover:shadow-lg hover:shadow-slate-800/30'
-    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 hover:shadow-lg hover:shadow-slate-200/30';
-
-  const badgeClasses = isDark
-    ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
-    : 'bg-gradient-to-r from-rose-500 to-pink-500 text-white';
-
-  const newBadgeClasses = isDark
-    ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white'
-    : 'bg-gradient-to-r from-emerald-500 to-green-500 text-white';
+    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100';
 
   return (
     <>
@@ -262,39 +241,31 @@ export function Sidebar({
 
       {/* Sidebar */}
       <aside
-        className={`${sidebarClasses} w-64 md:w-72 min-h-screen flex flex-col border-r fixed md:static left-0 top-0 z-50 transition-transform duration-300 ${mobileSidebarClasses}`}
+        className={`${sidebarClasses} w-64 min-h-screen flex flex-col border-r fixed md:static left-0 top-0 z-50 transition-transform duration-300 ${mobileSidebarClasses}`}
       >
         {/* Header */}
-        <div className={`px-6 py-5 border-b ${headerClasses}`}>
+        <div className={`px-4 py-4 border-b ${headerClasses}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ring-2 ${
+              <div className={`relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ${
                 isDark 
-                  ? 'bg-gradient-to-br from-blue-500/20 to-indigo-500/20 ring-blue-500/30' 
-                  : 'bg-gradient-to-br from-blue-100 to-indigo-100 ring-blue-200'
+                  ? 'bg-slate-700' 
+                  : 'bg-slate-100'
               }`}>
                 <NextImage
                   src="/image/LOGO/logo.png"
                   alt="Logo Bechapra"
                   fill
-                  sizes="48px"
+                  sizes="40px"
                   className="object-contain p-2"
                   priority
                 />
               </div>
-              <div className="flex flex-col min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs ${isDark ? 'text-blue-400' : 'text-blue-600'} font-bold tracking-widest uppercase`}>
-                    Bechapra
-                  </span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${isDark ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>
-                    PRO
-                  </span>
-                </div>
-                <h2 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-slate-900'} leading-tight mt-1`}>
+              <div className="flex flex-col">
+                <h2 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   <TranslateText text="Panel Admin" />
                 </h2>
-                <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'} mt-0.5`}>
+                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Sistema de Gestión
                 </p>
               </div>
@@ -305,8 +276,8 @@ export function Sidebar({
               onClick={onMobileClose}
               className={`p-2 rounded-lg md:hidden ${
                 isDark 
-                  ? 'hover:bg-slate-800 text-slate-400' 
-                  : 'hover:bg-slate-200 text-slate-600'
+                  ? 'hover:bg-slate-700 text-slate-400' 
+                  : 'hover:bg-slate-100 text-slate-600'
               }`}
               aria-label="Cerrar menú"
             >
@@ -316,24 +287,18 @@ export function Sidebar({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 space-y-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
+        <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
           {sectionOrder.map((section) => {
             const items = groupedItems[section];
             if (!items || items.length === 0) return null;
 
             return (
-              <div key={section} className="space-y-2">
+              <div key={section} className="space-y-1">
                 {/* Section Label */}
-                <div className="px-3 mb-2">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-xs uppercase tracking-wider ${sectionLabelClasses}`}>
-                      {section}
-                    </span>
-                    {section === "Principal" && (
-                      <Sparkles size={12} className={isDark ? "text-blue-400" : "text-blue-500"} />
-                    )}
-                  </div>
-                  <div className={`h-px mt-2 ${isDark ? 'bg-gradient-to-r from-transparent via-slate-700 to-transparent' : 'bg-gradient-to-r from-transparent via-slate-300 to-transparent'}`} />
+                <div className="px-3">
+                  <span className={`text-xs uppercase tracking-wider ${sectionLabelClasses}`}>
+                    {section}
+                  </span>
                 </div>
 
                 {/* Section Items */}
@@ -360,46 +325,22 @@ export function Sidebar({
                           key={item.path}
                           href={item.path}
                           onClick={onMobileClose}
-                          className={`group flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all duration-200 relative ${
+                          className={`group flex items-center justify-between px-3 py-2.5 rounded-lg font-medium transition-colors ${
                             isActive ? activeItemClasses : inactiveItemClasses
                           }`}
                         >
-                          {/* Active Indicator */}
-                          {isActive && (
-                            <div className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r ${
-                              isDark ? 'bg-blue-400' : 'bg-blue-500'
-                            }`} />
-                          )}
-
                           <div className="flex items-center gap-3 min-w-0">
-                            <span className={`flex-shrink-0 transition-transform duration-200 ${
-                              isActive 
-                                ? 'scale-110' 
-                                : 'group-hover:scale-105'
-                            }`}>
+                            <span className={`flex-shrink-0 ${isActive ? 'text-white' : ''}`}>
                               {item.icon}
                             </span>
-                            <span className="text-sm font-semibold truncate">
+                            <span className="text-sm font-medium truncate">
                               <TranslateText text={item.label} />
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2">
-                            {/* Badges */}
-                            {item.badge && (
-                              <span className={`text-xs px-2 py-1 rounded-full font-bold ${badgeClasses}`}>
-                                {item.badge}
-                              </span>
-                            )}
-                            {item.isNew && (
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${newBadgeClasses}`}>
-                                NEW
-                              </span>
-                            )}
-                            {isActive && (
-                              <ChevronRight size={16} className="flex-shrink-0 animate-pulse" />
-                            )}
-                          </div>
+                          {isActive && (
+                            <ChevronRight size={16} className="flex-shrink-0" />
+                          )}
                         </Link>
                       );
                     })}
@@ -409,53 +350,14 @@ export function Sidebar({
           })}
         </nav>
 
-        {/* Footer */}
-        <div className={`px-5 py-4 border-t ${
+        {/* Footer - Solo información básica */}
+        <div className={`px-4 py-4 border-t ${
           isDark 
-            ? 'border-slate-800 bg-gradient-to-r from-slate-900/50 to-slate-800/50' 
-            : 'border-slate-200 bg-gradient-to-r from-slate-50 to-white'
+            ? 'border-slate-700' 
+            : 'border-slate-200'
         }`}>
-          {/* System Status */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className={`relative flex items-center justify-center`}>
-                <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'} animate-ping absolute`} />
-                <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-emerald-500' : 'bg-emerald-600'} relative z-10`} />
-              </div>
-              <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Sistema Activo
-              </span>
-            </div>
-            <div className={`text-xs px-2 py-1 rounded ${isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
-              v2.0.0
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <button className={`flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-              isDark 
-                ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' 
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-            }`}>
-              <HelpCircle size={12} />
-              Ayuda
-            </button>
-            <button className={`flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-              isDark 
-                ? 'bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-600 hover:to-blue-700 text-white' 
-                : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
-            }`}>
-              <Settings size={12} />
-              Config
-            </button>
-          </div>
-
-          {/* Copyright */}
-          <p className={`text-[10px] text-center mt-4 ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-            © 2025 Bechapra CMS
-            <br />
-            Todos los derechos reservados
+          <p className={`text-xs text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            © {new Date().getFullYear()} Bechapra CMS
           </p>
         </div>
       </aside>
@@ -463,17 +365,17 @@ export function Sidebar({
   );
 }
 
-// Mobile Toggle Button Component
+// Mobile Toggle Button Component - Versión simplificada
 export function SidebarToggle({ theme, onToggle }: { theme?: 'light' | 'dark', onToggle: () => void }) {
   const isDark = theme === 'dark';
   
   return (
     <button
       onClick={onToggle}
-      className={`fixed bottom-6 left-6 z-40 p-3 rounded-xl shadow-2xl transition-all md:hidden ${
+      className={`fixed bottom-6 left-6 z-40 p-3 rounded-lg shadow-lg md:hidden ${
         isDark
-          ? 'bg-gradient-to-r from-slate-800 to-slate-900 text-white border border-slate-700 shadow-slate-900/50'
-          : 'bg-gradient-to-r from-white to-slate-50 text-slate-700 border border-slate-300 shadow-slate-200/50'
+          ? 'bg-slate-800 text-white'
+          : 'bg-white text-slate-700'
       }`}
       aria-label="Abrir menú"
     >
