@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
 /* ==========================================================================
+   TAILWIND V4 DARK MODE - CLASS-BASED OVERRIDE
+   ========================================================================== */
+
+/*
+  Override Tailwind v4's default media-query dark mode to use class-based.
+  The `dark` variant will now apply when `.dark` class is on any ancestor.
+*/
+@variant dark (&:is(:where(.dark) *));
+
+/* ==========================================================================
    CONFIGURATION
    ========================================================================== */
 
@@ -184,13 +194,14 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
-a {
+/* Only style links that don't have explicit text color classes */
+a:where(:not([class*="text-"])) {
   color: var(--brand-primary);
   text-decoration: none;
   transition: color var(--transition-base);
 }
 
-a:hover {
+a:where(:not([class*="text-"])):hover {
   color: var(--brand-primary-hover);
 }
 
