@@ -58,7 +58,15 @@ export default function PressAdminApp() {
     
     try {
       const data = await adminApi.getPress();
-      setPress(data);
+      // API may return a paginated object { items, page, total, ... }
+      // Normalize to an array for the UI
+      if (Array.isArray(data)) {
+        setPress(data);
+      } else if (data && Array.isArray((data as any).items)) {
+        setPress((data as any).items);
+      } else {
+        setPress([]);
+      }
     } catch (error) {
       console.error("Error fetching press:", error);
     } finally {

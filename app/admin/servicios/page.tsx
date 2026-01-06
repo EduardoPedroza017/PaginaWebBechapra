@@ -41,7 +41,14 @@ export default function ServiciosAdminPage() {
       const res = await fetch(`${API}/api/services/cards?${params.toString()}`, { credentials: 'include' });
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
-      setServices(data);
+      // Normalize API response: could be array or paginated object { items, page, total }
+      if (Array.isArray(data)) {
+        setServices(data);
+      } else if (data && Array.isArray((data as any).items)) {
+        setServices((data as any).items);
+      } else {
+        setServices([]);
+      }
     } catch (err) {
       console.error('Error fetching services', err);
       setServices([]);

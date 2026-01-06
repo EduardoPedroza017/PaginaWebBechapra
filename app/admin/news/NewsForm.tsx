@@ -179,7 +179,20 @@ function NewsFormComponent({ onCreated, theme }: Props) {
     form.append("title", title);
     form.append("subtitle", subtitle);
     form.append("description", description);
-    form.append("category", category);
+    // Map friendly category labels to backend-safe values
+    const mapCategoryToBackend = (label: string) => {
+      const map: Record<string, string> = {
+        'Empresarial': 'general',
+        'Noticias Generales': 'general',
+        'Recursos Humanos': 'anuncios',
+        'Capacitación': 'eventos',
+        'Legal': 'anuncios',
+        'Tecnología': 'general'
+      };
+      return map[label] || 'general';
+    };
+    const backendCategory = mapCategoryToBackend(category);
+    form.append("category", backendCategory);
     form.append("tags", JSON.stringify(tags));
     form.append("featured", String(featured));
     form.append("altText", altText);
@@ -216,34 +229,36 @@ function NewsFormComponent({ onCreated, theme }: Props) {
         },
         credentials: 'include',
       });
-      // Improved error handling for permission errors
-      console.log('Server response status:', res.status);
-      console.log('Server response body:', await res.text());
-
-      // Added success message handling
-      if (res.ok) {
-        const responseData = await res.json();
-        showMessage('success', `Noticia creada exitosamente: ${responseData.news.title}`);
-      } else {
-        const errorResponse = await res.json();
-        showMessage('error', `Error al crear noticia: ${errorResponse.error}`);
+      // Leer el body UNA vez y reutilizarlo
+      const status = res.status;
+      let body: any = null;
+      try {
+        body = await res.json();
+      } catch (err) {
+        const text = await res.text();
+        console.log('Server non-json response:', text);
       }
+      console.log('Server response status:', status, 'body:', body);
 
-      if (!res.ok) {
-        const errorResponse = await res.json();
-        if (errorResponse.error === 'Se requiere permiso: news.create') {
+      if (res.ok) {
+        if (body && body.news) {
+          showMessage('success', `Noticia creada exitosamente: ${body.news.title}`);
+          onCreated(body.news);
+        } else {
+          showMessage('success', 'Noticia creada exitosamente');
+        }
+        resetForm();
+        setIsExpanded(false);
+      } else {
+        const errorMsg = body?.error || (body?.errors ? JSON.stringify(body.errors) : 'Error desconocido');
+        if (errorMsg === 'Se requiere permiso: news.create') {
           showMessage('error', 'No tienes permisos para crear noticias.');
         } else {
-          showMessage('error', 'Error al crear la noticia');
+          showMessage('error', `Error al crear noticia: ${errorMsg}`);
         }
-        console.error("Server Response:", errorResponse);
-        throw new Error(errorResponse.error || "Error desconocido");
+        console.error('Server Response:', body);
+        throw new Error(errorMsg);
       }
-      const data = await res.json();
-      onCreated(data.news);
-      resetForm();
-      setIsExpanded(false);
-      showMessage('success', 'Noticia creada exitosamente');
     } catch {
       showMessage('error', 'Error al crear la noticia');
     } finally {

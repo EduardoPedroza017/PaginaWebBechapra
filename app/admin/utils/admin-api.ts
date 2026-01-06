@@ -327,7 +327,11 @@ class AdminApiClient {
       // Usar fetch directo con ruta relativa para pasar por el proxy Next.js
       const response = await fetch('/api/backend/admin/check', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Role': role,
+          'X-Admin': admin.toString()
+        },
         credentials: 'include',
         body: JSON.stringify({ admin, role }),
       });

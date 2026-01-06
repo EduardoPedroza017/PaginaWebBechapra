@@ -34,19 +34,18 @@ export async function GET(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // Route is /api/backend/[...path], so path array does NOT include 'backend'
+    // Forward to Flask backend with correct prefix
+    // Flask routes: /admin/... for admin, /api/... for public API
     let pathStr: string;
-    if (path[0] === 'backend') {
-      if (path[1] === 'admin') {
-        // /api/backend/admin/... -> /admin/...
-        pathStr = `/${path.slice(1).join('/')}`;
-      } else {
-        // /api/backend/news -> /api/news
-        pathStr = `/api/${path.slice(1).join('/')}`;
-      }
+    if (path[0] === 'admin') {
+      // /api/backend/admin/... -> /admin/... (Flask admin routes)
+      pathStr = `/${path.join('/')}`; 
     } else {
-      pathStr = `/api/${path.join('/')}`;
-    }
+      // /api/backend/news -> /api/news (Flask public API)
+      pathStr = `/api/${path.join('/')}`; 
 
+    }
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
     const fullPath = queryString ? `${pathStr}?${queryString}` : pathStr;
@@ -68,20 +67,21 @@ export async function POST(
 ) {
   try {
     const { path } = await params;
+    console.log('POST request to:', path);
     if (!path || path.length === 0) {
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // Flask routes: /admin/... for admin, /api/... for public API
     let pathStr: string;
-    if (path[0] === 'backend') {
-      if (path[1] === 'admin') {
-        pathStr = `/${path.slice(1).join('/')}`;
-      } else {
-        pathStr = `/api/${path.slice(1).join('/')}`;
-      }
+    if (path[0] === 'admin') {
+      // /api/backend/admin/check -> /admin/check
+      pathStr = `/${path.join('/')}`;
     } else {
+      // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
     }
+    console.log('Forwarding to:', `${BACKEND_URL}${pathStr}`);
     const cookieHeader = request.headers.get('cookie');
 
     // Check if this is a FormData request
@@ -103,18 +103,29 @@ export async function POST(
         ...options.headers,
         'Content-Type': contentType,
       };
-    } else {
-      // For JSON, parse the body
-      body = await request.json();
+    } else if (contentType.includes('application/json')) {
+      // For JSON, get the raw text and pass it directly
+      const text = await request.text();
+      options.body = text;
       options.headers = {
         ...options.headers,
         'Content-Type': 'application/json',
       };
-      options.body = JSON.stringify(body);
+    } else {
+      // For other content types, try to get as text
+      const text = await request.text();
+      options.body = text;
+      if (contentType) {
+        options.headers = {
+          ...options.headers,
+          'Content-Type': contentType,
+        };
+      }
     }
 
     const response = await fetch(`${BACKEND_URL}${pathStr}`, options);
     const data = await response.json();
+    console.log('Backend response:', response.status, data);
 
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
@@ -133,14 +144,13 @@ export async function PUT(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // Flask routes: /admin/... for admin, /api/... for public API
     let pathStr: string;
-    if (path[0] === 'backend') {
-      if (path[1] === 'admin') {
-        pathStr = `/${path.slice(1).join('/')}`;
-      } else {
-        pathStr = `/api/${path.slice(1).join('/')}`;
-      }
+    if (path[0] === 'admin') {
+      // /api/backend/admin/... -> /admin/...
+      pathStr = `/${path.join('/')}`;
     } else {
+      // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
     }
     const cookieHeader = request.headers.get('cookie');
@@ -194,14 +204,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // Flask routes: /admin/... for admin, /api/... for public API
     let pathStr: string;
-    if (path[0] === 'backend') {
-      if (path[1] === 'admin') {
-        pathStr = `/${path.slice(1).join('/')}`;
-      } else {
-        pathStr = `/api/${path.slice(1).join('/')}`;
-      }
+    if (path[0] === 'admin') {
+      // /api/backend/admin/... -> /admin/...
+      pathStr = `/${path.join('/')}`;
     } else {
+      // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
     }
     const cookieHeader = request.headers.get('cookie');

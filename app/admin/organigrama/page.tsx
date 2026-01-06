@@ -11,16 +11,16 @@ export default function AdminPageProximamente() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Forzar tema claro
-    setTheme("light");
+    requestAnimationFrame(() => setMounted(true));
     if (typeof window !== "undefined") {
-      localStorage.setItem("theme", "light");
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        requestAnimationFrame(() => setTheme(savedTheme as 'dark' | 'light'));
+      }
     }
   }, []);
 
   const handleToggleTheme = () => {
-    // Opcional: si NO quieres permitir cambiar tema, elimina esta función
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 

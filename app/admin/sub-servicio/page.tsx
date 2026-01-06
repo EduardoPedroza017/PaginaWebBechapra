@@ -51,7 +51,14 @@ export default function SubServicioAdminPage(){
       if (serviceFilter) params.set('service_id', serviceFilter)
       const res = await fetch(`${API}/api/sub_services?${params.toString()}`, { credentials: 'include' })
       const data = await res.json()
-      setSubs(data)
+      // Normalize API response: accept raw array or paginated object { items, ... }
+      if (Array.isArray(data)) {
+        setSubs(data)
+      } else if (data && Array.isArray((data as any).items)) {
+        setSubs((data as any).items)
+      } else {
+        setSubs([])
+      }
       // also fetch services to map id -> slug
       try{
         const sres = await fetch(`${API}/api/services/cards`, { credentials: 'include' })
