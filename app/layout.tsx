@@ -43,8 +43,8 @@ const fontVariables = `${geistSans.variable} ${geistMono.variable} ${montserrat.
 
 export const metadata: Metadata = {
   title: {
-    default: "Bechapra — Soluciones Empresariales Integrales",
-    template: "%s | Bechapra"
+    default: "Bausen — Soluciones Empresariales Integrales",
+    template: "%s | Bausen"
   },
   description: "Capital Humano, Desarrollo Organizacional y Management Services para empresas modernas",
   keywords: [

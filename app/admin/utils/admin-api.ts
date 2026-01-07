@@ -107,7 +107,8 @@ class AdminApiClient {
       params.append('limit', options.limit.toString());
     }
     const query = params.toString();
-    return apiClient.get(`/api/cookies${query ? `?${query}` : ''}`);
+    // Backend exposes the list at /api/cookies/list
+    return apiClient.get(`/api/cookies/list${query ? `?${query}` : ''}`);
   }
 
   async getCookieStats() {

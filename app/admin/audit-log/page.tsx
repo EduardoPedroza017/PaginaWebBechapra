@@ -17,14 +17,14 @@ import { DbMetricsSection } from "./DbMetricsSection";
 import dynamic from "next/dynamic";
 
 // Importación dinámica para evitar problemas de SSR
-const AdminAuditLogSection = dynamic(() => import("../dashboard/AdminAuditLogSection"), { 
-  ssr: false,
-  loading: () => (
-    <div className="py-8 text-center text-gray-400">
-      <TranslateText text="Cargando registros administrativos..." />
-    </div>
-  )
-});
+// const AdminAuditLogSection = dynamic(() => import("../dashboard/AdminAuditLogSection"), { 
+//   ssr: false,
+//   loading: () => (
+//     <div className="py-8 text-center text-gray-400">
+//       <TranslateText text="Cargando registros administrativos..." />
+//     </div>
+//   )
+// });
 
 export type AuditLogFiltersState = {
   user: string;
@@ -49,6 +49,7 @@ export default function AuditLogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [themeReady, setThemeReady] = useState(false);
   const [filters, setFilters] = useState<AuditLogFiltersState>({ 
     user: '', 
     ip: '', 
@@ -57,16 +58,44 @@ export default function AuditLogPage() {
     dateTo: '' 
   });
   const [page, setPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<'audit' | 'database'>('audit');
+  const [activeTab, setActiveTab] = useState<'centro' | 'registros'>('centro');
   const [refreshing, setRefreshing] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Cargar tema desde localStorage después de montar el componente
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark' || savedTheme === 'light') {
       setTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(prefersDark ? "dark" : "light");
+    }
+    setThemeReady(true);
+  }, []);
+
+  // Cargar pestaña activa desde localStorage
+  useEffect(() => {
+    const savedTab = localStorage.getItem('auditLogActiveTab');
+    if (savedTab === 'centro' || savedTab === 'registros') {
+      setActiveTab(savedTab);
     }
   }, []);
+
+  // Save theme to localStorage when it changes
+  useEffect(() => {
+    if (themeReady && typeof window !== "undefined") {
+      localStorage.setItem("theme", theme);
+      document.documentElement.classList.toggle("dark", theme === "dark");
+    }
+  }, [theme, themeReady]);
+
+  // Save active tab to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("auditLogActiveTab", activeTab);
+    }
+  }, [activeTab]);
 
   const handleToggleTheme = () => {
     setTheme((prev) => {
@@ -91,20 +120,69 @@ export default function AuditLogPage() {
       const role = sessionStorage.getItem("role") || "";
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       
-      const response = await fetch(`${apiBase}/admin/audit`, {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin": String(admin),
-          "X-Role": role,
-        },
-      });
+      // Prefer admin action logs (admin_audit). Fallback to login audit if empty.
+      const tryAdminAudit = async () => {
+        return fetch(`${apiBase}/admin/audit-admin`, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin": String(admin),
+            "X-Role": role,
+          },
+        });
+      };
+
+      const tryLoginAudit = async () => {
+        return fetch(`${apiBase}/admin/audit`, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin": String(admin),
+            "X-Role": role,
+          },
+        });
+      };
+
+      let response = await tryAdminAudit();
+      // if admin audit returned a non-ok status, fallback to login audit
+      if (!response.ok) {
+        response = await tryLoginAudit();
+      }
 
       if (!response.ok) {
         throw new Error("No autorizado");
       }
 
       const data = await response.json();
-      setLogs(data.logs || []);
+
+      // Backend has two shapes: {ok:true, logs: [...] } (legacy auth endpoints)
+      // or {ok:true, data: { items: [...] }} (newer paginated admin endpoint).
+      let items: any[] = [];
+      if (data.logs && Array.isArray(data.logs)) {
+        items = data.logs;
+      } else if (data.data && Array.isArray(data.data.items)) {
+        items = data.data.items;
+      } else if (Array.isArray(data)) {
+        items = data;
+      }
+
+      // Normalize items to AuditLogEntry shape expected by the UI
+      const normalized = items.map((it: any) => {
+        // If this is a login_audit record it already has user_id, success, etc.
+        if (it.user_id || typeof it.success !== 'undefined') {
+          return it as AuditLogEntry;
+        }
+        // Otherwise map admin_audit fields
+        return {
+          user_id: it.by || it.user || it.user_id || 'system',
+          timestamp: it.timestamp ? (typeof it.timestamp === 'string' ? it.timestamp : new Date(it.timestamp).toISOString()) : undefined,
+          ip: it.ip || undefined,
+          user_agent: it.user_agent || undefined,
+          success: typeof it.success === 'boolean' ? it.success : true,
+          reason: it.action || (it.details && JSON.stringify(it.details)) || it.reason || undefined,
+          geo: it.geo || undefined
+        } as AuditLogEntry;
+      });
+
+      setLogs(normalized || []);
       setError("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error de conexión");
@@ -118,10 +196,12 @@ export default function AuditLogPage() {
     fetchAuditLogs();
   }, [fetchAuditLogs]);
 
-  // Reset página al cambiar filtros
+  // Reset página cuando cambien los filtros
   useEffect(() => {
-    if (page !== 1) setPage(1);
-  }, [filters, page]);
+    if (page > totalPages) {
+      setPage(1);
+    }
+  }, [totalPages, page, setPage]);
 
   // Filtrado de logs usando useMemo para mejor performance
   const filteredLogs = useMemo(() => {
@@ -171,9 +251,7 @@ export default function AuditLogPage() {
   }, [logs]);
 
   // Paginación
-  const rowsPerPage = 20;
-  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / rowsPerPage));
-  const paginatedLogs = filteredLogs.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const rowsPerPage = 5;
 
   // Métricas calculadas usando useMemo
   const metrics = useMemo(() => {
@@ -323,72 +401,122 @@ export default function AuditLogPage() {
             </div>
           </div>
 
-          {/* Métricas principales */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              icon={<Activity className="w-6 h-6 text-blue-500" />}
-              title="Total Registros"
-              value={metrics.total.toLocaleString()}
-              color="blue"
-              theme={theme}
-              trend={metrics.totalTrend}
-              loading={refreshing}
-            />
-            <MetricCard
-              icon={<CheckCircle className="w-6 h-6 text-green-500" />}
-              title="Exitosos"
-              value={metrics.successCount.toLocaleString()}
-              color="green"
-              theme={theme}
-              trend={metrics.successTrend}
-              loading={refreshing}
-            />
-            <MetricCard
-              icon={<XCircle className="w-6 h-6 text-red-500" />}
-              title="Fallidos"
-              value={metrics.failCount.toLocaleString()}
-              color="red"
-              theme={theme}
-              trend={metrics.failTrend}
-              loading={refreshing}
-              anomaly={anomalies.hasAnomalies}
-            />
-            <MetricCard
-              icon={<BarChart3 className="w-6 h-6 text-purple-500" />}
-              title="Tasa de Éxito"
-              value={`${metrics.successRate}%`}
-              color="purple"
-              theme={theme}
-              trend={metrics.rateTrend}
-              loading={refreshing}
-              anomaly={metrics.successRate < 85}
-            />
+          {/* Tabs */}
+          <div className="mb-6">
+            <div className={`rounded-xl border ${
+              theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex">
+                <button
+                  onClick={() => setActiveTab('centro')}
+                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
+                    activeTab === 'centro'
+                      ? theme === 'dark'
+                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : theme === 'dark'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  CENTRO DE AUDITORIA
+                </button>
+                <button
+                  onClick={() => setActiveTab('registros')}
+                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
+                    activeTab === 'registros'
+                      ? theme === 'dark'
+                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : theme === 'dark'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  REGISTROS DE AUDITORIA
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Gráficas */}
-          <AuditLogCharts
-            successCount={metrics.successCount}
-            failCount={metrics.failCount}
-            byUser={chartData.byUser}
-            byDate={chartData.byDate}
-            theme={theme}
-          />
+          {/* Tab Content */}
+          {activeTab === 'centro' && (
+            <>
+              {/* Métricas principales */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <MetricCard
+                  icon={<Activity className="w-6 h-6 text-blue-500" />}
+                  title="Total Registros"
+                  value={metrics.total.toLocaleString()}
+                  color="blue"
+                  theme={theme}
+                  trend={metrics.totalTrend}
+                  loading={refreshing}
+                />
+                <MetricCard
+                  icon={<CheckCircle className="w-6 h-6 text-green-500" />}
+                  title="Exitosos"
+                  value={metrics.successCount.toLocaleString()}
+                  color="green"
+                  theme={theme}
+                  trend={metrics.successTrend}
+                  loading={refreshing}
+                />
+                <MetricCard
+                  icon={<XCircle className="w-6 h-6 text-red-500" />}
+                  title="Fallidos"
+                  value={metrics.failCount.toLocaleString()}
+                  color="red"
+                  theme={theme}
+                  trend={metrics.failTrend}
+                  loading={refreshing}
+                  anomaly={anomalies.hasAnomalies}
+                />
+                <MetricCard
+                  icon={<BarChart3 className="w-6 h-6 text-purple-500" />}
+                  title="Tasa de Éxito"
+                  value={`${metrics.successRate}%`}
+                  color="purple"
+                  theme={theme}
+                  trend={metrics.rateTrend}
+                  loading={refreshing}
+                  anomaly={metrics.successRate < 85}
+                />
+              </div>
 
-          {/* Tabla de logs de accesos */}
-          <AuditLogTable
-            logs={paginatedLogs}
-            theme={theme}
-            page={page}
-            setPage={setPage}
-            totalPages={totalPages}
-            totalItems={filteredLogs.length}
-            itemsPerPage={rowsPerPage}
-          />
+              {/* Gráficas */}
+              <AuditLogCharts
+                successCount={metrics.successCount}
+                failCount={metrics.failCount}
+                byUser={chartData.byUser}
+                byDate={chartData.byDate}
+                theme={theme}
+              />
+            </>
+          )}
 
-          {/* Sección de acciones administrativas */}
-          <div className="mt-12">
-            <AdminAuditLogSection />
-          </div>
+          {activeTab === 'registros' && (
+            <>
+              {/* Filtros */}
+              <AuditLogFilters
+                filters={filters}
+                setFilters={setFilters}
+                theme={theme}
+              />
+
+              {/* Tabla de logs de accesos */}
+              <AuditLogTable
+                logs={filteredLogs}
+                theme={theme}
+                page={page}
+                setPage={setPage}
+                totalPages={totalPages}
+                setTotalPages={setTotalPages}
+                totalItems={filteredLogs.length}
+                itemsPerPage={rowsPerPage}
+              />
+            </>
+          )}
         </main>
       </div>
     </div>

@@ -18,7 +18,7 @@ import {
   Search,
   Filter
 } from "lucide-react";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import VirtualizedTable, { Column } from "@/app/admin/components/VirtualizedTable";
 
 interface AuditLogEntry {
@@ -38,6 +38,7 @@ interface AuditLogTableProps {
   page: number;
   setPage: (p: number) => void;
   totalPages: number;
+  setTotalPages: (p: number) => void;
   totalItems?: number;
   itemsPerPage?: number;
   onViewDetails?: (log: AuditLogEntry) => void;
@@ -52,6 +53,7 @@ export function AuditLogTable({
   page, 
   setPage, 
   totalPages,
+  setTotalPages,
   totalItems = 0,
   itemsPerPage = 10,
   onViewDetails
@@ -111,6 +113,12 @@ export function AuditLogTable({
     return result;
   }, [logs, searchTerm, sortField, sortOrder]);
 
+  // Actualizar totalPages cuando cambie el filtrado
+  useEffect(() => {
+    const newTotalPages = Math.max(1, Math.ceil(processedLogs.length / itemsPerPage));
+    setTotalPages(newTotalPages);
+  }, [processedLogs.length, itemsPerPage, setTotalPages]);
+
   const handleSort = (key: 'timestamp' | 'user_id' | 'success') => {
     const newOrder = sortField === key && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortOrder(newOrder);
@@ -154,6 +162,9 @@ export function AuditLogTable({
     
     return 'Desconocido';
   };
+
+  // Aplicar paginación
+  const displayedLogs = processedLogs.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   const startItem = (page - 1) * itemsPerPage + 1;
   const endItem = Math.min(page * itemsPerPage, totalItems || processedLogs.length);
@@ -367,7 +378,7 @@ export function AuditLogTable({
                     </div>
                   </td>
                 </tr>
-              ) : processedLogs.map((log, index) => (
+              ) : displayedLogs.map((log, index) => (
                 <tr 
                   key={index} 
                   className={`transition-colors ${

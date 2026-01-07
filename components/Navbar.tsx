@@ -13,8 +13,8 @@ import { TranslateText } from "@/components/TranslateText";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(true);
-  const [logoUrl, setLogoUrl] = useState<string>("/image/bechapra-logo.png");
-  const defaultLogo = "/image/bechapra-logo.png";
+  const [logoUrl, setLogoUrl] = useState<string>("/image/logo/bausen-logo.png");
+  const defaultLogo = "/image/logo/bausen-logo.png";
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
@@ -33,9 +33,9 @@ export default function Navbar() {
         if (data.url) {
           setLogoUrl(data.url);
         }
-      } catch (e) {
+        } catch (e) {
         console.error('Error fetching logo:', e);
-        setLogoUrl("/image/bechapra-logo.png");
+        setLogoUrl("/image/logo/bausen-logo.png");
       }
     }
     fetchLogo();

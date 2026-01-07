@@ -81,6 +81,8 @@ export default function ConfiguracionDBPage() {
   const [mounted, setMounted] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [refreshCount, setRefreshCount] = useState(0);
+  const [activeTab, setActiveTab] = useState<'metricas' | 'servidor' | 'colecciones'>('metricas');
+  const [collectionsPage, setCollectionsPage] = useState(1);
 
   React.useEffect(() => {
     setMounted(true);
@@ -89,7 +91,27 @@ export default function ConfiguracionDBPage() {
       setTheme(savedTheme);
     }
     setLastRefresh(new Date());
+
+    // Cargar pestaña activa
+    const savedTab = localStorage.getItem('configActiveTab');
+    if (savedTab === 'metricas' || savedTab === 'servidor' || savedTab === 'colecciones') {
+      setActiveTab(savedTab);
+    }
   }, []);
+
+  // Guardar pestaña activa cuando cambie
+  React.useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("configActiveTab", activeTab);
+    }
+  }, [activeTab, mounted]);
+
+  // Resetear página de colecciones cuando se cambie a esa pestaña
+  React.useEffect(() => {
+    if (activeTab === 'colecciones') {
+      setCollectionsPage(1);
+    }
+  }, [activeTab]);
 
   const handleToggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -289,52 +311,112 @@ export default function ConfiguracionDBPage() {
             )}
           </div>
 
-          {/* Tarjetas de métricas */}
+          {/* Pestañas */}
           <div className="mb-8">
-            <DBMetricCards 
-              theme={theme}
-              loading={loadingMetrics}
-              error={!!metricsError}
-              totalSize={metrics?.db?.dataSize || 0}
-              totalDocs={metrics?.db?.objects || 0}
-              connections={metrics?.connections?.current || 0}
-              uptime={metrics?.serverStatus?.uptime || 0}
-              collectionsCount={metrics?.collections?.length || 0}
-              totalIndexSize={metrics?.collections?.reduce((acc, c) => acc + (c.totalIndexSize || 0), 0) || 0}
-              avgDocSize={(metrics?.db?.objects || 0) > 0 ? (metrics?.db?.dataSize || 0) / (metrics?.db?.objects || 1) : 0}
-              version={metrics?.serverStatus?.version || "N/A"}
-            />
-          </div>
-
-          {/* Gráficos */}
-          <div className="mb-8">
-            <DBCharts 
-              theme={theme}
-              collections={metrics?.collections || []}
-              chartColors={chartColors}
-              totalSize={metrics?.db?.dataSize || 0}
-              totalDocs={metrics?.db?.objects || 0}
-            />
-          </div>
-
-          {/* Grid inferior - Info servidor y tabla */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Información del servidor */}
-            <div className="lg:col-span-1">
-              <DBServerInfo
-                theme={theme}
-                loading={loadingMetrics}
-                error={!!metricsError}
-                dbName={metrics?.db?.db || "N/A"}
-                host={metrics?.serverStatus?.host || "localhost"}
-                version={metrics?.serverStatus?.version || "N/A"}
-                uptime={metrics?.serverStatus?.uptime || 0}
-                connections={metrics?.connections?.current || 0}
-              />
+            <div className={`rounded-xl border ${
+              theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex">
+                <button
+                  onClick={() => setActiveTab('metricas')}
+                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
+                    activeTab === 'metricas'
+                      ? theme === 'dark'
+                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : theme === 'dark'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  MÉTRICAS EN TIEMPO REAL
+                </button>
+                <button
+                  onClick={() => setActiveTab('servidor')}
+                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
+                    activeTab === 'servidor'
+                      ? theme === 'dark'
+                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : theme === 'dark'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  PANEL DE CONTROL DEL SERVIDOR
+                </button>
+                <button
+                  onClick={() => setActiveTab('colecciones')}
+                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
+                    activeTab === 'colecciones'
+                      ? theme === 'dark'
+                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : theme === 'dark'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  ANÁLISIS DE COLECCIONES
+                </button>
+              </div>
             </div>
+          </div>
 
-            {/* Tabla de colecciones */}
-            <div className="lg:col-span-2">
+          {/* Contenido de pestañas */}
+          {activeTab === 'metricas' && (
+            <div>
+              {/* Tarjetas de métricas */}
+              <div className="mb-8">
+                <DBMetricCards 
+                  theme={theme}
+                  loading={loadingMetrics}
+                  error={!!metricsError}
+                  totalSize={metrics?.db?.dataSize || 0}
+                  totalDocs={metrics?.db?.objects || 0}
+                  connections={metrics?.connections?.current || 0}
+                  uptime={metrics?.serverStatus?.uptime || 0}
+                  collectionsCount={metrics?.collections?.length || 0}
+                  totalIndexSize={metrics?.collections?.reduce((acc, c) => acc + (c.totalIndexSize || 0), 0) || 0}
+                  avgDocSize={(metrics?.db?.objects || 0) > 0 ? (metrics?.db?.dataSize || 0) / (metrics?.db?.objects || 1) : 0}
+                  version={metrics?.serverStatus?.version || "N/A"}
+                />
+              </div>
+
+              {/* Gráficos */}
+              <div className="mb-8">
+                <DBCharts 
+                  theme={theme}
+                  collections={metrics?.collections || []}
+                  chartColors={chartColors}
+                  totalSize={metrics?.db?.dataSize || 0}
+                  totalDocs={metrics?.db?.objects || 0}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'servidor' && (
+            <div>
+              {/* Información del servidor */}
+              <div className="w-full max-w-7xl mx-auto">
+                <DBServerInfo
+                  theme={theme}
+                  loading={loadingMetrics}
+                  error={!!metricsError}
+                  dbName={metrics?.db?.db || "N/A"}
+                  host={metrics?.serverStatus?.host || "localhost"}
+                  version={metrics?.serverStatus?.version || "N/A"}
+                  uptime={metrics?.serverStatus?.uptime || 0}
+                  connections={metrics?.connections?.current || 0}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'colecciones' && (
+            <div>
+              {/* Tabla de colecciones */}
               <div className={`rounded-2xl overflow-hidden ${
                 theme === "dark" 
                   ? "bg-linear-to-br from-gray-900/80 to-gray-800/80 border-gray-800" 
@@ -466,104 +548,200 @@ export default function ConfiguracionDBPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                        {metrics.collections.map((col, i) => {
-                          const percentage = metrics.db.objects > 0 
-                            ? ((col.count / metrics.db.objects) * 100) 
-                            : 0;
-                          const sizeMB = col.size / 1024 / 1024;
-                          const indexMB = col.totalIndexSize / 1024 / 1024;
-                          const color = chartColors[i % chartColors.length];
+                        {(() => {
+                          const itemsPerPage = 5;
+                          const startIndex = (collectionsPage - 1) * itemsPerPage;
+                          const endIndex = startIndex + itemsPerPage;
+                          const displayedCollections = metrics?.collections?.slice(startIndex, endIndex) || [];
                           
-                          return (
-                            <tr 
-                              key={col.name}
-                              className={`group transition-all duration-200 ${
-                                theme === "dark" 
-                                  ? "hover:bg-gray-800/30" 
-                                  : "hover:bg-blue-50/30"
-                              }`}
-                            >
-                              <td className={`px-6 py-4 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-                                <div className="flex items-center gap-3">
-                                  <div 
-                                    className="w-3 h-3 rounded-full"
-                                    style={{ backgroundColor: color }}
-                                  />
+                          return displayedCollections.map((col, i) => {
+                            const percentage = metrics?.db?.objects > 0 
+                              ? ((col.count / metrics.db.objects) * 100) 
+                              : 0;
+                            const sizeMB = col.size / 1024 / 1024;
+                            const indexMB = col.totalIndexSize / 1024 / 1024;
+                            const color = chartColors[(startIndex + i) % chartColors.length];
+                            
+                            return (
+                              <tr 
+                                key={col.name}
+                                className={`group transition-all duration-200 ${
+                                  theme === "dark" 
+                                    ? "hover:bg-gray-800/30" 
+                                    : "hover:bg-blue-50/30"
+                                }`}
+                              >
+                                <td className={`px-6 py-4 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                                  <div className="flex items-center gap-3">
+                                    <div 
+                                      className="w-3 h-3 rounded-full"
+                                      style={{ backgroundColor: color }}
+                                    />
+                                    <div>
+                                      <div className="font-medium text-sm">{col.name}</div>
+                                      <div className={`text-xs ${
+                                        theme === "dark" ? "text-gray-500" : "text-gray-400"
+                                      }`}>
+                                        {col.avgObjSize ? `${(col.avgObjSize / 1024).toFixed(1)} KB promedio` : 'Sin tamaño promedio'}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className={`px-6 py-4 text-right ${
+                                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                }`}>
+                                  <div className="text-sm font-semibold">
+                                    {col.count.toLocaleString()}
+                                  </div>
+                                </td>
+                                <td className={`px-6 py-4 text-right ${
+                                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                }`}>
                                   <div>
-                                    <div className="font-medium text-sm">{col.name}</div>
+                                    <div className="text-sm font-semibold">
+                                      {sizeMB.toFixed(2)} MB
+                                    </div>
                                     <div className={`text-xs ${
                                       theme === "dark" ? "text-gray-500" : "text-gray-400"
                                     }`}>
-                                      {col.avgObjSize ? `${(col.avgObjSize / 1024).toFixed(1)} KB promedio` : 'Sin tamaño promedio'}
+                                      {(col.storageSize / 1024 / 1024).toFixed(1)} MB almacenamiento
                                     </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className={`px-6 py-4 text-right ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
-                              }`}>
-                                <div className="text-sm font-semibold">
-                                  {col.count.toLocaleString()}
-                                </div>
-                              </td>
-                              <td className={`px-6 py-4 text-right ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
-                              }`}>
-                                <div>
-                                  <div className="text-sm font-semibold">
-                                    {sizeMB.toFixed(2)} MB
-                                  </div>
-                                  <div className={`text-xs ${
-                                    theme === "dark" ? "text-gray-500" : "text-gray-400"
-                                  }`}>
-                                    {(col.storageSize / 1024 / 1024).toFixed(1)} MB almacenamiento
-                                  </div>
-                                </div>
-                              </td>
-                              <td className={`px-6 py-4 text-right ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
-                              }`}>
-                                <div>
-                                  <div className="text-sm font-semibold">
-                                    {indexMB.toFixed(2)} MB
-                                  </div>
-                                  <div className={`text-xs ${
-                                    theme === "dark" ? "text-gray-500" : "text-gray-400"
-                                  }`}>
-                                    {col.totalIndexSize > 0 
-                                      ? `${((indexMB / sizeMB) * 100).toFixed(1)}% del tamaño` 
-                                      : 'Sin índices'
-                                    }
-                                  </div>
-                                </div>
-                              </td>
-                              <td className={`px-6 py-4 text-right ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
-                              }`}>
-                                <div className="flex items-center justify-end gap-3">
-                                  <div className="w-24">
-                                    <div className={`h-2 rounded-full overflow-hidden ${
-                                      theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+                                </td>
+                                <td className={`px-6 py-4 text-right ${
+                                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                }`}>
+                                  <div>
+                                    <div className="text-sm font-semibold">
+                                      {indexMB.toFixed(2)} MB
+                                    </div>
+                                    <div className={`text-xs ${
+                                      theme === "dark" ? "text-gray-500" : "text-gray-400"
                                     }`}>
-                                      <div 
-                                        className="h-full rounded-full"
-                                        style={{ 
-                                          width: `${percentage}%`,
-                                          backgroundColor: color
-                                        }}
-                                      />
+                                      {col.totalIndexSize > 0 
+                                        ? `${((indexMB / sizeMB) * 100).toFixed(1)}% del tamaño` 
+                                        : 'Sin índices'
+                                      }
                                     </div>
                                   </div>
-                                  <div className="text-sm font-semibold w-12 text-left">
-                                    {percentage.toFixed(1)}%
+                                </td>
+                                <td className={`px-6 py-4 text-right ${
+                                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                }`}>
+                                  <div className="flex items-center justify-end gap-3">
+                                    <div className="w-24">
+                                      <div className={`h-2 rounded-full overflow-hidden ${
+                                        theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+                                      }`}>
+                                        <div 
+                                          className="h-full rounded-full"
+                                          style={{ 
+                                            width: `${percentage}%`,
+                                            backgroundColor: color
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="text-sm font-semibold w-12 text-left">
+                                      {percentage.toFixed(1)}%
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
+                                </td>
+                              </tr>
+                            );
+                          });
+                        })()}
                       </tbody>
                     </table>
+
+                    {/* Controles de paginación */}
+                    {(metrics?.collections?.length ?? 0) > 5 && (
+                      <div className={`px-6 py-4 border-t ${theme === "dark" ? "border-gray-800" : "border-blue-100"}`}>
+                        <div className="flex items-center justify-between">
+                          <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                            {(() => {
+                              const itemsPerPage = 5;
+                              const totalItems = metrics?.collections?.length || 0;
+                              const startItem = (collectionsPage - 1) * itemsPerPage + 1;
+                              const endItem = Math.min(collectionsPage * itemsPerPage, totalItems);
+                              return `Mostrando ${startItem}-${endItem} de ${totalItems} colecciones`;
+                            })()}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setCollectionsPage(Math.max(1, collectionsPage - 1))}
+                              disabled={collectionsPage === 1}
+                              className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                                collectionsPage === 1
+                                  ? theme === "dark"
+                                    ? "bg-gray-800 text-gray-600 cursor-not-allowed"
+                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                  : theme === "dark"
+                                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                              }`}
+                            >
+                              Anterior
+                            </button>
+                            
+                            {(() => {
+                              const itemsPerPage = 5;
+                              const totalPages = Math.ceil((metrics?.collections?.length || 0) / itemsPerPage);
+                              const pages = [];
+                              const maxVisiblePages = 5;
+                              let startPage = Math.max(1, collectionsPage - Math.floor(maxVisiblePages / 2));
+                              let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                              
+                              if (endPage - startPage + 1 < maxVisiblePages) {
+                                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                              }
+                              
+                              for (let i = startPage; i <= endPage; i++) {
+                                pages.push(i);
+                              }
+                              
+                              return pages.map(page => (
+                                <button
+                                  key={page}
+                                  onClick={() => setCollectionsPage(page)}
+                                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                                    page === collectionsPage
+                                      ? theme === "dark"
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-blue-500 text-white"
+                                      : theme === "dark"
+                                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                  }`}
+                                >
+                                  {page}
+                                </button>
+                              ));
+                            })()}
+                            
+                            <button
+                              onClick={() => {
+                                const itemsPerPage = 5;
+                                const totalPages = Math.ceil((metrics?.collections?.length || 0) / itemsPerPage);
+                                setCollectionsPage(Math.min(totalPages, collectionsPage + 1));
+                              }}
+                              disabled={collectionsPage === Math.ceil((metrics?.collections?.length || 0) / 5)}
+                              className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                                collectionsPage === Math.ceil((metrics?.collections?.length || 0) / 5)
+                                  ? theme === "dark"
+                                    ? "bg-gray-800 text-gray-600 cursor-not-allowed"
+                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                  : theme === "dark"
+                                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                              }`}
+                            >
+                              Siguiente
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="p-8 text-center">
@@ -590,13 +768,13 @@ export default function ConfiguracionDBPage() {
                 {/* Footer de tabla */}
                 {metrics?.collections?.length && (
                   <div className={`px-6 py-4 border-t ${
-                    theme === "dark" 
-                      ? "border-gray-800 bg-gray-900/30" 
+                    theme === "dark"
+                      ? "border-gray-800 bg-gray-900/30"
                       : "border-blue-100 bg-blue-50/30"
                   }`}>
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                       <div className={theme === "dark" ? "text-gray-400" : "text-gray-500"}>
-                        Mostrando {metrics.collections.length} colecciones
+                        Mostrando {metrics?.collections?.length || 0} colecciones
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
@@ -614,11 +792,11 @@ export default function ConfiguracionDBPage() {
                           </div>
                         </div>
                         <div className={`px-2 py-1 rounded ${
-                          theme === "dark" 
-                            ? "bg-gray-800 text-gray-300" 
+                          theme === "dark"
+                            ? "bg-gray-800 text-gray-300"
                             : "bg-gray-100 text-gray-600"
                         }`}>
-                          Tamaño total: {(metrics.db.dataSize / 1024 / 1024).toFixed(2)} MB
+                          Tamaño total: {((metrics?.db?.dataSize || 0) / 1024 / 1024).toFixed(2)} MB
                         </div>
                       </div>
                     </div>
@@ -626,7 +804,7 @@ export default function ConfiguracionDBPage() {
                 )}
               </div>
             </div>
-          </div>
+          )}
 
           {/* Footer del dashboard */}
           <div className={`mt-8 p-5 rounded-xl ${

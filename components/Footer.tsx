@@ -38,7 +38,8 @@ const socialLinks = [
 ];
 
 function useLogoUrl() {
-  const [logoUrl, setLogoUrl] = useState<string>('/image/bechapra-logo.png');
+  const defaultLogo = '/image/logo/bausen-logo.png';
+  const [logoUrl, setLogoUrl] = useState<string>(defaultLogo);
 
   useEffect(() => {
     async function fetchLogo() {
@@ -46,11 +47,15 @@ function useLogoUrl() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
         const res = await fetch(`${apiUrl}/api/logo`);
         const data = await res.json();
-        if (data.url) {
+        // Prefer backend value only if it looks like the new brand; otherwise keep local default
+        if (data && data.url && typeof data.url === 'string' && data.url.toLowerCase().includes('bausen')) {
           setLogoUrl(data.url);
+        } else {
+          setLogoUrl(defaultLogo);
         }
       } catch (e) {
         console.warn('No se pudo cargar el logo dinámico, usando el predeterminado');
+        setLogoUrl(defaultLogo);
       }
     }
     fetchLogo();
@@ -61,16 +66,33 @@ function useLogoUrl() {
 
 function LogoImage() {
   const logoUrl = useLogoUrl();
-  
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Detect theme: prefer stored preference, fallback to document class
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (stored === 'dark') setIsDark(true);
+    else if (stored === 'light') setIsDark(false);
+    else if (typeof document !== 'undefined') setIsDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
+  const imgStyle: React.CSSProperties = isDark
+    ? { mixBlendMode: 'screen', opacity: 0.95 } // adapt for dark backgrounds
+    : { mixBlendMode: 'multiply', opacity: 0.95 }; // tint toward footer color on light backgrounds
+
   return (
-    <Image
-      src={logoUrl}
-      alt="Bechapra"
-      width={120}
-      height={32}
-      className="h-8 w-auto block"
-      priority
-    />
+    <div className="w-28 h-auto flex items-center" style={{ background: 'transparent' }}>
+      <Image
+        src={logoUrl}
+        alt="Bechapra"
+        width={140}
+        height={40}
+        style={imgStyle}
+        className="h-8 w-auto block"
+        onError={(e) => { (e.target as HTMLImageElement).src = '/image/logo/bausen-logo.png'; }}
+        priority
+      />
+    </div>
   );
 }
 
@@ -173,7 +195,7 @@ export default function Footer() {
             <div className="lg:col-span-4 flex flex-col">
               <Link href="/" className="inline-block mb-6">
                 <Image
-                  src="/image/logo/Logo_1x1_BlancoSinFondo@2x.png"
+                  src="/image/logo/bausen-logo.png"
                   alt="Bechapra Logo"
                   width={80}
                   height={80}

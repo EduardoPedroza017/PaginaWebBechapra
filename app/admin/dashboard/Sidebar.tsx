@@ -253,7 +253,7 @@ export function Sidebar({
                   : 'bg-slate-100'
               }`}>
                 <NextImage
-                  src="/image/LOGO/logo.png"
+                  src="/image/LOGO/Bausen.png"
                   alt="Logo Bechapra"
                   fill
                   sizes="40px"

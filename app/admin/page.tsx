@@ -181,7 +181,7 @@ export default function AdminLogin() {
               </div>
               
               <Image
-                src="/image/logo/logo.png"
+                src="/image/logo/Bausen.png"
                 alt="Logo"
                 width={48}
                 height={48}

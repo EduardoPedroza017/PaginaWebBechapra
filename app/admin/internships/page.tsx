@@ -64,7 +64,7 @@ interface ApiInternship {
 
 // Interface for API response structure
 interface ApiResponse {
-  internships: ApiInternship[];
+  items: ApiInternship[];
   success?: boolean;
   data?: any;
   total?: number;
@@ -144,11 +144,12 @@ const InternshipsPage = () => {
       const data: ApiResponse = await res.json();
       console.log("Datos obtenidos del backend:", data);
 
-      if (!data.internships || !Array.isArray(data.internships)) {
+      const internshipsData = data.items || data.internships || [];
+      if (!Array.isArray(internshipsData)) {
         throw new Error("Formato de respuesta inválido");
       }
 
-      const mappedInternships: Internship[] = data.internships.map((internship: ApiInternship) => ({
+      const mappedInternships: Internship[] = internshipsData.map((internship: ApiInternship) => ({
         _id: internship._id || "",
         title: internship.titulo || "",
         description: internship.descripcion || "",

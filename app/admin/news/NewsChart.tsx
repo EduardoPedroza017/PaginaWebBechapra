@@ -24,8 +24,12 @@ interface Props {
 export default function NewsChart({ data, theme }: Props) {
   const grouped = useMemo(() => {
     const counts: Record<string, number> = {};
+    if (!Array.isArray(data)) return counts;
     data.forEach(n => {
-      const d = n.date.slice(0, 10);
+      const raw = (n as any).date || (n as any).published_date || (n as any).publishedDate || (n as any).createdAt;
+      if (!raw) return;
+      const s = String(raw);
+      const d = s.slice(0, 10);
       counts[d] = (counts[d] || 0) + 1;
     });
     return counts;

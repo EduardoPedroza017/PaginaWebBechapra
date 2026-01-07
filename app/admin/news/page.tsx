@@ -30,6 +30,7 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 		const [total, setTotal] = useState(0);
 		const [search, setSearch] = useState("");
 		const pageSize = 12;
+		const [activeTab, setActiveTab] = useState<'list' | 'create' | 'stats'>('list');
 
 		useEffect(() => {
 			setMounted(true);
@@ -52,10 +53,35 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 				if (searchParam) url.searchParams.append("search", searchParam);
 				const res = await fetch(url.toString());
 				const data = await res.json();
-				setNews(data.news || []);
-				setTotalPages(data.totalPages || 1);
-				setTotal(data.total || 0);
-				setPage(data.page || 1);
+				// Support two backend shapes:
+				// - legacy admin route: { ok: true, news: [...] }
+				// - paginated API: { items: [...], total, total_pages, page, per_page }
+				const normalize = (arr: any[]) => arr.map(it => ({
+					// Map backend fields to frontend `NewsItem` shape expectations
+					...it,
+					date: it.date || it.published_date || it.publishedDate || it.createdAt || it.date || undefined,
+					title: it.title || it.name || '',
+					subtitle: it.subtitle || '',
+					description: it.description || it.content || it.excerpt || ''
+				}));
+
+				if (Array.isArray(data.news)) {
+					setNews(normalize(data.news || []));
+					setTotal((data.news && data.news.length) || 0);
+					setTotalPages(1);
+					setPage(1);
+				} else if (Array.isArray(data.items)) {
+					setNews(normalize(data.items || []));
+					setTotal(data.total || 0);
+					setTotalPages(data.total_pages || data.totalPages || 1);
+					setPage(data.page || 1);
+				} else {
+					// Fallback: try common keys
+					setNews(normalize(data.news || data.items || []));
+					setTotal(data.total || (data.news && data.news.length) || 0);
+					setTotalPages(data.total_pages || data.totalPages || 1);
+					setPage(data.page || 1);
+				}
 			} catch (error) {
 				console.error("Error fetching news:", error);
 			} finally {
@@ -179,30 +205,76 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 						</div>
 
 						{/* Stats */}
-						<div className="mb-6">
-							<NewsStats news={news} filtered={news} theme={theme} />
-						</div>
 
-						{/* Form */}
-						<div className="mb-6">
-							<NewsForm onCreated={handleCreated} theme={theme} />
-						</div>
+			{/* Tabs: Listado | Crear | Estadísticas | Filtros */}
+			<div className="mb-6">
+				<div className="rounded-xl border p-2 flex gap-2 bg-transparent">
+					{[
+						{ id: 'list', label: 'Listado' },
+						{ id: 'create', label: 'Crear' },
+						{ id: 'stats', label: 'Estadísticas' }
+					].map(tab => (
+						<button
+							key={tab.id}
+							onClick={() => setActiveTab(tab.id as any)}
+							className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === tab.id ? 'bg-blue-600 text-white' : theme === 'dark' ? 'text-gray-300 bg-gray-800/30' : 'text-gray-600 bg-white'}`}
+						>
+							{tab.label}
+						</button>
+					))}
+				</div>
+			</div>
 
-						{/* Filtros y Gráfico */}
-						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-							<NewsFilter news={news} onFilter={handleFilter} theme={theme} />
-							{/* Si tienes un estado filtered, úsalo aquí. Si no, pásale news. */}
-							<NewsChart data={news} theme={theme} />
-						</div>
+			{/* Tab content */}
+			{activeTab === 'stats' && (
+				<div className="mb-6">
+					<NewsStats news={news} filtered={news} theme={theme} />
+					<div className="mt-6">
+						<NewsChart data={news} theme={theme} />
+					</div>
+				</div>
+			)}
 
-						{/* Cards de noticias */}
-						<NewsCardList
-							news={news}
-							theme={theme}
-							onEdit={handleEdit}
-							onDelete={handleDeleteClick}
-							onPreview={setPreviewing}
-						/>
+			{activeTab === 'create' && (
+				<div className="mb-6">
+					<NewsForm onCreated={handleCreated} theme={theme} />
+				</div>
+			)}
+
+
+
+			{activeTab === 'list' && (
+				<>
+					{/* Filtros (dentro del listado) */}
+					<div className="mb-4">
+						<NewsFilter news={news} onFilter={handleFilter} theme={theme} />
+					</div>
+					{/* Cards de noticias */}
+					<NewsCardList
+						news={news}
+						theme={theme}
+						onEdit={handleEdit}
+						onDelete={handleDeleteClick}
+						onPreview={setPreviewing}
+					/>
+					{/* Paginador */}
+					{totalPages > 1 && (
+						<div className="flex justify-center mt-8 gap-2">
+							<button
+								onClick={() => { if (page > 1) setPage(page - 1); }}
+								disabled={page === 1}
+								className={`px-3 py-1 rounded-lg text-sm font-medium ${page === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}>
+								Anterior</button>
+							<span className="px-3 py-1 text-sm font-medium text-gray-500">Página {page} de {totalPages} ({total} noticias)</span>
+							<button
+								onClick={() => { if (page < totalPages) setPage(page + 1); }}
+								disabled={page === totalPages}
+								className={`px-3 py-1 rounded-lg text-sm font-medium ${page === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}>
+								Siguiente</button>
+						</div>
+					)}
+				</>
+			)}
 						{/* Paginador */}
 						{totalPages > 1 && (
 							<div className="flex justify-center mt-8 gap-2">
