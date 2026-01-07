@@ -33,7 +33,11 @@ const defaultLocation = {
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=19.4326,-99.1332"
 };
 
-export function CompanyLocation() {
+interface CompanyLocationProps {
+  variant?: 'footer' | 'default';
+}
+
+export function CompanyLocation({ variant = 'default' }: CompanyLocationProps) {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,38 +70,28 @@ export function CompanyLocation() {
 
   // Si no hay sucursales activas, mostrar ubicación por defecto
   if (branches.length === 0) {
+    const iconClass = variant === 'footer' ? 'text-white' : 'text-blue-600';
+    const textClass = variant === 'footer' ? 'text-white/80' : 'text-gray-700';
+
+    // For footer variant we only render the address and maps link to avoid duplicating
+    // phone/email (those are rendered separately in the Footer component).
     return (
-      <div className="space-y-3">
-        <div className="flex items-start gap-3">
-          <MapPin size={20} className="text-blue-600 flex-shrink-0 mt-1" />
-          <div>
-            <p className="font-semibold text-gray-900">{defaultLocation.address}</p>
-            <p className="text-gray-600">
-              {defaultLocation.city}, {defaultLocation.state} {defaultLocation.zipCode}
-            </p>
-            <p className="text-gray-600">{defaultLocation.country}</p>
-          </div>
+      <div className="space-y-2">
+        <div>
+          <p className={`font-semibold ${variant === 'footer' ? 'text-white' : 'text-gray-900'}`}>{defaultLocation.address}</p>
+          <p className={`${variant === 'footer' ? 'text-white/80' : 'text-gray-600'}`}>
+            {defaultLocation.city}, {defaultLocation.state} {defaultLocation.zipCode}
+          </p>
+          <p className={`${variant === 'footer' ? 'text-white/80' : 'text-gray-600'}`}>{defaultLocation.country}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Phone size={20} className="text-blue-600 flex-shrink-0" />
-          <a href={`tel:${defaultLocation.phone}`} className="text-gray-700 hover:text-blue-600 transition-colors">
-            {defaultLocation.phone}
-          </a>
-        </div>
-        <div className="flex items-center gap-3">
-          <Mail size={20} className="text-blue-600 flex-shrink-0" />
-          <a href={`mailto:${defaultLocation.email}`} className="text-gray-700 hover:text-blue-600 transition-colors">
-            {defaultLocation.email}
-          </a>
-        </div>
-        <div className="pt-2">
+        <div className="pt-1">
           <a
             href={defaultLocation.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+            className={`${variant === 'footer' ? 'text-blue-300 dark:text-blue-400' : 'text-blue-600'} hover:${variant === 'footer' ? 'text-white' : 'text-blue-700'} font-semibold transition-colors inline-flex items-center gap-2 text-sm`}
           >
-            <ExternalLink size={18} />
+            <ExternalLink size={16} />
             <TranslateText text="Ver en Google Maps" />
           </a>
         </div>
@@ -109,51 +103,23 @@ export function CompanyLocation() {
   if (branches.length === 1) {
     const branch = branches[0];
     return (
-      <div className="space-y-3">
-        <div className="flex items-start gap-3">
-          <MapPin size={20} className="text-blue-600 flex-shrink-0 mt-1" />
-          <div>
-            <p className="font-semibold text-gray-900">{branch.name}</p>
-            <p className="text-gray-600">{branch.address}</p>
-            {branch.description && (
-              <p className="text-gray-500 text-sm">{branch.description}</p>
-            )}
-          </div>
+      <div className="space-y-2">
+        <div>
+          <p className={`font-semibold ${variant === 'footer' ? 'text-white' : 'text-gray-900'}`}>{branch.name}</p>
+          <p className={`${variant === 'footer' ? 'text-white/80' : 'text-gray-600'}`}>{branch.address}</p>
+          {branch.description && (
+            <p className={`${variant === 'footer' ? 'text-white/80' : 'text-gray-500'} text-sm`}>{branch.description}</p>
+          )}
         </div>
-
-        {branch.contact?.phone && (
-          <div className="flex items-center gap-3">
-            <Phone size={20} className="text-blue-600 flex-shrink-0" />
-            <a
-              href={`tel:${branch.contact.phone}`}
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-            >
-              {branch.contact.phone}
-            </a>
-          </div>
-        )}
-
-        {branch.contact?.email && (
-          <div className="flex items-center gap-3">
-            <Mail size={20} className="text-blue-600 flex-shrink-0" />
-            <a
-              href={`mailto:${branch.contact.email}`}
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-            >
-              {branch.contact.email}
-            </a>
-          </div>
-        )}
-
         {branch.locationUrl && (
-          <div className="pt-2">
+          <div className="pt-1">
             <a
               href={branch.locationUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+              className={`${variant === 'footer' ? 'text-blue-300 dark:text-blue-400' : 'text-blue-600'} hover:${variant === 'footer' ? 'text-white' : 'text-blue-700'} font-semibold transition-colors inline-flex items-center gap-2 text-sm`}
             >
-              <ExternalLink size={18} />
+              <ExternalLink size={16} />
               <TranslateText text="Ver en Google Maps" />
             </a>
           </div>
@@ -163,21 +129,24 @@ export function CompanyLocation() {
   }
 
   // Si hay múltiples sucursales, mostrar lista
+  const iconClass = variant === 'footer' ? 'text-white' : 'text-blue-600';
+  const textClass = variant === 'footer' ? 'text-white/80' : 'text-gray-700';
+
   return (
     <div className="space-y-4">
       {branches.map((branch) => (
         <div key={branch.id} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
           <div className="flex items-start gap-3">
-            <Building2 size={20} className="text-blue-600 flex-shrink-0 mt-1" />
+            <Building2 size={20} className={`${iconClass} flex-shrink-0 mt-1`} />
             <div className="flex-1">
               <p className="font-semibold text-gray-900">{branch.name}</p>
-              <p className="text-gray-600 text-sm">{branch.address}</p>
+              <p className={`${textClass} text-sm`}>{branch.address}</p>
               
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm">
                 {branch.contact?.phone && (
                   <a
                     href={`tel:${branch.contact.phone}`}
-                    className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors"
+                    className={`flex items-center gap-1 ${textClass} hover:${variant === 'footer' ? 'text-white' : 'text-blue-600'} transition-colors`}
                   >
                     <Phone size={14} />
                     {branch.contact.phone}
@@ -188,7 +157,7 @@ export function CompanyLocation() {
                     href={branch.locationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors"
+                    className={`flex items-center gap-1 ${variant === 'footer' ? 'text-blue-300 dark:text-blue-400' : 'text-blue-600'} hover:${variant === 'footer' ? 'text-white' : 'text-blue-700'} transition-colors`}
                   >
                     <ExternalLink size={14} />
                     <TranslateText text="Mapa" />

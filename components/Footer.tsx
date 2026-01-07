@@ -231,14 +231,9 @@ export default function Footer() {
                   <TranslateText text="CONTACTO" />
                 </h3>
                 <div className="space-y-4">
-                  {/* Ubicación */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-white/10 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="text-white/90 dark:text-gray-300 text-sm">
-                      <CompanyLocation />
-                    </div>
+                  {/* Ubicación (CompanyLocation renderiza su propio contenido) */}
+                  <div className="text-white/90 dark:text-gray-300 text-sm">
+                    <CompanyLocation variant="footer" />
                   </div>
                   
                   {/* Teléfono */}
@@ -246,11 +241,11 @@ export default function Footer() {
                     <div className="w-9 h-9 rounded-lg bg-white/10 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
                       <Phone className="w-4 h-4 text-white" />
                     </div>
-                    <div>
-                      <p className="text-white/90 dark:text-gray-300 text-sm font-medium mb-1">Teléfono</p>
-                      <a href="tel:+65655245678" className="text-white/80 dark:text-gray-400 hover:text-white dark:hover:text-white text-sm transition-colors">
-                        +65 65 524 5678
-                      </a>
+                      <div>
+                        <p className="text-white font-medium text-sm mb-1">Teléfono</p>
+                        <a href="tel:+65655245678" className="text-white/80 hover:text-white transition-colors">
+                          +65 65 524 5678
+                        </a>
                     </div>
                   </div>
                   
@@ -259,11 +254,11 @@ export default function Footer() {
                     <div className="w-9 h-9 rounded-lg bg-white/10 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
                       <Mail className="w-4 h-4 text-white" />
                     </div>
-                    <div>
-                      <p className="text-white/90 dark:text-gray-300 text-sm font-medium mb-1">Email</p>
-                      <a href="mailto:contact@bechapra.com" className="text-white/80 dark:text-gray-400 hover:text-white dark:hover:text-white text-sm transition-colors break-all">
-                        contact@bechapra.com
-                      </a>
+                      <div>
+                        <p className="text-white font-medium text-sm mb-1">Email</p>
+                        <a href="mailto:contact@bechapra.com" className="text-white/80 hover:text-white transition-colors break-all">
+                          contact@bechapra.com
+                        </a>
                     </div>
                   </div>
                   
