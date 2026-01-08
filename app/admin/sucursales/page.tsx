@@ -22,7 +22,7 @@ export default function SucursalesPage() {
   const [deleting, setDeleting] = useState<Branch | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState<string | null>(null);
-  const [showOnlyActive, setShowOnlyActive] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'inactive'>('all');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | null; visible: boolean }>({ message: '', type: null, visible: false });
   const toastTimerRef = { current: null as number | null };
 
@@ -42,14 +42,16 @@ export default function SucursalesPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/branches`, { credentials: 'include' });
       const data = await res.json();
-      // El backend devuelve directamente el array de branches
-      if (Array.isArray(data)) {
-        setBranches(data);
-      } else if (data.data) {
-        setBranches(data.data);
+
+      if (data.items && Array.isArray(data.items)) {
+        setBranches(data.items);
+      } else {
+        console.error('Unexpected response format:', data);
+        setBranches([]);
       }
     } catch (error) {
-      console.error("Error fetching branches:", error);
+      console.error('Error fetching branches:', error);
+      setBranches([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -169,6 +171,19 @@ export default function SucursalesPage() {
   const activeCount = branches.filter(b => b.isActive).length;
   const inactiveCount = branches.filter(b => !b.isActive).length;
 
+  const getFilteredBranches = () => {
+    switch (activeTab) {
+      case 'active':
+        return branches.filter(b => b.isActive);
+      case 'inactive':
+        return branches.filter(b => !b.isActive);
+      default:
+        return branches;
+    }
+  };
+
+  const filteredBranches = getFilteredBranches();
+
   return (
     <div className={`flex min-h-screen ${
       theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-blue-50 to-indigo-100'
@@ -212,13 +227,7 @@ export default function SucursalesPage() {
                   <Plus size={20} />
                   <TranslateText text="Nueva Sucursal" />
                 </button>
-                <button
-                  onClick={() => setShowOnlyActive(s => !s)}
-                  className={`ml-2 px-3 py-2 rounded-xl transition-all ${showOnlyActive ? 'bg-blue-600 text-white' : theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700 shadow-sm'}`}
-                  title={showOnlyActive ? 'Mostrar todas' : 'Mostrar sólo activas'}
-                >
-                  {showOnlyActive ? 'Activas' : 'Todas'}
-                </button>
+
                 <button
                   onClick={() => fetchBranches(true)}
                   disabled={refreshing}
@@ -267,6 +276,49 @@ export default function SucursalesPage() {
                 {inactiveCount}
               </p>
             </div>
+          </div>
+
+          {/* Tabs */}
+          <div className={`flex gap-1 p-1 rounded-xl mb-6 ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'all'
+                ? theme === 'dark'
+                  ? 'bg-emerald-600 text-white shadow-lg'
+                  : 'bg-white text-gray-900 shadow-sm'
+                : theme === 'dark'
+                  ? 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+              }`}
+            >
+              <TranslateText text="Todas" /> ({branches.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'active'
+                ? theme === 'dark'
+                  ? 'bg-emerald-600 text-white shadow-lg'
+                  : 'bg-white text-gray-900 shadow-sm'
+                : theme === 'dark'
+                  ? 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+              }`}
+            >
+              <TranslateText text="Activas" /> ({activeCount})
+            </button>
+            <button
+              onClick={() => setActiveTab('inactive')}
+              className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'inactive'
+                ? theme === 'dark'
+                  ? 'bg-emerald-600 text-white shadow-lg'
+                  : 'bg-white text-gray-900 shadow-sm'
+                : theme === 'dark'
+                  ? 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+              }`}
+            >
+              <TranslateText text="Desactivadas" /> ({inactiveCount})
+            </button>
           </div>
 
           {/* Form */}
@@ -319,7 +371,14 @@ export default function SucursalesPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              { (showOnlyActive ? branches.filter(b => b.isActive) : branches).map((branch) => (
+              {filteredBranches.length === 0 ? (
+                <div className={`col-span-full text-center py-12 rounded-xl ${theme === 'dark' ? 'bg-gray-800/50 border border-gray-700' : 'bg-white shadow-sm'}`}>
+                  <Building2 className={`w-12 h-12 mx-auto mb-3 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-300'}`} />
+                  <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {activeTab === 'active' ? 'No hay sucursales activas' : activeTab === 'inactive' ? 'No hay sucursales desactivadas' : 'No hay sucursales'}
+                  </p>
+                </div>
+              ) : filteredBranches.map((branch) => (
                 <div
                   key={branch.id}
                   className={`rounded-xl overflow-hidden transition-all duration-300 ${
@@ -454,7 +513,7 @@ export default function SucursalesPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))})
             </div>
           )}
 

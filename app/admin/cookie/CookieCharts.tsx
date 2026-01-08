@@ -33,9 +33,10 @@ interface CookieChartsProps {
   data: CookieConsent[];
   theme?: 'light' | 'dark';
   className?: string;
+  activeChart?: 'distribution' | 'dailyActivity' | 'trend' | 'all';
 }
 
-export default function CookieCharts({ data, theme = 'dark', className }: CookieChartsProps) {
+export default function CookieCharts({ data, theme = 'dark', className, activeChart = 'all' }: CookieChartsProps) {
   const accepted = data.filter(d => d.accepted).length;
   const rejected = data.filter(d => !d.accepted).length;
   const total = data.length;
@@ -327,9 +328,20 @@ export default function CookieCharts({ data, theme = 'dark', className }: Cookie
 
   const acceptanceRate = total > 0 ? ((accepted / total) * 100).toFixed(1) : '0';
 
+  // Renderizar gráfica individual o todas
+  const showDistribution = activeChart === 'all' || activeChart === 'distribution';
+  const showDailyActivity = activeChart === 'all' || activeChart === 'dailyActivity';
+  const showTrend = activeChart === 'all' || activeChart === 'trend';
+
+  // Determinar clases de grid según qué gráficas se muestran
+  const gridClasses = activeChart === 'all' 
+    ? `grid grid-cols-1 lg:grid-cols-3 gap-6 ${className}`
+    : `${className}`;
+
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${className}`}>
-      {/* Gráfico de Dona - Card mejorado */}
+    <div className={gridClasses}>
+      {/* Gráfico de Dona - Distribución */}
+      {showDistribution && (
       <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
           ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
@@ -401,8 +413,10 @@ export default function CookieCharts({ data, theme = 'dark', className }: Cookie
           </div>
         </div>
       </div>
+      )}
 
-      {/* Gráfico de Barras - Card mejorado */}
+      {/* Gráfico de Barras - Actividad Diaria */}
+      {showDailyActivity && (
       <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
           ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
@@ -441,8 +455,10 @@ export default function CookieCharts({ data, theme = 'dark', className }: Cookie
           </div>
         </div>
       </div>
+      )}
 
-      {/* Gráfico de Línea - Card mejorado */}
+      {/* Gráfico de Línea - Tendencia */}
+      {showTrend && (
       <div className={`group rounded-2xl border transition-all duration-500 hover:scale-[1.01] relative overflow-hidden ${
         theme === 'dark' 
           ? "bg-linear-to-br from-gray-900/90 via-gray-800/30 to-gray-900/90 border-gray-700 shadow-xl hover:shadow-gray-700/20 hover:border-gray-600" 
@@ -473,6 +489,7 @@ export default function CookieCharts({ data, theme = 'dark', className }: Cookie
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

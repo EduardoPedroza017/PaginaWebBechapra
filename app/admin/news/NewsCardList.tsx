@@ -11,9 +11,10 @@ interface NewsCardListProps {
   onEdit: (item: NewsItem) => void;
   onDelete: (item: NewsItem) => void;
   onPreview: (item: NewsItem) => void;
+  onToggleStatus: (item: NewsItem) => void;
 }
 
-export function NewsCardList({ news, theme, onEdit, onDelete, onPreview }: NewsCardListProps) {
+export function NewsCardList({ news, theme, onEdit, onDelete, onPreview, onToggleStatus }: NewsCardListProps) {
   if (news.length === 0) {
     return (
       <div className="text-center py-16">
@@ -54,6 +55,34 @@ export function NewsCardList({ news, theme, onEdit, onDelete, onPreview }: NewsC
             <p className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>{item.date ? new Date(item.date).toLocaleString() : ""}</p>
             <div className="flex-1">
               <p className={`text-sm line-clamp-3 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>{item.description}</p>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                item.status === 'active'
+                  ? theme === 'dark'
+                    ? 'bg-green-600/20 text-green-400'
+                    : 'bg-green-100 text-green-700'
+                  : theme === 'dark'
+                    ? 'bg-red-600/20 text-red-400'
+                    : 'bg-red-100 text-red-700'
+              }`}>
+                {item.status === 'active' ? 'Activo' : 'Inactivo'}
+              </span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={item.status === 'active'}
+                  onChange={() => onToggleStatus(item)}
+                  className="sr-only peer"
+                />
+                <div className={`w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 ${
+                  item.status === 'active' ? 'peer-checked:bg-green-500' : 'peer-checked:bg-red-500'
+                }`}></div>
+                <span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></span>
+                <span className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  {item.status === 'active' ? 'Activo' : 'Inactivo'}
+                </span>
+              </label>
             </div>
             <div className="flex gap-2 mt-2">
               <button

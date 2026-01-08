@@ -5,6 +5,8 @@ import { Search, X, Filter } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 export interface NewsItem {
+  _id?: string;
+  slug?: string;
   title: string;
   subtitle: string;
   description: string;
@@ -15,6 +17,7 @@ export interface NewsItem {
   featured?: boolean;
   altText?: string;
   author?: string;
+  status: 'active' | 'inactive';
 }
 
 interface Props {

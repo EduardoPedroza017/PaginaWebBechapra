@@ -16,8 +16,8 @@ export const ServiceCard: React.FC<Props> = ({ service: s, onEdit, onDelete, onT
   const cleanSlug = String(slug).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
   return (
-    <article className={`rounded-xl overflow-hidden transition-shadow duration-200 bg-white dark:bg-gray-800 border ${!s.active ? 'opacity-60' : ''} h-full flex flex-col shadow-sm hover:shadow-md`}>
-      <div className="h-44 sm:h-48 relative overflow-hidden bg-gray-100">
+    <article className={`rounded-xl overflow-hidden transition-shadow duration-200 bg-white dark:bg-gray-800 border ${!s.active ? 'opacity-60' : ''} h-full flex flex-col shadow-md hover:shadow-lg`}>
+      <div className="h-44 sm:h-48 relative overflow-hidden bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
         {s.image ? (
           <img src={s.image} alt={s.name} className="w-full h-full object-cover" />
         ) : (
@@ -25,7 +25,7 @@ export const ServiceCard: React.FC<Props> = ({ service: s, onEdit, onDelete, onT
         )}
         {!s.active && (
           <div className="absolute top-3 left-3">
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white">Inactiva</span>
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white">Inactiva</span>
           </div>
         )}
       </div>
@@ -34,11 +34,11 @@ export const ServiceCard: React.FC<Props> = ({ service: s, onEdit, onDelete, onT
         <div>
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-3">
-              {s.icon && <img src={s.icon.startsWith('/uploads/') ? `http://localhost:5000${s.icon}` : s.icon} alt="icon" className="w-10 h-10 object-contain rounded-md" /> }
-              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{s.name}</h3>
+              {s.icon && <img src={s.icon.startsWith('/uploads/') ? `http://localhost:5000${s.icon}` : s.icon} alt="icon" className="w-10 h-10 object-contain rounded-md shadow-sm" /> }
+              <h3 className="font-semibold text-lg text-gray-900 dark:text-white truncate">{s.name}</h3>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => onToggleActive(s)} title={s.active ? 'Desactivar' : 'Activar'} className="p-1 rounded">
+              <button onClick={() => onToggleActive(s)} title={s.active ? 'Desactivar' : 'Activar'} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
                 {toggleLoading === s.id ? (
                   <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : s.active ? (
@@ -57,11 +57,11 @@ export const ServiceCard: React.FC<Props> = ({ service: s, onEdit, onDelete, onT
         </div>
 
         <div className="flex items-center gap-2 pt-3 border-t border-gray-200 dark:border-gray-700 mt-4">
-          <Button size="sm" onClick={() => onEdit(s)}>Editar</Button>
+          <Button size="sm" onClick={() => onEdit(s)} className="bg-blue-500 hover:bg-blue-600 text-white">Editar</Button>
           <a href={`/servicios/${encodeURIComponent(cleanSlug)}`} target="_blank" rel="noreferrer" className="inline-block">
             <Button size="sm" variant="secondary">Ver página</Button>
           </a>
-          <Button size="sm" variant="danger" onClick={() => onDelete(s)}>Eliminar</Button>
+          <Button size="sm" variant="danger" onClick={() => onDelete(s)} className="bg-red-500 hover:bg-red-600 text-white">Eliminar</Button>
         </div>
       </div>
     </article>

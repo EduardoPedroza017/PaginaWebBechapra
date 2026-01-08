@@ -141,6 +141,20 @@ export default function AdminLogin() {
     );
   }
 
+  const handleToggleActive = async (branchId: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/admin/branches/${branchId}/activate`, {
+        method: 'PATCH',
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to activate branch: ${response.statusText}`);
+      }
+      console.log('Branch activated successfully');
+    } catch (error) {
+      console.error('Error activating branch:', error);
+    }
+  };
+
   return (
     <main className="relative min-h-screen w-full flex items-center justify-center p-4">
       {/* Fondo con imagen */}

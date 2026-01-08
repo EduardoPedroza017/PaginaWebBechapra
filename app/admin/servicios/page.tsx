@@ -204,28 +204,49 @@ export default function ServiciosAdminPage() {
         <Header theme="dark" onLogout={() => {}} onToggleTheme={() => {}} />
         <main className="max-w-4xl mx-auto py-10 px-4">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">
-              <TranslateText text="Servicios" />
-            </h1>
+            <div>
+              <h1 className="text-3xl font-extrabold text-gradient bg-linear-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
+                <TranslateText text="Servicios" />
+              </h1>
+              <p className="text-sm text-gray-400">Administra los servicios disponibles en tu plataforma</p>
+            </div>
             <div className="flex items-center gap-3">
-                <div className="w-72">
-                <SearchBar value={query} onChange={(q: string) => {
-                  // update query and debounce the network call to avoid loops and excessive requests
-                  setQuery(q);
-                  if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
-                  const t = window.setTimeout(() => { fetchServices(); setSearchDebounceTimer(null); }, 300);
-                  setSearchDebounceTimer(t as unknown as number);
-                }} />
+              <div className="relative w-72">
+                <div className="rounded-lg border border-gray-600 bg-gray-800 text-white pl-10 pr-4 py-2">
+                  <SearchBar
+                    value={query}
+                    onChange={(q: string) => {
+                      setQuery(q);
+                      if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
+                      const t = window.setTimeout(() => {
+                        fetchServices();
+                        setSearchDebounceTimer(null);
+                      }, 300);
+                      setSearchDebounceTimer(t as unknown as number);
+                    }}
+                  />
+                  <span className="absolute left-3 top-2.5 text-gray-400">
+                    <i className="fas fa-search"></i>
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <label className="text-sm mr-2">Activas</label>
                 <input type="checkbox" checked={onlyActive} onChange={(e) => { setOnlyActive(e.target.checked); fetchServices(); }} />
               </div>
-              <Button onClick={handleNew}>
+              <Button
+                onClick={handleNew}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200"
+              >
                 <TranslateText text="Nuevo Servicio" />
               </Button>
             </div>
           </div>
+          {loading && (
+            <div className="flex justify-center items-center mt-10">
+              <div className="loader"></div>
+            </div>
+          )}
           <ServiceCardList
             services={services}
             loading={loading}
@@ -234,10 +255,16 @@ export default function ServiciosAdminPage() {
             onToggleActive={handleToggleActive}
             toggleLoading={toggleLoading}
           />
+          {/* Mensaje amigable cuando no hay servicios */}
+          {!loading && services.length === 0 && (
+            <div className="text-center text-gray-500 mt-10">
+              <p>No hay servicios disponibles. ¡Crea uno nuevo!</p>
+            </div>
+          )}
           {/* Toast */}
           {toast.visible && (
-            <div className="fixed bottom-6 right-6 z-50">
-              <div className="rounded-lg p-3 shadow-lg max-w-xs bg-red-600 text-white">
+            <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+              <div className="rounded-lg p-3 shadow-lg max-w-xs bg-blue-600 text-white">
                 <div className="text-sm font-medium">{toast.message}</div>
               </div>
             </div>

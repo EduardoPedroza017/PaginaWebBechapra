@@ -9,6 +9,7 @@ interface Props {
   news: NewsItem[];
   onEdit: (item: NewsItem) => void;
   onDelete: (item: NewsItem) => void;
+  onToggleStatus: (item: NewsItem) => void;
   theme: 'light' | 'dark';
 }
 
@@ -19,7 +20,7 @@ const toPlainText = (html: string, maxLength: number) => {
   return text.slice(0, maxLength).trimEnd() + "...";
 };
 
-export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
+export default function NewsTable({ news, onEdit, onDelete, onToggleStatus, theme }: Props) {
   const [page, setPage] = useState(1);
   const pageSize = 5;
   const totalPages = Math.ceil(news.length / pageSize);
@@ -94,6 +95,11 @@ export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
                       <TranslateText text="Imagen" />
                     </div>
                   </th>
+                  <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <TranslateText text="Status" />
+                    </div>
+                  </th>
                   <th className="px-5 py-3 font-semibold text-right whitespace-nowrap"><TranslateText text="Acciones" /></th>
                 </tr>
               </thead>
@@ -134,6 +140,32 @@ export default function NewsTable({ news, onEdit, onDelete, theme }: Props) {
                           <ImageIcon className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
                         </div>
                       )}
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          item.status === 'active'
+                            ? theme === 'dark'
+                              ? 'bg-green-600/20 text-green-400'
+                              : 'bg-green-100 text-green-700'
+                            : theme === 'dark'
+                              ? 'bg-red-600/20 text-red-400'
+                              : 'bg-red-100 text-red-700'
+                        }`}>
+                          {item.status === 'active' ? 'Activo' : 'Inactivo'}
+                        </span>
+                        <button
+                          onClick={() => onToggleStatus(item)}
+                          className={`p-2 rounded-lg transition-all active:scale-95 ${
+                            theme === 'dark'
+                              ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                          title="Cambiar estado"
+                        >
+                          <TranslateText text="Toggle" />
+                        </button>
+                      </div>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2">

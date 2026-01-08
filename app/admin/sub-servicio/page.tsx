@@ -60,17 +60,30 @@ export default function SubServicioAdminPage(){
         setSubs([])
       }
       // also fetch services to map id -> slug
-      try{
-        const sres = await fetch(`${API}/api/services/cards`, { credentials: 'include' })
-        const sdata = await sres.json()
-        const servicesById: Record<string,string> = {}
-        const options: Array<{id:string; name:string}> = []
+      try {
+        const sres = await fetch(`${API}/api/services/cards`, { credentials: 'include' });
+        const sdata = await sres.json();
+        const servicesById: Record<string, string> = {};
+        const options: Array<{ id: string; name: string }> = [];
+
         if (Array.isArray(sdata)) {
-          sdata.forEach((s:any) => { if (s.id && s.slug) servicesById[s.id] = s.slug; if (s.id && s.name) options.push({id:s.id, name:s.name}) })
+          sdata.forEach((s: any) => {
+            if (s.id && s.slug) servicesById[s.id] = s.slug;
+            if (s.id && s.name) options.push({ id: s.id, name: s.name });
+          });
+        } else {
+          console.warn('Expected array for services, received:', sdata);
         }
-        setServicesMap(servicesById)
-        setServiceOptions(options)
-      }catch(err){ }
+
+        console.log('Fetched services data:', sdata);
+
+        setServicesMap(servicesById);
+        setServiceOptions(options);
+      } catch (err) {
+        console.error('Error fetching services:', err);
+        setServicesMap({});
+        setServiceOptions([]);
+      }
     }catch(e){}
     setLoading(false)
   }

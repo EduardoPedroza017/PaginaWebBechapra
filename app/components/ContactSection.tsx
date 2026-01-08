@@ -103,10 +103,26 @@ export default function ContactSection() {
   }, [branches]);
 
   // Generar mapa URL
-  const mapSrc = selectedBranch?.coordinates 
-    ? `https://www.google.com/maps?q=${selectedBranch.coordinates.lat},${selectedBranch.coordinates.lng}&z=15&output=embed`
-    : selectedBranch?.address 
-      ? `https://www.google.com/maps?q=${encodeURIComponent(selectedBranch.address)}&output=embed`
+  // Example fallback branch when there are no active branches
+  const exampleBranch: Branch = {
+    id: 'example',
+    name: 'Bechapra (Ejemplo)',
+    description: 'Sucursal de ejemplo',
+    address: 'Av. Paseo de la Reforma 505',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    locationUrl: 'https://www.google.com/maps?q=19.4326,-99.1332&z=15&output=embed',
+    coordinates: { lat: 19.4326, lng: -99.1332 },
+    contact: { phone: '+52 55 1234 5678', email: 'contacto@bechapra.com' },
+    isActive: false,
+  };
+
+  const effectiveBranch = selectedBranch || (branches.length === 0 ? exampleBranch : null);
+
+  const mapSrc = effectiveBranch?.coordinates
+    ? `https://www.google.com/maps?q=${effectiveBranch.coordinates.lat},${effectiveBranch.coordinates.lng}&z=15&output=embed`
+    : effectiveBranch?.address
+      ? `https://www.google.com/maps?q=${encodeURIComponent(effectiveBranch.address)}&output=embed`
       : "";
 
   // Formatear dirección
@@ -273,9 +289,12 @@ export default function ContactSection() {
                           </button>
                         </div>
                       ) : branches.length === 0 ? (
-                        <p className="text-slate-500">
-                          <TranslateText text="No hay sucursales disponibles" />
-                        </p>
+                        // Show an example branch instead of empty/error message
+                        <div className="mb-6 p-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                          <h3 className="font-bold text-slate-900 dark:text-white mb-2">{exampleBranch.name}</h3>
+                          <p className="text-sm text-slate-600 dark:text-slate-300">{`${exampleBranch.address}, ${exampleBranch.city}, ${exampleBranch.state}`}</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{exampleBranch.description}</p>
+                        </div>
                       ) : (
                         <>
                           {/* State Filters */}

@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TranslateText } from "@/components/TranslateText";
-import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle } from "lucide-react";
+import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle, Activity, LineChart } from "lucide-react";
 import dynamic from "next/dynamic";
 import CookieStats from "./CookieStats";
 import CookieTable from "./CookieTable";
@@ -35,9 +35,11 @@ interface CookieConsentAdminProps {
 }
 
 type ActiveTab = 'table' | 'charts' | '3d';
+type ChartSubTab = 'distribution' | 'dailyActivity' | 'trend';
 
 function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProps) {
   const [data, setData] = useState<CookieConsent[]>([]);
+  const [chartSubTab, setChartSubTab] = useState<ChartSubTab>('distribution');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,6 +119,27 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
       icon: Box, 
       label: 'Vista 3D',
       description: 'Visualización tridimensional interactiva'
+    },
+  ];
+
+  const chartSubTabs = [
+    { 
+      id: 'distribution' as ChartSubTab, 
+      icon: BarChart3, 
+      label: 'Distribución',
+      description: 'Gráfica de distribución de cookies'
+    },
+    { 
+      id: 'dailyActivity' as ChartSubTab, 
+      icon: Activity, 
+      label: 'Actividad Diaria',
+      description: 'Gráfica de actividad diaria'
+    },
+    { 
+      id: 'trend' as ChartSubTab, 
+      icon: LineChart, 
+      label: 'Tendencia',
+      description: 'Gráfica de tendencias'
     },
   ];
 
@@ -408,6 +431,7 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
 
               {activeTab === 'charts' && (
                 <div className="space-y-6">
+                  {/* Header de la sección */}
                   <div className={`p-4 rounded-xl ${
                     theme === 'dark' 
                       ? 'bg-gray-800/30 border border-gray-700' 
@@ -431,7 +455,44 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
                       </div>
                     </div>
                   </div>
-                  <CookieCharts data={data} theme={theme} />
+
+                  {/* Subpestañas para gráficas */}
+                  <div className={`flex rounded-xl p-2 gap-6 ${
+                    theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+                  }`}>
+                    {chartSubTabs.map((subTab) => (
+                      <button
+                        key={subTab.id}
+                        onClick={() => setChartSubTab(subTab.id)}
+                        className={`flex items-center gap-3 px-8 py-4 rounded-lg text-base font-medium transition-all flex-1 justify-center ${
+                          chartSubTab === subTab.id
+                            ? theme === 'dark'
+                              ? 'bg-linear-to-br from-emerald-600 to-emerald-500 text-white shadow-lg'
+                              : 'bg-white text-emerald-600 shadow-md'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                        }`}
+                        title={subTab.description}
+                      >
+                        <subTab.icon className="w-6 h-6" />
+                        <span><TranslateText text={subTab.label} /></span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Contenido de las subpestañas */}
+                  <div className="mt-8">
+                    <div className="p-6 rounded-xl ${
+                      theme === 'dark' ? 'bg-gray-900/50 border-gray-800' : 'bg-white border-gray-200'
+                    }">
+                      <CookieCharts 
+                        data={data} 
+                        theme={theme} 
+                        activeChart={chartSubTab}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 

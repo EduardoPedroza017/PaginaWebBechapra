@@ -29,6 +29,7 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 		const [totalPages, setTotalPages] = useState(1);
 		const [total, setTotal] = useState(0);
 		const [search, setSearch] = useState("");
+		const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 		const pageSize = 12;
 		const [activeTab, setActiveTab] = useState<'list' | 'create' | 'stats'>('list');
 
@@ -125,11 +126,16 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 			if (!deleting) return;
 			setDeleteLoading(true);
 			const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
+			const admin = typeof window !== "undefined" ? sessionStorage.getItem("admin") : null;
+			const role = typeof window !== "undefined" ? sessionStorage.getItem("role") : null;
 			try {
-				const res = await fetch(`http://localhost:5000/api/news/${encodeURIComponent(deleting.title)}`, {
+				const identifier = deleting.slug || deleting._id || deleting.title;
+				const res = await fetch(`http://localhost:5000/api/news/${encodeURIComponent(identifier)}`, {
 					method: "DELETE",
 					headers: {
-						...(userEmail ? { "X-User": userEmail } : {})
+						...(userEmail ? { "X-User": userEmail } : {}),
+						...(admin ? { "X-Admin": admin } : {}),
+						...(role ? { "X-Role": role } : {})
 					},
 					credentials: 'include',
 				});
@@ -156,7 +162,44 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 			setTheme(newTheme);
 		};
 
+		const handleToggleStatus = async (item: NewsItem) => {
+			try {
+				const updatedStatus = item.status === 'active' ? 'inactive' : 'active';
+				const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+				const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+				const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+				const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+				if (storedUser) headers['X-User'] = storedUser;
+				if (storedRole) headers['X-Role'] = storedRole;
+				if (storedAdmin) headers['X-Admin'] = storedAdmin;
+
+				// Prefer using `slug` or `_id` if available to avoid encoding/spacing issues. Fallback to trimmed title.
+				const identifier = item.slug || item._id || item.title;
+				const encodedId = encodeURIComponent(identifier);
+				const res = await fetch(`http://localhost:5000/api/news/${encodedId}`, {
+					method: 'PUT',
+					headers,
+					credentials: 'include',
+					body: JSON.stringify({ status: updatedStatus }),
+				});
+
+				if (res.ok) {
+					fetchNews();
+				} else {
+					console.error('Failed to update status');
+				}
+			} catch (error) {
+				console.error('Error toggling status:', error);
+			}
+		};
+
 		if (!mounted) return null;
+
+		const filteredNews = news.filter(n => {
+			if (statusFilter === 'all') return true;
+			if (statusFilter === 'active') return n.status === 'active';
+			return n.status !== 'active';
+		});
 
 		return (
 			<div className={`flex min-h-screen ${
@@ -241,21 +284,40 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 				</div>
 			)}
 
-
-
 			{activeTab === 'list' && (
 				<>
 					{/* Filtros (dentro del listado) */}
 					<div className="mb-4">
-						<NewsFilter news={news} onFilter={handleFilter} theme={theme} />
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+							<NewsFilter news={news} onFilter={handleFilter} theme={theme} />
+							{/* Status tabs: All / Active / Inactive */}
+							<div className="mt-3 sm:mt-0">
+								<div className="rounded-xl border p-1 flex gap-1 bg-transparent">
+									{[
+										{ id: 'all', label: 'Todas' },
+										{ id: 'active', label: 'Activas' },
+										{ id: 'inactive', label: 'Desactivadas' }
+									].map(tab => (
+										<button
+											key={tab.id}
+											onClick={() => setStatusFilter(tab.id as any)}
+											className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${statusFilter === tab.id ? 'bg-blue-600 text-white' : theme === 'dark' ? 'text-gray-300 bg-gray-800/20' : 'text-gray-600 bg-white'}`}
+										>
+											{tab.label}
+										</button>
+									))}
+								</div>
+							</div>
+						</div>
 					</div>
-					{/* Cards de noticias */}
-					<NewsCardList
-						news={news}
+					{/* Cards de noticias (filtradas por status) */}
+						<NewsCardList
+							news={filteredNews}
 						theme={theme}
 						onEdit={handleEdit}
 						onDelete={handleDeleteClick}
 						onPreview={setPreviewing}
+						onToggleStatus={handleToggleStatus}
 					/>
 					{/* Paginador */}
 					{totalPages > 1 && (
@@ -271,8 +333,8 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 								disabled={page === totalPages}
 								className={`px-3 py-1 rounded-lg text-sm font-medium ${page === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}>
 								Siguiente</button>
-						</div>
-					)}
+							</div>
+						)}
 				</>
 			)}
 						{/* Paginador */}
