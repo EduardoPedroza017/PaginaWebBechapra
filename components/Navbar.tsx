@@ -71,10 +71,13 @@ export default function Navbar() {
             <Link href="/prensa" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
               <TranslateText text="Prensa" />
             </Link>
+            <Link href="/training-center" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
+              <TranslateText text="Centro de Formación" />
+            </Link>
             <Link href="/acerca-de" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
               <TranslateText text="Acerca de" />
             </Link>
-            <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2 text-white font-semibold text-sm shadow transition-all hover:bg-blue-700 hover:-translate-y-0.5 active:bg-blue-800 whitespace-nowrap">
+            <a href="https://bausen.mx" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2 text-white font-semibold text-sm shadow transition-all hover:bg-blue-700 hover:-translate-y-0.5 active:bg-blue-800 whitespace-nowrap">
               <TranslateText text="¿Eres colaborador?" />
             </a>
             <div className="flex items-center gap-2 ml-2">

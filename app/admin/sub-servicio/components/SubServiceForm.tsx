@@ -21,7 +21,15 @@ export const SubServiceForm: React.FC<Props> = ({ initialData, onSubmit, onCance
   useEffect(() => {
     fetch(`${API}/api/services/cards`, { credentials: 'include' })
       .then(r => r.json())
-      .then(setServices)
+      .then(data => {
+        if (Array.isArray(data)) {
+          setServices(data);
+        } else if (data && Array.isArray(data.items)) {
+          setServices(data.items);
+        } else {
+          setServices([]);
+        }
+      })
       .catch(()=>{})
   }, [])
 

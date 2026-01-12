@@ -39,6 +39,7 @@ export default function EssenceAdminPage() {
   const [error, setError] = useState("");
   const [draft, setDraft] = useState<Essence | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'edit' | 'preview' | 'history'>('edit');
 
   useEffect(() => {
     setMounted(true);
@@ -292,7 +293,7 @@ export default function EssenceAdminPage() {
             <EssenceStats essence={essence} lastUpdate={lastUpdate} theme={theme} />
           </div>
 
-          {/* Main Content Grid */}
+          {/* Main Content */}
           {loading ? (
             <div className={`rounded-2xl border p-12 text-center ${
               theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
@@ -303,14 +304,57 @@ export default function EssenceAdminPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <EssenceForm essence={essence} onSave={handleSave} theme={theme} onDraftChange={(d) => setDraft(d)} onEditingChange={(e) => setIsEditing(e)} />
-              <EssencePreview essence={isEditing && draft ? draft : essence} theme={theme} />
+            <div className={`rounded-2xl border overflow-hidden ${
+              theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+            }`}>
+              {/* Tabs */}
+              <div className={`flex border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+                <button
+                  onClick={() => setActiveTab('edit')}
+                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+                    activeTab === 'edit'
+                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
+                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <TranslateText text="Editar" />
+                </button>
+                <button
+                  onClick={() => setActiveTab('preview')}
+                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+                    activeTab === 'preview'
+                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
+                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <TranslateText text="Vista Previa" />
+                </button>
+                <button
+                  onClick={() => setActiveTab('history')}
+                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+                    activeTab === 'history'
+                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
+                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <TranslateText text="Historial" />
+                </button>
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-6">
+                {activeTab === 'edit' && (
+                  <EssenceForm essence={essence} onSave={handleSave} theme={theme} onDraftChange={(d) => setDraft(d)} onEditingChange={(e) => setIsEditing(e)} />
+                )}
+                {activeTab === 'preview' && (
+                  <EssencePreview essence={isEditing && draft ? draft : essence} theme={theme} />
+                )}
+                {activeTab === 'history' && (
+                  <EssenceHistory history={history} loading={loadingHistory} theme={theme} onRestore={handleRestore} onRequestRestore={requestRestore} />
+                )}
+              </div>
             </div>
           )}
-
-          {/* History */}
-          <EssenceHistory history={history} loading={loadingHistory} theme={theme} onRestore={handleRestore} onRequestRestore={requestRestore} />
 
           {/* Confirm restore modal */}
           <ConfirmModal

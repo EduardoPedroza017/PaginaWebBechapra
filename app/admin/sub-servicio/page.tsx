@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import SearchBar from "../servicios/components/SearchBar";
 import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
@@ -71,11 +71,12 @@ export default function SubServicioAdminPage(){
             if (s.id && s.slug) servicesById[s.id] = s.slug;
             if (s.id && s.name) options.push({ id: s.id, name: s.name });
           });
-        } else {
-          console.warn('Expected array for services, received:', sdata);
+        } else if (sdata && Array.isArray(sdata.items)) {
+          sdata.items.forEach((s: any) => {
+            if (s.id && s.slug) servicesById[s.id] = s.slug;
+            if (s.id && s.name) options.push({ id: s.id, name: s.name });
+          });
         }
-
-        console.log('Fetched services data:', sdata);
 
         setServicesMap(servicesById);
         setServiceOptions(options);
@@ -186,6 +187,23 @@ export default function SubServicioAdminPage(){
     setDeleteLoading(false)
   }
 
+  const handleToastClose = useCallback(() => {
+    setToastOpen(false);
+    setDeletedCandidate(null);
+    setUndoCandidate(null);
+    setToastType(null);
+  }, []);
+
+  const handleConfirmClose = useCallback(() => {
+    setConfirmOpen(false);
+    setConfirmTarget(null);
+  }, []);
+
+  const handlePreviewClose = useCallback(() => {
+    setPreviewOpen(false);
+    setPreviewData(null);
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900">
       <Sidebar selected="/admin/sub-servicio" theme="dark" />
@@ -274,21 +292,15 @@ export default function SubServicioAdminPage(){
 
           <SubServicePageForm open={pageFormOpen} initialHandle={pageInitialHandle} subserviceId={pageSubserviceId} onClose={()=>setPageFormOpen(false)} onCreated={(p)=>{ console.log('page created', p); setPageFormOpen(false) }} />
 
-          <SubServicePreviewModal open={previewOpen} data={previewData} onClose={()=>{ setPreviewOpen(false); setPreviewData(null) }} />
+          <SubServicePreviewModal open={previewOpen} data={previewData} onClose={handlePreviewClose} />
 
-          <ConfirmModal open={confirmOpen} title="Eliminar subservicio" description={confirmTarget ? `Vas a eliminar "${confirmTarget.title}". Esta acción no se puede deshacer.` : ''} confirmLabel="Eliminar" cancelLabel="Cancelar" loading={deleteLoading} onClose={()=>{ setConfirmOpen(false); setConfirmTarget(null) }} onConfirm={()=>handleDelete(confirmTarget)} />
+          <ConfirmModal open={confirmOpen} title="Eliminar subservicio" description={confirmTarget ? `Vas a eliminar "${confirmTarget.title}". Esta acción no se puede deshacer.` : ''} confirmLabel="Eliminar" cancelLabel="Cancelar" loading={deleteLoading} onClose={handleConfirmClose} onConfirm={()=>handleDelete(confirmTarget)} />
 
           {/* toast */}
           {/** dynamically import to keep bundle small */}
           <React.Suspense fallback={null}>
-            <Toast open={toastOpen} message={toastMessage} actionLabel={toastActionLabel} timeout={6000} onAction={toastType === 'delete' ? handleUndoDelete : handleUndoToggle} onClose={()=>{ setToastOpen(false); setDeletedCandidate(null); setUndoCandidate(null); setToastType(null) }} />
+            <Toast open={toastOpen} message={toastMessage} actionLabel={toastActionLabel} timeout={6000} onAction={toastType === 'delete' ? handleUndoDelete : handleUndoToggle} onClose={handleToastClose} />
           </React.Suspense>
-
-          
-
-          <SubServicePreviewModal open={previewOpen} data={previewData} onClose={()=>{ setPreviewOpen(false); setPreviewData(null) }} />
-
-          <ConfirmModal open={confirmOpen} title="Eliminar subservicio" description={confirmTarget ? `Vas a eliminar "${confirmTarget.title}". Esta acción no se puede deshacer.` : ''} confirmLabel="Eliminar" cancelLabel="Cancelar" loading={deleteLoading} onClose={()=>{ setConfirmOpen(false); setConfirmTarget(null) }} onConfirm={()=>handleDelete(confirmTarget)} />
         </main>
       </div>
     </div>
