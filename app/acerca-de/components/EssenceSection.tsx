@@ -77,7 +77,7 @@ export default function EssenceSection() {
             </span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-            <TranslateText text="Los pilares fundamentales que guían cada decisión y acción en Bechapra." />
+            <TranslateText text="Los pilares fundamentales que guían cada decisión y acción en BAUSEN." />
           </p>
         </motion.div>
 

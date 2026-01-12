@@ -72,7 +72,7 @@ export default function AboutHero() {
             <TranslateText text="Acerca de" />
             <br />
             <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 bg-clip-text text-transparent">
-              Bechapra
+              BAUSEN
             </span>
           </h1>
 

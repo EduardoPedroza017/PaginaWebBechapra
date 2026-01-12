@@ -7,6 +7,7 @@ import ContactFilter from "./ContactFilter";
 import ContactChart from "./ContactChart";
 import { ContactTable } from "./ContactTable";
 import { ContactStats } from "./ContactStats";
+import Tabs from "./Tabs";
 import { TranslateText } from "@/components/TranslateText";
 import { 
   MessageSquareText, 
@@ -121,6 +122,133 @@ export default function AdminContactPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const tabs = [
+    {
+      key: 'resumen',
+      title: 'Resumen',
+      content: (
+        <div>
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className={`text-xl font-bold ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}>
+                <TranslateText text="Resumen Estadístico" />
+              </h2>
+              <div className={`px-2 py-1 rounded text-xs font-medium ${
+                theme === 'dark' 
+                  ? 'bg-blue-600/20 text-blue-400' 
+                  : 'bg-blue-100 text-blue-700'
+              }`}>
+                Actualizado automáticamente
+              </div>
+            </div>
+            <ContactStats messages={messages} filtered={filtered} theme={theme} />
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className={`p-4 rounded-xl border ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-700' 
+                : 'bg-white/80 border-gray-200'
+            }`}>
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Estado</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                {loading ? 'Cargando...' : 'Activo'}
+              </div>
+            </div>
+            <div className={`p-4 rounded-xl border ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-700' 
+                : 'bg-white/80 border-gray-200'
+            }`}>
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Actualizado</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                {new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+            <div className={`p-4 rounded-xl border ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-700' 
+                : 'bg-white/80 border-gray-200'
+            }`}>
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Filtrados</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                {filtered.length} / {messages.length}
+              </div>
+            </div>
+            <div className={`p-4 rounded-xl border ${
+              theme === 'dark' 
+                ? 'bg-gray-800/50 border-gray-700' 
+                : 'bg-white/80 border-gray-200'
+            }`}>
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Última actualización</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                {refreshing ? 'Actualizando...' : 'Listo'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'filtros',
+      title: 'Filtros & Gráfico',
+      content: (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <ContactFilter messages={messages} onFilter={handleFilter} theme={theme} />
+          <ContactChart data={filtered} theme={theme} />
+        </div>
+      )
+    },
+    {
+      key: 'registros',
+      title: 'Registros',
+      content: (
+        <div className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+          theme === 'dark' 
+            ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800' 
+            : 'bg-gradient-to-br from-white to-blue-50/50 border-gray-100 shadow-lg'
+        } border`}>
+          <div className={`px-6 py-5 border-b ${
+            theme === 'dark' ? 'border-gray-800' : 'border-blue-100'
+          }`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className={`font-bold text-xl mb-1 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  <TranslateText text="Registros de Contacto" />
+                </h2>
+                <p className={`text-sm ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  <TranslateText text="Lista completa de mensajes recibidos" />
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className={`px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 ${
+                  theme === 'dark' 
+                    ? 'bg-blue-600/20 text-blue-400' 
+                    : 'bg-blue-100 text-blue-700'
+                }`}>
+                  <Mail className="w-4 h-4" />
+                  <span>{filtered.length} mensaje{filtered.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div className={`hidden md:block text-xs ${
+                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                }`}>
+                  <TranslateText text="Haga clic para expandir detalles" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <ContactTable messages={filtered} loading={loading} theme={theme} />
+        </div>
+      )
+    }
+  ];
 
   if (!mounted) {
     return (
@@ -291,72 +419,7 @@ export default function AdminContactPage() {
             </div>
           </div>
 
-          {/* Estadísticas */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className={`text-xl font-bold ${
-                theme === "dark" ? "text-white" : "text-gray-900"
-              }`}>
-                <TranslateText text="Resumen Estadístico" />
-              </h2>
-              <div className={`px-2 py-1 rounded text-xs font-medium ${
-                theme === 'dark' 
-                  ? 'bg-blue-600/20 text-blue-400' 
-                  : 'bg-blue-100 text-blue-700'
-              }`}>
-                Actualizado automáticamente
-              </div>
-            </div>
-            <ContactStats messages={messages} filtered={filtered} theme={theme} />
-          </div>
-
-          {/* Filtros y Gráfico */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <ContactFilter messages={messages} onFilter={handleFilter} theme={theme} />
-            <ContactChart data={filtered} theme={theme} />
-          </div>
-
-          {/* Tabla de mensajes */}
-          <div className={`rounded-2xl overflow-hidden transition-all duration-300 ${
-            theme === 'dark' 
-              ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800' 
-              : 'bg-gradient-to-br from-white to-blue-50/50 border-gray-100 shadow-lg'
-          } border`}>
-            <div className={`px-6 py-5 border-b ${
-              theme === 'dark' ? 'border-gray-800' : 'border-blue-100'
-            }`}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h2 className={`font-bold text-xl mb-1 ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    <TranslateText text="Registros de Contacto" />
-                  </h2>
-                  <p className={`text-sm ${
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
-                    <TranslateText text="Lista completa de mensajes recibidos" />
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className={`px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 ${
-                    theme === 'dark' 
-                      ? 'bg-blue-600/20 text-blue-400' 
-                      : 'bg-blue-100 text-blue-700'
-                  }`}>
-                    <Mail className="w-4 h-4" />
-                    <span>{filtered.length} mensaje{filtered.length !== 1 ? 's' : ''}</span>
-                  </div>
-                  <div className={`hidden md:block text-xs ${
-                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                  }`}>
-                    <TranslateText text="Haga clic para expandir detalles" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <ContactTable messages={filtered} loading={loading} theme={theme} />
-          </div>
+          <Tabs tabs={tabs} theme={theme} />
 
           {/* Footer informativo */}
           <div className={`mt-8 p-5 rounded-xl ${

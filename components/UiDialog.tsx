@@ -11,7 +11,7 @@ return (
 <Dialog.Portal>
 <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
 <Dialog.Content className="glass-card fixed left-1/2 top-1/2 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2">
-<Dialog.Title className="text-lg font-semibold">Bechapra Glass Starter</Dialog.Title>
+<Dialog.Title className="text-lg font-semibold">BAUSEN Glass Starter</Dialog.Title>
 <Dialog.Description className="mt-1 text-sm text-white/70">
 Esqueleto base para landing 3D con Next.js, Tailwind, Framer Motion, GSAP y R3F.
 </Dialog.Description>

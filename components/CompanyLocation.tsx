@@ -29,7 +29,7 @@ const defaultLocation = {
   country: "México",
   zipCode: "06500",
   phone: "+52 55 1234 5678",
-  email: "contacto@bechapra.com",
+  email: "contacto@bausen.com",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=19.4326,-99.1332"
 };
 
@@ -49,7 +49,11 @@ const fetchBranches = async () => {
     if (!response.ok) {
       throw new Error(`Failed to fetch branches: ${response.statusText}`);
     }
-    const branches = await response.json();
+    const data = await response.json();
+    // Normalize response shapes: accept array or object with items/data/results
+    const branches = Array.isArray(data)
+      ? data
+      : (data.items || data.data || data.results || []);
     return branches;
   } catch (error) {
     console.error('Error fetching branches:', error);

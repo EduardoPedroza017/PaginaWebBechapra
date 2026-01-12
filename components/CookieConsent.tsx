@@ -148,7 +148,7 @@ export default function CookieConsent() {
 										<TranslateText text="Este sitio web utiliza cookies" />
 									</h3>
 									<p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-300 mb-2">
-										<TranslateText text="Este sitio web utiliza cookies y otras tecnologías de seguimiento para mejorar su experiencia de navegación. Bechapra está comprometido con su privacidad y seguridad." />{' '}
+										<TranslateText text="Este sitio web utiliza cookies y otras tecnologías de seguimiento para mejorar su experiencia de navegación. BAUSEN está comprometido con su privacidad y seguridad." />{' '}
 										<Link 
 											href="/politica-de-privacidad" 
 											className="text-blue-700 dark:text-blue-400 underline font-semibold hover:text-blue-600 dark:hover:text-blue-300"

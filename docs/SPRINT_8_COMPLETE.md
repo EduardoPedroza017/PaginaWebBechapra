@@ -214,7 +214,7 @@ yarn dev
 
 2. **Añadir**:
 ```env
-NEXT_PUBLIC_API_URL=https://api.bechapra.com
+NEXT_PUBLIC_API_URL=https://api.bausen.com
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 NEXT_PUBLIC_CLARITY_PROJECT_ID=abcdefg123
 ```

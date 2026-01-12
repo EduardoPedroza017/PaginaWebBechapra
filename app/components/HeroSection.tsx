@@ -113,7 +113,7 @@ export default function HeroSection() {
                   src="/image/hero/Flayers_Home_01100.jpg"
                   width={600}
                   height={500}
-                  alt="Bechapra - Soluciones empresariales"
+                  alt="BAUSEN - Soluciones empresariales"
                   className="object-cover w-full h-auto"
                   priority
                 />

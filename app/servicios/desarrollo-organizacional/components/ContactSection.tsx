@@ -58,11 +58,11 @@ export default function ContactSection({
             <TranslateText text="¿Prefieres contactarnos directamente?" />
           </p>
           <a
-            href="mailto:contacto@bechapra.com"
+            href="mailto:contacto@bausen.com"
             className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
           >
             <Mail size={18} />
-            contacto@bechapra.com
+            contacto@bausen.com
           </a>
         </motion.div>
       </div>

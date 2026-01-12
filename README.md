@@ -1,6 +1,6 @@
-# Página Web Bechapra - Frontend Application
+# Página Web BAUSEN - Frontend Application
 
-[![Frontend Status](https://img.shields.io/badge/Frontend-Next.js-black)](https://github.com/EduardoPedroza017/PaginaWebBechapra)
+[![Frontend Status](https://img.shields.io/badge/Frontend-Next.js-black)](https://github.com/EduardoPedroza017/PaginaWebBAUSEN)
 [![Framework](https://img.shields.io/badge/Framework-Next.js%2015-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
@@ -195,7 +195,7 @@ Frontend/
 ### Backend Requerido
 
 Este frontend necesita el backend corriendo:
-- Backend Repository: [Backend_PaginaWebBechapra](https://github.com/EduardoPedroza017/Backend_PaginaWebBechapra)
+- Backend Repository: [Backend_PaginaWebBAUSEN](https://github.com/EduardoPedroza017/Backend_PaginaWebBAUSEN)
 - Puerto: `http://localhost:5000` (por defecto)
 
 ---
@@ -205,8 +205,8 @@ Este frontend necesita el backend corriendo:
 ### Paso 1: Clonar el repositorio
 
 ```bash
-git clone https://github.com/EduardoPedroza017/PaginaWebBechapra.git
-cd PaginaWebBechapra
+git clone https://github.com/EduardoPedroza017/PaginaWebBAUSEN.git
+cd PaginaWebBAUSEN
 ```
 
 ### Paso 2: Instalar dependencias
@@ -241,7 +241,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 
 # URL de producción (opcional)
-NEXT_PUBLIC_SITE_URL=https://www.bechapra.com
+NEXT_PUBLIC_SITE_URL=https://www.bausen.com
 ```
 
 ---
@@ -509,9 +509,9 @@ vercel --prod
 1. Ir a Project Settings > Environment Variables
 2. Agregar:
    ```
-   NEXT_PUBLIC_API_URL=https://api.bechapra.com
+   NEXT_PUBLIC_API_URL=https://api.bausen.com
    NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-   NEXT_PUBLIC_SITE_URL=https://www.bechapra.com
+   NEXT_PUBLIC_SITE_URL=https://www.bausen.com
    ```
 
 ### Otros proveedores
@@ -524,8 +524,8 @@ npm run build
 
 **Docker**
 ```bash
-docker build -t bechapra-frontend .
-docker run -p 3000:3000 bechapra-frontend
+docker build -t bausen-frontend .
+docker run -p 3000:3000 bausen-frontend
 ```
 
 ### Checklist de Producción
@@ -661,14 +661,14 @@ Este proyecto está bajo licencia MIT. Ver LICENSE para más detalles.
 
 **Eduardo Pedroza**
 - GitHub: [EduardoPedroza017](https://github.com/EduardoPedroza017)
-- Frontend Repository: [PaginaWebBechapra](https://github.com/EduardoPedroza017/PaginaWebBechapra)
+- Frontend Repository: [PaginaWebBAUSEN](https://github.com/EduardoPedroza017/PaginaWebBAUSEN)
 
 ---
 
 ## Contacto
 
-- Email: contacto@bechapra.com
-- Sitio Web: [https://www.bechapra.com](https://www.bechapra.com)
+- Email: contacto@bausen.com
+- Sitio Web: [https://www.bausen.com](https://www.bausen.com)
 - Teléfono: +52 55 1234 5678
 
 ---
@@ -697,4 +697,4 @@ Este proyecto está bajo licencia MIT. Ver LICENSE para más detalles.
 
 ---
 
-Última actualización: Diciembre 2025
+Última actualización: Diciembre 2026

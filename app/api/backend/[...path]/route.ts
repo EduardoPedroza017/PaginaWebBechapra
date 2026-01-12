@@ -6,22 +6,41 @@ async function forwardRequest(
   method: string,
   path: string,
   body?: unknown,
-  cookieHeader?: string | null
+  incomingHeaders?: Record<string, string>
 ) {
+  const headers: Record<string, string> = {
+    // default content-type, can be overridden below
+    'Content-Type': 'application/json',
+  };
+
+  // Copy relevant incoming headers to preserve auth info
+  if (incomingHeaders) {
+    for (const [k, v] of Object.entries(incomingHeaders)) {
+      const key = k.toLowerCase();
+      if (key === 'host' || key === 'content-length' || key === 'origin') continue;
+      // prefer backend to receive content-type/body-specific header set elsewhere
+      headers[k] = v;
+    }
+  }
+
   const options: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-    },
+    headers,
     credentials: 'include',
   };
 
   if (body) {
-    options.body = JSON.stringify(body);
+    // body may already be stringified depending on caller
+    options.body = typeof body === 'string' ? body : JSON.stringify(body);
   }
 
-  return fetch(`${BACKEND_URL}${path}`, options);
+        // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
+        const incomingHeaders: Record<string, string> = {};
+        for (const [k, v] of request.headers.entries()) {
+          if (v) incomingHeaders[k] = v;
+        }
+
+        const contentType = request.headers.get('content-type') || '';
 }
 
 export async function GET(
@@ -36,22 +55,26 @@ export async function GET(
 
     // Route is /api/backend/[...path], so path array does NOT include 'backend'
     // Forward to Flask backend with correct prefix
-    // Flask routes: /admin/... for admin, /api/... for public API
-    let pathStr: string;
+            ...options.headers,
+            ...incomingHeaders,
+            'Content-Type': contentType,
     if (path[0] === 'admin') {
       // /api/backend/admin/... -> /admin/... (Flask admin routes)
       pathStr = `/${path.join('/')}`; 
     } else {
       // /api/backend/news -> /api/news (Flask public API)
       pathStr = `/api/${path.join('/')}`; 
-
-    }
+            ...options.headers,
+            ...incomingHeaders,
+            'Content-Type': 'application/json',
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
     const fullPath = queryString ? `${pathStr}?${queryString}` : pathStr;
 
     const cookieHeader = request.headers.get('cookie');
     const response = await forwardRequest('GET', fullPath, undefined, cookieHeader);
+            ...options.headers,
+            ...incomingHeaders,
     const data = await response.json();
 
     return NextResponse.json(data, { status: response.status });
@@ -213,9 +236,13 @@ export async function DELETE(
       // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
     }
-    const cookieHeader = request.headers.get('cookie');
+    // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
+    const incomingHeaders: Record<string, string> = {};
+    for (const [k, v] of request.headers.entries()) {
+      if (v) incomingHeaders[k] = v;
+    }
 
-    const response = await forwardRequest('DELETE', pathStr, undefined, cookieHeader);
+    const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);
     const data = await response.json();
 
     return NextResponse.json(data, { status: response.status });

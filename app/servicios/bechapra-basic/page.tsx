@@ -2,7 +2,7 @@ import SubpageHero from "../../../components/SubpageHero";
 export default function Page() {
 return (
 <>
-<SubpageHero title="Bechapra Basic" subtitle="Paquete esencial para PyMEs." />
+<SubpageHero title="BAUSEN Basic" subtitle="Paquete esencial para PyMEs." />
 <div className="glass-card">Contenido en construcción.</div>
 </>
 );

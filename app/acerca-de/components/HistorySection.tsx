@@ -5,7 +5,7 @@ import { Calendar, Trophy, TrendingUp, Users, Clock, Award } from "lucide-react"
 import { TranslateText } from "@/components/TranslateText";
 
 const timelineData = [
-  { year: "2009", event: "Fundación de Bechapra", icon: Calendar },
+  { year: "2009", event: "Fundación de BAUSEN", icon: Calendar },
   { year: "2012", event: "Expansión nacional y nuevos servicios", icon: TrendingUp },
   { year: "2016", event: "Primeros 100 clientes y certificación ISO", icon: Award },
   { year: "2019", event: 'Reconocimiento "Empresa Innovadora"', icon: Trophy },

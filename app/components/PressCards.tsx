@@ -45,7 +45,11 @@ export default function PressCards() {
       try {
         const response = await fetch('/api/press');
         const data = await response.json();
-        setPress(data.slice(0, 3));
+        // Normalize response: accept array or paginated object { items, data, results }
+        const items = Array.isArray(data)
+          ? data
+          : (data.items || data.data || data.results || []);
+        setPress(Array.isArray(items) ? items.slice(0, 3) : []);
       } catch (error) {
         console.error('Error fetching press:', error);
       } finally {

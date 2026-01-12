@@ -46,7 +46,7 @@ export default function ContactSection() {
           >
             {[
               { icon: Phone, label: "Teléfono", value: "+52 (55) 1234-5678" },
-              { icon: Mail, label: "Email", value: "legal@bechapra.com" },
+              { icon: Mail, label: "Email", value: "legal@bausen.com" },
               { icon: MapPin, label: "Ubicación", value: "Ciudad de México, MX" },
             ].map((item, i) => (
               <motion.div

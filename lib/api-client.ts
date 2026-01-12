@@ -286,7 +286,12 @@ class ApiClient {
  * const result = await apiClient.upload('/api/upload', formData);
  * ```
  */
-export const apiClient = new ApiClient(config.api.url, true);
+// Decide whether to use the Next.js proxy or call backend directly.
+// Bypass proxy when NEXT_PUBLIC_BYPASS_PROXY=true OR when backend URL points to localhost:5000
+const bypassProxyEnv = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_BYPASS_PROXY === 'true';
+const backendIsLocal5000 = config.api.url.includes('localhost:5000');
+const useProxyFlag = !(bypassProxyEnv || backendIsLocal5000);
+export const apiClient = new ApiClient(config.api.url, useProxyFlag);
 
 // ==============================================================================
 // HELPERS ESPECÍFICOS

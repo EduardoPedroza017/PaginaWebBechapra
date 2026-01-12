@@ -35,7 +35,7 @@ export function Header({
   role, 
   admin,
   userName = "Usuario",
-  userEmail = "usuario@bechapra.com"
+  userEmail = "usuario@bausen.com"
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -121,7 +121,7 @@ export function Header({
             </h1>
           </div>
           <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Sistema de Gestión Bechapra
+            Sistema de Gestión BAUSEN
           </p>
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function TalentHero({
   imageAlt,
   backLink = "/servicios",
   backLabel = "Volver",
-  ctaLabel = "Contactar a Bechapra",
+  ctaLabel = "Contactar a BAUSEN",
   ctaLink = "#contacto",
 }: TalentHeroProps) {
   return (

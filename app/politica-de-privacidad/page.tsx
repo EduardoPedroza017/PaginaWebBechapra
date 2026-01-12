@@ -10,7 +10,7 @@ export default function PoliticaPrivacidad() {
 	const sections = [
 		{
 			title: "1. Información que Recopilamos",
-			content: `Bechapra recopila información personal cuando usted voluntariamente nos la proporciona a través de formularios de contacto, solicitudes de servicio, o registro en nuestro sitio web. Esta información puede incluir:
+			content: `BAUSEN recopila información personal cuando usted voluntariamente nos la proporciona a través de formularios de contacto, solicitudes de servicio, o registro en nuestro sitio web. Esta información puede incluir:
 
 • Nombre completo
 • Correo electrónico
@@ -32,7 +32,7 @@ export default function PoliticaPrivacidad() {
 		},
 		{
 			title: "3. Protección de Datos Personales",
-			content: `En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, Bechapra implementa medidas de seguridad administrativas, técnicas y físicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado.
+			content: `En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, BAUSEN implementa medidas de seguridad administrativas, técnicas y físicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado.
 
 Nos comprometemos a:
 • Mantener la confidencialidad de su información
@@ -49,16 +49,16 @@ Nos comprometemos a:
 • Cancelar sus datos cuando considere que no se requieren
 • Oponerse al tratamiento de sus datos para fines específicos
 
-Para ejercer cualquiera de estos derechos, puede contactarnos a través de: contacto@bechapra.com`
+Para ejercer cualquiera de estos derechos, puede contactarnos a través de: contacto@bausen.com`
 		},
 		{
 			title: "5. Transferencia de Datos",
-			content: `Bechapra no transferirá sus datos personales a terceros sin su consentimiento, excepto en los siguientes casos:
+			content: `BAUSEN no transferirá sus datos personales a terceros sin su consentimiento, excepto en los siguientes casos:
 
 • Cuando sea necesario para la prestación de servicios contratados
 • Por requerimiento de autoridades competentes
 • A empresas subsidiarias o afiliadas bajo los mismos estándares de protección
-• Cuando sea necesario para proteger los intereses de Bechapra conforme a derecho`
+• Cuando sea necesario para proteger los intereses de BAUSEN conforme a derecho`
 		},
 		{
 			title: "6. Cookies y Tecnologías Similares",
@@ -66,17 +66,17 @@ Para ejercer cualquiera de estos derechos, puede contactarnos a través de: cont
 		},
 		{
 			title: "7. Modificaciones al Aviso de Privacidad",
-			content: `Bechapra se reserva el derecho de modificar este Aviso de Privacidad en cualquier momento. Cualquier cambio será notificado a través de nuestro sitio web. Le recomendamos revisar periódicamente este aviso para estar informado sobre cómo protegemos su información.`
+			content: `BAUSEN se reserva el derecho de modificar este Aviso de Privacidad en cualquier momento. Cualquier cambio será notificado a través de nuestro sitio web. Le recomendamos revisar periódicamente este aviso para estar informado sobre cómo protegemos su información.`
 		},
 		{
 			title: "8. Contacto",
 			content: `Para cualquier duda, aclaración o comentario sobre este Aviso de Privacidad, puede contactarnos:
 
-Correo electrónico: contacto@bechapra.com
+Correo electrónico: contacto@bausen.com
 Teléfono: (55) 8548 2311
 Ubicación: Ciudad de México, México
 
-Última actualización: Noviembre 2025`
+Última actualización: Noviembre 2026`
 		}
 	];
 
@@ -89,7 +89,7 @@ Ubicación: Ciudad de México, México
 			{/* Hero Section */}
 			<SubpageHero
 				title="Política de Privacidad"
-				subtitle="Aviso de Privacidad de Bechapra - Protección de Datos Personales"
+				subtitle="Aviso de Privacidad de BAUSEN - Protección de Datos Personales"
 			/>
 
 			{/* Content Section */}
@@ -103,7 +103,7 @@ Ubicación: Ciudad de México, México
 				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
 			>
 				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
-					<TranslateText text="Bechapra - Soluciones Empresariales, con domicilio en Ciudad de México, México, es responsable del tratamiento de sus datos personales. Este Aviso de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos su información personal en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares." />
+					<TranslateText text="BAUSEN - Soluciones Empresariales, con domicilio en Ciudad de México, México, es responsable del tratamiento de sus datos personales. Este Aviso de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos su información personal en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares." />
 				</p>
 			</motion.div>
 

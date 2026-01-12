@@ -27,7 +27,7 @@ export default function AcercaDePage() {
       {/* Historias de Clientes / Testimonios */}
       <TestimonialsSection />
 
-      {/* ¿Por qué Bechapra? */}
+      {/* ¿Por qué BAUSEN? */}
       <WhyUsSection />
 
       {/* Equipo Directivo */}

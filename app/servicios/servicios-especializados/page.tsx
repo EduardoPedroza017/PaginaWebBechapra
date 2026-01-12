@@ -98,10 +98,10 @@ export default function ServiciosEspecializadosPage() {
         title="Servicios Especializados"
         description="Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nomina y cumplimiento para que tu organizacion mantenga foco en el crecimiento."
         imageSrc="/image/servicios/servicios-especializados.jpg"
-        imageAlt="Servicios Especializados Bechapra"
+        imageAlt="Servicios Especializados BAUSEN"
         backLink="/servicios"
         backLabel="Volver"
-        ctaLabel="Contactar a Bechapra"
+        ctaLabel="Contactar a BAUSEN"
         ctaLink="#contacto"
       />
 
@@ -114,7 +114,7 @@ export default function ServiciosEspecializadosPage() {
       />
 
       <WhyUsSection
-        title="Por que elegir Bechapra?"
+        title="Por que elegir BAUSEN?"
         reasons={razones}
       />
 

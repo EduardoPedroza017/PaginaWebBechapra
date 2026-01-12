@@ -79,7 +79,7 @@ export default function CapitalHumanoPage() {
         title="Todos los servicios en un solo lugar"
         subtitle="Solicita una reunión para más información sobre cómo podemos ayudarte a optimizar tu gestión de capital humano."
         imageSrc="/image/contacto/contacto-men.avif"
-        imageAlt="Reunión de negocios Bechapra"
+        imageAlt="Reunión de negocios BAUSEN"
       />
 
       {/* Contact Section */}

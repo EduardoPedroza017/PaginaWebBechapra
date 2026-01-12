@@ -88,7 +88,7 @@ export default function WhyUsSection() {
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
             <TranslateText text="¿Por qué" />{" "}
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Bechapra
+              BAUSEN
             </span>
             ?
           </h2>

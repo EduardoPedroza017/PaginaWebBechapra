@@ -2,7 +2,7 @@
 
 ## 📋 Resumen de Mejoras Implementadas
 
-Se ha realizado una renovación completa del sistema de diseño del panel de administración de Bechapra, enfocándose en mejorar la experiencia de usuario, consistencia visual y modernidad.
+Se ha realizado una renovación completa del sistema de diseño del panel de administración de BAUSEN, enfocándose en mejorar la experiencia de usuario, consistencia visual y modernidad.
 
 ---
 
@@ -463,7 +463,7 @@ className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
 
 ## 👥 Créditos
 
-**Diseño y Desarrollo**: Sistema de Diseño Bechapra v2.0  
+**Diseño y Desarrollo**: Sistema de Diseño BAUSEN v2.0  
 **Framework**: Next.js 14 + TypeScript  
 **Styling**: Tailwind CSS v3  
 **Iconos**: Lucide React  
@@ -472,7 +472,7 @@ className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
 
 ## 📄 Licencia
 
-Uso interno - Bechapra CMS © 2025
+Uso interno - BAUSEN CMS © 2026
 
 ---
 

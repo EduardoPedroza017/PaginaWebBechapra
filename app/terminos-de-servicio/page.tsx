@@ -10,7 +10,7 @@ export default function TerminosServicio() {
 	const sections = [
 		{
 			title: "1. Aceptación de los Términos",
-			content: `Al acceder y utilizar el sitio web de Bechapra (en adelante, "el Sitio"), usted acepta estar sujeto a estos Términos de Servicio, todas las leyes y regulaciones aplicables, y acepta que es responsable del cumplimiento de las leyes locales aplicables.
+			content: `Al acceder y utilizar el sitio web de BAUSEN (en adelante, "el Sitio"), usted acepta estar sujeto a estos Términos de Servicio, todas las leyes y regulaciones aplicables, y acepta que es responsable del cumplimiento de las leyes locales aplicables.
 
 Si no está de acuerdo con alguno de estos términos, no debe utilizar o acceder a este sitio. Los materiales contenidos en este sitio están protegidos por las leyes de derechos de autor y marcas registradas aplicables.`
 		},
@@ -27,7 +27,7 @@ Usted se compromete a:
 		},
 		{
 			title: "3. Servicios Profesionales",
-			content: `Bechapra proporciona servicios de consultoría empresarial, capital humano, servicios legales, contables y organizacionales. La información presentada en este sitio web es de carácter informativo y no constituye una oferta de servicios definitiva.
+			content: `BAUSEN proporciona servicios de consultoría empresarial, capital humano, servicios legales, contables y organizacionales. La información presentada en este sitio web es de carácter informativo y no constituye una oferta de servicios definitiva.
 
 Los servicios específicos están sujetos a:
 • Evaluación previa de necesidades
@@ -39,17 +39,17 @@ Para contratar nuestros servicios, es necesario establecer comunicación directa
 		},
 		{
 			title: "4. Propiedad Intelectual",
-			content: `Todo el contenido incluido en este sitio, como textos, gráficos, logotipos, iconos, imágenes, clips de audio, descargas digitales y compilaciones de datos, es propiedad de Bechapra o de sus proveedores de contenido y está protegido por las leyes mexicanas e internacionales de derechos de autor.
+			content: `Todo el contenido incluido en este sitio, como textos, gráficos, logotipos, iconos, imágenes, clips de audio, descargas digitales y compilaciones de datos, es propiedad de BAUSEN o de sus proveedores de contenido y está protegido por las leyes mexicanas e internacionales de derechos de autor.
 
 Queda expresamente prohibido:
 • Reproducir, duplicar, copiar, vender o revender cualquier contenido sin autorización
-• Usar marcas comerciales de Bechapra sin consentimiento escrito
+• Usar marcas comerciales de BAUSEN sin consentimiento escrito
 • Crear trabajos derivados del contenido del sitio
 • Eliminar avisos de derechos de autor o marcas registradas`
 		},
 		{
 			title: "5. Limitación de Responsabilidad",
-			content: `Bechapra no será responsable de ningún daño directo, indirecto, incidental, consecuente o punitivo que resulte de:
+			content: `BAUSEN no será responsable de ningún daño directo, indirecto, incidental, consecuente o punitivo que resulte de:
 
 • El uso o la imposibilidad de usar el sitio web
 • Acceso no autorizado a nuestros servidores o información
@@ -61,13 +61,13 @@ El sitio web se proporciona "tal cual" sin garantías de ningún tipo, ya sean e
 		},
 		{
 			title: "6. Enlaces a Sitios de Terceros",
-			content: `Este sitio puede contener enlaces a sitios web de terceros que no son operados por Bechapra. No tenemos control sobre el contenido, políticas de privacidad o prácticas de sitios de terceros y no asumimos ninguna responsabilidad por ellos.
+			content: `Este sitio puede contener enlaces a sitios web de terceros que no son operados por BAUSEN. No tenemos control sobre el contenido, políticas de privacidad o prácticas de sitios de terceros y no asumimos ninguna responsabilidad por ellos.
 
 Le recomendamos que lea los términos y condiciones y las políticas de privacidad de cualquier sitio web de terceros que visite.`
 		},
 		{
 			title: "7. Modificaciones a los Términos",
-			content: `Bechapra se reserva el derecho de revisar estos términos de servicio en cualquier momento sin previo aviso. Al usar este sitio web, usted acepta estar sujeto a la versión actual de estos términos de servicio.
+			content: `BAUSEN se reserva el derecho de revisar estos términos de servicio en cualquier momento sin previo aviso. Al usar este sitio web, usted acepta estar sujeto a la versión actual de estos términos de servicio.
 
 Es su responsabilidad revisar periódicamente estos términos para estar al tanto de cualquier actualización.`
 		},
@@ -79,11 +79,11 @@ Es su responsabilidad revisar periódicamente estos términos para estar al tant
 			title: "9. Contacto",
 			content: `Si tiene alguna pregunta sobre estos Términos de Servicio, puede contactarnos:
 
-Correo electrónico: contacto@bechapra.com
+Correo electrónico: contacto@bausen.com
 Teléfono: (55) 8548 2311
 Ubicación: Ciudad de México, México
 
-Fecha de última actualización: Noviembre 2025`
+Fecha de última actualización: Noviembre 2026`
 		}
 	];
 
@@ -96,7 +96,7 @@ Fecha de última actualización: Noviembre 2025`
 			{/* Hero Section */}
 			<SubpageHero
 				title="Términos de Servicio"
-				subtitle="Condiciones de Uso del Sitio Web de Bechapra"
+				subtitle="Condiciones de Uso del Sitio Web de BAUSEN"
 			/>
 
 			{/* Content Section */}
@@ -110,7 +110,7 @@ Fecha de última actualización: Noviembre 2025`
 				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
 			>
 				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
-					<TranslateText text="Bienvenido a Bechapra. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos." />
+					<TranslateText text="Bienvenido a BAUSEN. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos." />
 				</p>
 			</motion.div>
 

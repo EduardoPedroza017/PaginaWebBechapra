@@ -30,10 +30,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { iconPath: '/image/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bechapra', label: 'Facebook' },
-  { iconPath: '/image/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bechapra', label: 'LinkedIn' },
-  { iconPath: '/image/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bechapra', label: 'YouTube' },
-  { iconPath: '/image/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bechapra', label: 'Instagram' },
+  { iconPath: '/image/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bausen', label: 'Facebook' },
+  { iconPath: '/image/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bausen', label: 'LinkedIn' },
+  { iconPath: '/image/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bausen', label: 'YouTube' },
+  { iconPath: '/image/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bausen', label: 'Instagram' },
 ];
 
 interface FooterLinkSectionProps {
@@ -256,8 +256,8 @@ export default function Footer() {
                     </div>
                       <div>
                         <p className="text-white font-medium text-sm mb-1">Email</p>
-                        <a href="mailto:contact@bechapra.com" className="text-white/80 hover:text-white transition-colors break-all">
-                          contact@bechapra.com
+                        <a href="mailto:contact@bausen.com" className="text-white/80 hover:text-white transition-colors break-all">
+                          contact@bausen.com
                         </a>
                     </div>
                   </div>

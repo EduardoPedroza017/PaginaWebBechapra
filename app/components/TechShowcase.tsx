@@ -63,7 +63,7 @@ export default function TechShowcase() {
         <div className="rounded-3xl bg-gradient-to-br from-white/60 to-blue-50 p-8 md:p-10 shadow-lg border border-slate-100">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-1 flex flex-col items-start gap-3">
-              <h2 className="text-4xl font-extrabold">Bechapra</h2>
+              <h2 className="text-4xl font-extrabold">BAUSEN</h2>
               <p className="text-slate-600">Innovación en Capital Humano, Tecnología y Servicios.</p>
               <div className="mt-4 flex gap-3">
                 <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">SVG</span>

@@ -340,7 +340,7 @@ https://nextjs.org/docs/advanced-features/analytics
 ### Quick Start Command
 ```bash
 # 1. Make sure you're in the frontend directory
-cd c:/Users/luis1/OneDrive/Documentos/BECHAPRA/V1/frontend
+cd c:/Users/luis1/OneDrive/Documentos/BAUSEN/V1/frontend
 
 # 2. Start dev server
 npm run dev

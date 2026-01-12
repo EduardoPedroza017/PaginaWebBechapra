@@ -46,7 +46,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center z-40">
             <Image
               src={logoUrl}
-              alt="Bechapra"
+              alt="BAUSEN"
               width={100}
               height={28}
               priority
@@ -121,7 +121,7 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-between p-4 border-b sticky top-0 z-10 border-slate-100 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
             <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-              <Image src={logoUrl} alt="Bechapra" width={100} height={28} className="h-7 w-auto block" onError={() => setLogoUrl(defaultLogo)} />
+              <Image src={logoUrl} alt="BAUSEN" width={100} height={28} className="h-7 w-auto block" onError={() => setLogoUrl(defaultLogo)} />
             </Link>
             <button
               className="bg-slate-100 p-2 rounded-full transition-colors text-slate-500 hover:bg-slate-200 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-blue-400"
@@ -182,7 +182,7 @@ export default function Navbar() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="pt-4">
-              <a href="https://bechapra.com.mx" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/30 active:scale-95 transition-all">
+              <a href="https://bausen.com.mx" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/30 active:scale-95 transition-all">
                 <UserCheck className="w-5 h-5" />
                 <TranslateText text="¿Eres colaborador?" />
               </a>

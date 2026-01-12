@@ -9,7 +9,7 @@ import { config } from "@/lib/config"; // Configuración centralizada
 
 const contactInfo = [
   { icon: Phone, label: "Teléfono", value: "+52 (442) 123 4567" },
-  { icon: Mail, label: "Email", value: "contacto@bechapra.com" },
+  { icon: Mail, label: "Email", value: "contacto@bausen.com" },
   { icon: MapPin, label: "Ubicación", value: "Querétaro, México" },
   { icon: Clock, label: "Horario", value: "Lun - Vie: 9:00 - 18:00" },
 ];
@@ -40,10 +40,10 @@ export default function ContactSection() {
   const [error, setError] = useState<string | null>(null);
   const [selectedState, setSelectedState] = useState<string>("");
   const [socialNetworks] = useState<SocialNetwork[]>([
-    { name: "Facebook", url: "https://facebook.com/bechapra", icon: "F" },
-    { name: "Instagram", url: "https://instagram.com/bechapra", icon: "I" },
-    { name: "LinkedIn", url: "https://linkedin.com/company/bechapra", icon: "L" },
-    { name: "Twitter", url: "https://twitter.com/bechapra", icon: "X" },
+    { name: "Facebook", url: "https://facebook.com/bausen", icon: "F" },
+    { name: "Instagram", url: "https://instagram.com/bausen", icon: "I" },
+    { name: "LinkedIn", url: "https://linkedin.com/company/bausen", icon: "L" },
+    { name: "Twitter", url: "https://twitter.com/bausen", icon: "X" },
   ]);
 
   // Fetch branches con configuración centralizada
@@ -106,14 +106,14 @@ export default function ContactSection() {
   // Example fallback branch when there are no active branches
   const exampleBranch: Branch = {
     id: 'example',
-    name: 'Bechapra (Ejemplo)',
+    name: 'BAUSEN (Ejemplo)',
     description: 'Sucursal de ejemplo',
     address: 'Av. Paseo de la Reforma 505',
     city: 'Ciudad de México',
     state: 'CDMX',
     locationUrl: 'https://www.google.com/maps?q=19.4326,-99.1332&z=15&output=embed',
     coordinates: { lat: 19.4326, lng: -99.1332 },
-    contact: { phone: '+52 55 1234 5678', email: 'contacto@bechapra.com' },
+    contact: { phone: '+52 55 1234 5678', email: 'contacto@bausen.com' },
     isActive: false,
   };
 
@@ -249,7 +249,7 @@ export default function ContactSection() {
                         whileHover={{ scale: 1.1, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                         className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-                        aria-label={`${social.name} de Bechapra`}
+                        aria-label={`${social.name} de BAUSEN`}
                       >
                         <span className="text-xs text-white uppercase font-bold">{social.icon}</span>
                       </motion.a>
@@ -340,7 +340,7 @@ export default function ContactSection() {
                     <div className="relative rounded-2xl overflow-hidden border border-white/30 shadow-xl bg-white">
                       {mapSrc ? (
                         <iframe
-                          title={`Ubicación de ${selectedBranch?.name || 'Bechapra'}`}
+                          title={`Ubicación de ${selectedBranch?.name || 'BAUSEN'}`}
                           src={mapSrc}
                           width="100%"
                           height="320"

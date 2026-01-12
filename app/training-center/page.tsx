@@ -293,12 +293,12 @@ export default function TrainingCenterPage() {
         </div>
       </section>
 
-      {/* Bechapra Training Center Section */}
+      {/* BAUSEN Training Center Section */}
       <section className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Cónoce Bechapra Training Center
+              Cónoce BAUSEN Training Center
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Nuestra plataforma de educación en línea avalada por el Colegio de Contadores Públicos de México

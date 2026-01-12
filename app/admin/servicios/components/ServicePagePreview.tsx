@@ -22,7 +22,7 @@ export const ServicePagePreview: React.FC<Props> = ({ heroTitle, heroSubtitle, h
           </h2>
           <p className="text-slate-300 max-w-lg">{heroSubtitle || 'Subtítulo o introducción del servicio que aparece en el hero.'}</p>
           <div className="mt-6">
-            <button className="px-5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 font-semibold">Contactar a Bechapra</button>
+            <button className="px-5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 font-semibold">Contactar a BAUSEN</button>
           </div>
         </div>
         <div className="w-full flex justify-center">

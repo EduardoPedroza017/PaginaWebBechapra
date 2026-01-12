@@ -1,4 +1,4 @@
-# 📦 GUÍA DE DESPLIEGUE - FRONTEND BECHAPRA V1
+# 📦 GUÍA DE DESPLIEGUE - FRONTEND BAUSEN V1
 
 ## ✅ PRE-DESPLIEGUE CHECKLIST
 
@@ -30,7 +30,7 @@ Crea un archivo `.env.production`:
 
 ```env
 # API
-NEXT_PUBLIC_API_URL=https://api.bechapra.com    # Tu dominio de API
+NEXT_PUBLIC_API_URL=https://api.bausen.com    # Tu dominio de API
 
 # Analytics (opcional)
 NEXT_PUBLIC_GA_ID=your-ga-id
@@ -62,7 +62,7 @@ npm i -g vercel
 vercel link
 
 # 3. Agregar env vars en dashboard.vercel.com
-# NEXT_PUBLIC_API_URL=https://api.bechapra.com
+# NEXT_PUBLIC_API_URL=https://api.bausen.com
 
 # 4. Desplegar
 vercel deploy --prod
@@ -78,7 +78,7 @@ yarn build
 yarn start
 
 # 3. O con PM2
-pm2 start npm --name "bechapra-frontend" -- start
+pm2 start npm --name "bausen-frontend" -- start
 ```
 
 ### Opción 3: Docker
@@ -101,12 +101,12 @@ CMD ["yarn", "start"]
 
 ```bash
 # Build image
-docker build -t bechapra-frontend .
+docker build -t bausen-frontend .
 
 # Run container
 docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_API_URL=https://api.bechapra.com \
-  bechapra-frontend
+  -e NEXT_PUBLIC_API_URL=https://api.bausen.com \
+  bausen-frontend
 ```
 
 ## 🔍 POST-DESPLIEGUE VALIDACIÓN
@@ -115,13 +115,13 @@ Después de desplegar, verifica:
 
 1. **Carga inicial**
    ```bash
-   curl https://bechapra.com
+   curl https://bausen.com
    # ✅ Debe responder con HTML
    ```
 
 2. **API connectivity**
    ```bash
-   curl https://bechapra.com/api/news
+   curl https://bausen.com/api/news
    # ✅ Debe devolver noticias
    ```
 
@@ -219,6 +219,6 @@ En caso de problemas:
 
 ---
 
-**Última actualización**: Enero 3, 2025
+**Última actualización**: Enero 3, 2026
 **Versión**: v1.0
 **Estado**: ✅ Listo para producción

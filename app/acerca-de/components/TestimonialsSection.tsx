@@ -10,7 +10,7 @@ const testimonials = [
     nombre: "María López",
     empresa: "Grupo Alfa",
     texto:
-      "Bechapra nos ayudó a transformar nuestra cultura organizacional y optimizar procesos clave. ¡Resultados tangibles en meses!",
+      "BAUSEN nos ayudó a transformar nuestra cultura organizacional y optimizar procesos clave. ¡Resultados tangibles en meses!",
     resultado: "Reducción del 40% en rotación anual.",
     foto: "/imagen/icon/CapitalHumano_IconLight_Azul@2x.png",
     rating: 5,
@@ -19,7 +19,7 @@ const testimonials = [
     nombre: "Carlos Méndez",
     empresa: "Finanzas XYZ",
     texto:
-      "El equipo de Bechapra es profesional, cercano y siempre proactivo. Los recomendamos ampliamente.",
+      "El equipo de BAUSEN es profesional, cercano y siempre proactivo. Los recomendamos ampliamente.",
     resultado: "Ahorro de 120 horas/mes.",
     foto: "/imagen/icon/Servicios Administrativos_IconLight_Azul@2x.png",
     rating: 5,

@@ -16,13 +16,13 @@ export default function DivisionsSection() {
       icon: <FiCpu size={44} color="#fff" />
     },
     {
-      label: "Bechapra Studio",
+      label: "BAUSEN Studio",
       description: "Diseño y desarrollo de experiencias digitales",
       image: "/imagen/division-studio.jpg",
       icon: <FiMonitor size={44} color="#fff" />
     },
     {
-      label: "Bechapra Consultores",
+      label: "BAUSEN Consultores",
       description: "Asesoría estratégica y consultoría empresarial",
       image: "/imagen/division-consultores.jpg",
       icon: <FiBriefcase size={44} color="#fff" />
@@ -60,7 +60,7 @@ export default function DivisionsSection() {
     <section id="divisiones" className="mb-16 sm:mb-24 md:mb-32">
       <AnimatedSection>
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16 px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white"><TranslateText text="Divisiones de Bechapra" /></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white"><TranslateText text="Divisiones de BAUSEN" /></h2>
           <div className="w-20 h-1 bg-blue-600 dark:bg-blue-500 rounded-full mx-auto mb-6" />
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
             <TranslateText text="Especializadas en diferentes áreas para ofrecerte soluciones a medida" />

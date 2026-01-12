@@ -24,7 +24,7 @@ export default function ServiceHero({
   imageAlt,
   backLink = "/servicios",
   backLabel = "Volver",
-  ctaLabel = "Contactar a Bechapra",
+  ctaLabel = "Contactar a BAUSEN",
   ctaLink = "#contacto",
 }: ServiceHeroProps) {
   return (

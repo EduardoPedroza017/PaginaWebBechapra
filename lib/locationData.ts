@@ -24,7 +24,7 @@ export const companyLocation: LocationData = {
   country: "México",
   zipCode: "06500",
   phone: "+52 55 1234 5678",
-  email: "contacto@bechapra.com",
+  email: "contacto@bausen.com",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=19.4326,-99.1332",
   coordinates: {
     lat: 19.4326,

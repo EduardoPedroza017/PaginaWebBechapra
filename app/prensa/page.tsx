@@ -243,7 +243,7 @@ export default function PrensaPage() {
                       <Mail className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="font-medium">prensa@bechapra.com</div>
+                      <div className="font-medium">prensa@bausen.com</div>
                       <div className="text-sm text-blue-200">
                         <TranslateText text="Respuesta en 24h" />
                       </div>
@@ -441,7 +441,7 @@ export default function PrensaPage() {
               </motion.a>
 
               <motion.a
-                href="mailto:prensa@bechapra.com"
+                href="mailto:prensa@bausen.com"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300"

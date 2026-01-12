@@ -88,7 +88,7 @@ export function WelcomeCard({
           <p className={`text-xs mt-1 ${
             isDark ? 'text-slate-400' : 'text-slate-600'
           }`}>
-            Bienvenido al sistema de gestión de Bechapra
+            Bienvenido al sistema de gestión de BAUSEN
           </p>
         </div>
       </div>

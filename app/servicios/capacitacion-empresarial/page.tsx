@@ -103,7 +103,7 @@ export default function CapacitacionEmpresarialPage() {
         highlightWord="Empresarial"
         description="Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento a tu equipo."
         imageSrc="/image/servicios/capacitacionempresarial.jpg"
-        imageAlt="Capacitación Empresarial Bechapra"
+        imageAlt="Capacitación Empresarial BAUSEN"
       />
 
       <ProgramsGrid title="Nuestros Programas de Capacitación" programs={programs} />

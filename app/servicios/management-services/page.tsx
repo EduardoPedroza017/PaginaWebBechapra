@@ -52,7 +52,7 @@ export default function ManagementServicesPage() {
         highlightWord="negocio"
         description="Desde el manejo de tus finanzas hasta la proteccion legal de tu empresa!"
         imageSrc="/image/servicios/management-services.jpg"
-        imageAlt="Management Services Bechapra"
+        imageAlt="Management Services BAUSEN"
         backLink="/servicios"
         backLabel="Volver"
         ctaLabel="Solicitar asesoria"

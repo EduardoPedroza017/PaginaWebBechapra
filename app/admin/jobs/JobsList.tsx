@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { Briefcase, Clock, MapPin, DollarSign, Building, Users, Calendar, X } from 'lucide-react';
 import { TranslateText } from '@/components/TranslateText';
 import { motion, AnimatePresence } from 'framer-motion';
+import JobViewModal from './JobViewModal';
+import JobEditModal from './JobEditModal';
+import JobDeleteModal from './JobDeleteModal';
 
 interface Job {
   id?: string;
   _id?: string;
   title: string;
   description?: string;
+  image_url?: string;
   location?: string;
   salary?: string;
   type?: string;
@@ -27,112 +31,7 @@ interface JobsListProps {
   onDelete?: (job: Job) => void;
 }
 
-// Define the ModalProps interface
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}
-
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-        >
-          <div className="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
-              aria-label="Cerrar"
-            >
-              <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-            </button>
-            {children}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-// Example usage for Delete Modal
-const DeleteModal: React.FC<{ isOpen: boolean; onClose: () => void; onDelete: () => void }> = ({ isOpen, onClose, onDelete }) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
-    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Confirmar eliminación</h2>
-    <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">¿Estás seguro de que deseas eliminar esta vacante?</p>
-    <div className="flex justify-end gap-3">
-      <button
-        onClick={onClose}
-        className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
-      >
-        Cancelar
-      </button>
-      <button
-        onClick={onDelete}
-        className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
-      >
-        Eliminar
-      </button>
-    </div>
-  </Modal>
-);
-
-// Example usage for Edit Modal
-const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; job: Job; onSave: (updatedJob: Job) => void }> = ({ isOpen, onClose, job, onSave }) => {
-  const [updatedJob, setUpdatedJob] = useState(job);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setUpdatedJob((prev) => ({ ...prev, [name]: value }));
-  };
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar vacante</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSave(updatedJob);
-        }}
-        className="space-y-4"
-      >
-        <div className="space-y-2">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Título
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            value={updatedJob.title}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border"
-          />
-        </div>
-        {/* Add other fields similarly */}
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </Modal>
-  );
-};
+// modals are in separate files: JobViewModal, JobEditModal, JobDeleteModal
 
 const JobsList: React.FC<JobsListProps> = ({ 
   jobs, 
@@ -181,6 +80,10 @@ const JobsList: React.FC<JobsListProps> = ({
     );
   }
 
+  const [viewJob, setViewJob] = useState<Job | null>(null);
+  const [deleteJob, setDeleteJob] = useState<Job | null>(null);
+  const [editJob, setEditJob] = useState<Job | null>(null);
+
   if (jobs.length === 0) {
     return (
       <div className="text-center py-16">
@@ -217,7 +120,10 @@ const JobsList: React.FC<JobsListProps> = ({
         {jobs.map((job) => (
           <div
             key={getJobId(job)}
-            onClick={() => onJobClick?.(job)}
+            onClick={() => {
+              setViewJob(job);
+              onJobClick?.(job);
+            }}
             className={`
               group relative bg-white dark:bg-gray-900 rounded-2xl p-6
               border border-gray-200 dark:border-gray-800
@@ -232,8 +138,14 @@ const JobsList: React.FC<JobsListProps> = ({
             
             {/* Header de la tarjeta */}
             <div className="relative flex items-start gap-4 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg">
-                <Briefcase className="w-6 h-6 text-white" />
+              <div className="p-0 rounded-xl overflow-hidden w-12 h-12 flex items-center justify-center">
+                {job.image_url ? (
+                  <img src={job.image_url} alt={job.title} className="w-12 h-12 object-cover rounded-xl" />
+                ) : (
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg">
+                    <Briefcase className="w-6 h-6 text-white" />
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 mb-1">
@@ -313,23 +225,23 @@ const JobsList: React.FC<JobsListProps> = ({
             </div>
 
             {/* Botones de acción */}
-            <div className="relative mt-6 flex gap-2">
+              <div className="relative mt-6 flex gap-2">
               <button
-                onClick={() => onJobClick?.(job)}
+                onClick={() => { setViewJob(job); onJobClick?.(job); }}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium text-sm transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
                 <TranslateText text="Ver detalles" />
               </button>
 
               <button
-                onClick={() => onEdit?.(job)}
+                onClick={() => setEditJob(job)}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium text-sm transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
                 <TranslateText text="Editar" />
               </button>
 
               <button
-                onClick={() => onDelete?.(job)}
+                onClick={() => setDeleteJob(job)}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium text-sm transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
                 <TranslateText text="Eliminar" />
@@ -338,6 +250,30 @@ const JobsList: React.FC<JobsListProps> = ({
           </div>
         ))}
       </div>
+      {/* View Modal */}
+      <JobViewModal isOpen={!!viewJob} onClose={() => setViewJob(null)} job={viewJob} />
+
+      {/* Edit Modal */}
+      {editJob && (
+        <JobEditModal
+          isOpen={!!editJob}
+          onClose={() => setEditJob(null)}
+          job={editJob}
+          onSave={(updated) => {
+            onEdit?.(updated);
+            setEditJob(null);
+          }}
+        />
+      )}
+
+      {/* Delete Modal */}
+      {deleteJob && (
+        <JobDeleteModal
+          isOpen={!!deleteJob}
+          onClose={() => setDeleteJob(null)}
+          onDelete={() => { onDelete?.(deleteJob); setDeleteJob(null); }}
+        />
+      )}
     </div>
   );
 };

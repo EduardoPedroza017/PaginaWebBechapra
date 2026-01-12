@@ -95,8 +95,8 @@ export const sidebarItems: SidebarItem[] = [
     section: "Usuarios"
   },
   { 
-    label: "Directivos", 
-    path: "/admin/organigrama", 
+    label: "Ejecutivos", 
+    path: "/admin/ejecutivos", 
     icon: <UserCheck size={20} />,
     section: "Usuarios"
   },
@@ -254,7 +254,7 @@ export function Sidebar({
               }`}>
                 <NextImage
                   src="/image/LOGO/Bausen.png"
-                  alt="Logo Bechapra"
+                  alt="Logo BAUSEN"
                   fill
                   sizes="40px"
                   className="object-contain p-2"
@@ -357,7 +357,7 @@ export function Sidebar({
             : 'border-slate-200'
         }`}>
           <p className={`text-xs text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            © {new Date().getFullYear()} Bechapra CMS
+            © {new Date().getFullYear()} BAUSEN CMS
           </p>
         </div>
       </aside>

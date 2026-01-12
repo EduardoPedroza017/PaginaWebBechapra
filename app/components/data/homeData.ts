@@ -50,28 +50,28 @@ export const socialLinks: SocialLink[] = [
     name: "LinkedIn",
     url: "https://www.linkedin.com/",
     icon: "/image/icon/Iconos_Redes/Linkedin_PositivioStroke@2x.png",
-    label: "Business Services Bechapra",
+    label: "Business Services BAUSEN",
   },
   {
     id: "facebook",
     name: "Facebook",
     url: "https://www.facebook.com/",
     icon: "/image/icon/Iconos_Redes/Facebook_PositivioStroke@2x.png",
-    label: "Business Services Bechapra",
+    label: "Business Services BAUSEN",
   },
   {
     id: "instagram",
     name: "Instagram",
-    url: "https://www.instagram.com/bechapra",
+    url: "https://www.instagram.com/bausen",
     icon: "/image/icon/Iconos_Redes/Instagram_PositivioStroke@2x.png",
-    label: "bechapra",
+    label: "bausen",
   },
   {
     id: "youtube",
     name: "YouTube",
     url: "https://www.youtube.com/",
     icon: "/image/icon/Iconos_Redes/Youtube@2x.png",
-    label: "Business Services Bechapra",
+    label: "Business Services BAUSEN",
   },
 ];
 

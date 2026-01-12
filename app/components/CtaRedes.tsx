@@ -21,7 +21,7 @@ export default function CtaRedes() {
         <div className="absolute inset-0">
           <Image
             src="/image/agenda/ahenda.avif"
-            alt="Bechapra Business Services"
+            alt="BAUSEN Business Services"
             fill
             className="object-cover opacity-30"
           />

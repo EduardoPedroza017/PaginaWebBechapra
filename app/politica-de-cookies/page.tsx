@@ -63,7 +63,7 @@ Las cookies pueden ser:
 		},
 		{
 			title: "¿Cómo Utilizamos las Cookies?",
-			content: `Bechapra utiliza cookies para mejorar su experiencia en nuestro sitio web y proporcionar servicios personalizados. Usamos cookies para:
+			content: `BAUSEN utiliza cookies para mejorar su experiencia en nuestro sitio web y proporcionar servicios personalizados. Usamos cookies para:
 
 • Mantener su sesión activa mientras navega por el sitio
 • Recordar sus preferencias y configuraciones
@@ -107,13 +107,13 @@ Le recomendamos revisar esta página regularmente para mantenerse informado sobr
 			title: "Más Información",
 			content: `Si tiene preguntas sobre nuestra Política de Cookies o cómo manejamos sus datos, no dude en contactarnos:
 
-Correo electrónico: contacto@bechapra.com
+Correo electrónico: contacto@bausen.com
 Teléfono: (55) 8548 2311
 Ubicación: Ciudad de México, México
 
 También puede consultar nuestra Política de Privacidad para obtener información detallada sobre cómo protegemos sus datos personales.
 
-Última actualización: Noviembre 2025`
+Última actualización: Noviembre 2026`
 		}
 	];
 
@@ -126,7 +126,7 @@ También puede consultar nuestra Política de Privacidad para obtener informaci�
 			{/* Hero Section */}
 			<SubpageHero
 				title="Política de Cookies"
-				subtitle="Información sobre el uso de cookies en el sitio web de Bechapra"
+				subtitle="Información sobre el uso de cookies en el sitio web de BAUSEN"
 			/>
 
 			{/* Content Section */}

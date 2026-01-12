@@ -229,11 +229,41 @@ class AdminApiClient {
   }
 
   async updateJob(id: string, data: any) {
-    return apiClient.put(`/api/jobs/${id}`, data);
+    // Attach auth headers from storage (prefers token, otherwise X-Role/X-Admin)
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        const role = localStorage.getItem('role') || sessionStorage.getItem('role') || '';
+        const admin = localStorage.getItem('admin') || sessionStorage.getItem('admin') || '';
+        const userEmail = localStorage.getItem('user_email') || sessionStorage.getItem('user_email') || '';
+        if (userEmail) headers['X-User'] = userEmail;
+        if (role) headers['X-Role'] = role;
+        if (admin) headers['X-Admin'] = String(admin);
+      }
+    }
+    return apiClient.put(`/api/jobs/${id}`, data, { headers });
   }
 
   async deleteJob(id: string) {
-    return apiClient.delete(`/api/jobs/${id}`);
+    // Attach auth headers from storage (prefers token, otherwise X-Role/X-Admin)
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        const role = localStorage.getItem('role') || sessionStorage.getItem('role') || '';
+        const admin = localStorage.getItem('admin') || sessionStorage.getItem('admin') || '';
+        const userEmail = localStorage.getItem('user_email') || sessionStorage.getItem('user_email') || '';
+        if (userEmail) headers['X-User'] = userEmail;
+        if (role) headers['X-Role'] = role;
+        if (admin) headers['X-Admin'] = String(admin);
+      }
+    }
+    return apiClient.delete(`/api/jobs/${id}`, { headers });
   }
 
   // INTERNSHIPS

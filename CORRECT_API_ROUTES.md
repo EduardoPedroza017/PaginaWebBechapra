@@ -1,4 +1,4 @@
-# RUTAS API CORRECTAS - BECHAPRA BACKEND V1
+# RUTAS API CORRECTAS - BAUSEN BACKEND V1
 
 **IMPORTANTE**: Este documento contiene las rutas API EXACTAS del backend.  
 Usar ÚNICAMENTE estas rutas en el frontend.
@@ -344,6 +344,6 @@ Para cada ruta que uses en el frontend:
 
 ---
 
-**Última actualización**: 2025-01-21  
+**Última actualización**: 2026-01-21  
 **Backend version**: V1  
 **Frontend compatible**: Post-optimization

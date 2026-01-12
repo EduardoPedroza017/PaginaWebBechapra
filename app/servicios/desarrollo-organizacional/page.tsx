@@ -57,7 +57,7 @@ export default function DesarrolloOrganizacionalPage() {
         subtitle="Desarrollo Organizacional"
         description="Potencia el crecimiento y la eficacia de tu empresa a traves de nuestros servicios de Desarrollo Organizacional!"
         imageSrc="/image/servicios/desarrollorganizacional.jpg"
-        imageAlt="Desarrollo Organizacional Bechapra"
+        imageAlt="Desarrollo Organizacional BAUSEN"
         iconComponent={Users}
         backLink="/servicios"
         backLabel="Volver"

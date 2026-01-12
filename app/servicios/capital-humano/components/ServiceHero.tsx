@@ -114,7 +114,7 @@ export default function ServiceHero({
                 href="#contacto"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white font-bold text-lg rounded-2xl shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
               >
-                <TranslateText text="Contactar a Bechapra" />
+                <TranslateText text="Contactar a BAUSEN" />
                 <ArrowRight size={20} />
               </Link>
             </motion.div>

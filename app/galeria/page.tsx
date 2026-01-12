@@ -36,7 +36,7 @@ export default function GaleriaPage() {
     <main className="max-w-6xl mx-auto py-12 px-4">
       <h1 className="text-4xl font-extrabold mb-4 text-center text-blue-700 dark:text-blue-400">Galería de Imágenes</h1>
       <p className="text-center text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-        Explora nuestra colección de imágenes de eventos, sucursales y momentos destacados de Bechapra. Haz clic en cualquier imagen para ampliarla.
+        Explora nuestra colección de imágenes de eventos, sucursales y momentos destacados de BAUSEN. Haz clic en cualquier imagen para ampliarla.
       </p>
       {loading ? (
         <div className="text-center text-slate-500">Cargando imágenes...</div>

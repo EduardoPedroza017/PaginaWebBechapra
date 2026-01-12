@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, FormEvent } from 'react';
+import { apiClient } from '@/lib/api-client';
 import { PlusCircle, Loader2, X } from 'lucide-react';
 import { TranslateText } from '@/components/TranslateText';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,6 +27,9 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
   const [location, setLocation] = useState('');
   const [modality, setModality] = useState('');
   const [salary, setSalary] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
@@ -45,6 +49,7 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
         location: location.trim(),
         modality: modality.trim(),
         salary: salary.trim(),
+        image_url: imageUrl.trim() || undefined,
       });
       setTitle('');
       setDescription('');
@@ -177,6 +182,68 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
                       required
                       className="w-full px-4 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
+                  </div>
+                </div>
+
+                {/* Imagen (opcional) */}
+                <div className="space-y-3 md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Imagen (elige archivo o pega URL)
+                  </label>
+
+                  <div className="flex gap-3 items-center">
+                    <input
+                      id="jobImageFile"
+                      type="file"
+                      accept="image/*"
+                      disabled={isSubmitting || uploadingImage}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          setUploadingImage(true);
+                          const fd = new FormData();
+                          fd.append('file', file);
+                          const res = await apiClient.upload('/api/uploads', fd, { retry: 1 });
+                          // `res.url` should be the public URL returned by backend
+                          if (res && res.url) {
+                            setImageUrl(res.url);
+                            setPreviewUrl(res.url);
+                          }
+                        } catch (err) {
+                          console.error('Error uploading image:', err);
+                        } finally {
+                          setUploadingImage(false);
+                        }
+                      }}
+                      className="text-sm"
+                    />
+
+                    <div className="flex-1">
+                      <input
+                        id="jobImage"
+                        type="url"
+                        value={imageUrl}
+                        onChange={(e) => {
+                          setImageUrl(e.target.value);
+                          setPreviewUrl(e.target.value || null);
+                        }}
+                        placeholder="https://example.com/logo.png"
+                        disabled={isSubmitting}
+                        className="w-full px-4 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+
+                    <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700">
+                      {uploadingImage ? (
+                        <svg className="animate-spin w-6 h-6 text-gray-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                      ) : previewUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={previewUrl.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${previewUrl}` : previewUrl} alt="preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs text-gray-500">Previa</span>
+                      )}
+                    </div>
                   </div>
                 </div>
 

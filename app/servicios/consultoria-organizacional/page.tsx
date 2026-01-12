@@ -57,7 +57,7 @@ export default function ConsultoriaOrganizacionalPage() {
 
       <HowWeWork
         title="Cómo Trabajamos"
-        description="En Bechapra creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:"
+        description="En BAUSEN creemos en la colaboración estrecha y el enfoque personalizado para cada cliente. Nuestro proceso de trabajo se divide en tres pasos clave:"
         steps={howWeWorkSteps}
       />
 

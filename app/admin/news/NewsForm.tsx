@@ -693,7 +693,7 @@ function NewsFormComponent({ onCreated, theme }: Props) {
                       <p className={`text-xs ${
                         theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
                       }`}>
-                        www.bechapra.com/noticias/{generateSlug(title || 'nuevo')}
+                        www.bausen.com/noticias/{generateSlug(title || 'nuevo')}
                       </p>
                       <p className={`text-xs mt-1 ${
                         theme === 'dark' ? 'text-gray-400' : 'text-gray-600'

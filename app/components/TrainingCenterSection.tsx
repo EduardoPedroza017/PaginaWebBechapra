@@ -48,7 +48,7 @@ export default function TrainingCenterSection() {
           <TranslateText text="Formación de talento" />
         </span>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
-          Bechapra Training Center
+          BAUSEN Training Center
         </h2>
         <p className="text-lg max-w-xl mx-auto text-slate-600 dark:text-slate-300">
           <TranslateText text="Formamos y conectamos el talento del futuro con las mejores oportunidades" />
