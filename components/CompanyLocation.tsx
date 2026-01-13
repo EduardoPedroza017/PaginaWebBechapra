@@ -44,19 +44,18 @@ const NoBranchesMessage = () => (
 );
 
 const fetchBranches = async () => {
+  console.warn('Fetching branches via API proxy');
   try {
-    const response = await fetch('http://localhost:5000/api/branches?active=true');
+    const response = await fetch('/api/branches?active=true');
     if (!response.ok) {
+      console.warn('Branches API proxy not available, using default location');
       throw new Error(`Failed to fetch branches: ${response.statusText}`);
     }
     const data = await response.json();
-    // Normalize response shapes: accept array or object with items/data/results
-    const branches = Array.isArray(data)
-      ? data
-      : (data.items || data.data || data.results || []);
+    const branches = Array.isArray(data) ? data : [];
     return branches;
   } catch (error) {
-    console.error('Error fetching branches:', error);
+    console.warn('Error fetching branches via API proxy, using default location:', error);
     return [];
   }
 };
@@ -71,7 +70,8 @@ export function CompanyLocation({ variant = 'default' }: CompanyLocationProps) {
         const fetchedBranches = await fetchBranches();
         setBranches(fetchedBranches);
       } catch (error) {
-        console.error("Error fetching branches:", error);
+        console.warn("Error fetching branches data:", error);
+        setBranches([]);
       } finally {
         setLoading(false);
       }

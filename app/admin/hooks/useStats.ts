@@ -3,6 +3,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminApi } from '../utils/admin-api';
 
+interface SystemStatusData {
+  status: 'operational' | 'degraded' | 'maintenance';
+  message: string;
+  updatedAt: string;
+  services: {
+    name: string;
+    status: 'up' | 'down' | 'slow';
+    responseTime: number;
+  }[];
+}
+
+interface SystemHealthData {
+  uptime: number;
+  peakHours: { hour: number; requests: number }[];
+}
+
 interface UseStatsReturn {
   stats: {
     news: number;
@@ -66,15 +82,38 @@ export function useStats(): UseStatsReturn {
     try {
       setError(null);
 
-      // Fetch all data in parallel
-      const [news, gallery, press, users, systemStatusData, systemHealthData] = await Promise.all([
-        adminApi.getNews(),
-        adminApi.getGallery(),
-        adminApi.getPress(),
-        adminApi.getUsers(),
-        adminApi.getSystemStatus(),
-        adminApi.getSystemHealth(),
+      // Fetch data, handling failures gracefully
+      const [news, gallery, press] = await Promise.all([
+        adminApi.getNews().catch(() => []),
+        adminApi.getGallery().catch(() => []),
+        adminApi.getPress().catch(() => []),
       ]);
+
+      // Optional fetches that may not exist
+      let users = [];
+      let systemStatusData = {};
+      let systemHealthData = {};
+
+      try {
+        users = await adminApi.getUsers();
+      } catch (err) {
+        console.warn('Users API not available:', err);
+        users = [];
+      }
+
+      try {
+        systemStatusData = await adminApi.getSystemStatus();
+      } catch (err) {
+        console.warn('System status API not available:', err);
+        systemStatusData = {};
+      }
+
+      try {
+        systemHealthData = await adminApi.getSystemHealth();
+      } catch (err) {
+        console.warn('System health API not available:', err);
+        systemHealthData = {};
+      }
 
       // Process real data
       const newsCount = Array.isArray(news) ? news.length : 0;
@@ -103,8 +142,32 @@ export function useStats(): UseStatsReturn {
       const usersDelta = calculateDelta(usersCount, 'users');
 
       // Process system status
-      const systemStatusInfo = systemStatusData || {};
-      const systemHealthInfo = systemHealthData || {};
+      let systemStatusInfo: SystemStatusData;
+      let systemHealthInfo: SystemHealthData;
+
+      if (systemStatusData && typeof systemStatusData === 'object' && 'status' in systemStatusData) {
+        systemStatusInfo = systemStatusData as SystemStatusData;
+      } else {
+        systemStatusInfo = {
+          status: 'operational',
+          message: 'Sistema operativo',
+          updatedAt: new Date().toISOString(),
+          services: []
+        };
+      }
+
+      if (systemHealthData && typeof systemHealthData === 'object' && 'uptime' in systemHealthData) {
+        systemHealthInfo = systemHealthData as SystemHealthData;
+      } else {
+        systemHealthInfo = {
+          uptime: 99.9,
+          peakHours: [
+            { hour: 9, requests: 150 },
+            { hour: 14, requests: 200 },
+            { hour: 18, requests: 180 }
+          ]
+        };
+      }
 
       const baseStats = {
         news: newsCount,
@@ -115,22 +178,15 @@ export function useStats(): UseStatsReturn {
         galleryDelta,
         pressDelta,
         usersDelta,
-        systemStatus: (systemStatusInfo.status === 'operational' || systemStatusInfo.status === 'degraded' || systemStatusInfo.status === 'maintenance')
-          ? systemStatusInfo.status : 'operational',
-        uptime: typeof systemHealthInfo.uptime === 'number' ? systemHealthInfo.uptime : 99.9,
+        systemStatus: systemStatusInfo.status,
+        uptime: systemHealthInfo.uptime,
         lastUpdated: new Date().toISOString(),
-        peakHours: Array.isArray(systemHealthInfo.peakHours) && systemHealthInfo.peakHours.length > 0
-          ? systemHealthInfo.peakHours
-          : [
-              { hour: 9, requests: 150 },
-              { hour: 14, requests: 200 },
-              { hour: 18, requests: 180 }
-            ],
+        peakHours: systemHealthInfo.peakHours,
       };
 
       // Process system services status
-      const services = Array.isArray(systemHealthInfo.services) && systemHealthInfo.services.length > 0
-        ? systemHealthInfo.services.map((service: any) => ({
+      const services = Array.isArray(systemStatusInfo.services) && systemStatusInfo.services.length > 0
+        ? systemStatusInfo.services.map((service: any) => ({
             name: service.name || 'Servicio',
             status: (service.status === 'up' || service.status === 'down' || service.status === 'slow')
               ? service.status : 'up' as const,
@@ -143,11 +199,8 @@ export function useStats(): UseStatsReturn {
           ];
 
       const systemStatusState = {
-        status: (systemStatusInfo.status === 'operational' || systemStatusInfo.status === 'degraded' || systemStatusInfo.status === 'maintenance')
-          ? systemStatusInfo.status : 'operational',
-        message: typeof systemStatusInfo.message === 'string' && systemStatusInfo.message.trim()
-          ? systemStatusInfo.message
-          : 'Sistema operativo',
+        status: systemStatusInfo.status,
+        message: systemStatusInfo.message || 'Sistema operativo',
         updatedAt: new Date().toISOString(),
         services: services,
       };

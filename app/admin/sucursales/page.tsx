@@ -41,16 +41,28 @@ export default function SucursalesPage() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/branches`, { credentials: 'include' });
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          console.warn('Branches API not available, using empty data');
+          setBranches([]);
+          return;
+        }
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const data = await res.json();
 
       if (data.items && Array.isArray(data.items)) {
         setBranches(data.items);
+      } else if (Array.isArray(data)) {
+        setBranches(data);
       } else {
-        console.error('Unexpected response format:', data);
+        console.warn('Unexpected response format, using empty data:', data);
         setBranches([]);
       }
     } catch (error) {
-      console.error('Error fetching branches:', error);
+      console.warn('Error fetching branches, using empty data:', error);
       setBranches([]);
     } finally {
       setLoading(false);

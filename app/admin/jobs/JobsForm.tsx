@@ -14,6 +14,7 @@ interface JobsFormProps {
     location: string;
     modality: string;
     salary: string;
+    image_url?: string;
   }) => Promise<void> | void;
   isSubmitting?: boolean;
   isOpen: boolean;

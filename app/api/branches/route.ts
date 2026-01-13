@@ -14,10 +14,15 @@ export async function GET(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     });
 
+    if (response.status === 404) {
+      // Backend doesn't have branches API, return empty data
+      return NextResponse.json({ items: [] }, { status: 200 });
+    }
+
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error fetching branches:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.warn('Backend not available for branches, returning empty data');
+    return NextResponse.json({ items: [] }, { status: 200 });
   }
 }

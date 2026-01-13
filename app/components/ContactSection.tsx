@@ -50,24 +50,24 @@ export default function ContactSection() {
   const fetchBranches = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const res = await fetch(`${config.api.url}/api/branches?active=true`, {
+      const res = await fetch('/api/branches?active=true', {
         headers: {
           'Cache-Control': 'max-age=3600', // Cache de 1 hora
         }
       });
-      
+
       if (!res.ok) {
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
-      
+
       const data = await res.json();
-      
+
       if (Array.isArray(data) && data.length > 0) {
         const activeBranches = data.filter((branch: Branch) => branch.isActive);
         setBranches(activeBranches);
-        
+
         if (activeBranches.length > 0) {
           const firstState = activeBranches[0].state;
           setSelectedState(firstState);
@@ -80,7 +80,7 @@ export default function ContactSection() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al cargar sucursales";
       setError(errorMessage);
-      console.error("Error fetching branches:", err);
+      console.error("Error fetching branches via API proxy:", err);
     } finally {
       setLoading(false);
     }

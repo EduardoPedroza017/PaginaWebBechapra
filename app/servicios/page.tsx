@@ -95,7 +95,7 @@ export default function ServiciosIndex() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
 			{/* Hero Section */}
-			<section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900">
+			<section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900">
 				{/* Background decorations */}
 				<div className="absolute inset-0">
 					<div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 dark:bg-white/3 rounded-full blur-3xl" />
@@ -263,38 +263,38 @@ export default function ServiciosIndex() {
 			</section>
 
 			{/* CTA Section */}
-			<section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800">
-				<div className="max-w-4xl mx-auto px-6 text-center">
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="space-y-6"
-					>
-						<h2 className="text-3xl sm:text-4xl font-black text-white">
-							¿Listo para impulsar tu empresa?
-						</h2>
-						<p className="text-lg text-blue-100 max-w-2xl mx-auto">
-							Nuestro equipo de expertos está listo para ayudarte a encontrar la solución perfecta para tus necesidades.
-						</p>
-						<div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-							<Link
-								href="/#contacto"
-								className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
-							>
-								Contáctanos
-								<ArrowRight className="w-5 h-5" />
-							</Link>
-							<Link
-								href="/acerca-de"
-								className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all"
-							>
-								Conocer más
-							</Link>
-						</div>
-					</motion.div>
-				</div>
-			</section>
+			<section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+                <div className="max-w-4xl mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="space-y-6"
+                    >
+                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+                            ¿Listo para impulsar tu empresa?
+                        </h2>
+                        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                            Nuestro equipo de expertos está listo para ayudarte a encontrar la solución perfecta para tus necesidades.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                            <Link
+                                href="/#contacto"
+                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+                            >
+                                Contáctanos
+                                <ArrowRight className="w-5 h-5" />
+                            </Link>
+                            <Link
+                                href="/acerca-de"
+                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-100 text-blue-700 font-bold rounded-2xl border border-blue-200 hover:bg-blue-200 transition-all dark:bg-white/10 dark:backdrop-blur-sm dark:text-white dark:border-white/20 dark:hover:bg-white/20"
+                            >
+                                Conocer más
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
 
 			<Footer />
 		</div>

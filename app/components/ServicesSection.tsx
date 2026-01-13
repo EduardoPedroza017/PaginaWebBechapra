@@ -68,7 +68,7 @@ export default function ServicesSection() {
     (async () => {
       try {
         const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const res = await fetch(`${API}/api/services/cards?active=true`);
+        const res = await fetch(`${API}/api/admin/services/cards?active=true`);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
         if (mounted && Array.isArray(data)) {

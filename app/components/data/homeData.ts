@@ -95,14 +95,16 @@ export interface TrainingFeature {
   label: string;
   description: string;
   icon: "users" | "video" | "award";
+  href?: string; // Added optional href property
 }
 
 export const trainingFeatures: TrainingFeature[] = [
   {
-    id: "ferias",
-    label: "Ferias de Empleo",
-    description: "Participación activa en ferias de empleo con escuelas y universidades",
+    id: "eventos",
+    label: "Eventos",
+    description: "Participación activa en eventos con escuelas y universidades",
     icon: "users",
+    href: "/eventos",
   },
   {
     id: "webinars",
@@ -115,5 +117,6 @@ export const trainingFeatures: TrainingFeature[] = [
     label: "Sistema de Becarios",
     description: "Programa integral de formación y desarrollo de talento joven",
     icon: "award",
+    href: "/becarios",
   },
 ];

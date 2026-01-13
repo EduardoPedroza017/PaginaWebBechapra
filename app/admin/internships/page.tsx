@@ -64,7 +64,8 @@ interface ApiInternship {
 
 // Interface for API response structure
 interface ApiResponse {
-  items: ApiInternship[];
+  items?: ApiInternship[];
+  internships?: ApiInternship[];
   success?: boolean;
   data?: any;
   total?: number;

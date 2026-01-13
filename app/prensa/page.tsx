@@ -39,25 +39,43 @@ export default function PrensaPage() {
   });
 
   useEffect(() => {
-    fetch("/api/press")
-      .then((res) => res.json())
-      .then((data: PressItem[]) => {
+    const proxyPath = "/api/backend/press";
+    const directBackend = process.env.NEXT_PUBLIC_API_URL
+      ? `${process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "")}/api/press`
+      : null;
+    const url = directBackend || proxyPath;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((rawData: any) => {
+        // Normalize different backend response shapes
+        let items: PressItem[] = [];
+        if (Array.isArray(rawData)) items = rawData;
+        else if (Array.isArray(rawData.data)) items = rawData.data;
+        else if (Array.isArray(rawData.items)) items = rawData.items;
+        else if (Array.isArray(rawData.results)) items = rawData.results;
+        else items = [];
+
         // Sort by date descending
-        const sorted = data.sort(
+        const sorted = items.slice().sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
+
         setPress(sorted);
         setFiltered(sorted);
-        
+
         // Calculate stats
         const now = new Date();
         const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        
+
         setStats({
           total: sorted.length,
-          thisMonth: sorted.filter(item => new Date(item.date) >= thisMonth).length,
-          mediaOutlets: new Set(sorted.map(item => item.mediaOutlet).filter(Boolean)).size,
-          featured: sorted.filter(item => item.type === 'press-release').length
+          thisMonth: sorted.filter((item) => new Date(item.date) >= thisMonth).length,
+          mediaOutlets: new Set(sorted.map((item) => item.mediaOutlet).filter(Boolean)).size,
+          featured: sorted.filter((item) => item.type === "press-release").length,
         });
       })
       .catch((err) => {
@@ -82,9 +100,19 @@ export default function PrensaPage() {
   };
 
   // Split items: first 3 featured (large), next 6 regular
-  const featuredItems = filtered.slice(0, 3);
-  const regularItems = filtered.slice(3, visibleCount);
+  const featuredItems = filtered.slice(0, 7); // show more in carousel
+  const regularItems = filtered.slice(7, visibleCount);
   const hasMore = filtered.length > visibleCount;
+
+  // Carousel state for codeflower-like layout
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused || featuredItems.length <= 1) return;
+    const iv = setInterval(() => setActiveIndex((i) => (i + 1) % featuredItems.length), 4500);
+    return () => clearInterval(iv);
+  }, [isPaused, featuredItems.length]);
 
   return (
     <main className="min-h-screen bg-linear-to-b from-slate-50 via-white to-blue-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/10">
@@ -321,17 +349,68 @@ export default function PrensaPage() {
             <div className="space-y-12">
               {/* Featured Press Items (Large Cards) */}
               {featuredItems.length > 0 && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {featuredItems.map((item, i) => (
-                    <div key={item.id} className={i === 0 ? "lg:col-span-2" : ""}>
-                      <PressCard
-                        item={item}
-                        index={i}
-                        isFeatured={true}
-                        size={i === 0 ? "large" : "medium"}
-                      />
-                    </div>
-                  ))}
+                <div
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                  onFocus={() => setIsPaused(true)}
+                  onBlur={() => setIsPaused(false)}
+                  className="relative w-full h-[520px] md:h-[420px] lg:h-[520px] flex items-center justify-center"
+                  style={{ perspective: 1400 }}
+                >
+                  <button
+                    aria-label="Anterior"
+                    onClick={() => setActiveIndex((i) => (i - 1 + featuredItems.length) % featuredItems.length)}
+                    className="absolute left-6 z-40 w-11 h-11 rounded-full bg-slate-800/60 backdrop-blur-sm text-white flex items-center justify-center"
+                  >
+                    <ChevronDown className="-rotate-90 w-5 h-5" />
+                  </button>
+
+                  <div className="w-full max-w-6xl h-full relative flex items-center justify-center">
+                    {featuredItems.map((item, i) => {
+                      const offset = i - activeIndex;
+                      // Normalize offsets so carousel wraps nicely
+                      let normalized = offset;
+                      if (offset > featuredItems.length / 2) normalized = offset - featuredItems.length;
+                      if (offset < -featuredItems.length / 2) normalized = offset + featuredItems.length;
+
+                        const abs = Math.abs(normalized);
+                        // Tamer spacing and scale for clearer hierarchy
+                        const translateX = normalized * 200;
+                        const scale = abs === 0 ? 1 : abs === 1 ? 0.92 : Math.max(0.82, 1 - abs * 0.06);
+                        const rotateY = normalized * -10;
+                        const zIndex = 200 - Math.round(abs * 10);
+                        const opacity = abs > 2 ? 0 : 1 - abs * 0.22;
+
+                        // size class mapping for PressCard
+                        const sizeProp = abs === 0 ? 'large' : abs === 1 ? 'medium' : 'small';
+
+                        return (
+                          <div
+                            key={item.id}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-500"
+                            style={{
+                              width: abs === 0 ? 560 : abs === 1 ? 480 : 420,
+                              transform: `translateX(${translateX}px) scale(${scale}) rotateY(${rotateY}deg)`,
+                              zIndex,
+                              opacity,
+                              pointerEvents: abs > 1.8 ? 'none' : 'auto'
+                            }}
+                          >
+                            <div style={{boxShadow: abs === 0 ? '0 30px 60px rgba(2,6,23,0.6)' : '0 12px 30px rgba(2,6,23,0.35)'}}>
+                              <PressCard item={item} index={i} isFeatured size={sizeProp} />
+                            </div>
+                          </div>
+                        );
+                    })}
+                  </div>
+
+                  <button
+                    aria-label="Siguiente"
+                    onClick={() => setActiveIndex((i) => (i + 1) % featuredItems.length)}
+                    className="absolute right-6 z-40 w-11 h-11 rounded-full bg-slate-800/60 backdrop-blur-sm text-white flex items-center justify-center"
+                  >
+                    <ChevronDown className="rotate-90 w-5 h-5" />
+                  </button>
                 </div>
               )}
 

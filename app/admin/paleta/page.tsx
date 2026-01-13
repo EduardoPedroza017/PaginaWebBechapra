@@ -64,7 +64,6 @@ export default function PaletaPage() {
           }}
           onToggleTheme={handleToggleTheme}
           theme={theme}
-          palette={activePalette}
         />
         <main className="flex-1 flex items-center justify-center p-8">
           <div className={`rounded-xl shadow-lg p-8 max-w-md w-full border ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'

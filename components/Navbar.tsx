@@ -23,20 +23,7 @@ export default function Navbar() {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    async function fetchLogo() {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const res = await fetch(`${apiUrl}/api/logo`);
-        const data = await res.json();
-        if (data.url) {
-          setLogoUrl(data.url);
-        }
-      } catch (e) {
-        console.error('Error fetching logo:', e);
-        setLogoUrl("/image/logo/bausen-logo.png");
-      }
-    }
-    fetchLogo();
+    setLogoUrl("/image/logo/bausen-logo.png");
   }, []);
 
   return (

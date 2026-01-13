@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Calendar, ArrowUpRight, FileText, Sparkles } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
@@ -27,17 +27,34 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
     year: 'numeric'
   });
 
-  const sizeClasses = size === 'large' ? 'p-10 text-2xl' : size === 'medium' ? 'p-6 text-xl' : 'p-4 text-lg';
+  const sizeClasses = size === 'large' ? 'p-6 md:p-8 text-xl md:text-2xl' : size === 'medium' ? 'p-5 text-lg md:text-xl' : 'p-4 text-base';
+
+  const router = useRouter();
+
+  const navigateTo = () => router.push(`/prensa/${item.id}`);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigateTo();
+    }
+  };
 
   if (isFeatured) {
     return (
-      <Link href={`/prensa/${item.id}`} className={`block group h-full ${sizeClasses}`}>
+      <div
+        role="link"
+        tabIndex={0}
+        onClick={navigateTo}
+        onKeyDown={handleKeyDown}
+        className={`block group h-full ${sizeClasses}`}
+      >
         <motion.article
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: index * 0.1 }}
-          className="relative h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-3xl overflow-hidden flex flex-col"
+          className="relative h-full min-h-[340px] md:min-h-[380px] lg:min-h-[460px] bg-linear-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-2xl overflow-hidden flex flex-col"
         >
           {/* Animated Background Elements */}
           <div className="absolute inset-0 opacity-20">
@@ -69,7 +86,7 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
             className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-cyan-400/30 to-blue-500/10 rounded-full blur-3xl"
           />
 
-          <div className="relative z-10 flex flex-col h-full">
+          <div className="relative z-10 flex flex-col justify-between h-full gap-6">
             {/* Decorative Thumbnail */}
             <div className="absolute -right-8 -top-8 w-48 h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-1 bg-gradient-to-br from-blue-700 to-indigo-600/80 opacity-95">
               <div className="w-full h-full flex items-center justify-center text-white/90">
@@ -99,12 +116,12 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
             </motion.div>
 
             {/* Title */}
-            <h3 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight group-hover:text-cyan-300 transition-colors duration-300 flex-grow">
-              {item.title}
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 leading-tight group-hover:text-cyan-300 transition-colors duration-300">
+              <span className="block line-clamp-2 break-words">{item.title}</span>
             </h3>
 
             {/* Excerpt */}
-            <p className="text-cyan-100/85 text-base md:text-lg leading-relaxed mb-8 line-clamp-3">
+            <p className="text-cyan-100/85 text-sm md:text-sm leading-relaxed mb-2 line-clamp-3 break-words opacity-90">
               {item.excerpt}
             </p>
 
@@ -114,7 +131,7 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
                 <ArrowUpRight size={16} />
               </span>
               {item.link && (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-white rounded-full font-semibold shadow-sm hover:bg-white/20 transition-colors duration-300">
+                <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-white rounded-full font-semibold shadow-sm hover:bg-white/20 transition-colors duration-300">
                   <span className="text-sm"><TranslateText text="Ver fuente" /></span>
                   <FileText size={16} />
                 </a>
@@ -122,18 +139,24 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
             </div>
           </div>
         </motion.article>
-      </Link>
-    );
+      </div>
+      );
   }
 
   return (
-    <Link href={`/prensa/${item.id}`} className={`block group h-full ${sizeClasses}`}>
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={navigateTo}
+      onKeyDown={handleKeyDown}
+      className={`block group h-full ${sizeClasses}`}
+    >
       <motion.article
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: index * 0.1 }}
-        className="relative h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-3xl overflow-hidden flex flex-col"
+        className="relative h-full min-h-[180px] bg-linear-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-blue-900 dark:to-indigo-950 rounded-2xl overflow-hidden flex flex-col"
       >
         {/* Top Gradient Accent */}
         <motion.div 
@@ -182,7 +205,7 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
           </motion.div>
 
           {/* Title (for small screens) */}
-          <h3 className="text-lg md:hidden font-bold text-gray-900 dark:text-white mb-3 leading-snug group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 flex-grow">
+          <h3 className="text-lg md:hidden font-bold text-gray-900 dark:text-white mb-3 leading-snug group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2">
             {item.title}
           </h3>
 
@@ -193,12 +216,12 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
 
           {/* Read More CTA */}
           <div className="flex items-center gap-4 mt-auto">
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-full font-semibold hover:bg-blue-100 transition-colors duration-300">
+            <button className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-full font-semibold hover:bg-blue-100 transition-colors duration-300">
               <span className="text-sm"><TranslateText text="Leer más" /></span>
               <ArrowUpRight size={16} />
-            </span>
+            </button>
             {item.link && (
-              <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-gray-700 dark:text-gray-200 rounded-full font-semibold hover:bg-white/20 transition-colors duration-300">
+              <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 text-gray-700 dark:text-gray-200 rounded-full font-semibold hover:bg-white/20 transition-colors duration-300">
                 <span className="text-sm"><TranslateText text="Fuente" /></span>
                 <FileText size={14} />
               </a>
@@ -218,6 +241,6 @@ export default function PressCard({ item, index, isFeatured = false, size }: Pre
           }}
         />
       </motion.article>
-    </Link>
+    </div>
   );
 }

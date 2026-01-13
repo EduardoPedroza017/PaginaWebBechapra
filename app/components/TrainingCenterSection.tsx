@@ -5,6 +5,7 @@ import { GraduationCap, Users, Video, Award, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trainingFeatures } from "./data/homeData";
 import { TranslateText } from "@/components/TranslateText";
+import Link from "next/link";
 
 const iconMap = {
   users: Users,
@@ -133,10 +134,13 @@ export default function TrainingCenterSection() {
                   <p className="text-lg mb-8 leading-relaxed text-slate-600 dark:text-slate-300">
                     <TranslateText text={trainingFeatures[active].description} />
                   </p>
-                  <button className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all">
+                  <Link
+                    href={trainingFeatures[active].href || "#"}
+                    className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+                  >
                     <TranslateText text="Más información" />
                     <ArrowRight className="w-5 h-5" />
-                  </button>
+                  </Link>
                 </motion.div>
               </AnimatePresence>
 

@@ -36,6 +36,7 @@ interface JobInput {
   location: string;
   modality: string;
   salary: string;
+  image_url?: string;
 }
 
 const JobsPage = () => {

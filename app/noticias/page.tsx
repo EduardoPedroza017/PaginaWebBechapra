@@ -27,9 +27,12 @@ export default function NoticiasPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-    
-    fetch(`${apiUrl}/api/news`)
+    // Preferir proxy interno `/api/backend/news` cuando la app Next.js está en ejecución.
+    // Si `NEXT_PUBLIC_API_URL` está definido (entorno con backend accesible), se puede usar.
+    const externalApi = process.env.NEXT_PUBLIC_API_URL;
+    const url = externalApi ? `${externalApi}/api/news` : '/api/backend/news';
+
+    fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();

@@ -3,6 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function GET() {
+  // Skip backend call to avoid 404 logs, return default logo
+  console.warn('Logo API disabled, using default logo');
+  return NextResponse.json({
+    logo: '/image/logo/Logo_Bausen.png',
+    alt: 'BAUSEN Logo'
+  });
+
+  /* Commented out to avoid 404 logs in backend
   try {
     const response = await fetch(`${BACKEND_URL}/api/logo`, {
       method: 'GET',
@@ -11,15 +19,32 @@ export async function GET() {
       },
     });
 
+    if (response.status === 404) {
+      // Backend doesn't have logo API, return default logo info
+      return NextResponse.json({
+        logo: '/image/logo/Logo_Bausen.png',
+        alt: 'BAUSEN Logo'
+      });
+    }
+
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error forwarding logo GET request:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.warn('Logo API not available, using default logo');
+    return NextResponse.json({
+      logo: '/image/logo/Logo_Bausen.png',
+      alt: 'BAUSEN Logo'
+    });
   }
+  */
 }
 
 export async function POST(request: NextRequest) {
+  // Skip backend call to avoid 404 logs
+  console.warn('Logo POST API disabled');
+  return NextResponse.json({ message: 'Logo update not available' });
+
+  /* Commented out to avoid 404 logs in backend
   try {
     const body = await request.json();
     const response = await fetch(`${BACKEND_URL}/api/logo`, {
@@ -30,15 +55,26 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
+    if (response.status === 404) {
+      // Backend doesn't have logo API, return success for compatibility
+      return NextResponse.json({ message: 'Logo update not available' });
+    }
+
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error forwarding logo POST request:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.warn('Logo POST API not available');
+    return NextResponse.json({ message: 'Logo update not available' });
   }
+  */
 }
 
 export async function PUT(request: NextRequest) {
+  // Skip backend call to avoid 404 logs
+  console.warn('Logo PUT API disabled');
+  return NextResponse.json({ message: 'Logo update not available' });
+
+  /* Commented out to avoid 404 logs in backend
   try {
     const body = await request.json();
     const response = await fetch(`${BACKEND_URL}/api/logo`, {
@@ -49,10 +85,16 @@ export async function PUT(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
+    if (response.status === 404) {
+      // Backend doesn't have logo API, return success for compatibility
+      return NextResponse.json({ message: 'Logo update not available' });
+    }
+
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error forwarding logo PUT request:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.warn('Logo PUT API not available');
+    return NextResponse.json({ message: 'Logo update not available' });
   }
+  */
 }

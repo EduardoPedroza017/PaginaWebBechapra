@@ -226,7 +226,12 @@ function NewsFormComponent({ onCreated, theme }: Props) {
         ...(userEmail ? { "X-User": userEmail } : {}),
         "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
       };
-      const bypassHeaders = isLocal ? { "X-Bypass-Login": 'true', "X-Role": 'superadmin', "X-Admin": 'true' } : {};
+      const bypassHeaders: Record<string, string> = {};
+      if (isLocal) {
+        bypassHeaders["X-Bypass-Login"] = 'true';
+        bypassHeaders["X-Role"] = 'superadmin';
+        bypassHeaders["X-Admin"] = 'true';
+      }
 
       const res = await fetch(`${apiUrl}/api/news`, {
         method: "POST",

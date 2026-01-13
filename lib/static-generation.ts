@@ -91,7 +91,7 @@ export const dynamicRouteConfig = (revalidateTime = 3600) => ({
  * export const dynamicParams = dynamicRouteConfig().dynamicParams;
  * 
  * export async function generateStaticParams() {
- *   const services = await apiClient.get('/api/services/cards');
+ *   const services = await apiClient.get('/api/admin/services/cards');
  *   return services.map((s: any) => ({ slug: s.slug }));
  * }
  * 

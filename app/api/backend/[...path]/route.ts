@@ -34,18 +34,13 @@ async function forwardRequest(
     options.body = typeof body === 'string' ? body : JSON.stringify(body);
   }
 
-        // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
-        const incomingHeaders: Record<string, string> = {};
-        for (const [k, v] of request.headers.entries()) {
-          if (v) incomingHeaders[k] = v;
-        }
-
-        const contentType = request.headers.get('content-type') || '';
+  const response = await fetch(`${BACKEND_URL}${path}`, options);
+  return response;
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
     const { path } = await params;
@@ -53,28 +48,27 @@ export async function GET(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
+    const incomingHeaders: Record<string, string> = {};
+    for (const [k, v] of request.headers.entries()) {
+      if (v) incomingHeaders[k] = v;
+    }
+
     // Route is /api/backend/[...path], so path array does NOT include 'backend'
     // Forward to Flask backend with correct prefix
-            ...options.headers,
-            ...incomingHeaders,
-            'Content-Type': contentType,
+    let pathStr: string;
     if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /admin/... (Flask admin routes)
-      pathStr = `/${path.join('/')}`; 
+      // /api/backend/admin/... -> /api/admin/... (Flask admin routes)
+      pathStr = `/api/${path.join('/')}`; 
     } else {
       // /api/backend/news -> /api/news (Flask public API)
       pathStr = `/api/${path.join('/')}`; 
-            ...options.headers,
-            ...incomingHeaders,
-            'Content-Type': 'application/json',
+    }
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
     const fullPath = queryString ? `${pathStr}?${queryString}` : pathStr;
 
-    const cookieHeader = request.headers.get('cookie');
-    const response = await forwardRequest('GET', fullPath, undefined, cookieHeader);
-            ...options.headers,
-            ...incomingHeaders,
+    const response = await forwardRequest('GET', fullPath, undefined, incomingHeaders);
     const data = await response.json();
 
     return NextResponse.json(data, { status: response.status });
@@ -86,7 +80,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
     const { path } = await params;
@@ -95,11 +89,11 @@ export async function POST(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /admin/... for admin, /api/... for public API
+    // Flask routes: /api/admin/... for admin, /api/... for public API
     let pathStr: string;
     if (path[0] === 'admin') {
-      // /api/backend/admin/check -> /admin/check
-      pathStr = `/${path.join('/')}`;
+      // /api/backend/admin/check -> /api/admin/check
+      pathStr = `/api/${path.join('/')}`;
     } else {
       // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
@@ -159,7 +153,7 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
     const { path } = await params;
@@ -167,11 +161,11 @@ export async function PUT(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /admin/... for admin, /api/... for public API
+    // Flask routes: /api/admin/... for admin, /api/... for public API
     let pathStr: string;
     if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /admin/...
-      pathStr = `/${path.join('/')}`;
+      // /api/backend/admin/... -> /api/admin/...
+      pathStr = `/api/${path.join('/')}`;
     } else {
       // /api/backend/news -> /api/news
       pathStr = `/api/${path.join('/')}`;
@@ -219,7 +213,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
     const { path } = await params;
@@ -227,10 +221,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /admin/... for admin, /api/... for public API
+    // Flask routes: /api/admin/... for admin, /api/... for public API
     let pathStr: string;
     if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /admin/...
+      // /api/backend/admin/... -> /api/admin/...
       pathStr = `/${path.join('/')}`;
     } else {
       // /api/backend/news -> /api/news

@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const cookieHeader = request.headers.get('cookie');
 
-    const response = await fetch(`${BACKEND_URL}/admin/check`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
