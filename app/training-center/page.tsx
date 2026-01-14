@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { GraduationCap, BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Trophy, Zap, Shield, Lightbulb, BarChart, Gift, Send } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 export default function TrainingCenterPage() {
   const [activeTab, setActiveTab] = useState('todos');
@@ -215,90 +216,55 @@ export default function TrainingCenterPage() {
     yellow: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400"
   };
 
+  const eventsSection = (
+    <section className="py-16 bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+            Eventos Destacados
+          </h2>
+          <p className="text-lg text-slate-600 dark:text-slate-300">
+            Descubre los eventos más importantes y participa para aprender y conectar con expertos.
+          </p>
+        </div>
+        <div className="text-center">
+          <a
+            href="/eventos"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+          >
+            Explorar Eventos
+            <ArrowRight className="w-5 h-5" />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section con animación de gradiente */}
-      <section className="relative overflow-hidden bg-linear-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-800 dark:via-blue-900 dark:to-blue-900 text-white py-24 lg:py-36">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <Trophy className="w-4 h-4" />
-                <span className="text-sm font-medium">Formación Profesional Certificada</span>
-              </div>
-              <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-                Transforma tu<br />
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-300 to-blue-100">
-                  Carrera Profesional
-                </span>
-              </h1>
-              <p className="text-xl lg:text-2xl mb-8 text-blue-100 leading-relaxed">
-                Desarrolla las habilidades que demanda el mercado con nuestros cursos especializados y certificaciones reconocidas internacionalmente
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#courses" className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl hover:scale-105 inline-flex items-center justify-center gap-2">
-                  Explorar Cursos
-                  <ArrowRight className="w-5 h-5" />
-                </a>
-                <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all backdrop-blur-sm inline-flex items-center justify-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Agendar Demo
-                </button>
-              </div>
-            </div>
-            
-            <div className="hidden lg:block">
-              <div className="relative">
-                <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-blue-500 rounded-3xl blur-2xl opacity-50"></div>
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-4 bg-white/20 rounded-xl p-4">
-                      <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <div className="font-semibold">Aprende a tu ritmo</div>
-                        <div className="text-sm text-blue-100">Acceso 24/7 a todo el contenido</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 bg-white/20 rounded-xl p-4">
-                      <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
-                        <Star className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <div className="font-semibold">Certificación incluida</div>
-                        <div className="text-sm text-blue-100">Reconocimiento profesional</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 bg-white/20 rounded-xl p-4">
-                      <div className="w-12 h-12 bg-pink-400 rounded-full flex items-center justify-center">
-                        <Users className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <div className="font-semibold">Comunidad activa</div>
-                        <div className="text-sm text-blue-100">Red de profesionales</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <section className="relative overflow-hidden bg-linear-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 text-white py-24 lg:py-36">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+              Bausen Training Center
+            </h1>
+            <p className="text-lg sm:text-xl text-blue-100/90 dark:text-blue-200/80 max-w-2xl mx-auto mt-4">
+              Formamos y conectamos el talento del futuro con las mejores oportunidades.
+            </p>
           </div>
         </div>
       </section>
+
+      {/* Eventos Destacados Section */}
+      {eventsSection}
 
       {/* BAUSEN Training Center Section */}
       <section className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Cónoce BAUSEN Training Center
+              Conoce Bausen Training Center
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Nuestra plataforma de educación en línea avalada por el Colegio de Contadores Públicos de México
@@ -370,7 +336,7 @@ export default function TrainingCenterPage() {
       </section>
 
       {/* Learning Path Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
+      <section className="py-20 bg-linear-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full mb-4">
@@ -434,7 +400,7 @@ export default function TrainingCenterPage() {
                 onClick={() => setActiveTab(cat.id)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                   activeTab === cat.id
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                    ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-md'
                 }`}
               >
@@ -712,126 +678,6 @@ export default function TrainingCenterPage() {
         </div>
       </section>
 
-      {/* Prácticas Profesionales Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full mb-4">
-              <Briefcase className="w-4 h-4" />
-              <span className="text-sm font-semibold">Oportunidades Laborales</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Prácticas Profesionales
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Conecta con empresas líderes y gana experiencia real en el mundo laboral
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-                ¿Cómo funciona?
-              </h3>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center shrink-0">
-                    <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      Envía tu CV
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Completa tu perfil profesional y sube tu currículum actualizado con tus habilidades y experiencia.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center shrink-0">
-                    <Target className="w-6 h-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      Evaluación y Matching
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Nuestro equipo evalúa tu perfil y te conecta con oportunidades que se ajusten a tus intereses y habilidades.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center shrink-0">
-                    <Briefcase className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      Inicio de Prácticas
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Comienza tu experiencia laboral en empresas reconocidas con seguimiento y mentoría continua.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
-              <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                Beneficios de las Prácticas
-              </h4>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">Experiencia laboral real</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">Mentoría profesional</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">Posible contratación</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">Certificado de prácticas</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">Red de contactos profesionales</span>
-                </div>
-              </div>
-
-              <button className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 transition-colors mt-8 flex items-center justify-center gap-2">
-                <FileText className="w-5 h-5" />
-                Enviar mi CV
-              </button>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="bg-blue-600 text-white rounded-2xl p-8 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold mb-4">
-                Empresas Participantes
-              </h3>
-              <p className="text-blue-100 mb-6">
-                Trabaja con las mejores empresas del sector
-              </p>
-              <div className="flex flex-wrap justify-center items-center gap-8 opacity-80">
-                <div className="text-xl font-bold">TechCorp</div>
-                <div className="text-xl font-bold">Innovate Solutions</div>
-                <div className="text-xl font-bold">Business Advisors</div>
-                <div className="text-xl font-bold">Global Ventures</div>
-                <div className="text-xl font-bold">Future Labs</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Final potente */}
       <section className="py-24 bg-linear-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-800 dark:via-blue-900 dark:to-blue-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
@@ -969,6 +815,9 @@ export default function TrainingCenterPage() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

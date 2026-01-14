@@ -56,7 +56,7 @@ export default function NoticiasPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-700 to-blue-900 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 py-16 sm:py-20 lg:py-28 2xl:py-32 px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 py-16 sm:py-20 lg:py-28 2xl:py-32 px-4 sm:px-6">
         {/* Background decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />

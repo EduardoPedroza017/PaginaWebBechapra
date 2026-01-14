@@ -37,7 +37,7 @@ export default function Navbar() {
               width={100}
               height={28}
               priority
-              className="h-7 w-auto block 2xl:h-9"
+              className="h-7 w-auto block 2xl:h-9 object-contain"
               onError={() => setLogoUrl(defaultLogo)}
             />
           </Link>
@@ -46,6 +46,14 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link href="/" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
               <TranslateText text="Inicio" />
+            </Link>
+            
+            <Link href="/eventos" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
+              <TranslateText text="Eventos" />
+            </Link>
+            
+            <Link href="/training-center" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
+              <TranslateText text="Centro de Formación" />
             </Link>
             
             <Link href="/servicios" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
@@ -57,9 +65,6 @@ export default function Navbar() {
             </Link>
             <Link href="/prensa" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
               <TranslateText text="Prensa" />
-            </Link>
-            <Link href="/training-center" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
-              <TranslateText text="Centro de Formación" />
             </Link>
             <Link href="/acerca-de" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
               <TranslateText text="Acerca de" />
@@ -133,15 +138,33 @@ export default function Navbar() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
-              <Link href="/servicios" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/eventos" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
                 <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
                   <Image src="/image/icon/ServiciosEspecializados_Icon_Color@2x.png" width={24} height={24} alt="" className="w-5 h-5 object-contain" />
+                </div>
+                <span className="font-bold text-lg"><TranslateText text="Eventos" /></span>
+              </Link>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+              <Link href="/training-center" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
+                  <Mic2 className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-lg"><TranslateText text="Centro de Formación" /></span>
+              </Link>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
+              <Link href="/servicios" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
+                  <Newspaper className="w-5 h-5" />
                 </div>
                 <span className="font-bold text-lg"><TranslateText text="Servicios" /></span>
               </Link>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
               <Link href="/noticias" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
                 <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
                   <Newspaper className="w-5 h-5" />
@@ -150,7 +173,7 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}>
               <Link href="/prensa" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
                 <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
                   <Mic2 className="w-5 h-5" />
@@ -159,7 +182,7 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
               <Link href="/acerca-de" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
                 <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
                   <Info className="w-5 h-5" />

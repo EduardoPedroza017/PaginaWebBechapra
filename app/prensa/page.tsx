@@ -117,7 +117,7 @@ export default function PrensaPage() {
   return (
     <main className="min-h-screen bg-linear-to-b from-slate-50 via-white to-blue-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/10">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-indigo-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900">
         {/* Animated background elements */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
