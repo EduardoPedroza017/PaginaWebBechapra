@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { X, User, Mail, Phone, Calendar, Briefcase, GraduationCap, FileText, MapPin, Camera, Edit } from 'lucide-react';
+import { X, User, Mail, Phone, Calendar, Briefcase, GraduationCap, FileText, Camera, Edit, MapPin, Award } from 'lucide-react';
 import { Ejecutivo } from './hooks/useEjecutivos';
 import { TranslateText } from '@/components/TranslateText';
 
@@ -56,134 +56,186 @@ export const EjecutivosModal: React.FC<EjecutivosModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="relative p-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-start gap-6">
-            {/* Foto o avatar grande */}
-            <div className="relative">
-              {ejecutivo.foto_url ? (
-                <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-600">
-                  <img
-                    src={ejecutivo.foto_url}
-                    alt={`${ejecutivo.nombre} ${ejecutivo.apellido_paterno}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    onClick={() => onUploadPhoto(ejecutivo)}
-                    className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center rounded-full"
-                  >
-                    <Camera className="w-6 h-6 text-white" />
-                  </button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
+        
+        {/* Header con azul semi-oscuro */}
+        <div className="relative">
+          {/* Background - Azul semi-oscuro sólido */}
+          <div className="h-48 bg-slate-800 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800" />
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0YzAtMi4yMS0xLjc5LTQtNC00SDB2NGgzMnYtNHptMCA4aDB2LTRIMHY0aDM2eiIvPjwvZz48L2c+PC9zdmc+')] opacity-20" />
+          </div>
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white transition-all duration-200 flex items-center justify-center z-10 hover:scale-105"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Profile section */}
+          <div className="absolute bottom-0 left-0 right-0 transform translate-y-12 px-8">
+            <div className="flex items-end gap-6">
+              {/* Foto grande */}
+              <div className="relative group">
+                {ejecutivo.foto_url ? (
+                  <div className="relative w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-gray-900 shadow-2xl bg-white dark:bg-gray-800">
+                    <img
+                      src={ejecutivo.foto_url}
+                      alt={`${ejecutivo.nombre} ${ejecutivo.apellido_paterno}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      onClick={() => onUploadPhoto(ejecutivo)}
+                      className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 backdrop-blur-sm"
+                    >
+                      <Camera className="w-7 h-7 text-white" />
+                      <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-lg">
+                        <TranslateText text="Cambiar foto" />
+                      </span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative w-36 h-36 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white font-bold text-5xl border-4 border-white dark:border-gray-900 shadow-2xl">
+                    {getInitials(ejecutivo.nombre, ejecutivo.apellido_paterno)}
+                    <button
+                      onClick={() => onUploadPhoto(ejecutivo)}
+                      className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl flex flex-col items-center justify-center gap-2 backdrop-blur-sm"
+                    >
+                      <Camera className="w-7 h-7 text-white" />
+                      <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-lg">
+                        <TranslateText text="Subir foto" />
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Estado activo/inactivo */}
+                <div className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-full border-4 border-white dark:border-gray-900 shadow-lg flex items-center justify-center ${
+                  ejecutivo.activo ? 'bg-emerald-500' : 'bg-rose-500'
+                }`}>
+                  <div className={`w-3 h-3 rounded-full bg-white ${ejecutivo.activo ? 'animate-pulse' : ''}`} />
                 </div>
-              ) : (
-                <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl border-4 border-gray-200 dark:border-gray-600">
-                  {getInitials(ejecutivo.nombre, ejecutivo.apellido_paterno)}
-                  <button
-                    onClick={() => onUploadPhoto(ejecutivo)}
-                    className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-full flex items-center justify-center"
-                  >
-                    <Camera className="w-6 h-6 text-white" />
-                  </button>
+              </div>
+
+              {/* Info principal - Expandido horizontalmente */}
+              <div className="flex-1 pb-4">
+                <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-xl px-8 py-5 shadow-2xl border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        {ejecutivo.nombre} {ejecutivo.apellido_paterno}
+                        {ejecutivo.apellido_materno && ` ${ejecutivo.apellido_materno}`}
+                      </h1>
+
+                      <div className="flex items-center flex-wrap gap-4 mt-3">
+                        {ejecutivo.puesto && (
+                          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg">
+                            <Briefcase className="w-4 h-4" />
+                            <span className="font-semibold">{ejecutivo.puesto}</span>
+                          </div>
+                        )}
+
+                        {ejecutivo.edad && (
+                          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg">
+                            <Calendar className="w-4 h-4" />
+                            <span className="font-medium">{ejecutivo.edad} años</span>
+                          </div>
+                        )}
+
+                        <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold ${
+                          ejecutivo.activo 
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' 
+                            : 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400'
+                        }`}>
+                          <div className={`w-2.5 h-2.5 rounded-full ${ejecutivo.activo ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                          {ejecutivo.activo ? <TranslateText text="Activo" /> : <TranslateText text="Inactivo" />}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
 
-              {/* Estado activo/inactivo */}
-              <div className={`absolute -bottom-2 -right-2 w-6 h-6 rounded-full border-4 border-white dark:border-gray-800 ${
-                ejecutivo.activo ? 'bg-green-500' : 'bg-red-500'
-              }`} />
-            </div>
-
-            {/* Información principal */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {ejecutivo.nombre} {ejecutivo.apellido_paterno}
-                    {ejecutivo.apellido_materno && ` ${ejecutivo.apellido_materno}`}
-                  </h1>
-
-                  {ejecutivo.puesto && (
-                    <p className="text-lg text-gray-600 dark:text-gray-400 mt-1 flex items-center gap-2">
-                      <Briefcase className="w-5 h-5" />
-                      {ejecutivo.puesto}
-                    </p>
-                  )}
-
-                  {ejecutivo.edad && (
-                    <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-                      {ejecutivo.edad} años
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => onEdit(ejecutivo)}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium"
-                  >
-                    <Edit className="w-4 h-4" />
-                    <TranslateText text="Editar" />
-                  </button>
-                  <button
-                    onClick={onClose}
-                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
-                  >
-                    <X className="w-5 h-5 text-gray-500" />
-                  </button>
-                </div>
+              {/* Botón editar */}
+              <div className="pb-4">
+                <button
+                  onClick={() => onEdit(ejecutivo)}
+                  className="px-7 py-3.5 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-xl transition-all duration-200 flex items-center gap-3 font-semibold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
+                >
+                  <Edit className="w-5 h-5" />
+                  <TranslateText text="Editar ejecutivo" />
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Contenido */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Contenido con scroll - Expandido horizontalmente */}
+        <div className="flex-1 overflow-y-auto mt-20 px-8 pb-8">
+          
+          {/* Grid de información - 3 columnas en pantallas grandes */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            
             {/* Información Personal */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600" />
-                <TranslateText text="Información Personal" />
-              </h3>
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <User className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <TranslateText text="Información Personal" />
+                </h3>
+              </div>
 
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <User className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-md border border-slate-200 dark:border-slate-700">
+                    <User className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       <TranslateText text="Nombre completo" />
                     </p>
-                    <p className="font-medium text-gray-900 dark:text-white">
+                    <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
                       {ejecutivo.nombre} {ejecutivo.apellido_paterno} {ejecutivo.apellido_materno}
                     </p>
                   </div>
                 </div>
 
                 {ejecutivo.fecha_nacimiento && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <Calendar className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-md border border-slate-200 dark:border-slate-700">
+                      <Calendar className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <TranslateText text="Fecha de nacimiento" />
                       </p>
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
                         {formatDate(ejecutivo.fecha_nacimiento)}
-                        {ejecutivo.edad && ` (${ejecutivo.edad} años)`}
+                        {ejecutivo.edad && (
+                          <span className="text-slate-500 dark:text-slate-400 ml-2 font-normal">
+                            ({ejecutivo.edad} años)
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
                 )}
 
                 {ejecutivo.carrera_estudiada && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <GraduationCap className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-md border border-slate-200 dark:border-slate-700">
+                      <GraduationCap className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <TranslateText text="Carrera estudiada" />
                       </p>
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
                         {ejecutivo.carrera_estudiada}
                       </p>
                     </div>
@@ -193,23 +245,29 @@ export const EjecutivosModal: React.FC<EjecutivosModalProps> = ({
             </div>
 
             {/* Información de Contacto */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Mail className="w-5 h-5 text-green-600" />
-                <TranslateText text="Información de Contacto" />
-              </h3>
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <TranslateText text="Contacto" />
+                </h3>
+              </div>
 
               <div className="space-y-4">
                 {ejecutivo.email && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <Mail className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 shadow-md border border-blue-200 dark:border-blue-700">
+                      <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider">
                         <TranslateText text="Email" />
                       </p>
                       <a
                         href={`mailto:${ejecutivo.email}`}
-                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                        className="text-base font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline mt-1 block transition-colors truncate"
                       >
                         {ejecutivo.email}
                       </a>
@@ -218,52 +276,85 @@ export const EjecutivosModal: React.FC<EjecutivosModalProps> = ({
                 )}
 
                 {ejecutivo.telefono && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <Phone className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 shadow-md border border-blue-200 dark:border-blue-700">
+                      <Phone className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider">
                         <TranslateText text="Teléfono" />
                       </p>
                       <a
                         href={`tel:${ejecutivo.telefono}`}
-                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                        className="text-base font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline mt-1 block transition-colors"
                       >
                         {ejecutivo.telefono}
                       </a>
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
 
-                {/* Estado */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                    ejecutivo.activo ? 'bg-green-500' : 'bg-red-500'
-                  }`} />
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <TranslateText text="Estado" />
+            {/* Información Profesional */}
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <Briefcase className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <TranslateText text="Información Profesional" />
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-md border border-slate-200 dark:border-slate-700">
+                    <Briefcase className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      <TranslateText text="Puesto" />
                     </p>
-                    <p className={`font-medium ${
-                      ejecutivo.activo ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                    }`}>
-                      {ejecutivo.activo ? <TranslateText text="Activo" /> : <TranslateText text="Inactivo" />}
+                    <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
+                      {ejecutivo.puesto || 'No especificado'}
                     </p>
                   </div>
                 </div>
+
+                {ejecutivo.carrera_estudiada && (
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center flex-shrink-0 shadow-md border border-slate-200 dark:border-slate-700">
+                      <GraduationCap className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <TranslateText text="Formación" />
+                      </p>
+                      <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">
+                        {ejecutivo.carrera_estudiada}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Biografía */}
+          {/* Biografía - Ancho completo */}
           {ejecutivo.biografia && (
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-purple-600" />
-                <TranslateText text="Biografía" />
-              </h3>
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-xl p-6 border border-slate-200 dark:border-slate-700 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <TranslateText text="Biografía" />
+                </h3>
+              </div>
 
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg p-6 border border-slate-200 dark:border-slate-700">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-base">
                   {ejecutivo.biografia}
                 </p>
               </div>
@@ -271,43 +362,44 @@ export const EjecutivosModal: React.FC<EjecutivosModalProps> = ({
           )}
 
           {/* Información del sistema */}
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center">
+                <Award className="w-5 h-5 text-white" />
+              </div>
               <TranslateText text="Información del Sistema" />
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   <TranslateText text="Creado:" />
                 </span>
-                <span className="ml-2 text-gray-900 dark:text-white">
+                <span className="text-sm font-semibold text-gray-900 dark:text-white">
                   {formatDateTime(ejecutivo.created_at)}
                 </span>
               </div>
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   <TranslateText text="Actualizado:" />
                 </span>
-                <span className="ml-2 text-gray-900 dark:text-white">
+                <span className="text-sm font-semibold text-gray-900 dark:text-white">
                   {formatDateTime(ejecutivo.updated_at)}
                 </span>
               </div>
               {ejecutivo.foto_version && (
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
                     <TranslateText text="Versión de foto:" />
                   </span>
-                  <span className="ml-2 text-gray-900 dark:text-white">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {ejecutivo.foto_version}
                   </span>
                 </div>
               )}
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">
-                  ID:
-                </span>
-                <span className="ml-2 font-mono text-gray-900 dark:text-white text-xs">
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-slate-500 dark:text-slate-400">ID del ejecutivo:</span>
+                <span className="font-mono text-sm text-gray-700 dark:text-gray-400 bg-slate-200 dark:bg-slate-800 px-3 py-2 rounded-lg truncate">
                   {ejecutivo._id}
                 </span>
               </div>

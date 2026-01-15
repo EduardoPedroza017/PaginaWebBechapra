@@ -6,14 +6,14 @@ export interface Ejecutivo {
   _id: string;
   nombre: string;
   apellido_paterno: string;
-  apellido_materno?: string;
-  fecha_nacimiento?: string;
+  apellido_materno: string; // Made non-optional to match EjecutivoFormData
+  fecha_nacimiento: string; // Made non-optional to match EjecutivoFormData
   edad?: number;
-  puesto?: string;
-  carrera_estudiada?: string;
-  biografia?: string;
-  telefono?: string;
-  email?: string;
+  puesto: string; // Made non-optional to match EjecutivoFormData
+  carrera_estudiada: string; // Made non-optional to match EjecutivoFormData
+  biografia: string; // Made non-optional to match EjecutivoFormData
+  telefono: string; // Made non-optional to match EjecutivoFormData
+  email: string;
   activo: boolean;
   foto?: string;
   foto_thumbnail?: string;
@@ -22,6 +22,7 @@ export interface Ejecutivo {
   foto_thumbnail_url?: string;
   created_at: string;
   updated_at: string;
+  descripcion: string; // Made non-optional to match EjecutivoFormData
 }
 
 export interface EjecutivosResponse {
@@ -51,6 +52,7 @@ export interface EjecutivoFormData {
   telefono: string;
   email: string;
   activo: boolean;
+  descripcion: string;
 }
 
 export const useEjecutivos = () => {

@@ -1,86 +1,100 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { TranslateText } from "@/components/TranslateText";
 import Footer from "@/components/Footer";
 import { Linkedin, Mail, ArrowRight } from "lucide-react";
+import axios from "axios";
 
-const boardMembers = [
-	{
-		name: "Juan Pérez",
-		role: "Executive President",
-		image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
-		description:
-			"Juan Pérez has over 20 years of experience in business leadership and has been key to the organization's growth.",
-		profileLink: "/about-us/board/juan-perez",
-		linkedin: "#",
-		email: "juan.perez@company.com",
-	},
-	{
-		name: "María López",
-		role: "Chief Financial Officer",
-		image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-		description:
-			"María López is an expert in corporate finance and has led major financial transformation projects.",
-		profileLink: "/about-us/board/maria-lopez",
-		linkedin: "#",
-		email: "maria.lopez@company.com",
-	},
-	{
-		name: "Carlos García",
-		role: "Chief Operations Officer",
-		image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
-		description:
-			"Carlos García has extensive experience in operations management and business process optimization.",
-		profileLink: "/about-us/board/carlos-garcia",
-		linkedin: "#",
-		email: "carlos.garcia@company.com",
-	},
-	{
-		name: "Ana Torres",
-		role: "Human Resources Manager",
-		image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
-		description:
-			"Ana Torres specializes in human talent management and organizational development.",
-		profileLink: "/about-us/board/ana-torres",
-		linkedin: "#",
-		email: "ana.torres@company.com",
-	},
-	{
-		name: "Luis Martínez",
-		role: "Chief Technology Officer",
-		image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-		description:
-			"Luis Martínez leads technological innovation and the company's digital transformation.",
-		profileLink: "/about-us/board/luis-martinez",
-		linkedin: "#",
-		email: "luis.martinez@company.com",
-	},
-	{
-		name: "Patricia Ruiz",
-		role: "Chief Marketing Officer",
-		image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
-		description:
-			"Patricia Ruiz drives digital marketing strategies and brand positioning.",
-		profileLink: "/about-us/board/patricia-ruiz",
-		linkedin: "#",
-		email: "patricia.ruiz@company.com",
-	},
-];
+interface BoardMember {
+	id: string;
+	nombre: string;
+	apellido_paterno: string;
+	apellido_materno?: string;
+	puesto: string;
+	descripcion?: string;
+	biografia?: string;
+	foto?: string;
+	foto_url?: string;
+	email?: string;
+	linkedin?: string;
+	activo: boolean;
+}
 
 export default function BoardPage() {
+	const [boardMembers, setBoardMembers] = useState<BoardMember[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchBoardMembers = async () => {
+			try {
+				const response = await axios.get(
+					`${process.env.NEXT_PUBLIC_API_URL}/api/board-members`
+				);
+				setBoardMembers(response.data);
+			} catch (err) {
+				console.error("Error fetching board members:", err);
+				setError("Failed to load board members.");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchBoardMembers();
+	}, []);
+
+	// Helper para construir la URL de la imagen
+	const getImageUrl = (member: BoardMember): string | null => {
+		if (member.foto_url) {
+			return `${process.env.NEXT_PUBLIC_API_URL}${member.foto_url}`;
+		}
+		if (member.foto) {
+			return `${process.env.NEXT_PUBLIC_API_URL}/uploads/${member.foto}`;
+		}
+		return null;
+	};
+
+	// Helper para obtener el nombre completo
+	const getFullName = (member: BoardMember): string => {
+		return `${member.nombre} ${member.apellido_paterno} ${member.apellido_materno || ''}`.trim();
+	};
+
+	// Helper para obtener la descripción
+	const getDescription = (member: BoardMember): string => {
+		return member.descripcion || member.biografia || '';
+	};
+
+	if (loading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+				<div className="text-red-500">{error}</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 			{/* Hero Section */}
 			<section
 				className="relative bg-cover bg-center text-white py-32 overflow-hidden"
-				style={{ backgroundImage: "url('/image/hero/Flayers_Home_01100.jpg')" }}
+				style={{
+					backgroundImage: "url('/image/hero/Flayers_Home_01100.jpg')",
+				}}
 			>
 				{/* Dark overlay for better readability */}
 				<div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-black/50" />
-				
+
 				{/* Decorative elements */}
 				<div className="absolute inset-0 opacity-20">
 					<div className="absolute top-10 left-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl" />
@@ -120,15 +134,21 @@ export default function BoardPage() {
 							Executive Team
 						</h2>
 						<p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-							Professionals with extensive experience committed to excellence and innovation
+							Professionals with extensive experience committed to excellence and
+							Innovation
 						</p>
 					</motion.div>
 
 					{/* Members Grid */}
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-						{boardMembers.map((member, index) => (
+						{boardMembers.map((member, index) => {
+							const imageUrl = getImageUrl(member);
+							const fullName = getFullName(member);
+							const description = getDescription(member);
+							
+							return (
 							<motion.div
-								key={index}
+								key={member.id || index}
 								initial={{ opacity: 0, y: 30 }}
 								whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true }}
@@ -136,21 +156,28 @@ export default function BoardPage() {
 								className="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-800"
 							>
 								{/* Gradient border on hover */}
-								<div className="absolute inset-0 bg-linear-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" 
-									style={{ padding: '2px' }}
+								<div
+									className="absolute inset-0 bg-linear-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
+									style={{ padding: "2px" }}
 								/>
-								
+
 								<div className="relative bg-white dark:bg-gray-900 rounded-2xl p-8 m-0.5">
 									{/* Image Container */}
 									<div className="relative mb-6">
 										<div className="w-32 h-32 mx-auto rounded-full overflow-hidden ring-4 ring-blue-100 dark:ring-blue-900/50 group-hover:ring-blue-500 transition-all duration-300 shadow-xl">
-											<Image
-												src={member.image}
-												alt={member.name}
-												width={128}
-												height={128}
-												className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-											/>
+											{imageUrl ? (
+												<Image
+													src={imageUrl}
+													alt={fullName}
+													width={128}
+													height={128}
+													className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+												/>
+											) : (
+												<div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+													{member.nombre?.charAt(0)}{member.apellido_paterno?.charAt(0)}
+												</div>
+											)}
 										</div>
 										{/* Status indicator */}
 										<div className="absolute bottom-2 right-1/2 translate-x-16 w-4 h-4 bg-green-500 rounded-full ring-4 ring-white dark:ring-gray-900 shadow-lg" />
@@ -159,45 +186,53 @@ export default function BoardPage() {
 									{/* Info */}
 									<div className="text-center mb-6">
 										<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-											{member.name}
+											{fullName}
 										</h3>
 										<p className="text-blue-600 dark:text-blue-400 font-semibold text-sm mb-4">
-											{member.role}
+											{member.puesto}
 										</p>
-										<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-											{member.description}
-										</p>
+										{description && (
+											<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
+												{description}
+											</p>
+										)}
 									</div>
 
 									{/* Social Links */}
 									<div className="flex items-center justify-center gap-3 mb-6">
-										<a
-											href={member.linkedin}
-											className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
-											aria-label="LinkedIn"
-										>
-											<Linkedin className="w-4 h-4" />
-										</a>
-										<a
-											href={`mailto:${member.email}`}
-											className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
-											aria-label="Email"
-										>
-											<Mail className="w-4 h-4" />
-										</a>
+										{member.linkedin && (
+											<a
+												href={member.linkedin}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
+												aria-label="LinkedIn"
+											>
+												<Linkedin className="w-4 h-4" />
+											</a>
+										)}
+										{member.email && (
+											<a
+												href={`mailto:${member.email}`}
+												className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
+												aria-label="Email"
+											>
+												<Mail className="w-4 h-4" />
+											</a>
+										)}
 									</div>
 
 									{/* Profile Link */}
 									<a
-										href={member.profileLink}
+										href={`/sobre-nosotros/consejo/${member.id}`}
 										className="flex items-center justify-center gap-2 w-full py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group/btn"
 									>
-										View Full Profile
+										<TranslateText text="View Full Profile" />
 										<ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
 									</a>
 								</div>
 							</motion.div>
-						))}
+						)})}
 					</div>
 				</div>
 			</section>

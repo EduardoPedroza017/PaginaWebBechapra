@@ -31,7 +31,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, maxWidt
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 8, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className={`relative w-full ${maxWidth} mx-4`}
+            className={`relative w-full ${maxWidth} mx-4 max-h-[95vh] overflow-y-auto`}
           >
             <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
               <div className="absolute top-3 right-3 z-10">
@@ -43,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, maxWidt
                   <X className="w-5 h-5 text-gray-700 dark:text-gray-200" />
                 </button>
               </div>
-              <div className="p-6">{children}</div>
+              <div>{children}</div>
             </div>
           </motion.div>
         </motion.div>

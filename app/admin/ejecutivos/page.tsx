@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Plus, BarChart3, AlertCircle } from 'lucide-react';
+import { Plus, BarChart3, AlertCircle, TrendingUp, Users, Camera, Briefcase, CheckCircle, XCircle, FileText, Eye, Edit, Trash2, Upload } from 'lucide-react';
 import { Sidebar } from '../dashboard/Sidebar';
 import { Header } from '../dashboard/Header';
 import { TranslateText } from '@/components/TranslateText';
@@ -21,7 +21,7 @@ import { EjecutivosPhotoUpload } from './EjecutivosPhotoUpload';
 export default function EjecutivosPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'list' | 'stats'>('list');
+  const [activeTab, setActiveTab] = useState<'list' | 'stats' | 'activeList' | 'inactiveList'>('list');
 
   // Estados de modales
   const [showForm, setShowForm] = useState(false);
@@ -48,8 +48,8 @@ export default function EjecutivosPage() {
     clearFilters,
   } = useEjecutivos();
 
-  // Estadísticas (simuladas por ahora - en una implementación real vendrían del backend)
-  const [stats] = useState({
+  // Estadísticas mejoradas
+  const stats = {
     total: ejecutivos.length,
     activos: ejecutivos.filter(e => e.activo).length,
     inactivos: ejecutivos.filter(e => !e.activo).length,
@@ -57,7 +57,15 @@ export default function EjecutivosPage() {
     sin_foto: ejecutivos.filter(e => !e.foto_url).length,
     puestos: [] as Array<{ _id: string; count: number }>,
     carreras: [] as Array<{ _id: string; count: number }>,
-  });
+  };
+
+  const [activeExecutives, setActiveExecutives] = useState<Ejecutivo[]>([]);
+  const [inactiveExecutives, setInactiveExecutives] = useState<Ejecutivo[]>([]);
+
+  useEffect(() => {
+    setActiveExecutives(ejecutivos.filter(e => e.activo));
+    setInactiveExecutives(ejecutivos.filter(e => !e.activo));
+  }, [ejecutivos]);
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
@@ -67,13 +75,11 @@ export default function EjecutivosPage() {
         requestAnimationFrame(() => setTheme(savedTheme as 'dark' | 'light'));
       }
       
-      // Check for authentication: either token OR header-based auth (user_email + role + admin)
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userEmail = localStorage.getItem('user_email') || sessionStorage.getItem('user_email');
       const role = localStorage.getItem('role') || sessionStorage.getItem('role');
       const admin = localStorage.getItem('admin') || sessionStorage.getItem('admin');
       
-      // Valid auth: either token exists OR (userEmail + role + admin) for header-based auth
       const hasHeaderAuth = userEmail && role && admin;
       
       if (!token && !hasHeaderAuth) {
@@ -135,7 +141,6 @@ export default function EjecutivosPage() {
   };
 
   const handleSave = async (data: EjecutivoFormData, photo?: File | null) => {
-    // Check for either token OR header-based auth (user_email + role + admin)
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const userEmail = localStorage.getItem('user_email') || sessionStorage.getItem('user_email');
     const role = localStorage.getItem('role') || sessionStorage.getItem('role');
@@ -149,7 +154,6 @@ export default function EjecutivosPage() {
     }
 
     setAuthError(null);
-    console.log('[DEBUG handleSave] Auth check passed:', { token: !!token, hasHeaderAuth, userEmail, role, admin });
     
     try {
       let ejecutivo;
@@ -159,27 +163,20 @@ export default function EjecutivosPage() {
         ejecutivo = await createEjecutivo(data);
       }
 
-      // Si hay foto seleccionada, subirla
       if (photo && ejecutivo) {
         await uploadFoto(ejecutivo._id, photo);
       }
 
       if (ejecutivo) {
-        // refrescar lista en la primera página y mostrar mensaje
         fetchEjecutivos({ page: 1, per_page: pagination.per_page });
         setSuccessMessage(selectedEjecutivo ? 'Ejecutivo actualizado correctamente.' : 'Ejecutivo creado correctamente.');
-        // cerrar modal
         setShowForm(false);
-        // limpiar seleccion
         setSelectedEjecutivo(null);
-        // borrar mensaje despues de unos segundos
         setTimeout(() => setSuccessMessage(null), 4000);
       } else {
-        // si no se creó, dejar que el error global lo maneje
         setSuccessMessage(null);
       }
     } catch (err) {
-      // errores ya manejados en hook; mostrar si hay
       setSuccessMessage(null);
     }
   };
@@ -191,175 +188,339 @@ export default function EjecutivosPage() {
   if (!mounted) return null;
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <Sidebar selected="ejecutivos" theme={theme} />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-h-screen">
         <Header onLogout={() => {}} onToggleTheme={handleToggleTheme} theme={theme} />
 
-        <main className="flex-1 p-6">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  <TranslateText text="Gestión de Ejecutivos" />
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  <TranslateText text="Administra la información de los ejecutivos de la organización" />
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setActiveTab(activeTab === 'list' ? 'stats' : 'list')}
-                  className="px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium border border-gray-200 dark:border-gray-700"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  {activeTab === 'list' ? <TranslateText text="Ver Estadísticas" /> : <TranslateText text="Ver Lista" />}
-                </button>
-
-                <button
-                  onClick={handleCreate}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium"
-                >
-                  <Plus className="w-4 h-4" />
-                  <TranslateText text="Nuevo Ejecutivo" />
-                </button>
-              </div>
+        <main className="flex-1 p-6 md:p-8 lg:p-10 space-y-8">
+          {/* Header de la página */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <TranslateText text="Gestión de Ejecutivos" />
+              </h1>
+              <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
+                <TranslateText text="Administra la información de los ejecutivos de la organización" />
+              </p>
             </div>
 
-            {/* Error de autenticación */}
-            {authError && (
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200">
-                      <TranslateText text="Autenticación requerida" />
-                    </h3>
-                    <p className="text-yellow-700 dark:text-yellow-300 mt-1">{authError}</p>
-                    <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-2">
-                      Accede a través del sistema de login para obtener un token válido.
-                    </p>
+            {/* Botón principal de acción */}
+            <button
+              onClick={handleCreate}
+              className="px-6 py-3.5 bg-linear-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 w-fit"
+            >
+              <Plus className="w-5 h-5" />
+              <TranslateText text="Nuevo Ejecutivo" />
+            </button>
+          </div>
+
+          {/* Tabs principales mejorados */}
+          <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-2">
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setActiveTab('list')}
+                className={`flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold transition-all duration-200 flex-1 text-center ${
+                  activeTab === 'list' || activeTab === 'activeList' || activeTab === 'inactiveList'
+                    ? 'bg-linear-to-r from-slate-700 to-slate-800 text-white shadow-lg'
+                    : 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Users className="w-5 h-5" />
+                <TranslateText text="Ejecutivos" />
+              </button>
+              <button
+                onClick={() => setActiveTab('stats')}
+                className={`flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold transition-all duration-200 flex-1 text-center ${
+                  activeTab === 'stats'
+                    ? 'bg-linear-to-r from-slate-700 to-slate-800 text-white shadow-lg'
+                    : 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <BarChart3 className="w-5 h-5" />
+                <TranslateText text="Estadísticas" />
+              </button>
+            </div>
+          </div>
+
+          {/* Mensajes de estado */}
+          {authError && (
+            <div className="bg-linear-to-r from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 border border-rose-200 dark:border-rose-700 rounded-xl p-4 flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+              <p className="text-rose-700 dark:text-rose-400 text-sm">{authError}</p>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="bg-linear-to-r from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border border-emerald-200 dark:border-emerald-700 rounded-xl p-4 flex items-center gap-3 animate-in slide-in-from-top duration-300">
+              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-emerald-700 dark:text-emerald-400 text-sm font-medium">{successMessage}</p>
+            </div>
+          )}
+
+          {/* Contenido basado en la pestaña activa */}
+          {activeTab === 'stats' ? (
+            <>
+              {/* Resumen Ejecutivo */}
+              <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-slate-600 to-slate-800 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Resumen Ejecutivo" />
+                  </h3>
+                </div>
+                <div className="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
+                  <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <TranslateText text="Esta sección proporciona una visión general de la gestión de ejecutivos. Aquí puedes analizar las estadísticas, distribuciones por puesto, estado activo y disponibilidad de fotos profesionales." />
+                  </p>
+                  <div className="flex items-center gap-3 mt-4 text-sm text-slate-600 dark:text-slate-400">
+                    <Briefcase className="w-4 h-4" />
+                    <span>
+                      <TranslateText text="Total de puestos únicos:" /> 0
+                    </span>
                   </div>
                 </div>
               </div>
-            )}
 
-            {/* Error global */}
-            {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
-                      <TranslateText text="Error" />
-                    </h3>
-                    <p className="text-red-700 dark:text-red-300 mt-1">{error}</p>
+              {/* Estadísticas - Expandidas */}
+              <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-slate-600 to-slate-800 flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Estadísticas Detalladas" />
+                  </h3>
+                </div>
+                <EjecutivosStats stats={stats} theme={theme} />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Tabs de subcategoría para ejecutivos */}
+              <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-2">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setActiveTab('list')}
+                    className={`flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold transition-all duration-200 flex-1 text-center ${
+                      activeTab === 'list'
+                        ? 'bg-linear-to-r from-slate-700 to-slate-800 text-white shadow-lg'
+                        : 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    <Users className="w-5 h-5" />
+                    <TranslateText text="Todos" />
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('activeList')}
+                    className={`flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold transition-all duration-200 flex-1 text-center ${
+                      activeTab === 'activeList'
+                        ? 'bg-linear-to-r from-slate-700 to-slate-800 text-white shadow-lg'
+                        : 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    <TrendingUp className="w-5 h-5" />
+                    <TranslateText text="Activos" />
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('inactiveList')}
+                    className={`flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold transition-all duration-200 flex-1 text-center ${
+                      activeTab === 'inactiveList'
+                        ? 'bg-linear-to-r from-slate-700 to-slate-800 text-white shadow-lg'
+                        : 'text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    <XCircle className="w-5 h-5" />
+                    <TranslateText text="Inactivos" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Bloque de estadísticas rápidas - SOLO para pestaña de Ejecutivos */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-linear-to-br from-white to-slate-50 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow-lg p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <TranslateText text="Total" />
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.total}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-linear-to-br from-white to-slate-50 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow-lg p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-emerald-600 to-emerald-800 flex items-center justify-center shadow-lg">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <TranslateText text="Activos" />
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.activos}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-linear-to-br from-white to-slate-50 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow-lg p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-rose-600 to-rose-800 flex items-center justify-center shadow-lg">
+                      <XCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <TranslateText text="Inactivos" />
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.inactivos}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-linear-to-br from-white to-slate-50 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow-lg p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-600 to-indigo-800 flex items-center justify-center shadow-lg">
+                      <Camera className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <TranslateText text="Con Foto" />
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stats.con_foto}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
 
-            {/* Success global */}
-            {successMessage && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  <div>
-                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">¡Éxito!</h3>
-                    <p className="text-green-700 dark:text-green-300 mt-1">{successMessage}</p>
+              {/* Filtros - SOLO para pestaña de Ejecutivos */}
+              <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-slate-600 to-slate-800 flex items-center justify-center">
+                    <Eye className="w-5 h-5 text-white" />
                   </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Filtros de Búsqueda" />
+                  </h3>
                 </div>
-              </div>
-            )}
-
-            {/* Contenido principal */}
-            {activeTab === 'list' ? (
-              <>
-                {/* Filtros */}
                 <EjecutivosFilters
                   filters={filters}
                   onFiltersChange={applyFilters}
                   onClearFilters={clearFilters}
                   theme={theme}
                 />
+              </div>
 
-                {/* Lista de ejecutivos */}
-                <EjecutivosList
-                  ejecutivos={ejecutivos}
-                  loading={loading}
-                  error={null}
-                  onView={handleView}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onCreate={handleCreate}
-                  onUploadPhoto={handleUploadPhoto}
-                  onToggleActive={handleToggleActive}
-                  theme={theme}
-                />
-
-                {/* Paginación */}
-                {pagination.total_pages > 1 && (
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => changePage(pagination.page - 1)}
-                      disabled={pagination.page <= 1}
-                      className="px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <TranslateText text="Anterior" />
-                    </button>
-
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      <TranslateText text="Página" /> {pagination.page} <TranslateText text="de" /> {pagination.total_pages}
-                    </span>
-
-                    <button
-                      onClick={() => changePage(pagination.page + 1)}
-                      disabled={pagination.page >= pagination.total_pages}
-                      className="px-3 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <TranslateText text="Siguiente" />
-                    </button>
+              {/* Lista de ejecutivos */}
+              <div className="bg-linear-to-br from-white/90 to-slate-100/90 dark:from-gray-900/90 dark:to-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Briefcase className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                        <TranslateText text="Ejecutivos" />
+                        <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-2">
+                          {activeTab === 'list' && `(${ejecutivos.length} registros)`}
+                          {activeTab === 'activeList' && `(${activeExecutives.length} activos)`}
+                          {activeTab === 'inactiveList' && `(${inactiveExecutives.length} inactivos)`}
+                        </span>
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={handleCreate}
+                        className="px-4 py-2 bg-linear-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span className="hidden sm:inline">
+                          <TranslateText text="Agregar" />
+                        </span>
+                      </button>
+                    </div>
                   </div>
+                </div>
+
+                {/* Renderizar lista según la pestaña activa */}
+                {activeTab === 'list' && (
+                  <EjecutivosList
+                    ejecutivos={ejecutivos}
+                    loading={loading}
+                    error={null}
+                    onView={handleView}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onCreate={handleCreate}
+                    onUploadPhoto={handleUploadPhoto}
+                    onToggleActive={handleToggleActive}
+                    theme={theme}
+                  />
                 )}
-              </>
-            ) : (
-              /* Estadísticas */
-              <EjecutivosStats stats={stats} theme={theme} />
-            )}
-          </div>
+                {activeTab === 'activeList' && (
+                  <EjecutivosList
+                    ejecutivos={activeExecutives}
+                    loading={loading}
+                    error={null}
+                    onView={handleView}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onCreate={handleCreate}
+                    onUploadPhoto={handleUploadPhoto}
+                    onToggleActive={handleToggleActive}
+                    theme={theme}
+                  />
+                )}
+                {activeTab === 'inactiveList' && (
+                  <EjecutivosList
+                    ejecutivos={inactiveExecutives}
+                    loading={loading}
+                    error={null}
+                    onView={handleView}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onCreate={handleCreate}
+                    onUploadPhoto={handleUploadPhoto}
+                    onToggleActive={handleToggleActive}
+                    theme={theme}
+                  />
+                )}
+              </div>
+            </>
+          )}
         </main>
+
+        {/* Modales */}
+        <EjecutivosForm
+          ejecutivo={selectedEjecutivo}
+          isOpen={showForm}
+          onClose={() => setShowForm(false)}
+          onSave={handleSave}
+          loading={loading}
+          theme={theme}
+        />
+
+        <EjecutivosModal
+          ejecutivo={selectedEjecutivo}
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onEdit={handleEdit}
+          onUploadPhoto={handleUploadPhoto}
+          theme={theme}
+        />
+
+        <EjecutivosPhotoUpload
+          ejecutivo={selectedEjecutivo!}
+          isOpen={showPhotoUpload}
+          onClose={() => setShowPhotoUpload(false)}
+          onUpload={handlePhotoUpload}
+          loading={loading}
+          theme={theme}
+        />
       </div>
-
-      {/* Modales */}
-      <EjecutivosForm
-        ejecutivo={selectedEjecutivo}
-        isOpen={showForm}
-        onClose={() => setShowForm(false)}
-        onSave={handleSave}
-        loading={loading}
-        theme={theme}
-      />
-
-      <EjecutivosModal
-        ejecutivo={selectedEjecutivo}
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onEdit={handleEdit}
-        onUploadPhoto={handleUploadPhoto}
-        theme={theme}
-      />
-
-      <EjecutivosPhotoUpload
-        ejecutivo={selectedEjecutivo!}
-        isOpen={showPhotoUpload}
-        onClose={() => setShowPhotoUpload(false)}
-        onUpload={handlePhotoUpload}
-        loading={loading}
-        theme={theme}
-      />
     </div>
   );
 }

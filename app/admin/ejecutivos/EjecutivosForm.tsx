@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { X, Save, User, Mail, Phone, Calendar, Briefcase, GraduationCap, FileText, ToggleLeft, ToggleRight, Camera } from 'lucide-react';
-import { Ejecutivo, EjecutivoFormData } from './hooks/useEjecutivos';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { Modal } from '../jobs/utils/Modal';
 import { TranslateText } from '@/components/TranslateText';
+import { EjecutivoFormData } from './hooks/useEjecutivos';
+import { ChevronLeft, ChevronRight, User, Briefcase, Mail, FileText, Check, Camera, Calendar, Phone, GraduationCap } from 'lucide-react';
 
 interface EjecutivosFormProps {
-  ejecutivo?: Ejecutivo | null;
+  ejecutivo: EjecutivoFormData | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: EjecutivoFormData, photo?: File | null) => Promise<void>;
+  onSave: (data: EjecutivoFormData, photo?: File | null) => void;
   loading: boolean;
   theme: 'light' | 'dark';
 }
@@ -22,39 +23,40 @@ export const EjecutivosForm: React.FC<EjecutivosFormProps> = ({
   loading,
   theme,
 }) => {
-  const [formData, setFormData] = useState<EjecutivoFormData>({
-    nombre: '',
-    apellido_paterno: '',
-    apellido_materno: '',
-    fecha_nacimiento: '',
-    puesto: '',
-    carrera_estudiada: '',
-    biografia: '',
-    telefono: '',
-    email: '',
-    activo: true,
-  });
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<EjecutivoFormData>(
+    ejecutivo || {
+      nombre: '',
+      apellido_paterno: '',
+      apellido_materno: '',
+      fecha_nacimiento: '',
+      puesto: '',
+      carrera_estudiada: '',
+      email: '',
+      telefono: '',
+      biografia: '',
+      descripcion: '',
+      activo: true,
+    }
+  );
 
-  const [errors, setErrors] = useState<Partial<EjecutivoFormData>>({});
-  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  // Cargar datos del ejecutivo cuando se edita
+  const totalSteps = 4;
+
+  const steps = [
+    { number: 1, title: 'Personal', icon: User },
+    { number: 2, title: 'Profesional', icon: Briefcase },
+    { number: 3, title: 'Contacto', icon: Mail },
+    { number: 4, title: 'Biografía', icon: FileText },
+  ];
+
   useEffect(() => {
     if (ejecutivo) {
-      setFormData({
-        nombre: ejecutivo.nombre || '',
-        apellido_paterno: ejecutivo.apellido_paterno || '',
-        apellido_materno: ejecutivo.apellido_materno || '',
-        fecha_nacimiento: ejecutivo.fecha_nacimiento || '',
-        puesto: ejecutivo.puesto || '',
-        carrera_estudiada: ejecutivo.carrera_estudiada || '',
-        biografia: ejecutivo.biografia || '',
-        telefono: ejecutivo.telefono || '',
-        email: ejecutivo.email || '',
-        activo: ejecutivo.activo,
-      });
+      setFormData(ejecutivo);
+      setCurrentStep(1);
     } else {
-      // Reset form for new ejecutivo
       setFormData({
         nombre: '',
         apellido_paterno: '',
@@ -62,420 +64,453 @@ export const EjecutivosForm: React.FC<EjecutivosFormProps> = ({
         fecha_nacimiento: '',
         puesto: '',
         carrera_estudiada: '',
-        biografia: '',
-        telefono: '',
         email: '',
+        telefono: '',
+        biografia: '',
+        descripcion: '',
         activo: true,
       });
+      setCurrentStep(1);
     }
-    setErrors({});
-  }, [ejecutivo, isOpen]);
+  }, [ejecutivo]);
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<EjecutivoFormData> = {};
-
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = 'El nombre es requerido';
-    } else if (formData.nombre.length < 2) {
-      newErrors.nombre = 'El nombre debe tener al menos 2 caracteres';
-    }
-
-    if (!formData.apellido_paterno.trim()) {
-      newErrors.apellido_paterno = 'El apellido paterno es requerido';
-    } else if (formData.apellido_paterno.length < 2) {
-      newErrors.apellido_paterno = 'El apellido paterno debe tener al menos 2 caracteres';
-    }
-
-    if (formData.fecha_nacimiento) {
-      const birthDate = new Date(formData.fecha_nacimiento);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-
-      if (birthDate > today) {
-        newErrors.fecha_nacimiento = 'La fecha de nacimiento no puede ser futura';
-      } else if (age < 18) {
-        newErrors.fecha_nacimiento = 'El ejecutivo debe tener al menos 18 años';
-      }
-    }
-
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'El formato del email es inválido';
-    }
-
-    if (formData.telefono && !/^[\+]?[0-9\s\-\(\)]{7,15}$/.test(formData.telefono)) {
-      newErrors.telefono = 'El formato del teléfono es inválido';
-    }
-
-    if (formData.biografia && formData.biografia.length > 2000) {
-      newErrors.biografia = 'La biografía no puede exceder 2000 caracteres';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPhoto(file);
+      
+      // Crear preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    onSave(formData, photo);
+  };
 
-    if (!validateForm()) {
-      return;
-    }
-
-    try {
-      await onSave(formData, selectedPhoto);
-      onClose();
-    } catch (error) {
-      console.error('Error saving ejecutivo:', error);
+  const nextStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
-  const handleInputChange = (field: keyof EjecutivoFormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+  const prevStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 1:
+        return formData.nombre && formData.apellido_paterno;
+      case 2:
+        return true;
+      case 3:
+        return formData.email;
+      case 4:
+        return true;
+      default:
+        return true;
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {ejecutivo ? <TranslateText text="Editar Ejecutivo" /> : <TranslateText text="Nuevo Ejecutivo" />}
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {ejecutivo ? <TranslateText text="Modifica la información del ejecutivo" /> : <TranslateText text="Ingresa la información del nuevo ejecutivo" />}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-6xl">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden w-full mx-auto border border-gray-200 dark:border-gray-700"
+      >
+        {/* Header con azul semi-oscuro */}
+        <div className="bg-linear-to-r from-slate-800 to-slate-900 px-8 py-8">
+          <h2 className="text-3xl font-bold text-white">
+            {ejecutivo ? <TranslateText text="Editar Ejecutivo" /> : <TranslateText text="Nuevo Ejecutivo" />}
+          </h2>
+          <p className="text-slate-200 text-base mt-2">
+            <TranslateText text="Completa la información en cada sección paso a paso" />
+          </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Información Personal */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <User className="w-5 h-5" />
-              <TranslateText text="Información Personal" />
-            </h3>
+        {/* Progress Steps mejorado */}
+        <div className="bg-slate-50 dark:bg-slate-900/70 px-8 py-8 border-b border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+          <div className="flex items-center justify-between max-w-6xl mx-auto">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = currentStep === step.number;
+              const isCompleted = currentStep > step.number;
+              const isCurrent = currentStep === step.number;
+              
+              return (
+                <React.Fragment key={step.number}>
+                  <div className="flex flex-col items-center flex-1 relative">
+                    <div
+                      className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 transform ${
+                        isCompleted
+                          ? 'bg-emerald-500 text-white scale-110 shadow-lg'
+                          : isActive
+                          ? 'bg-gradient-to-br from-slate-700 to-slate-800 text-white ring-4 ring-slate-300 dark:ring-slate-800 scale-110 shadow-xl'
+                          : 'bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shadow-md'
+                      }`}
+                    >
+                      {isCompleted ? <Check className="w-7 h-7" /> : <Icon className="w-7 h-7" />}
+                    </div>
+                    <span
+                      className={`text-sm font-semibold mt-3 transition-all duration-300 ${
+                        isCurrent
+                          ? 'text-slate-800 dark:text-slate-300 scale-105'
+                          : isCompleted
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-slate-500 dark:text-slate-500'
+                      }`}
+                    >
+                      <TranslateText text={step.title} />
+                    </span>
+                    <div className="absolute top-7 -right-6 w-12 h-0.5">
+                      {index < steps.length - 1 && (
+                        <div
+                          className={`h-0.5 w-full transition-all duration-500 ${
+                            currentStep > step.number
+                              ? 'bg-emerald-500'
+                              : 'bg-slate-300 dark:bg-slate-700'
+                          }`}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Nombre" /> *
-                </label>
-                <input
-                  type="text"
-                  value={formData.nombre}
-                  onChange={(e) => handleInputChange('nombre', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.nombre ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
-                  placeholder="Juan Carlos"
-                />
-                {errors.nombre && (
-                  <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>
-                )}
+        {/* Form Content - Expandido horizontalmente */}
+        <div className="px-10 py-10 min-h-[500px] grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Step 1: Información Personal */}
+          {currentStep === 1 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-300 col-span-2">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <User className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <TranslateText text="Información Personal" />
+                </h3>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Apellido Paterno" /> *
-                </label>
-                <input
-                  type="text"
-                  value={formData.apellido_paterno}
-                  onChange={(e) => handleInputChange('apellido_paterno', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.apellido_paterno ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
-                  placeholder="González"
-                />
-                {errors.apellido_paterno && (
-                  <p className="text-red-500 text-sm mt-1">{errors.apellido_paterno}</p>
-                )}
-              </div>
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <TranslateText text="Nombre" /> <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm"
+                    placeholder="Ej: Juan"
+                    required
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Apellido Materno" />
-                </label>
-                <input
-                  type="text"
-                  value={formData.apellido_materno}
-                  onChange={(e) => handleInputChange('apellido_materno', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Rodríguez"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <TranslateText text="Apellido Paterno" /> <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="apellido_paterno"
+                    value={formData.apellido_paterno}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm"
+                    placeholder="Ej: Pérez"
+                    required
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Fecha de Nacimiento" />
-                </label>
-                <input
-                  type="date"
-                  value={formData.fecha_nacimiento}
-                  onChange={(e) => handleInputChange('fecha_nacimiento', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.fecha_nacimiento ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
-                />
-                {errors.fecha_nacimiento && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fecha_nacimiento}</p>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <TranslateText text="Apellido Materno" />
+                  </label>
+                  <input
+                    type="text"
+                    name="apellido_materno"
+                    value={formData.apellido_materno}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm"
+                    placeholder="Ej: García"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <TranslateText text="Fecha de Nacimiento" />
+                  </label>
+                  <input
+                    type="date"
+                    name="fecha_nacimiento"
+                    value={formData.fecha_nacimiento}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Información Profesional */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Briefcase className="w-5 h-5" />
-              <TranslateText text="Información Profesional" />
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Puesto" />
-                </label>
-                <select
-                  value={formData.puesto}
-                  onChange={(e) => handleInputChange('puesto', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">
-                    <TranslateText text="Seleccionar puesto" asOption={true} />
-                  </option>
-                  <option value="Director General">Director General</option>
-                  <option value="Director">Director</option>
-                  <option value="Gerente">Gerente</option>
-                  <option value="Supervisor">Supervisor</option>
-                  <option value="Coordinador">Coordinador</option>
-                  <option value="Analista">Analista</option>
-                  <option value="Asistente">Asistente</option>
-                </select>
+          {/* Step 2: Información Profesional */}
+          {currentStep === 2 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-300 col-span-2">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <Briefcase className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Información Profesional" />
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                    <TranslateText text="Cargo y formación académica" />
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Carrera Estudiada" />
-                </label>
-                <input
-                  type="text"
-                  value={formData.carrera_estudiada}
-                  onChange={(e) => handleInputChange('carrera_estudiada', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Ingeniería Industrial"
-                />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                    <TranslateText text="Puesto / Cargo" />
+                  </label>
+                  <select
+                    name="puesto"
+                    value={formData.puesto}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm appearance-none"
+                  >
+                    <option value="">Seleccionar puesto</option>
+                    <option value="Director General">Director General</option>
+                    <option value="Director">Director</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Supervisor">Supervisor</option>
+                    <option value="Coordinador">Coordinador</option>
+                    <option value="Analista">Analista</option>
+                    <option value="Asistente">Asistente</option>
+                    <option value="Consultor">Consultor</option>
+                    <option value="Especialista">Especialista</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                    <TranslateText text="Carrera Estudiada" />
+                  </label>
+                  <div className="relative">
+                    <GraduationCap className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 dark:text-slate-400" />
+                    <input
+                      type="text"
+                      name="carrera_estudiada"
+                      value={formData.carrera_estudiada}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm"
+                      placeholder="Ej: Administración de Empresas"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Información de Contacto */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Mail className="w-5 h-5" />
-              <TranslateText text="Información de Contacto" />
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Email" />
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
-                  placeholder="juan.gonzalez@empresa.com"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  <TranslateText text="Teléfono" />
-                </label>
-                <input
-                  type="tel"
-                  value={formData.telefono}
-                  onChange={(e) => handleInputChange('telefono', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                    errors.telefono ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                  }`}
-                  placeholder="+52 55 1234 5678"
-                />
-                {errors.telefono && (
-                  <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Biografía */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              <TranslateText text="Biografía" />
-            </h3>
-
-            <div>
-              <textarea
-                value={formData.biografia}
-                onChange={(e) => handleInputChange('biografia', e.target.value)}
-                rows={4}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none ${
-                  errors.biografia ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                }`}
-                placeholder="Describe la trayectoria profesional del ejecutivo..."
-              />
-              <div className="flex justify-between items-center mt-1">
-                {errors.biografia && (
-                  <p className="text-red-500 text-sm">{errors.biografia}</p>
-                )}
-                <p className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
-                  {formData.biografia.length}/2000
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 mt-8">
+                <p className="text-blue-800 dark:text-blue-300 text-sm">
+                  <span className="font-semibold">💡 Nota:</span>{' '}
+                  <TranslateText text="Estos datos ayudarán a identificar el rol del ejecutivo en la organización" />
                 </p>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Estado */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <ToggleLeft className="w-5 h-5" />
-              <TranslateText text="Estado" />
-            </h3>
-
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => handleInputChange('activo', !formData.activo)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  formData.activo ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    formData.activo ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {formData.activo ? (
-                  <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
-                    <ToggleRight className="w-4 h-4" />
-                    <TranslateText text="Activo" />
-                  </span>
-                ) : (
-                  <span className="text-red-600 dark:text-red-400 flex items-center gap-1">
-                    <ToggleLeft className="w-4 h-4" />
-                    <TranslateText text="Inactivo" />
-                  </span>
-                )}
-              </span>
-            </div>
-          </div>
-
-          {/* Foto */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Camera className="w-5 h-5" />
-              <TranslateText text="Foto" />
-            </h3>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-4">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setSelectedPhoto(e.target.files?.[0] || null)}
-                  className="hidden"
-                  id="photo-upload"
-                />
-                <label
-                  htmlFor="photo-upload"
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg cursor-pointer transition-colors duration-200"
-                >
-                  <Camera className="w-4 h-4" />
-                  <TranslateText text="Seleccionar Foto" />
-                </label>
-                {selectedPhoto && (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {selectedPhoto.name}
-                  </span>
-                )}
-              </div>
-              {selectedPhoto && (
-                <div className="flex items-center gap-3">
-                  <img
-                    src={URL.createObjectURL(selectedPhoto)}
-                    alt="Preview"
-                    className="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPhoto(null)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                  >
-                    <TranslateText text="Remover" />
-                  </button>
+          {/* Step 3: Información de Contacto */}
+          {currentStep === 3 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-300 col-span-2">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg">
+                  <Mail className="w-7 h-7 text-white" />
                 </div>
-              )}
-            </div>
-          </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Información de Contacto" />
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                    <TranslateText text="Medios de comunicación oficiales" />
+                  </p>
+                </div>
+              </div>
 
-          {/* Actions */}
-          <div className="flex gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                    <TranslateText text="Email Corporativo" /> <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 dark:text-slate-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-transparent transition-all shadow-sm"
+                      placeholder="ejemplo@empresa.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                    <TranslateText text="Teléfono" />
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 dark:text-slate-400" />
+                    <input
+                      type="tel"
+                      name="telefono"
+                      value={formData.telefono}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-transparent transition-all shadow-sm"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border border-emerald-200 dark:border-emerald-700 rounded-2xl p-6">
+                <p className="text-emerald-800 dark:text-emerald-300 text-sm">
+                  <span className="font-semibold">📞 Importante:</span>{' '}
+                  <TranslateText text="Esta información será visible para contacto oficial" />
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Biografía */}
+          {currentStep === 4 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-300 col-span-2">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center shadow-lg">
+                  <FileText className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <TranslateText text="Biografía Profesional" />
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                    <TranslateText text="Trayectoria, logros y especialidades" />
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                  <TranslateText text="Describe la trayectoria profesional" />
+                </label>
+                <textarea
+                  name="biografia"
+                  value={formData.biografia}
+                  onChange={handleInputChange}
+                  className="w-full px-5 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-slate-600 dark:focus:ring-slate-400 focus:border-transparent transition-all shadow-sm resize-none"
+                  rows={12}
+                  placeholder={`Ejemplo: ${ejecutivo?.nombre || "El ejecutivo"} cuenta con más de 10 años de experiencia en liderazgo estratégico. Ha dirigido equipos multidisciplinarios y ha sido clave en la expansión internacional de la empresa. Entre sus logros destacan...`}
+                />
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    <TranslateText text="Recomendado: 200-500 palabras" />
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    {formData.biografia.length} caracteres
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
+                <p className="text-slate-800 dark:text-slate-300 text-sm">
+                  <span className="font-semibold">💼 Sugerencias:</span>{' '}
+                  <TranslateText text="Incluye experiencia clave, logros destacados, certificaciones y habilidades especiales." />
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer con botones de navegación - Mejorado */}
+        <div className="bg-slate-50 dark:bg-slate-900/70 px-10 py-8 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between backdrop-blur-sm">
+          <button
+            type="button"
+            onClick={(e) => prevStep(e)}
+            disabled={currentStep === 1}
+            className="px-7 py-3.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 border border-slate-300 dark:border-slate-600 hover:shadow-md hover:scale-105 active:scale-95"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <TranslateText text="Volver" />
+          </button>
+
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200 font-medium"
+              className="px-7 py-3.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95"
             >
               <TranslateText text="Cancelar" />
             </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors duration-200 font-medium flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <TranslateText text="Guardando..." />
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  <TranslateText text="Guardar" />
-                </>
-              )}
-            </button>
+
+            {currentStep < totalSteps ? (
+              <button
+                type="button"
+                onClick={(e) => nextStep(e)}
+                disabled={!isStepValid()}
+                className="px-7 py-3.5 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
+              >
+                <TranslateText text="Continuar" />
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading || !isStepValid()}
+                className="px-7 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <TranslateText text="Procesando..." />
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-5 h-5" />
+                    <TranslateText text="Guardar Ejecutivo" />
+                  </>
+                )}
+              </button>
+            )}   
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Modal>
   );
 };

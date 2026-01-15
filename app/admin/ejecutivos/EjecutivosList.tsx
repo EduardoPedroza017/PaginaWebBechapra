@@ -77,14 +77,6 @@ export const EjecutivosList: React.FC<EjecutivosListProps> = ({
             </p>
           </div>
         </div>
-
-        <button
-          onClick={onCreate}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium"
-        >
-          <Plus className="w-4 h-4" />
-          <TranslateText text="Nuevo Ejecutivo" />
-        </button>
       </div>
 
       {/* Grid de cards */}
@@ -99,16 +91,9 @@ export const EjecutivosList: React.FC<EjecutivosListProps> = ({
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             <TranslateText text="Comienza creando el primer ejecutivo de la organización." />
           </p>
-          <button
-            onClick={onCreate}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium"
-          >
-            <Plus className="w-5 h-5" />
-            <TranslateText text="Crear Primer Ejecutivo" />
-          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
           {ejecutivos.map((ejecutivo) => (
             <EjecutivosCard
               key={ejecutivo._id}
@@ -116,7 +101,6 @@ export const EjecutivosList: React.FC<EjecutivosListProps> = ({
               onView={onView}
               onEdit={onEdit}
               onDelete={onDelete}
-              onUploadPhoto={onUploadPhoto}
               onToggleActive={onToggleActive}
               theme={theme}
             />
