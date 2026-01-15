@@ -235,8 +235,8 @@ export default function UsuariosPage() {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const method = editUser ? "PUT" : "POST";
       const url = editUser
-        ? `${apiBase}/admin/users/${encodeURIComponent(form.email)}`
-        : `${apiBase}/admin/users/`;
+        ? `${apiBase}/api/admin/users/${encodeURIComponent(form.email)}`
+        : `${apiBase}/api/admin/users/`;
       
       const payload = { ...form };
       const isSuperLocal = (sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true');
@@ -274,7 +274,7 @@ export default function UsuariosPage() {
     setProcessing(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const res = await fetch(`${apiBase}/admin/block_user`, {
+      const res = await fetch(`${apiBase}/api/admin/block_user`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

@@ -109,11 +109,21 @@ class ApiClient {
     try {
       debugLog('API Request:', options.method || 'GET', url);
 
+      // If body is FormData, do not force Content-Type (browser will add the correct
+      // multipart/form-data boundary). Only add default Content-Type when body is
+      // not FormData and no Content-Type header was provided.
+      const providedHeaders = options.headers || {};
+      const isFormData = options.body instanceof FormData;
+      const defaultHeaders: Record<string, string> = {};
+      if (!isFormData && !(providedHeaders as any)['Content-Type'] && !(providedHeaders as any)['content-type']) {
+        defaultHeaders['Content-Type'] = 'application/json';
+      }
+
       const response = await fetch(url, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
+          ...defaultHeaders,
+          ...providedHeaders,
         },
       });
 

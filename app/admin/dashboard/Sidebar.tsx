@@ -253,7 +253,7 @@ export function Sidebar({
                   : 'bg-slate-100'
               }`}>
                 <NextImage
-                  src="/image/LOGO/Bausen.png"
+                  src="/image/logo/bausen-logo.png"
                   alt="Logo BAUSEN"
                   fill
                   sizes="40px"

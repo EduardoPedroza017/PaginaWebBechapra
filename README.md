@@ -209,6 +209,39 @@ git clone https://github.com/EduardoPedroza017/PaginaWebBAUSEN.git
 cd PaginaWebBAUSEN
 ```
 
+---
+
+## ✅ Cambios recientes (Frontend) — 2026-01-15
+
+Hoy se aplicaron ajustes para corregir integraciones con el backend y mejorar la subida de archivos, manejo de cabeceras y rutas legacy que causaban errores en producción/local. Resumen de los cambios principales:
+
+- Uploads y FormData:
+   - `lib/api-client.ts` actualizado para no forzar `Content-Type: application/json` cuando se envía `FormData` (evita que el navegador omita el boundary y el backend reciba "No file part").
+
+- Rutas y proxies:
+   - Se corrigieron las llamadas de administración que usan proxies internos para alinear con `/api/admin/*`.
+   - Se actualizaron los endpoints del administrador (`app/api/admin/users` y las mutaciones relacionadas) para apuntar al backend correcto.
+
+- UI y assets:
+   - `app/admin/dashboard/Sidebar.tsx` actualizado para usar la ruta de logo pública correcta (`/image/logo/bausen-logo.png`).
+
+- Manejo de errores y robustez:
+   - Mejor manejo de errores en formularios de subida de imágenes y formularios administrativos.
+
+Notas de prueba rápida (después de reiniciar frontend y backend):
+
+```bash
+# Reiniciar frontend
+pnpm dev # o npm run dev
+
+# Comprobar endpoint de subida (debe responder OPTIONS con 204 y POST con 201)
+curl -i -X OPTIONS http://localhost:5000/api/uploads -H "Origin: http://localhost:3000" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: cache-control"
+
+# PRUEBA UPLOAD (cliente): desde la UI del admin intenta subir una imagen y revisa la consola del navegador para errores.
+```
+
+Fecha del último cambio: 2026-01-15
+
 ### Paso 2: Instalar dependencias
 
 ```bash
