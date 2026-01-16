@@ -10,13 +10,31 @@ import {
   HelpCircle, 
   Search,
   Shield,
-  X
+  X,
+  Bell,
+  Home,
+  BarChart3,
+  MessageSquare,
+  Zap,
+  ChevronRight,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Globe,
+  CreditCard,
+  Users,
+  FileText,
+  Download,
+  Upload,
+  RefreshCw
 } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { TranslateText } from '@/components/TranslateText';
 import { useLanguage } from '@/lib/LanguageContext';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
   onLogout: () => void;
@@ -26,6 +44,14 @@ interface HeaderProps {
   admin?: boolean;
   userName?: string;
   userEmail?: string;
+  notifications?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    time: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    read: boolean;
+  }>;
 }
 
 export function Header({ 
@@ -35,20 +61,33 @@ export function Header({
   role, 
   admin,
   userName = "Usuario",
-  userEmail = "usuario@bausen.com"
+  userEmail = "usuario@bausen.com",
+  notifications = []
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [quickActionsOpen, setQuickActionsOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  
   const isDark = theme === 'dark';
+  const pathname = usePathname();
 
   // Refs para manejar clicks fuera de los dropdowns
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const notificationMenuRef = useRef<HTMLDivElement>(null);
+  const quickActionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const unread = notifications.filter(n => !n.read).length;
+    setUnreadCount(unread);
+  }, [notifications]);
 
   const { lang } = useLanguage();
 
@@ -57,6 +96,12 @@ export function Header({
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
+      }
+      if (notificationMenuRef.current && !notificationMenuRef.current.contains(event.target as Node)) {
+        setNotificationMenuOpen(false);
+      }
+      if (quickActionsRef.current && !quickActionsRef.current.contains(event.target as Node)) {
+        setQuickActionsOpen(false);
       }
     };
 
@@ -68,320 +113,160 @@ export function Header({
 
   // Theme-based classes
   const headerClasses = isDark
-    ? 'bg-slate-900 border-slate-700 text-white'
-    : 'bg-white border-slate-200 text-slate-900';
+    ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-700/50 text-white'
+    : 'bg-gradient-to-r from-white to-gray-50 border-gray-200 text-gray-900 shadow-sm';
 
-  const buttonBase = 'flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors';
+  const buttonBase = 'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]';
 
   const themeButtonClasses = isDark
-    ? 'bg-slate-800 hover:bg-slate-700 text-white'
-    : 'bg-slate-100 hover:bg-slate-200 text-slate-700';
-
-  const logoutButtonClasses = 'bg-red-500 hover:bg-red-600 text-white';
+    ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white shadow-md'
+    : 'bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 shadow-sm border border-gray-200';
 
   const primaryButtonClasses = isDark
-    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-    : 'bg-blue-600 hover:bg-blue-700 text-white';
+    ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg'
+    : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg';
 
-  const roleColors: Record<string, string> = {
-    superadmin: 'bg-purple-600',
-    admin: 'bg-blue-600',
-    editor: 'bg-green-600',
-    viewer: 'bg-slate-600'
+  const logoutButtonClasses = 'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white shadow-lg';
+
+  const roleColors: Record<string, { bg: string, text: string }> = {
+    superadmin: { bg: 'bg-gradient-to-r from-purple-600 to-purple-500', text: 'text-white' },
+    admin: { bg: 'bg-gradient-to-r from-blue-600 to-blue-500', text: 'text-white' },
+    editor: { bg: 'bg-gradient-to-r from-emerald-600 to-emerald-500', text: 'text-white' },
+    viewer: { bg: 'bg-gradient-to-r from-gray-600 to-gray-500', text: 'text-white' }
   };
 
   const roleText = role === 'superadmin' ? 'Super Admin' : 
                    role === 'admin' ? 'Administrador' : 
                    role === 'editor' ? 'Editor' : 'Visualizador';
 
+  const notificationColors = {
+    info: 'text-blue-500',
+    success: 'text-emerald-500',
+    warning: 'text-amber-500',
+    error: 'text-red-500'
+  };
+
+  const notificationBgColors = {
+    info: 'bg-blue-500/10',
+    success: 'bg-emerald-500/10',
+    warning: 'bg-amber-500/10',
+    error: 'bg-red-500/10'
+  };
+
+  // Quick actions
+  const quickActions = [
+    { icon: <BarChart3 size={18} />, label: 'Dashboard', path: '/admin/dashboard' },
+    { icon: <FileText size={18} />, label: 'Nuevo Reporte', path: '/admin/reports/new' },
+    { icon: <Users size={18} />, label: 'Agregar Usuario', path: '/admin/usuarios/new' },
+    { icon: <Upload size={18} />, label: 'Importar Datos', path: '/admin/import' },
+    { icon: <Download size={18} />, label: 'Exportar Datos', path: '/admin/export' },
+    { icon: <RefreshCw size={18} />, label: 'Sincronizar', action: () => console.log('Sync') },
+  ];
+
   // Animation variants
   const dropdownVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
+    hidden: { opacity: 0, y: -10, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -10, scale: 0.95 }
+  };
+
+  const mobileMenuVariants = {
+    hidden: { opacity: 0, y: -20, height: 0 },
+    visible: { opacity: 1, y: 0, height: 'auto' },
+    exit: { opacity: 0, y: -20, height: 0 }
+  };
+
+  const markAllAsRead = () => {
+    // Implementar lógica para marcar todas como leídas
   };
 
   return (
-    <header className={`sticky top-0 z-50 flex items-center justify-between px-4 md:px-6 py-3 border-b ${headerClasses} shadow-sm`}>
-      {/* Left Section: Logo & Title */}
-      <div className="flex items-center gap-3">
-        {/* Mobile Menu Toggle */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`md:hidden p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
-          aria-label="Menú"
-        >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <h1 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <TranslateText text="Panel de Administración" />
-            </h1>
-          </div>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Sistema de Gestión BAUSEN
-          </p>
-        </div>
-      </div>
-
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center gap-2">
-        {/* Search Button */}
-        <button
-          onClick={() => setSearchOpen(true)}
-          className={`p-2.5 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
-          aria-label="Buscar"
-        >
-          <Search size={18} />
-        </button>
-
-        {/* Theme Toggle */}
-        <button
-          onClick={onToggleTheme}
-          className={`${buttonBase} ${themeButtonClasses}`}
-          aria-label={`Cambiar a modo ${isDark ? 'claro' : 'oscuro'}`}
-        >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          <span className="hidden lg:inline text-sm">
-            <TranslateText text={isDark ? 'Claro' : 'Oscuro'} />
-          </span>
-        </button>
-
-        {/* Role Badge */}
-        {role && (
-          <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm ${roleColors[role]} text-white`}>
-            <Shield size={14} />
-            <span className="font-semibold">{roleText}</span>
-          </div>
-        )}
-
-        {/* User Menu */}
-        <div className="relative" ref={userMenuRef}>
+    <>
+      <header className={`sticky top-0 z-50 flex items-center justify-between px-4 md:px-6 py-3 border-b backdrop-blur-sm ${headerClasses}`}>
+        {/* Left Section: Logo & Breadcrumb */}
+        <div className="flex items-center gap-3">
+          {/* Mobile Menu Toggle */}
           <button
-            onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className={`${buttonBase} ${primaryButtonClasses}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`md:hidden p-2 rounded-xl transition-all ${isDark ? 'hover:bg-gray-800 active:scale-95' : 'hover:bg-gray-100 active:scale-95'}`}
+            aria-label="Menú"
           >
-            <User size={18} />
-            <div className="text-left hidden lg:block">
-              <div className="text-sm font-semibold truncate max-w-[120px]">{userName}</div>
-            </div>
-            <ChevronDown size={14} className={userMenuOpen ? 'rotate-180 transition-transform' : ''} />
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          <AnimatePresence>
-            {userMenuOpen && (
-              <motion.div
-                variants={dropdownVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className={`absolute right-0 top-12 w-56 rounded-lg shadow-lg border z-50 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
-              >
-                {/* User Info */}
-                <div className="p-4 border-b">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDark ? 'bg-blue-600' : 'bg-blue-600'} text-white`}>
-                      <User size={20} />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className={`font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {userName}
-                      </h4>
-                      <p className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {userEmail}
-                      </p>
-                      {role && (
-                        <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-bold ${roleColors[role]} text-white`}>
-                          {roleText}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Menu Items */}
-                <div className="p-1">
-                  <Link
-                    href="/admin/profile"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded text-sm ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <User size={16} />
-                    <span>Mi Perfil</span>
-                  </Link>
-                  
-                  {admin && (
-                    <Link
-                      href="/admin/settings"
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded text-sm ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <Settings size={16} />
-                      <span>Configuración</span>
-                    </Link>
-                  )}
-
-                  <Link
-                    href="/admin/help"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded text-sm ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <HelpCircle size={16} />
-                    <span>Ayuda</span>
-                  </Link>
-                </div>
-
-                {/* Logout Button */}
-                <div className="p-3 border-t">
-                  <button
-                    onClick={() => {
-                      onLogout();
-                      setUserMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded font-medium text-sm ${logoutButtonClasses}`}
-                  >
-                    <LogOut size={16} />
-                    Cerrar Sesión
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Logo */}
+          <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+            <div className="hidden md:block">
+              <div className="flex items-center gap-2">
+                <h1 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  Panel de Admnistracion | Bausen 
+                </h1>
+                <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {pathname.split('/').pop() || 'Dashboard'}
+                </span>
+              </div>
+            </div>
+          </Link>
         </div>
-      </div>
+
+        {/* Desktop Navigation - Center (minimal) */}
+        <div className="hidden lg:flex items-center gap-4 flex-1 justify-center">
+          {/* Intentionally minimal: removed placeholder stats to keep header unified with sidebar */}
+        </div>
+
+        {/* Desktop Navigation - Right */}
+        <div className="flex items-center gap-2">
+          {/* Theme Toggle */}
+          <button
+            onClick={onToggleTheme}
+            className={`${buttonBase} ${themeButtonClasses} hidden lg:flex`}
+            aria-label={`Cambiar a modo ${isDark ? 'claro' : 'oscuro'}`}
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            <span className="text-sm">
+              <TranslateText text={isDark ? 'Claro' : 'Oscuro'} />
+            </span>
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={() => {
+              onLogout();
+              setUserMenuOpen(false);
+            }}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm ${logoutButtonClasses} hover:shadow-lg transition-all`}
+          >
+            <LogOut size={16} />
+            Cerrar Sesión
+          </button>
+        </div>
+      </header>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className={`absolute top-full left-0 right-0 md:hidden shadow-lg border-t z-50 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
-          >
-            <div className="p-4 space-y-2">
-              {/* User Info Mobile */}
-              <div className={`p-4 rounded-lg mb-3 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDark ? 'bg-blue-600' : 'bg-blue-600'} text-white`}>
-                    <User size={24} />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className={`font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                      {userName}
-                    </h4>
-                    <p className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                      {userEmail}
-                    </p>
-                    {role && (
-                      <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-bold ${roleColors[role]} text-white`}>
-                        {roleText}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Menu Items */}
-              <button
-                onClick={() => {
-                  onToggleTheme();
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium justify-start ${themeButtonClasses}`}
-              >
-                {isDark ? <Sun size={18} /> : <Moon size={18} />}
-                <span>
-                  <TranslateText text={isDark ? 'Modo claro' : 'Modo oscuro'} />
-                </span>
-              </button>
-
-              <Link
-                href="/admin/profile"
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium justify-start ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <User size={18} />
-                <span>Mi Perfil</span>
-              </Link>
-
-              {admin && (
-                <Link
-                  href="/admin/settings"
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium justify-start ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Settings size={18} />
-                  <span>Configuración</span>
-                </Link>
-              )}
-
-              <Link
-                href="/admin/help"
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium justify-start ${isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <HelpCircle size={18} />
-                <span>Ayuda</span>
-              </Link>
-
-              <button
-                onClick={() => {
-                  onLogout();
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium justify-start ${logoutButtonClasses}`}
-              >
-                <LogOut size={18} />
-                <span>Cerrar Sesión</span>
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Search Modal */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-20"
-            onClick={() => setSearchOpen(false)}
-          >
+          <>
+            {/* Overlay */}
             <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -50, opacity: 0 }}
-              className={`w-full max-w-md mx-4 rounded-lg shadow-lg border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            {/* Mobile Menu Content */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              className="fixed top-0 left-0 bottom-0 w-64 bg-white shadow-lg z-50"
             >
-              <div className="p-4">
-                <div className="relative">
-                  <Search className={`absolute left-3 top-3 w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar..."
-                    className={`w-full pl-10 pr-10 py-2.5 rounded text-sm border ${isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-500'}`}
-                    autoFocus
-                  />
-                  <button
-                    onClick={() => setSearchOpen(false)}
-                    className={`absolute right-3 top-2.5 p-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
+              {/* Add your mobile menu content here */}
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

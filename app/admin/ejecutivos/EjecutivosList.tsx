@@ -100,7 +100,6 @@ export const EjecutivosList: React.FC<EjecutivosListProps> = ({
               ejecutivo={ejecutivo}
               onView={onView}
               onEdit={onEdit}
-              onDelete={onDelete}
               onToggleActive={onToggleActive}
               theme={theme}
             />

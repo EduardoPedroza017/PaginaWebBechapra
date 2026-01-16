@@ -138,63 +138,6 @@ export default function QuickActions({ theme, role }: QuickActionsProps) {
     return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
   };
 
-  return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className={`flex items-center justify-between p-4 rounded-lg border ${
-        isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
-      }`}>
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
-            <ArrowRight className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`} />
-          </div>
-          <div>
-            <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <TranslateText text="Accesos Rápidos" />
-            </h3>
-            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              <TranslateText text="Acceso directo a las secciones principales" />
-            </p>
-          </div>
-        </div>
-        
-        {role === 'superadmin' && (
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
-            isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
-          }`}>
-            <Shield className="w-4 h-4" />
-            <span className="font-medium">
-              <TranslateText text="Super Admin" />
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Actions Grid */}
-      <div className={`grid gap-3 ${getGridCols()}`}>
-        {baseActions.map((action, idx) => (
-          <ActionCard 
-            key={idx}
-            action={action}
-            theme={theme}
-          />
-        ))}
-        
-        {role === 'superadmin' && superadminActions.map((action, idx) => (
-          <ActionCard 
-            key={`admin-${idx}`}
-            action={action}
-            theme={theme}
-          />
-        ))}
-      </div>
-
-      {/* Note */}
-      <p className={`text-xs text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-        <TranslateText text="Haz clic en cualquier tarjeta para acceder rápidamente" />
-      </p>
-    </div>
-  );
 }
 
 // Componente de tarjeta de acción reutilizable

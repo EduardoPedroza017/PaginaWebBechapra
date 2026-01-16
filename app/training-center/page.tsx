@@ -7,6 +7,13 @@ import Footer from '@/components/Footer';
 export default function TrainingCenterPage() {
   const [activeTab, setActiveTab] = useState('todos');
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [nombre, setNombre] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [areaInteres, setAreaInteres] = useState('');
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const courses = [
     {
@@ -539,12 +546,49 @@ export default function TrainingCenterPage() {
               <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
                 Envía tu CV
               </h4>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={async (e) => {
+                e.preventDefault();
+                setErrorMessage(null);
+                setSuccessMessage(null);
+                if (!nombre || !correo || !areaInteres) {
+                  setErrorMessage('Por favor completa los campos obligatorios.');
+                  return;
+                }
+                setSubmitting(true);
+                try {
+                  const formData = new FormData();
+                  formData.append('nombre_completo', nombre);
+                  formData.append('correo', correo);
+                  formData.append('area_interes', areaInteres);
+                  if (cvFile) formData.append('cv', cvFile, cvFile.name);
+
+                  const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
+                  const res = await fetch(`${base}/api/formularios`, {
+                    method: 'POST',
+                    body: formData,
+                  });
+
+                  if (!res.ok) {
+                    const err = await res.json().catch(() => null);
+                    throw new Error(err?.message || 'Error al enviar el formulario');
+                  }
+
+                  setSuccessMessage('CV enviado correctamente. ¡Gracias!');
+                  setNombre(''); setCorreo(''); setAreaInteres(''); setCvFile(null);
+                } catch (err) {
+                  setErrorMessage(err instanceof Error ? err.message : 'Error al enviar');
+                } finally {
+                  setSubmitting(false);
+                }
+              }}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Nombre Completo
                   </label>
                   <input
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    required
                     type="text"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Tu nombre completo"
@@ -555,6 +599,9 @@ export default function TrainingCenterPage() {
                     Correo Electrónico
                   </label>
                   <input
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    required
                     type="email"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="tu@email.com"
@@ -564,8 +611,8 @@ export default function TrainingCenterPage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Área de Interés
                   </label>
-                  <select className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                    <option>Selecciona un área</option>
+                  <select value={areaInteres} onChange={(e) => setAreaInteres(e.target.value)} required className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <option value="">Selecciona un área</option>
                     <option>Contabilidad y Finanzas</option>
                     <option>Recursos Humanos</option>
                     <option>Marketing Digital</option>
@@ -578,17 +625,23 @@ export default function TrainingCenterPage() {
                     Adjuntar CV
                   </label>
                   <input
+                    onChange={(e) => setCvFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)}
                     type="file"
                     accept=".pdf,.doc,.docx"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                 </div>
+
+                {errorMessage && <div className="text-sm text-rose-600">{errorMessage}</div>}
+                {successMessage && <div className="text-sm text-emerald-600">{successMessage}</div>}
+
                 <button
+                  disabled={submitting}
                   type="submit"
                   className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <Send className="w-4 h-4" />
-                  Enviar CV
+                  {submitting ? 'Enviando...' : 'Enviar CV'}
                 </button>
               </form>
             </div>

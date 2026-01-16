@@ -9,7 +9,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
 
-// Datos de ejemplo de eventos
+// Datos de ejemplo (se usan como fallback si el backend no responde)
 const eventosData = [
   {
     id: 1,
@@ -19,42 +19,6 @@ const eventosData = [
     imagen: 'https://picsum.photos/800/600?random=1',
     categoria: 'Tecnología',
     ubicacion: 'Centro de Convenciones, Ciudad de México'
-  },
-  {
-    id: 2,
-    titulo: 'Festival de Música Urbana',
-    descripcion: 'El mejor festival de hip-hop y música urbana con artistas nacionales e internacionales en un ambiente único.',
-    fecha: '2024-04-20',
-    imagen: 'https://picsum.photos/800/600?random=2',
-    categoria: 'Música',
-    ubicacion: 'Parque Fundidora, Monterrey'
-  },
-  {
-    id: 3,
-    titulo: 'Exposición de Arte Moderno',
-    descripcion: 'Colección de arte contemporáneo de artistas locales e internacionales en una muestra exclusiva.',
-    fecha: '2024-05-10',
-    imagen: 'https://picsum.photos/800/600?random=3',
-    categoria: 'Arte',
-    ubicacion: 'Museo Tamayo, Ciudad de México'
-  },
-  {
-    id: 4,
-    titulo: 'Maratón Ciudad de México',
-    descripcion: 'Carrera atlética por las principales avenidas de la ciudad con distancias para todos los niveles.',
-    fecha: '2024-06-05',
-    imagen: 'https://picsum.photos/800/600?random=4',
-    categoria: 'Deportes',
-    ubicacion: 'Zócalo, Centro Histórico'
-  },
-  {
-    id: 5,
-    titulo: 'Feria Internacional del Libro',
-    descripcion: 'Encuentro literario con autores nacionales e internacionales, presentaciones y firmas de libros.',
-    fecha: '2024-07-12',
-    imagen: 'https://picsum.photos/800/600?random=5',
-    categoria: 'Literatura',
-    ubicacion: 'Centro Cultural Bella Época, Puebla'
   }
 ];
 
@@ -68,18 +32,7 @@ interface Evento {
   ubicacion: string;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+// (framer-motion variants removed for clarity)
 
 const responsiveStyles = {
   container: "relative flex items-center justify-center min-h-[700px] sm:min-h-[500px] md:min-h-[600px]",
@@ -87,8 +40,8 @@ const responsiveStyles = {
 };
 
 export default function EventosPage() {
-  const [eventos] = useState<Evento[]>(eventosData);
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [eventos, setEventos] = useState<Evento[]>(eventosData);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const [isPaused, setIsPaused] = useState(false);
 
@@ -123,6 +76,38 @@ export default function EventosPage() {
     
     return fecha.toLocaleDateString('es-ES', opciones);
   };
+
+  // Cargar eventos publicados desde el backend público
+  useEffect(() => {
+    let mounted = true;
+    const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
+    const fetchEventos = async () => {
+      try {
+        const res = await fetch(`${base}/api/eventos`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        // Mapear respuesta a la forma que usa este componente
+        if (mounted && Array.isArray(data)) {
+          const mapped = data.map((it: any, idx: number) => ({
+            id: it.id || it._id || idx,
+            titulo: it.titulo || it.title || it.nombre || '',
+            descripcion: it.descripcion || it.description || it.descripcion || '',
+            fecha: it.fecha_hora || it.fecha || it.date || '',
+            imagen: it.imagen || it.image || it.foto || '',
+            categoria: it.categoria || it.category || '',
+            ubicacion: it.ubicacion || it.location || ''
+          }));
+          setEventos(mapped.length ? mapped : eventosData);
+          setActiveIndex(mapped.length ? 0 : 0);
+        }
+      } catch (err) {
+        // mantener datos de ejemplo si falla la petición
+        console.error('Error cargando eventos públicos:', err);
+      }
+    };
+    fetchEventos();
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <>
@@ -215,17 +200,12 @@ export default function EventosPage() {
                   <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl group bg-white dark:bg-slate-800">
                     {/* Imagen del evento */}
                     <div className="relative w-full h-3/5">
-                      <Image
-                        src={evento.imagen}
+                      <img
+                        src={evento.imagen || `https://via.placeholder.com/800x600?text=${encodeURIComponent(evento.titulo)}`}
                         alt={evento.titulo}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 320px"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=${encodeURIComponent(evento.titulo)}`;
-                        }}
-                        priority={isActive}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ width: '100%', height: '100%' }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = `https://via.placeholder.com/800x600?text=${encodeURIComponent(evento.titulo)}`; }}
                       />
                       {/* Overlay con gradiente */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

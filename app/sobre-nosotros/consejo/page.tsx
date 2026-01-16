@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { TranslateText } from "@/components/TranslateText";
 import Footer from "@/components/Footer";
-import { Linkedin, Mail, ArrowRight } from "lucide-react";
+import { Phone, Mail, ArrowRight, Calendar } from "lucide-react";
 import axios from "axios";
 
 interface BoardMember {
@@ -19,6 +19,8 @@ interface BoardMember {
 	foto?: string;
 	foto_url?: string;
 	email?: string;
+	telefono?: string;
+	edad?: number;
 	linkedin?: string;
 	activo: boolean;
 }
@@ -60,6 +62,19 @@ export default function BoardPage() {
 	// Helper para obtener el nombre completo
 	const getFullName = (member: BoardMember): string => {
 		return `${member.nombre} ${member.apellido_paterno} ${member.apellido_materno || ''}`.trim();
+	};
+
+	// Helper para generar el slug del nombre (ej: "juan-ogona-rami")
+	const getSlug = (member: BoardMember): string => {
+		const fullName = getFullName(member);
+		return fullName
+			.toLowerCase()
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+			.replace(/[^a-z0-9\s-]/g, '') // Eliminar caracteres especiales
+			.replace(/\s+/g, '-') // Reemplazar espacios con guiones
+			.replace(/-+/g, '-') // Eliminar guiones duplicados
+			.trim();
 	};
 
 	// Helper para obtener la descripción
@@ -144,7 +159,8 @@ export default function BoardPage() {
 						{boardMembers.map((member, index) => {
 							const imageUrl = getImageUrl(member);
 							const fullName = getFullName(member);
-							const description = getDescription(member);
+							const slug = getSlug(member);
+							const profileUrl = `/sobre-nosotros/consejo/${slug}`;
 							
 							return (
 							<motion.div
@@ -153,7 +169,8 @@ export default function BoardPage() {
 								whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true }}
 								transition={{ duration: 0.5, delay: index * 0.1 }}
-								className="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-800"
+								className="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-800 cursor-pointer"
+								onClick={() => window.location.href = profileUrl}
 							>
 								{/* Gradient border on hover */}
 								<div
@@ -191,40 +208,38 @@ export default function BoardPage() {
 										<p className="text-blue-600 dark:text-blue-400 font-semibold text-sm mb-4">
 											{member.puesto}
 										</p>
-										{description && (
-											<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
-												{description}
-											</p>
-										)}
-									</div>
-
-									{/* Social Links */}
-									<div className="flex items-center justify-center gap-3 mb-6">
-										{member.linkedin && (
-											<a
-												href={member.linkedin}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
-												aria-label="LinkedIn"
-											>
-												<Linkedin className="w-4 h-4" />
-											</a>
-										)}
-										{member.email && (
-											<a
-												href={`mailto:${member.email}`}
-												className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
-												aria-label="Email"
-											>
-												<Mail className="w-4 h-4" />
-											</a>
-										)}
+										
+										{/* Información de contacto */}
+										<div className="space-y-2 text-left">
+											{member.edad && (
+												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
+													<Calendar className="w-4 h-4 text-blue-500" />
+													<span>{member.edad} años</span>
+												</div>
+											)}
+											{member.telefono && (
+												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
+													<Phone className="w-4 h-4 text-blue-500" />
+													<a href={`tel:${member.telefono}`} className="hover:text-blue-500 transition-colors">
+														{member.telefono}
+													</a>
+												</div>
+											)}
+											{member.email && (
+												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
+													<Mail className="w-4 h-4 text-blue-500" />
+													<a href={`mailto:${member.email}`} className="hover:text-blue-500 transition-colors truncate">
+														{member.email}
+													</a>
+												</div>
+											)}
+										</div>
 									</div>
 
 									{/* Profile Link */}
 									<a
-										href={`/sobre-nosotros/consejo/${member.id}`}
+										href={profileUrl}
+										onClick={(e) => e.stopPropagation()}
 										className="flex items-center justify-center gap-2 w-full py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group/btn"
 									>
 										<TranslateText text="View Full Profile" />
