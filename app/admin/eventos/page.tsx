@@ -27,6 +27,7 @@ const EventosPage: React.FC = () => {
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState(''); // Add activeTab state
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
@@ -58,10 +59,17 @@ const EventosPage: React.FC = () => {
     setSelectedEvento(null);
   };
 
+  const handleLogout = () => {
+    // Lógica para cerrar sesión
+    console.log("Cerrando sesión...");
+  };
+
   const handleSaveEvento = (formData: FormData) => {
     if (selectedEvento) {
+      // Actualizar evento existente
       updateEvento(selectedEvento.id, formData);
     } else {
+      // Crear nuevo evento
       createEvento(formData);
     }
     handleCloseModal();
@@ -75,9 +83,13 @@ const EventosPage: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar theme={theme} />
+      <Sidebar theme={theme} selected={activeTab} />
       <div className="flex-1">
-        <Header onToggleTheme={handleToggleTheme} theme={theme} />
+        <Header 
+          onToggleTheme={handleToggleTheme} 
+          theme={theme} 
+          onLogout={handleLogout} 
+        />
         <div className="p-6">
           <h1 className="text-2xl font-bold mb-4">
             <TranslateText text="Eventos" />
@@ -107,7 +119,7 @@ const EventosPage: React.FC = () => {
           ) : (
             <EventosList 
               eventos={eventos} 
-              onEdit={handleOpenModal}
+              onEdit={(evento) => handleOpenModal(evento as Evento)}
               onDelete={handleDeleteEvento}
             />
           )}

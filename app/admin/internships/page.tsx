@@ -73,7 +73,7 @@ interface ApiResponse {
   totalPages?: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const InternshipsPage = () => {
   const [internships, setInternships] = useState<Internship[]>([]);

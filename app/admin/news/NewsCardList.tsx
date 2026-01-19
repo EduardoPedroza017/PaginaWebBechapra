@@ -42,7 +42,7 @@ export function NewsCardList({ news, theme, onEdit, onDelete, onPreview, onToggl
           {item.image_url && (
             <div className="aspect-[16/9] w-full relative rounded-t-2xl overflow-hidden">
               <img
-                src={item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`}
+                src={item.image_url.startsWith('http') ? item.image_url : `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`}
                 alt={item.title}
                 className="w-full h-full object-cover"
                 loading="lazy"

@@ -199,8 +199,8 @@ function NewsFormComponent({ onCreated, theme }: Props) {
 
     try {
       const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const isLocal = apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1');
+      const API = process.env.NEXT_PUBLIC_API_URL || '';
+      const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
       const baseHeaders: Record<string, string> = {
         ...(userEmail ? { "X-User": userEmail } : {}),
         "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
@@ -212,7 +212,7 @@ function NewsFormComponent({ onCreated, theme }: Props) {
         bypassHeaders["X-Admin"] = 'true';
       }
 
-      const res = await fetch(`${apiUrl}/api/news`, {
+      const res = await fetch(`${API}/api/news`, {
         method: "POST",
         body: form,
         headers: {

@@ -48,11 +48,8 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 			if (showRefresh) setRefreshing(true);
 			setLoading(true);
 			try {
-				const url = new URL("http://localhost:5000/api/news");
-				url.searchParams.append("page", String(pageParam));
-				url.searchParams.append("limit", String(pageSize));
-				if (searchParam) url.searchParams.append("search", searchParam);
-				const res = await fetch(url.toString());
+				const API = process.env.NEXT_PUBLIC_API_URL;
+				const res = await fetch(`${API}/api/news?page=${pageParam}&search=${searchParam}`, { credentials: 'include' });
 				const data = await res.json();
 				// Support two backend shapes:
 				// - legacy admin route: { ok: true, news: [...] }

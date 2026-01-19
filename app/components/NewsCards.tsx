@@ -105,7 +105,7 @@ export default function NewsCards() {
                   {item.image_url && (
                     <div className="relative h-48 w-full overflow-hidden">
                       <OptimizedImage
-                        src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${item.image_url}` : item.image_url}
+                        src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
                         alt={item.title}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-300"

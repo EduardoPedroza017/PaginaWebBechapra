@@ -232,7 +232,7 @@ export default function UsuariosPage() {
   const handleFormSubmit = async (form: { email: string; password?: string; roles?: string[]; active?: boolean }) => {
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const method = editUser ? "PUT" : "POST";
       const url = editUser
         ? `${apiBase}/api/admin/users/${encodeURIComponent(form.email)}`
@@ -273,7 +273,7 @@ export default function UsuariosPage() {
   const handleBlock = async (user: Usuario, newState: boolean) => {
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBase}/api/admin/block_user`, {
         method: "POST",
         headers: {

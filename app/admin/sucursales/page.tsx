@@ -39,7 +39,7 @@ export default function SucursalesPage() {
   const fetchBranches = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiUrl}/api/branches`, { credentials: 'include' });
 
       if (!res.ok) {

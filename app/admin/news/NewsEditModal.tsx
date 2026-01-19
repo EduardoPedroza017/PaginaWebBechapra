@@ -30,7 +30,7 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
       setSubtitle(item.subtitle);
       setDescription(item.description);
       setImage(null);
-      setPreview(item.image_url ? `http://localhost:5000${item.image_url}` : null);
+      setPreview(item.image_url ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : null);
     }
   }, [item]);
 

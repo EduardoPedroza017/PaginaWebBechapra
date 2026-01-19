@@ -44,7 +44,7 @@ export default function SubServicioAdminPage(){
 
   async function fetchSubs(){
     setLoading(true)
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     try{
       const params = new URLSearchParams()
       if (query) params.set('search', query)
@@ -100,7 +100,7 @@ export default function SubServicioAdminPage(){
   function handleDeletePrompt(s:any){ setConfirmTarget(s); setConfirmOpen(true) }
 
   async function handleSave(d:any){
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     if (d.id){
       await fetch(`${API}/api/sub_services/${d.id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify(d) })
       // open page editor
@@ -118,7 +118,7 @@ export default function SubServicioAdminPage(){
   async function handleToggleActive(s:any, next:boolean){
     // optimistic update locally
     setSubs(prev => prev.map(p => p.id === s.id ? { ...p, active: next } : p))
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     try{
       const res = await fetch(`${API}/api/sub_services/${s.id}/activate`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ active: next }) })
       if (!res.ok) throw new Error('Failed')
@@ -139,7 +139,7 @@ export default function SubServicioAdminPage(){
 
   async function handleUndoDelete(){
     if (!deletedCandidate) return
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     try{
       const copy = { ...deletedCandidate }
       delete copy.id
@@ -155,7 +155,7 @@ export default function SubServicioAdminPage(){
 
   async function handleUndoToggle(){
     if (!undoCandidate) return
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     try{
       const res = await fetch(`${API}/api/sub_services/${undoCandidate.id}/activate`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ active: undoCandidate.prev }) })
       if (!res.ok) throw new Error('Undo failed')
@@ -169,7 +169,7 @@ export default function SubServicioAdminPage(){
   async function handleDelete(s:any){
     if (!s || !s.id) return
     setDeleteLoading(true)
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+    const API = process.env.NEXT_PUBLIC_API_URL;
     try{
       const res = await fetch(`${API}/api/sub_services/${s.id}`, { method: 'DELETE', credentials: 'include' })
       if (!res.ok) throw new Error('Delete failed')

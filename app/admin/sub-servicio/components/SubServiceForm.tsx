@@ -11,7 +11,7 @@ interface Props {
   onContinue?: (handle?: string) => void
 }
 
-const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000'
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export const SubServiceForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, onContinue }) => {
   const [form, setForm] = useState<any>(initialData || { title: '', shortDescription: '', icon: '', heroImage: '', handle: '', service_id: '' })

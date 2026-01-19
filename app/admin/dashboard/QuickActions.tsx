@@ -138,6 +138,13 @@ export default function QuickActions({ theme, role }: QuickActionsProps) {
     return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
   };
 
+  return (
+    <div className={`grid gap-4 ${getGridCols()}`}>
+      {allActions.map((action) => (
+        <ActionCard key={action.label} action={action} theme={theme} />
+      ))}
+    </div>
+  );
 }
 
 // Componente de tarjeta de acción reutilizable

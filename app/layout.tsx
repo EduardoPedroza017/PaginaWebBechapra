@@ -107,15 +107,7 @@ export default function RootLayout({
       
       <body className="antialiased bg-background text-foreground min-h-screen">
         <ThemeProvider>
-          <LanguageProvider>
-            {/* Skip link for accessibility */}
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg"
-            >
-              Saltar al contenido principal
-            </a>
-            
+          <LanguageProvider>            
             {/* Navigation - Wrapped to ensure proper positioning */}
             <div className="fixed top-0 left-0 right-0 z-50">
               <NavbarConditional />

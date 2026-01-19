@@ -360,7 +360,7 @@ function GroupCard({ group }: { group: Service }) {
 				<div className="mb-6">
 					<div className={`w-14 h-14 ${colors.iconBg} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
 						{group.icon ? (
-							<Image src={group.icon.startsWith('/uploads/') ? `http://localhost:5000${group.icon}` : group.icon} alt={group.name} width={32} height={32} className="object-contain" unoptimized={group.icon.startsWith('/uploads/')} />
+							<Image src={group.icon.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${group.icon}` : group.icon} alt={group.name} width={32} height={32} className="object-contain" unoptimized={group.icon.startsWith('/uploads/')} />
 						) : (
 							<Icon className="w-7 h-7 text-white" />
 						)}

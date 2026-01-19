@@ -38,14 +38,14 @@ export function PressCardList({ data, theme, onEdit, onDelete, onPreview }: Pres
           {/* Imagen destacada si es imagen, ícono si es PDF/otro */}
           {item.file_url && (
             <a
-              href={`http://localhost:5000${item.file_url}`}
+              href={`${process.env.NEXT_PUBLIC_API_URL}${item.file_url}`}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full aspect-video rounded-t-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
             >
               {/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(item.file_url) ? (
                 <img
-                  src={`http://localhost:5000${item.file_url}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${item.file_url}`}
                   alt={item.title}
                   className="w-full h-full object-cover"
                 />

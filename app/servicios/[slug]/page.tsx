@@ -15,7 +15,7 @@ type Props = {
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   // Try to fetch a dedicated service page by handle first (try encoded and raw)c
   try {

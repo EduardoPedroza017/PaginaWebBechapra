@@ -29,7 +29,7 @@ export default function PressPreviewModal({ open, onClose, press, theme }: Press
           {press.file_url && (
             <div className="w-full aspect-video rounded-xl overflow-hidden mb-4">
               <img
-                src={`http://localhost:5000${press.file_url}`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}${press.file_url}`}
                 alt={press.title}
                 className="w-full h-full object-cover"
               />

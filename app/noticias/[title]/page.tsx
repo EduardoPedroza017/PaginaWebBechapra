@@ -677,7 +677,7 @@ function NewsCard({
         <div className="relative h-52 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
           {item.image_url ? (
             <Image
-              src={item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`}
+              src={item.image_url.startsWith('http') ? item.image_url : `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`}
               alt={item.altText || item.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"

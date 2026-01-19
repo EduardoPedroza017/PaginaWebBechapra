@@ -367,7 +367,7 @@ export default function PressDetailPage() {
                     className="relative w-full bg-gray-100 dark:bg-slate-800 aspect-video overflow-hidden"
                   >
                     <img
-                      src={`http://localhost:5000${press.file_url}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${press.file_url}`}
                       alt="Archivo adjunto"
                       className="w-full h-full object-cover"
                     />
@@ -423,7 +423,7 @@ export default function PressDetailPage() {
 
                     {/* Download Button */}
                     <motion.a
-                      href={`http://localhost:5000${press.file_url}`}
+                      href={`${process.env.NEXT_PUBLIC_API_URL}${press.file_url}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download

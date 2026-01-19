@@ -80,7 +80,7 @@ export default function EventosPage() {
   // Cargar eventos publicados desde el backend público
   useEffect(() => {
     let mounted = true;
-    const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
+    const base = process.env.NEXT_PUBLIC_API_BASE;
     const fetchEventos = async () => {
       try {
         const res = await fetch(`${base}/api/eventos`);

@@ -92,7 +92,7 @@ export default function ServiceHero({
                     fill
                     className="object-cover"
                     priority
-                    // If image is hosted on backend (e.g. http://localhost:5000/uploads/...), allow unoptimized
+                    // If image is hosted on backend (e.g. `${process.env.NEXT_PUBLIC_API_URL}/uploads/...`), allow unoptimized
                     unoptimized={String(imageSrc).startsWith('http')}
                   />
                 ) : (

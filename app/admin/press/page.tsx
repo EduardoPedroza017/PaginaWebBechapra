@@ -82,7 +82,7 @@ export default function PressAdminApp() {
   // Create
   const handleCreate = async (formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     await fetch(`${apiUrl}/api/press`, {
       method: "POST",
       body: formData,
@@ -97,7 +97,7 @@ export default function PressAdminApp() {
   // Update
   const handleUpdate = async (id: string, formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     await fetch(`${apiUrl}/api/press/${id}`, {
       method: "PUT",
       body: formData,
@@ -116,7 +116,7 @@ export default function PressAdminApp() {
     setDeleteLoading(true);
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     try {
-      await fetch(`http://localhost:5000/api/press/${deleteItem.id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/press/${deleteItem.id}`, {
         method: "DELETE",
         headers: {
           ...(userEmail ? { "X-User": userEmail } : {})

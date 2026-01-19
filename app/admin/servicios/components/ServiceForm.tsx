@@ -42,7 +42,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
       image: "",
     }
   );
-  const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [pages, setPages] = useState<Array<{handle:string, heroTitle?:string}>>([]);
@@ -51,13 +51,10 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
   useEffect(() => {
     if (galleryOpen) {
       const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000';
-      fetch(`${API}/api/gallery`)
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data.images)) {
-            setGalleryImages(data.images);
-          }
-        });
+      fetch(`${API}/api/gallery`).then(r => r.json()).then(d => {
+        if (Array.isArray(d.images)) setGalleryImages(d.images);
+        else if (Array.isArray(d)) setGalleryImages(d.map((it:any)=>it.filename));
+      }).catch(()=>{});
     }
   }, [galleryOpen]);
 

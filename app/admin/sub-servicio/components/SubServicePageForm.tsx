@@ -5,7 +5,7 @@ import { CheckCircle, AlertTriangle, Loader2, Zap } from 'lucide-react'
 
 interface Props { open: boolean; initialHandle?: string; subserviceId?: string; onClose: ()=>void; onCreated?: (p:any)=>void }
 
-const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000'
+const API = process.env.NEXT_PUBLIC_API_URL
 
 const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId, onClose, onCreated }) => {
   const [handle, setHandle] = useState(initialHandle || '')

@@ -5,7 +5,7 @@ type Props = { params: { slug: string } }
 
 export default async function LegacySubservice({ params }: Props){
   const { slug } = await params
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   try{
     // Try to find a sub_service_page by handle

@@ -127,7 +127,7 @@ export default function PressTable({ data, loading, onEdit, onDelete, theme }: P
                 <td className="px-5 py-4">
                   {item.file_url ? (
                     <a 
-                      href={`http://localhost:5000${item.file_url}`} 
+                      href={`${process.env.NEXT_PUBLIC_API_URL}${item.file_url}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${

@@ -27,7 +27,7 @@ export default function NewsPreviewModal({ open, onClose, news, theme }: NewsPre
           {news.image_url && (
             <div className="w-full aspect-video rounded-xl overflow-hidden mb-4">
               <img
-                src={news.image_url.startsWith('http') ? news.image_url : `http://localhost:5000${news.image_url}`}
+                src={news.image_url.startsWith('http') ? news.image_url : `${process.env.NEXT_PUBLIC_API_URL}${news.image_url}`}
                 alt={news.title}
                 className="w-full h-full object-cover"
               />

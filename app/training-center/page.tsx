@@ -562,7 +562,7 @@ export default function TrainingCenterPage() {
                   formData.append('area_interes', areaInteres);
                   if (cvFile) formData.append('cv', cvFile, cvFile.name);
 
-                  const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
+                  const base = process.env.NEXT_PUBLIC_API_BASE;
                   const res = await fetch(`${base}/api/formularios`, {
                     method: 'POST',
                     body: formData,

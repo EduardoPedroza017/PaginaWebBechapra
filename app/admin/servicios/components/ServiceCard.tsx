@@ -34,7 +34,7 @@ export const ServiceCard: React.FC<Props> = ({ service: s, onEdit, onDelete, onT
         <div>
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-3">
-              {s.icon && <img src={s.icon.startsWith('/uploads/') ? `http://localhost:5000${s.icon}` : s.icon} alt="icon" className="w-10 h-10 object-contain rounded-md shadow-sm" /> }
+              {s.icon && <img src={s.icon.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${s.icon}` : s.icon} alt="icon" className="w-10 h-10 object-contain rounded-md shadow-sm" /> }
               <h3 className="font-semibold text-lg text-gray-900 dark:text-white truncate">{s.name}</h3>
             </div>
             <div className="flex items-center gap-2">

@@ -34,7 +34,7 @@ export default function ServiciosAdminPage() {
   async function fetchServices() {
     try {
       setLoading(true);
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL;
       const params = new URLSearchParams();
       if (query) params.set('search', query);
       if (onlyActive) params.set('active', 'true');

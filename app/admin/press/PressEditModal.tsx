@@ -172,7 +172,7 @@ export default function PressEditModal({ item, onClose, onUpdate, theme }: Press
                     <TranslateText text="Archivo actual" />
                   </p>
                   <a 
-                    href={`http://localhost:5000${item.file_url}`} 
+                    href={`${process.env.NEXT_PUBLIC_API_URL}${item.file_url}`} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className={`text-xs flex items-center gap-1 ${

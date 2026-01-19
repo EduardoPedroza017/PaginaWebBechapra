@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useState } from "react";
 
@@ -15,7 +14,7 @@ export default function GaleriaPage() {
   useEffect(() => {
     async function fetchImages() {
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const API = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API}/api/gallery`);
         const data = await res.json();
         if (Array.isArray(data.images)) {

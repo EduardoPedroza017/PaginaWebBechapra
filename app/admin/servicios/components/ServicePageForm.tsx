@@ -19,8 +19,7 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
   const [benefits, setBenefits] = useState<Array<{title:string,description?:string,icon?:string}>>([])
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000'
-
+  const API = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => setHandle(initialHandle || ''), [initialHandle])
 
   useEffect(() => {

@@ -67,7 +67,7 @@ export default function ServicesSection() {
     const mappedStatic = staticServices.map(s => ({ id: s.id, slug: s.id, name: s.title, description: s.description, image: s.image, icon: s.icon }));
     (async () => {
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const API = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API}/api/admin/services/cards?active=true`);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
