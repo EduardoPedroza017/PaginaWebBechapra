@@ -211,36 +211,29 @@ cd PaginaWebBAUSEN
 
 ---
 
-## ✅ Cambios recientes (Frontend) — 2026-01-15
 
-Hoy se aplicaron ajustes para corregir integraciones con el backend y mejorar la subida de archivos, manejo de cabeceras y rutas legacy que causaban errores en producción/local. Resumen de los cambios principales:
+## Cambios recientes y optimizaciones clave (2026-01-20)
 
-- Uploads y FormData:
-   - `lib/api-client.ts` actualizado para no forzar `Content-Type: application/json` cuando se envía `FormData` (evita que el navegador omita el boundary y el backend reciba "No file part").
+- **Centralización de llamadas API:**
+  - Todas las llamadas a backend deben realizarse usando el cliente centralizado `apiClient` (`lib/api-client.ts`).
+  - Se eliminaron todos los usos directos de `fetch` en utilidades administrativas (`admin-api.ts`).
+  - Esto previene peticiones duplicadas, inconsistentes o "falsas" y asegura manejo uniforme de errores, cabeceras y autenticación.
 
-- Rutas y proxies:
-   - Se corrigieron las llamadas de administración que usan proxies internos para alinear con `/api/admin/*`.
-   - Se actualizaron los endpoints del administrador (`app/api/admin/users` y las mutaciones relacionadas) para apuntar al backend correcto.
+- **Lazy loading y SSR/ISR:**
+  - Componentes pesados del admin usan `dynamic()` y utilidades de lazy loading para mejorar el performance y reducir el bundle inicial.
+  - Imágenes usan `next/image` y el componente `OptimizedImage` para lazy loading, blur y optimización automática.
+  - Se emplea ISR (`export const revalidate`) en rutas API para contenido dinámico y mejor caching.
 
-- UI y assets:
-   - `app/admin/dashboard/Sidebar.tsx` actualizado para usar la ruta de logo pública correcta (`/image/logo/bausen-logo.png`).
+- **Limpieza y orden:**
+  - Se eliminaron fragmentos de código y documentación desactualizada.
+  - El README fue reordenado y simplificado para reflejar el estado real del proyecto.
 
-- Manejo de errores y robustez:
-   - Mejor manejo de errores en formularios de subida de imágenes y formularios administrativos.
+**Notas rápidas:**
+- Si agregas nuevas llamadas a backend, usa siempre `apiClient`.
+- Para nuevos componentes pesados, usa lazy loading (`dynamic()` o `createDynamicComponent`).
+- Para imágenes, usa siempre `next/image` o el wrapper `OptimizedImage`.
 
-Notas de prueba rápida (después de reiniciar frontend y backend):
-
-```bash
-# Reiniciar frontend
-pnpm dev # o npm run dev
-
-# Comprobar endpoint de subida (debe responder OPTIONS con 204 y POST con 201)
-curl -i -X OPTIONS http://localhost:5000/api/uploads -H "Origin: http://localhost:3000" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: cache-control"
-
-# PRUEBA UPLOAD (cliente): desde la UI del admin intenta subir una imagen y revisa la consola del navegador para errores.
-```
-
-Fecha del último cambio: 2026-01-15
+Fecha del último cambio: 2026-01-20
 
 ### Paso 2: Instalar dependencias
 

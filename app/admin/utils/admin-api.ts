@@ -355,23 +355,14 @@ class AdminApiClient {
   // AUTH
   async checkAuth(admin: boolean, role: string) {
     try {
-      // Usar fetch directo con ruta relativa para pasar por el proxy Next.js
-      const response = await fetch('/api/backend/admin/check', {
-        method: 'POST',
+      const response = await apiClient.post('/api/backend/admin/check', { admin, role }, {
         headers: {
-          'Content-Type': 'application/json',
           'X-Role': role,
-          'X-Admin': admin.toString()
+          'X-Admin': admin.toString(),
         },
-        credentials: 'include',
-        body: JSON.stringify({ admin, role }),
+        withCredentials: true,
       });
-
-      if (!response.ok) {
-        throw new Error(`Auth check failed with status ${response.status}`);
-      }
-
-      return response.json();
+      return response;
     } catch (error: any) {
       console.error('Error checking auth:', error);
       throw error;
@@ -381,61 +372,38 @@ class AdminApiClient {
   // GALLERY
   async listImages(): Promise<{ success: boolean; data?: string[]; error?: string }> {
     try {
-      const response = await fetch(`${this.baseUrl}/admin/list-images`, {
-        method: 'GET',
+      const response = await apiClient.get('/admin/list-images', {
         headers: {
           'Cache-Control': 'no-cache',
         },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.error || `HTTP ${response.status}`,
-        };
-      }
-
       return {
         success: true,
-        data: Array.isArray(data.images) ? data.images : [],
+        data: Array.isArray(response.images) ? response.images : [],
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.name === 'AbortError' ? 'Timeout de conexión' : 'Error de red',
+        error: error?.message || 'Error de red',
       };
     }
   }
 
   async deleteImage(filename: string): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      const response = await fetch(`${this.baseUrl}/admin/delete-image`, {
-        method: 'POST',
+      const response = await apiClient.post('/admin/delete-image', { filename }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ filename }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.error || `HTTP ${response.status}`,
-        };
-      }
-
       return {
         success: true,
-        data: data,
+        data: response,
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.name === 'AbortError' ? 'Timeout de conexión' : 'Error de red',
+        error: error?.message || 'Error de red',
       };
     }
   }
