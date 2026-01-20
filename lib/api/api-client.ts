@@ -9,7 +9,7 @@
  * @module lib/api-client
  */
 
-import { config, debugLog, errorLog } from './config';
+import { config, debugLog, errorLog } from '../config/config';
 
 // ==============================================================================
 // TIPOS

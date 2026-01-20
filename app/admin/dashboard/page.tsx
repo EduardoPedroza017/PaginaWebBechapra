@@ -22,7 +22,7 @@ import {
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
 import DashboardStats from "./DashboardStats";
 import QuickActions from "./QuickActions";
-import { WebVitalsWidget } from "@/lib/web-vitals";
+import { WebVitalsWidget } from "@/lib/utils/web-vitals";
 import { useAuth, useTheme } from "../hooks";
 import { motion, AnimatePresence } from "framer-motion";
 

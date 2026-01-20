@@ -4,7 +4,7 @@
  * Centraliza todas las llamadas a API para el panel de administración
  */
 
-import { apiClient } from '@/lib/api-client';
+import { apiClient } from '@/lib/api/api-client';
 
 class AdminApiClient {
   private baseUrl: string;
@@ -360,7 +360,7 @@ class AdminApiClient {
           'X-Role': role,
           'X-Admin': admin.toString(),
         },
-        withCredentials: true,
+        credentials: 'include',
       });
       return response;
     } catch (error: any) {

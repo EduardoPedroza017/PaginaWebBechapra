@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { setCookieConsentBackend } from "../lib/cookieConsent";
+import { setCookieConsentBackend } from "../lib/utils/cookieConsent";
 import { TranslateText } from './TranslateText';
 
 export default function CookieConsent() {

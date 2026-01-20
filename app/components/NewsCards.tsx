@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
-import { OptimizedImage } from '@/lib/image-utils';
+import { OptimizedImage } from '@/lib/images/image-utils';
 
 interface NewsItem {
   title: string;

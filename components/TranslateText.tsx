@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useLanguage } from '@/lib/LanguageContext';
-import { translateText } from '@/lib/translate';
+import { useLanguage } from '@/lib/contexts/LanguageContext';
+import { translateText } from '@/lib/utils/translate';
 
 interface TranslateTextProps {
   text: string;

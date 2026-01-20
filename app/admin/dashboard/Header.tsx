@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { TranslateText } from '@/components/TranslateText';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useLanguage } from '@/lib/contexts/LanguageContext';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';

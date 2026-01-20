@@ -2,7 +2,7 @@
 
 import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { ThemeProvider } from "@/lib/ThemeContext";
+import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 import Link from "next/link";
 import { TranslateText } from "@/components/TranslateText";
 

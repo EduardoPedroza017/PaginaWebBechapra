@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
 import ContactForm from "./ContactForm";
 import { TranslateText } from "@/components/TranslateText";
-import { config } from "@/lib/config"; // Configuración centralizada
+import { config } from "@/lib/config/config"; // Configuración centralizada
 
 const contactInfo = [
   { icon: Phone, label: "Teléfono", value: "+52 (442) 123 4567" },

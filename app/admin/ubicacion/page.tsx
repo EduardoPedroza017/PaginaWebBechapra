@@ -6,7 +6,7 @@ import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
 import { LocationPreview } from "./components/LocationPreview";
-import { companyLocation } from "@/lib/locationData";
+import { companyLocation } from "@/lib/config/locationData";
 
 export default function LocationAdminPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from 'react';
-import { initMicrosoftClarity } from '@/lib/analytics';
-import { hasAcceptedCookies } from '@/lib/cookieConsent';
+import { initMicrosoftClarity } from '@/lib/utils/analytics';
+import { hasAcceptedCookies } from '@/lib/utils/cookieConsent';
 
 /**
  * Componente que inicializa Microsoft Clarity cuando el usuario acepta cookies

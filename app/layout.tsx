@@ -4,8 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 // Context Providers
-import { LanguageProvider } from "@/lib/LanguageContext";
-import { ThemeProvider } from "@/lib/ThemeContext";
+import { LanguageProvider } from "@/lib/contexts/LanguageContext";
+import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 
 // Components
 import NavbarConditional from "@/components/NavbarConditional";

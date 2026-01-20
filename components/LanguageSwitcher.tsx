@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check, Globe } from "lucide-react";
 import Image from "next/image";
-import { useLanguage } from "@/lib/LanguageContext";
+import { useLanguage } from "@/lib/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LANGUAGES = [

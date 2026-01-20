@@ -14,8 +14,8 @@ export * from './admin-api';
 export { useAdminApi, adminApi } from './admin-api';
 
 // Lazy components para code splitting
-export * from './lazy-components';
-export { LazyComponents, createDynamicComponent } from './lazy-components';
+export * from '../../../lib/utils/lazy-components';
+export { createDynamicComponent } from '../../../lib/utils/lazy-components';
 
 // Phase 3 Optimizations
 export {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, FormEvent } from 'react';
-import { apiClient } from '@/lib/api-client';
+import { apiClient } from '@/lib/api/api-client';
 import { PlusCircle, Loader2, X } from 'lucide-react';
 import { TranslateText } from '@/components/TranslateText';
 import { motion, AnimatePresence } from 'framer-motion';
