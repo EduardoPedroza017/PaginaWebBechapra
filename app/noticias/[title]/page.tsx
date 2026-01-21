@@ -41,7 +41,7 @@ export default function NoticiasPage() {
   const [bookmarkedItems, setBookmarkedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     
     fetch(`${apiUrl}/api/news`)
       .then((res) => {

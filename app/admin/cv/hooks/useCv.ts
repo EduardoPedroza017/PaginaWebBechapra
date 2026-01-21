@@ -19,7 +19,11 @@ export const useCv = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const backendBase = 'http://localhost:5000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+  }
+  const backendBase = apiUrl;
 
   const getAuthHeaders = (includeContentType = false): Record<string, string> => {
     const headers: Record<string, string> = {};

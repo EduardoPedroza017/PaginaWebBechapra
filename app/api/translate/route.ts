@@ -91,6 +91,8 @@ function translateLocally(text: string, dest: string): string {
   return text; // Return original if no translation found
 }
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -103,7 +105,7 @@ export async function POST(request: Request) {
 
     // Try to call backend first
     try {
-      const response = await fetch('http://localhost:5000/admin/translate', {
+      const response = await fetch(`${BACKEND_URL}/admin/translate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

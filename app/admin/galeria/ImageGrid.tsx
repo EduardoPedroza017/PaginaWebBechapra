@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -23,7 +22,12 @@ export function ImageGrid({ images, theme, onDelete, onPreview }: ImageGridProps
   const paginatedImages = images.slice((page - 1) * pageSize, page * pageSize);
 
   const handleDownload = async (filename: string) => {
-    const url = `http://localhost:5000/gallery/image/${filename}`;
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiBaseUrl) {
+      throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+    }
+
+    const url = `${apiBaseUrl}/gallery/image/${filename}`;
     const response = await fetch(url);
     const blob = await response.blob();
     const downloadUrl = window.URL.createObjectURL(blob);
@@ -67,7 +71,7 @@ export function ImageGrid({ images, theme, onDelete, onPreview }: ImageGridProps
             {/* Imagen */}
           <div className="aspect-square relative">
             <Image
-              src={`http://localhost:5000/gallery/image/${img.filename}`}
+              src={`${process.env.NEXT_PUBLIC_API_URL}/gallery/image/${img.filename}`}
               alt={`Imagen: ${img.filename}`}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

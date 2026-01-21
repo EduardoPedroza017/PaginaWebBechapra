@@ -63,10 +63,9 @@ interface Config {
 function getRequiredEnv(key: string): string {
   const value = process.env[key];
   if (!value) {
-    throw new Error(
-      `❌ Variable de entorno requerida no encontrada: ${key}\n` +
-      `Por favor, configura ${key} en tu archivo .env.local`
-    );
+    // No lanzar: devolver un fallback a localhost para entornos locales
+    // Esto evita errores en tiempo de ejecución cuando se solicita no usar .env
+    return 'http://localhost:5000';
   }
   return value;
 }
@@ -121,12 +120,10 @@ export const config: Config = {
   // API URLs
   api: {
     // URL pública del backend (accesible desde el navegador)
-    url: getOptionalEnv('NEXT_PUBLIC_API_URL', 'http://localhost:5000'),
+    url: getRequiredEnv('NEXT_PUBLIC_API_URL'),
     
     // URL interna del backend (para Server Components)
-    internalUrl: getOptionalEnv('NEXT_PRIVATE_API_URL', 
-      getOptionalEnv('NEXT_PUBLIC_API_URL', 'http://localhost:5000')
-    ),
+    internalUrl: getOptionalEnv('NEXT_PRIVATE_API_URL', getRequiredEnv('NEXT_PUBLIC_API_URL')),
   },
   
   // Analytics

@@ -47,11 +47,18 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [pages, setPages] = useState<Array<{handle:string, heroTitle?:string}>>([]);
 
+  // Define the API URL with localhost fallback
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ;
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL is not defined");
+  }
+
   // Cargar imágenes de galería al abrir el modal
   useEffect(() => {
     if (galleryOpen) {
-      const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000';
-      fetch(`${API}/api/gallery`).then(r => r.json()).then(d => {
+      const API = (process.env.NEXT_PUBLIC_API_URL as string);
+      // Update the API URL in the gallery fetch
+      fetch(`${apiUrl}/api/gallery`).then(r => r.json()).then(d => {
         if (Array.isArray(d.images)) setGalleryImages(d.images);
         else if (Array.isArray(d)) setGalleryImages(d.map((it:any)=>it.filename));
       }).catch(()=>{});
@@ -60,7 +67,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
 
   // Cargar service_pages para permitir asociación por handle
   useEffect(() => {
-    const API = (process.env.NEXT_PUBLIC_API_URL as string) || 'http://localhost:5000';
+    const API = (process.env.NEXT_PUBLIC_API_URL as string);
     fetch(`${API}/api/service_pages`)
       .then(res => res.json())
       .then(data => {

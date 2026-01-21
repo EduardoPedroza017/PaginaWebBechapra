@@ -11,6 +11,23 @@ import { Sidebar } from "../dashboard/Sidebar";
 import { Header } from "../dashboard/Header";
 import { TranslateText } from "@/components/TranslateText";
 
+// Define the API URL from the environment variable
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+// Define the headers variable
+const headers: Record<string, string> = { "Content-Type": "application/json" };
+if (typeof window !== "undefined") {
+  const storedUser = sessionStorage.getItem("user_email");
+  const storedRole = sessionStorage.getItem("role");
+  const storedAdmin = sessionStorage.getItem("admin");
+  if (storedUser) headers["X-User"] = storedUser;
+  if (storedRole) headers["X-Role"] = storedRole;
+  if (storedAdmin) headers["X-Admin"] = storedAdmin;
+}
+
 export default function ServiciosAdminPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,11 +51,10 @@ export default function ServiciosAdminPage() {
   async function fetchServices() {
     try {
       setLoading(true);
-      const API = process.env.NEXT_PUBLIC_API_URL;
       const params = new URLSearchParams();
       if (query) params.set('search', query);
       if (onlyActive) params.set('active', 'true');
-      const res = await fetch(`${API}/api/services/cards?${params.toString()}`, { credentials: 'include' });
+      const res = await fetch(`${apiUrl}/api/services/cards?${params.toString()}`, { credentials: 'include' });
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       // Normalize API response: could be array or paginated object { items, page, total }
@@ -65,7 +81,6 @@ export default function ServiciosAdminPage() {
   async function handleEdit(service: Service) {
     // Obtener detalle completo antes de abrir el modal
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
       const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
       const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
@@ -73,7 +88,7 @@ export default function ServiciosAdminPage() {
       if (storedUser) headers['X-User'] = storedUser;
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
-      const res = await fetch(`${API}/api/services/cards/${service.id}`, { credentials: 'include', headers });
+      const res = await fetch(`${apiUrl}/api/services/cards/${service.id}`, { credentials: 'include', headers });
       if (res.ok) {
         const data = await res.json();
         setEditData(data);
@@ -107,8 +122,7 @@ export default function ServiciosAdminPage() {
     if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
     if (data.id) {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      await fetch(`${API}/api/services/cards/${data.id}`, {
+      await fetch(`${apiUrl}/api/services/cards/${data.id}`, {
         method: "PUT",
         headers,
         credentials: 'include',
@@ -121,8 +135,7 @@ export default function ServiciosAdminPage() {
       setPageInitialHandle(maybeHandle);
       setPageFormOpen(true);
     } else {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API}/api/services/cards`, {
+      const res = await fetch(`${apiUrl}/api/services/cards`, {
         method: "POST",
         headers,
         credentials: 'include',
@@ -157,15 +170,7 @@ export default function ServiciosAdminPage() {
 
   async function handleDeleteConfirm() {
     if (deleteData?.id) {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
-      const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
-      const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
-      const headers: Record<string, string> = {};
-      if (storedUser) headers['X-User'] = storedUser;
-      if (storedRole) headers['X-Role'] = storedRole;
-      if (storedAdmin) headers['X-Admin'] = storedAdmin;
-      await fetch(`${API}/api/services/cards/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
+      await fetch(`${apiUrl}/api/services/cards/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
     }
     setDeleteOpen(false);
     fetchServices();
@@ -174,7 +179,6 @@ export default function ServiciosAdminPage() {
   async function handleToggleActive(service: Service) {
     setToggleLoading(service.id || null);
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
       const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
       const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
@@ -183,7 +187,7 @@ export default function ServiciosAdminPage() {
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
-      const res = await fetch(`${API}/api/services/cards/${service.id}/activate`, {
+      const res = await fetch(`${apiUrl}/api/services/cards/${service.id}/activate`, {
         method: "PATCH",
         headers,
         credentials: 'include',

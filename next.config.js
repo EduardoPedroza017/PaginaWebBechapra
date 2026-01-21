@@ -1,4 +1,10 @@
 ﻿/** @type {import('next').NextConfig} */
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+if (!API_URL) {
+  throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+}
+
 const nextConfig = {
   experimental: {},
   images: {
@@ -15,18 +21,26 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-    ],
-    unoptimized: true, // Disable image optimization for better clarity
+      // Si necesitas imágenes propias, puedes agregar aquí usando API_URL
+      // Ejemplo:
+      // (() => {
+      //   try {
+      //     const u = new URL(API_URL);
+      //     return { protocol: u.protocol.replace(':', ''), hostname: u.hostname, port: u.port, pathname: '/uploads/**' };
+      //   } catch { return null; }
+      // })(),
+    ].filter(Boolean),
+    unoptimized: true,
   },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // Cambia 5000 al puerto donde corre tu backend
+        destination: `${API_URL}/api/:path*`,
       },
       {
         source: '/api/admin/:path*',
-        destination: 'http://localhost:5000/api/admin/:path*', // Redirige al prefijo correcto
+        destination: `${API_URL}/api/admin/:path*`,
       },
     ];
   },

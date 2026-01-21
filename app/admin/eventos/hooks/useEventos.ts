@@ -14,7 +14,10 @@ interface Evento {
   imagen?: string;
 }
 
-const apiBaseUrl = 'http://localhost:5000';
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiBaseUrl) {
+  throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+}
 
 const useEventos = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);

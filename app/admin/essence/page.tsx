@@ -57,12 +57,16 @@ export default function EssenceAdminPage() {
     });
   };
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+  }
+
   const fetchEssence = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/essence`);
       if (!res.ok) throw new Error('No se pudo cargar la esencia');
       const data = await res.json();
@@ -79,7 +83,6 @@ export default function EssenceAdminPage() {
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/essence/history`);
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -101,7 +104,6 @@ export default function EssenceAdminPage() {
 
   const handleRestore = async (id: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/essence/history/${id}/restore`, {
         method: 'POST',
         credentials: 'include'
@@ -135,7 +137,7 @@ export default function EssenceAdminPage() {
     if (!restorePendingId) return;
     setConfirmLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/essence/history/${restorePendingId}/restore`, {
+      const res = await fetch(`${apiUrl}/api/essence/history/${restorePendingId}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -166,7 +168,7 @@ export default function EssenceAdminPage() {
   const undoRestore = async () => {
     if (!undoRestoreId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/essence/history/${undoRestoreId}/restore`, {
+      const res = await fetch(`${apiUrl}/api/essence/history/${undoRestoreId}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -196,7 +198,6 @@ export default function EssenceAdminPage() {
     setSuccess("");
     setError("");
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/essence`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

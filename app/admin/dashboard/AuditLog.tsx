@@ -70,7 +70,10 @@ export default function AuditLog({ theme = 'light', compact = false }: AuditLogP
     try {
       const admin = sessionStorage.getItem('admin') === 'true';
       const role = sessionStorage.getItem('role') || '';
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
       const res = await fetch(`${apiUrl}/admin/audit-admin`, {
         headers: {
           'Content-Type': 'application/json',

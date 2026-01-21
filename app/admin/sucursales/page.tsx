@@ -36,10 +36,12 @@ export default function SucursalesPage() {
     }
   }, []);
 
+  // Define the API URL with localhost fallback
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const fetchBranches = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiUrl}/api/branches`, { credentials: 'include' });
 
       if (!res.ok) {
@@ -68,7 +70,7 @@ export default function SucursalesPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     fetchBranches();
@@ -103,7 +105,7 @@ export default function SucursalesPage() {
         if (role) adminHeaders['X-Role'] = role;
       } catch (e) {}
 
-      const res = await fetch(`http://localhost:5000/api/admin/branches/${branch.id}/activate`, {
+      const res = await fetch(`${apiUrl}/api/admin/branches/${branch.id}/activate`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...adminHeaders },
         credentials: 'include',
@@ -139,7 +141,7 @@ export default function SucursalesPage() {
         if (role) adminHeaders['X-Role'] = role;
       } catch (e) {}
 
-      const res = await fetch(`http://localhost:5000/api/admin/branches/${deleting.id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/branches/${deleting.id}`, {
         method: 'DELETE',
         headers: { ...adminHeaders },
         credentials: 'include'

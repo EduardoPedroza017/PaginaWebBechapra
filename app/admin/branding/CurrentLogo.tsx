@@ -54,7 +54,11 @@ export const CurrentLogo: React.FC<CurrentLogoProps> = ({
   const handleDownload = async (filename: string) => {
     try {
       setIsDownloading(true);
-      const url = `http://localhost:5000/uploads/branding/${filename}`;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+      const url = `${apiUrl}/uploads/branding/${filename}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Download failed');
       
@@ -133,19 +137,23 @@ export const CurrentLogo: React.FC<CurrentLogoProps> = ({
 
   const filename = currentLogo.filename;
   const meta = currentLogo;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+  }
   const smallSrc = currentLogo.thumbnail 
-    ? `http://localhost:5000${currentLogo.thumbnail}` 
+    ? `${apiUrl}${currentLogo.thumbnail}` 
     : (currentLogo.path 
-      ? `http://localhost:5000/${currentLogo.path}` 
-      : `http://localhost:5000/uploads/branding/${filename}`);
-  
+      ? `${apiUrl}/${currentLogo.path}` 
+      : `${apiUrl}/uploads/branding/${filename}`);
+
   const largeSrc = currentLogo.webp 
-    ? `http://localhost:5000${currentLogo.webp}` 
+    ? `${apiUrl}${currentLogo.webp}` 
     : (currentLogo.avif 
-      ? `http://localhost:5000${currentLogo.avif}` 
+      ? `${apiUrl}${currentLogo.avif}` 
       : (currentLogo.path 
-        ? `http://localhost:5000/${currentLogo.path}` 
-        : `http://localhost:5000/uploads/branding/${filename}`));
+        ? `${apiUrl}/${currentLogo.path}` 
+        : `${apiUrl}/uploads/branding/${filename}`));
 
   return (
     <div>

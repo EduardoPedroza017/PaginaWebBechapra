@@ -14,6 +14,11 @@ interface Props {
   theme: 'light' | 'dark';
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL no está definido");
+}
+
 export default function NewsEditModal({ open, item, onClose, onUpdated, theme }: Props) {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
@@ -59,7 +64,7 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
     
     try {
       const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const res = await fetch(`http://localhost:5000/api/news/${encodeURIComponent(item!.title)}`, {
+      const res = await fetch(`${apiUrl}/api/news/${encodeURIComponent(item!.title)}`, {
         method: "PUT",
         body: form,
         headers: {

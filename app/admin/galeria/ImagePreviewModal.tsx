@@ -53,7 +53,11 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
   const handleDownload = async () => {
     if (images.length === 0) return;
     const currentFilename = images[currentIndex].filename;
-    const url = `http://localhost:5000/gallery/image/${currentFilename}`;
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiBaseUrl) {
+      throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+    }
+    const url = `${apiBaseUrl}/gallery/image/${currentFilename}`;
     const response = await fetch(url);
     const blob = await response.blob();
     const downloadUrl = window.URL.createObjectURL(blob);
@@ -69,6 +73,10 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
   if (!isOpen || images.length === 0) return null;
 
   const currentImage = images[currentIndex];
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiBaseUrl) {
+    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+  }
 
   return (
     <div 
@@ -135,7 +143,7 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
         onClick={(e) => e.stopPropagation()}
       >
         <Image
-          src={`http://localhost:5000/gallery/image/${currentImage.filename}`}
+          src={`${apiBaseUrl}/gallery/image/${currentImage.filename}`}
           alt={currentImage.filename}
           width={1200}
           height={800}
@@ -168,7 +176,7 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
               }`}
             >
               <Image
-                src={`http://localhost:5000/gallery/image/${img.filename}`}
+                src={`${apiBaseUrl}/gallery/image/${img.filename}`}
                 alt={img.filename}
                 fill
                 className="object-cover"

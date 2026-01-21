@@ -93,7 +93,12 @@ export const useEjecutivos = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`http://localhost:5000/api/ejecutivos?${queryParams}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+
+      const response = await fetch(`${apiUrl}/api/ejecutivos?${queryParams}`, {
         headers,
       });
 
@@ -174,8 +179,11 @@ export const useEjecutivos = () => {
     return headers;
   };
 
-  // Backend base URL (adjust if backend runs elsewhere)
-  const backendBase = 'http://localhost:5000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+  }
+  const backendBase = apiUrl;
 
   const fullUrl = (p?: string | null): string | undefined => {
     if (!p) return undefined;
@@ -194,7 +202,11 @@ export const useEjecutivos = () => {
     console.log('[DEBUG createEjecutivo] Using headers:', headers);
 
     try {
-      const response = await fetch('http://localhost:5000/api/ejecutivos', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+      const response = await fetch(`${apiUrl}/api/ejecutivos`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(data),
@@ -236,7 +248,11 @@ export const useEjecutivos = () => {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/ejecutivos/${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}`, {
         method: 'PUT',
         headers: getAuthHeaders(true),
         body: JSON.stringify(data),
@@ -269,7 +285,11 @@ export const useEjecutivos = () => {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/ejecutivos/${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(false),
       });
@@ -304,7 +324,11 @@ export const useEjecutivos = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`http://localhost:5000/api/ejecutivos/${id}/upload-foto`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}/upload-foto`, {
         method: 'POST',
         headers: getAuthHeaders(false),
         body: formData,

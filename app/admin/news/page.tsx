@@ -126,8 +126,14 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 			const admin = typeof window !== "undefined" ? sessionStorage.getItem("admin") : null;
 			const role = typeof window !== "undefined" ? sessionStorage.getItem("role") : null;
 			try {
+				// Define the API URL from the environment variable
+				const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+				if (!apiUrl) {
+					throw new Error("NEXT_PUBLIC_API_URL is not defined");
+				}
+
 				const identifier = deleting.slug || deleting._id || deleting.title;
-				const res = await fetch(`http://localhost:5000/api/news/${encodeURIComponent(identifier)}`, {
+				const res = await fetch(`${apiUrl}/api/news/${encodeURIComponent(identifier)}`, {
 					method: "DELETE",
 					headers: {
 						...(userEmail ? { "X-User": userEmail } : {}),
@@ -170,10 +176,16 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 				if (storedRole) headers['X-Role'] = storedRole;
 				if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
+				// Define the API URL from the environment variable
+				const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+				if (!apiUrl) {
+					throw new Error("NEXT_PUBLIC_API_URL is not defined");
+				}
+
 				// Prefer using `slug` or `_id` if available to avoid encoding/spacing issues. Fallback to trimmed title.
 				const identifier = item.slug || item._id || item.title;
 				const encodedId = encodeURIComponent(identifier);
-				const res = await fetch(`http://localhost:5000/api/news/${encodedId}`, {
+				const res = await fetch(`${apiUrl}/api/news/${encodedId}`, {
 					method: 'PUT',
 					headers,
 					credentials: 'include',

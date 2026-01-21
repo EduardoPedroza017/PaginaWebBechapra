@@ -33,6 +33,11 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL no está definido");
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
@@ -205,7 +210,7 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
                           setUploadingImage(true);
                           const fd = new FormData();
                           fd.append('file', file);
-                          const res = await apiClient.upload('/api/uploads', fd, { retry: 1 });
+                          const res = await apiClient.upload(`${apiUrl}/api/uploads`, fd, { retry: 1 });
                           // `res.url` should be the public URL returned by backend
                           if (res && res.url) {
                             setImageUrl(res.url);
@@ -240,7 +245,7 @@ const JobsForm: React.FC<JobsFormProps> = ({ onCreate, isSubmitting = false, isO
                         <svg className="animate-spin w-6 h-6 text-gray-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
                       ) : previewUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={previewUrl.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${previewUrl}` : previewUrl} alt="preview" className="w-full h-full object-cover" />
+                        <img src={previewUrl.startsWith('/') ? `${apiUrl}${previewUrl}` : previewUrl} alt="preview" className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-xs text-gray-500">Previa</span>
                       )}

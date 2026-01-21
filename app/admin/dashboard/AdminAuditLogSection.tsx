@@ -55,7 +55,10 @@ export default function AdminAuditLogSection() {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
       const res = await fetch(`${apiUrl}/admin/audit-admin`);
       const data = await res.json();
       setLogs(data.logs || []);

@@ -28,9 +28,14 @@ export function OptimizedImageGrid({ images, theme, onDelete, onPreview }: Image
     return images.slice(start, end);
   }, [images, page, pageSize]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL no está definido");
+  }
+
   const handleDownload = async (filename: string) => {
     try {
-      const url = `http://localhost:5000/gallery/image/${filename}`;
+      const url = `${apiUrl}/gallery/image/${filename}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Download failed');
       
@@ -103,7 +108,7 @@ export function OptimizedImageGrid({ images, theme, onDelete, onPreview }: Image
               )}
               
               <Image
-                src={`http://localhost:5000/gallery/image/${img.filename}`}
+                src={`${apiUrl}/gallery/image/${img.filename}`}
                 alt={`Imagen: ${img.filename}`}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"

@@ -46,7 +46,10 @@ export default function EssenceSection() {
   const [essence, setEssence] = useState<EssenceData | null>(null);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+    }
     fetch(`${apiUrl}/api/essence`)
       .then((res) => res.json())
       .then((data) => setEssence(data))

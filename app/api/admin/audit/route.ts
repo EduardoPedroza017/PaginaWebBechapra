@@ -1,6 +1,8 @@
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function GET(request: Request) {
   try {
-    const response = await fetch('http://localhost:5000/admin/audit', {
+    const response = await fetch(`${BACKEND_URL}/admin/audit`, {
       method: 'GET',
       headers: {
         'cookie': request.headers.get('cookie') || ''

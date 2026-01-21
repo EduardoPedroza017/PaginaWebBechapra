@@ -20,6 +20,12 @@ const toPlainText = (html: string, maxLength: number) => {
   return text.slice(0, maxLength).trimEnd() + "...";
 };
 
+// Define the API URL from the environment variable
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
 export default function NewsTable({ news, onEdit, onDelete, onToggleStatus, theme }: Props) {
   const [page, setPage] = useState(1);
   const pageSize = 5;
@@ -129,7 +135,7 @@ export default function NewsTable({ news, onEdit, onDelete, onToggleStatus, them
                     <td className="px-5 py-4 whitespace-nowrap">
                       {item.image_url ? (
                         <img
-                          src={`http://localhost:5000${item.image_url}`}
+                          src={`${apiUrl}${item.image_url}`}
                           alt="img"
                           className="w-16 h-12 object-cover rounded-lg"
                         />

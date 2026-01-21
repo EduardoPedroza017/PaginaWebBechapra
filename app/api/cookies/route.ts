@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 
+const BACKEND_URL = process.env.BACKEND_URL;
+if (!BACKEND_URL) {
+  throw new Error('La variable de entorno BACKEND_URL no está definida. Configúrala en tu archivo .env');
+}
+
 export async function GET() {
   try {
-    const response = await fetch('http://localhost:5000/api/cookies/list?limit=200', {
+    const response = await fetch(`${BACKEND_URL}/api/cookies/list?limit=200`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -29,7 +34,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const response = await fetch('http://localhost:5000/api/cookies', {
+    const response = await fetch(`${BACKEND_URL}/api/cookies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

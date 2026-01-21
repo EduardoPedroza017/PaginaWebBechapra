@@ -20,7 +20,11 @@ export default function CookieConsentAdmin() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/cookies/list?limit=200")
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+    }
+    fetch(`${apiUrl}/api/cookies/list?limit=200`)
       .then(res => res.json())
       .then(setData)
       .finally(() => setLoading(false));

@@ -48,7 +48,7 @@ class ApiClient {
     
     // Para endpoints de logo, hacer requests directos al backend
     if (normalizedPath.includes('/api/logo/')) {
-      return `http://localhost:5000${normalizedPath}`;
+      return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
     }
     
     // Si estamos en navegador, usar proxy de Next.js

@@ -118,7 +118,10 @@ export default function AuditLogPage() {
     try {
       const admin = sessionStorage.getItem("admin") === "true";
       const role = sessionStorage.getItem("role") || "";
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiBase) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
       
       // Prefer admin action logs (admin_audit). Fallback to login audit if empty.
       const tryAdminAudit = async () => {

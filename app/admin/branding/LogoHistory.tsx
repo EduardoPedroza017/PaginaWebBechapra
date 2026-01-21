@@ -44,6 +44,9 @@ export const LogoHistory: React.FC<LogoHistoryProps> = ({
   theme = 'light',
   loading = false
 }) => {
+  // Remove any references to environment variables and ensure the hardcoded API URL is used
+  const apiUrl = 'http://localhost:5000';
+
   const [viewing, setViewing] = useState<Logo | null>(null);
   const [editingAlt, setEditingAlt] = useState(false);
   const [altValue, setAltValue] = useState('');
@@ -123,7 +126,7 @@ export const LogoHistory: React.FC<LogoHistoryProps> = ({
   const handleDownload = async (filename: string) => {
     try {
       setDownloading(filename);
-      const url = `http://localhost:5000/uploads/branding/${filename}`;
+      const url = `${apiUrl}/uploads/branding/${filename}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Download failed');
       
@@ -349,7 +352,7 @@ export const LogoHistory: React.FC<LogoHistoryProps> = ({
                 <div className="relative mb-4">
                   <div className={`aspect-square rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'} p-4`}>
                     <img 
-                      src={logo.thumbnail ? `http://localhost:5000${logo.thumbnail}` : `http://localhost:5000/uploads/branding/${logo.filename}`} 
+                      src={logo.thumbnail ? `${apiUrl}${logo.thumbnail}` : `${apiUrl}/uploads/branding/${logo.filename}`} 
                       alt={logo.alt || logo.filename}
                       className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
                     />
@@ -683,7 +686,7 @@ export const LogoHistory: React.FC<LogoHistoryProps> = ({
                 <div className="flex items-center justify-center">
                   <div className={`w-full max-w-md rounded-xl overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} p-8`}>
                     <img 
-                      src={viewing.webp ? `http://localhost:5000${viewing.webp}` : (viewing.avif ? `http://localhost:5000${viewing.avif}` : `http://localhost:5000/uploads/branding/${viewing.filename}`)} 
+                      src={viewing.webp ? `${apiUrl}${viewing.webp}` : (viewing.avif ? `${apiUrl}${viewing.avif}` : `${apiUrl}/uploads/branding/${viewing.filename}`)} 
                       alt={viewing.alt || viewing.filename}
                       className="w-full h-auto object-contain"
                     />

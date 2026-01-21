@@ -606,80 +606,103 @@ export function ImageUploader({
       let uploadedBytes = 0;
       const xhr = new XMLHttpRequest();
       
-      const uploadPromise = new Promise<void>((resolve, reject) => {
-        xhr.open("POST", "http://localhost:5000/admin/upload-image");
-        
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            uploadedBytes = event.loaded;
-            const progress = Math.round((event.loaded / event.total) * 100);
-            
-            setUploadFiles(prev => {
-              const newFiles = prev.map(f => 
-                f.id === fileId ? { ...f, progress } : f
-              );
-              uploadFilesRef.current = newFiles;
-              return newFiles;
-            });
-            
-            // Actualizar estadísticas de velocidad
-            uploadBytes.current += event.loaded - uploadedBytes;
-          }
-        };
-        
-        xhr.onload = () => {
-          clearTimeout(timeoutId);
-          console.log(`✅ XHR onload for ${uploadFile.file.name}: status ${xhr.status}`);
-          if (xhr.status >= 200 && xhr.status < 300) {
-            console.log(`🎉 Upload successful for ${uploadFile.file.name}`);
-            resolve();
-          } else {
-            console.error(`❌ XHR error for ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
-            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
-          }
-        };
-        
-        xhr.onerror = () => {
-          clearTimeout(timeoutId);
-          console.error(`🔥 XHR network error for ${uploadFile.file.name}`);
-          reject(new Error('Network error'));
-        };
-        
-        xhr.onabort = () => {
-          clearTimeout(timeoutId);
-          console.log(`🛑 XHR aborted for ${uploadFile.file.name}`);
-          reject(new Error('Upload aborted'));
-        };
-        
-        console.time(`XHR ${uploadFile.file.name}`);
-        xhr.send(formData);
-      });
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiBaseUrl) {
+        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+      }
+
+      xhr.open("POST", `${apiBaseUrl}/admin/upload-image`);
       
-      await uploadPromise;
-      console.timeEnd(`XHR ${uploadFile.file.name}`);
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          uploadedBytes = event.loaded;
+          const progress = Math.round((event.loaded / event.total) * 100);
+          
+          setUploadFiles(prev => {
+            const newFiles = prev.map(f => 
+              f.id === fileId ? { ...f, progress } : f
+            );
+            uploadFilesRef.current = newFiles;
+            return newFiles;
+          });
+          
+          // Actualizar estadísticas de velocidad
+          uploadBytes.current += event.loaded - uploadedBytes;
+        }
+      };
       
-      // Éxito
-      console.timeEnd(`Upload ${uploadFile.file.name}`);
-      setUploadFiles(prev => {
-        const newFiles = prev.map(f => 
-          f.id === fileId ? { ...f, status: 'success' as const, progress: 100 } : f
-        );
-        uploadFilesRef.current = newFiles;
-        return newFiles;
-      });
-      completedUploadsRef.current.add(fileId);
+      xhr.onload = () => {
+        clearTimeout(timeoutId);
+        console.log(`✅ XHR onload for ${uploadFile.file.name}: status ${xhr.status}`);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log(`🎉 Upload successful for ${uploadFile.file.name}`);
+          setUploadFiles(prev => {
+            const newFiles = prev.map(f => 
+              f.id === fileId ? { ...f, status: 'success' as const, progress: 100 } : f
+            );
+            uploadFilesRef.current = newFiles;
+            return newFiles;
+          });
+          completedUploadsRef.current.add(fileId);
+          
+          onMessage('success', `${uploadFile.file.name} subida exitosamente`);
+        } else {
+          console.error(`❌ XHR error for ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
+          setUploadFiles(prev => {
+            const newFiles = prev.map(f => 
+              f.id === fileId ? { 
+                ...f, 
+                status: 'error' as const, 
+                errorMessage: `HTTP ${xhr.status}: ${xhr.statusText}` 
+              } : f
+            );
+            uploadFilesRef.current = newFiles;
+            return newFiles;
+          });
+          onMessage('error', `Falló ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
+        }
+      };
       
-      onMessage('success', `${uploadFile.file.name} subida exitosamente`);
+      xhr.onerror = () => {
+        clearTimeout(timeoutId);
+        console.error(`🔥 XHR network error for ${uploadFile.file.name}`);
+        setUploadFiles(prev => {
+          const newFiles = prev.map(f => 
+            f.id === fileId ? { 
+              ...f, 
+              status: 'error' as const, 
+              errorMessage: 'Error de red' 
+            } : f
+          );
+          uploadFilesRef.current = newFiles;
+          return newFiles;
+        });
+        onMessage('error', `Falló ${uploadFile.file.name}: Error de red`);
+      };
       
-    } catch (error: any) {
+      xhr.onabort = () => {
+        clearTimeout(timeoutId);
+        console.log(`🛑 XHR aborted for ${uploadFile.file.name}`);
+        setUploadFiles(prev => {
+          const newFiles = prev.map(f => 
+            f.id === fileId ? { ...f, status: 'paused' as const } : f
+          );
+          uploadFilesRef.current = newFiles;
+          return newFiles;
+        });
+      };
+      
+      console.time(`XHR ${uploadFile.file.name}`);
+      xhr.send(formData);
+    } catch (error) {
       console.error(`💥 Upload failed for ${uploadFile.file.name}:`, error);
       // Cancelar el abort controller si existe
       const controller = abortControllers.current.get(fileId);
       if (controller) {
         controller.abort();
       }
-      
-      if (error.name === 'AbortError' || error.message === 'Upload aborted') {
+
+      if ((error as any)?.name === 'AbortError' || (error as any)?.message === 'Upload aborted') {
         // Upload cancelado por pausa o timeout
         console.log(`⏸️ Upload paused/aborted for ${uploadFile.file.name}`);
         setUploadFiles(prev => {
@@ -698,7 +721,7 @@ export function ImageUploader({
         return uploadSingleFile(fileId, retryCount + 1);
       } else {
         // Error definitivo
-        const errorMsg = error.message || 'Error desconocido';
+        const errorMsg = (error as any)?.message || 'Error desconocido';
         console.error(`💀 Final upload failure for ${uploadFile.file.name}: ${errorMsg}`);
         setUploadFiles(prev => {
           const newFiles = prev.map(f => 
@@ -1357,7 +1380,7 @@ export function ImageUploader({
           <div className="space-y-4">
             {/* Resumen */}
             <div className={`flex items-center justify-between p-3 rounded-lg ${
-              theme === "dark" ? "bg-gray-800/50" : "bg-blue-50/50"
+              theme === "dark" ? "bg-emerald-900/20" : "bg-emerald-50"
             }`}>
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${
@@ -1546,7 +1569,7 @@ export function ImageUploader({
                           }`}>
                             {file.progress}%
                           </span>
-                        </div>
+                          </div>
                       ) : (
                         <button
                           onClick={(e) => {

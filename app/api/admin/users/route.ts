@@ -1,3 +1,5 @@
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function GET(request: Request) {
   try {
     const role = request.headers.get('X-Role') || '';
@@ -20,7 +22,7 @@ export async function GET(request: Request) {
       headers['Authorization'] = authHeader;
     }
 
-    const response = await fetch('http://localhost:5000/api/admin/users/', {
+    const response = await fetch(`${BACKEND_URL}/api/admin/users/`, {
       method: 'GET',
       headers,
       credentials: 'include',

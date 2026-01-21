@@ -100,7 +100,10 @@ const JobsPage = () => {
       setSubmitting(true);
       setError(null);
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        throw new Error("NEXT_PUBLIC_API_URL no está definido");
+      }
       // Build auth headers: prefer token, fall back to header-based dev bypass
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
