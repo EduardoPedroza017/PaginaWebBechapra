@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import EventosList from './EventosList';
@@ -6,8 +6,7 @@ import EventosFilters from './EventosFilters';
 import EventosModal from './EventosModal';
 import EventosStats from './EventosStats';
 import useEventos from './hooks/useEventos';
-import { Sidebar } from '../dashboard/Sidebar';
-import { Header } from '../dashboard/Header';
+
 import { TranslateText } from '@/components/TranslateText';
 
 interface Evento {
@@ -83,13 +82,9 @@ const EventosPage: React.FC = () => {
 
   return (
     <div className="flex">
-      <Sidebar theme={theme} selected={activeTab} />
+      
       <div className="flex-1">
-        <Header 
-          onToggleTheme={handleToggleTheme} 
-          theme={theme} 
-          onLogout={handleLogout} 
-        />
+        
         <div className="p-6">
           <h1 className="text-2xl font-bold mb-4">
             <TranslateText text="Eventos" />

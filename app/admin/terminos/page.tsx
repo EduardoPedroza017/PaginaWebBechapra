@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { Card } from "../components/shared/Card";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TerminosForm } from "./TerminosForm";
 import { TerminosTable } from "./TerminosTable";
 import { useTerminosApi } from "./useTerminosApi";
@@ -100,9 +99,9 @@ export default function TerminosAdminPage() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar selected="terminos" theme={theme} />
+      
       <main className="flex-1 bg-slate-50 dark:bg-slate-900">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         <div className="max-w-5xl mx-auto py-8">
           <h1 className="text-2xl font-bold mb-6">Términos y Condiciones (Admin)</h1>
           <Card className="mb-8 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
@@ -135,3 +134,4 @@ export default function TerminosAdminPage() {
     </div>
   );
 }
+

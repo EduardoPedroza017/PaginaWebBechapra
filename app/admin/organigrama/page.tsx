@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { Users, ArrowRight } from "lucide-react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 
 export default function AdminOrganigramaPage() {
@@ -28,10 +27,10 @@ export default function AdminOrganigramaPage() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <Sidebar selected="organigrama" theme={theme} />
+      
 
       <div className="flex-1 flex flex-col">
-        <Header onLogout={() => {}} onToggleTheme={handleToggleTheme} theme={theme} />
+        
 
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="max-w-xl w-full text-center bg-white/90 backdrop-blur rounded-2xl shadow-xl border border-gray-100 p-10">
@@ -69,3 +68,4 @@ export default function AdminOrganigramaPage() {
     </div>
   );
 }
+

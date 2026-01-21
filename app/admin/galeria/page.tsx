@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { Images, AlertCircle, CheckCircle, RefreshCw, AlertTriangle } from "lucide-react";
 
@@ -12,6 +11,7 @@ import { ImageGrid } from "./ImageGrid";
 import { DeleteImageModal } from "./DeleteImageModal";
 import { ImagePreviewModal } from "./ImagePreviewModal";
 import { adminApi } from "../utils/admin-api";
+import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
 
 interface GalleryImage {
   filename: string;
@@ -160,21 +160,10 @@ const GaleriaPage = () => {
   }
 
   return (
-    <div className={`flex min-h-screen ${
+    <AdminPageShell containerClassName={`flex min-h-screen ${
       theme === "dark" ? "bg-gray-950" : "bg-gradient-to-br from-blue-50 to-indigo-100"
     }`}>
-      <Sidebar selected="/admin/galeria" theme={theme} />
-      <div className="flex-1 flex flex-col">
-        <Header 
-          onLogout={() => { 
-            sessionStorage.removeItem("admin"); 
-            sessionStorage.removeItem("role"); 
-            window.location.href = "/admin"; 
-          }} 
-          onToggleTheme={handleToggleTheme} 
-          theme={theme} 
-        />
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header de la página */}
           <div className="mb-6 md:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -351,7 +340,6 @@ const GaleriaPage = () => {
             )}
           </div>
         </main>
-      </div>
 
       {/* Modal de eliminación */}
       <DeleteImageModal
@@ -370,7 +358,7 @@ const GaleriaPage = () => {
         theme={theme}
         onClose={() => setPreviewModal({ open: false, filename: null })}
       />
-    </div>
+    </AdminPageShell>
   );
 };
 

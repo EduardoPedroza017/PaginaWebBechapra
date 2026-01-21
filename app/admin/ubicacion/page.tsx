@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { LocationPreview } from "./components/LocationPreview";
 import { companyLocation } from "@/lib/config/locationData";
@@ -21,9 +20,9 @@ export default function LocationAdminPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar selected="/admin/ubicacion" theme={theme} />
+      
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
@@ -46,3 +45,4 @@ export default function LocationAdminPage() {
     </div>
   );
 }
+

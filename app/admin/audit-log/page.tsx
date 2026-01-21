@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { ExportAuditLogsButton } from "./ExportAuditLogsButton";
 import { TranslateText } from "@/components/TranslateText";
 import { Activity, CheckCircle, XCircle, BarChart3, Database, Shield, AlertTriangle, RefreshCw } from "lucide-react";
@@ -351,9 +350,9 @@ export default function AuditLogPage() {
 
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
-      <Sidebar selected="/admin/audit-log" theme={theme} />
+      
       <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-400 mx-auto w-full">
           {/* Header principal */}
           <div className="mb-6">

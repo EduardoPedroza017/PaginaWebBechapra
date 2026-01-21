@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
-import { Sidebar } from '../dashboard/Sidebar';
-import { Header } from '../dashboard/Header';
+
 import { TranslateText } from '@/components/TranslateText';
 import { CvList } from './CvList';
 import { useCv } from './hooks/useCv';
@@ -22,10 +21,10 @@ export default function CvAdminPage() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-gray-950">
-      <Sidebar selected="formularios" theme={theme} />
+      
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <Header onLogout={() => {}} onToggleTheme={() => setTheme(t => t === 'light' ? 'dark' : 'light')} theme={theme} />
+        
 
         <main className="flex-1 p-6 md:p-8 lg:p-10 space-y-6">
           <div className="flex items-center justify-between">
@@ -49,3 +48,4 @@ export default function CvAdminPage() {
     </div>
   );
 }
+

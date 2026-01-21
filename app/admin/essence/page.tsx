@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { Sparkles, RefreshCw } from "lucide-react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import EssenceStats from "./EssenceStats";
 import EssenceForm from "./EssenceForm";
@@ -230,9 +229,9 @@ export default function EssenceAdminPage() {
 
   return (
     <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      <Sidebar selected="/admin/essence" theme={theme} />
+      
       <div className="flex-1 flex flex-col">
-        <Header onLogout={() => {}} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         <main className="flex-1 p-6 lg:p-8 overflow-auto">
           {/* Page Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
@@ -383,3 +382,4 @@ export default function EssenceAdminPage() {
     </div>
   );
 }
+

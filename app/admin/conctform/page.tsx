@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import ContactFilter from "./ContactFilter";
 import ContactChart from "./ContactChart";
 import { ContactTable } from "./ContactTable";
@@ -272,10 +271,10 @@ export default function AdminContactPage() {
         ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950' 
         : 'bg-gradient-to-br from-blue-50 via-indigo-50/30 to-white'
     }`}>
-      <Sidebar selected="/admin/conctform" theme={theme} />
+      
       
       <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         
         <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header principal */}

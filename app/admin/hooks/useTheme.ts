@@ -1,45 +1,22 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useContext } from 'react';
+import { AdminThemeContext } from '../providers/ThemeProvider';
 
-type Theme = 'light' | 'dark';
-
-interface UseThemeReturn {
-  theme: Theme;
-  toggleTheme: () => void;
-  themeReady: boolean;
-}
-
-export function useTheme(): UseThemeReturn {
-  const [theme, setTheme] = useState<Theme>('light');
-  const [themeReady, setThemeReady] = useState(false);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const newTheme = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
-  }, []);
-
-  useEffect(() => {
-    const initializeTheme = () => {
-      if (typeof window !== 'undefined') {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          setTheme(savedTheme);
-        }
-      }
-      setThemeReady(true);
+export function useAdminTheme() {
+  const ctx = useContext(AdminThemeContext);
+  if (!ctx) {
+    return {
+      theme: 'light',
+      resolvedTheme: 'light',
+      systemTheme: 'light',
+      setTheme: undefined,
+      toggleTheme: () => {},
+      isDark: false,
+      themeReady: false,
     };
-
-    const timer = setTimeout(initializeTheme, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return {
-    theme,
-    toggleTheme,
-    themeReady,
-  };
+  }
+  return ctx;
 }
+
+export default useAdminTheme;

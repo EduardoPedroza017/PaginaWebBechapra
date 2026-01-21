@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { FileText, RefreshCw } from "lucide-react";
@@ -10,11 +10,11 @@ import PressEditModal from "./PressEditModal";
 import PressChart from "./PressChart";
 import PressStats from "./PressStats";
 import DeletePressModal from "./DeletePressModal";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { PressSearchBar } from "./PressSearchBar";
 import { adminApi } from "../utils/admin-api";
+import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
 
 export interface PressItem {
   id: string;
@@ -139,11 +139,8 @@ export default function PressAdminApp() {
   if (!mounted) return null;
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      <Sidebar selected="/admin/press" theme={theme} />
-      <div className="flex-1 flex flex-col">
-        <Header theme={theme} onLogout={() => {}} onToggleTheme={handleToggleTheme} />
-        <main className="flex-1 p-6 lg:p-8 overflow-auto">
+    <AdminPageShell containerClassName={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
+      <main className="flex-1 p-6 lg:p-8 overflow-auto">
           {/* Page Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
@@ -255,7 +252,7 @@ export default function PressAdminApp() {
             />
           )}
         </main>
-      </div>
-    </div>
+    </AdminPageShell>
   );
 }
+

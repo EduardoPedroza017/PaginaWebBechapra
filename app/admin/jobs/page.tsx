@@ -1,12 +1,11 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import JobsList from './JobsList';
 import JobsForm from './JobsForm';
 import { TranslateText } from '@/components/TranslateText';
-import { Sidebar } from '../dashboard/Sidebar';
-import { Header } from '../dashboard/Header';
+
 import { Briefcase, Plus, RefreshCw, AlertCircle } from 'lucide-react';import { adminApi } from '../utils/admin-api';
 // Adjust the `Job` type to ensure `updatedAt` is consistently optional
 interface Job {
@@ -244,16 +243,10 @@ const JobsPage = () => {
         ? 'bg-linear-to-br from-slate-950 via-slate-900 to-slate-950' 
         : 'bg-linear-to-br from-white via-slate-50 to-slate-100'
     }`}>
-      <Sidebar selected="/admin/jobs" theme={theme} role={role} admin={admin} />
+      
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header 
-          onLogout={handleLogout}
-          onToggleTheme={handleToggleTheme}
-          theme={theme}
-          role={role}
-          admin={admin}
-        />
+        
         
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-350 mx-auto w-full overflow-y-auto">
           {/* Header de la página */}

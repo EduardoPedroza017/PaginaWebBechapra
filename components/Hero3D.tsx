@@ -49,7 +49,7 @@ initial={{ opacity: 0, y: 10 }}
 whileInView={{ opacity: 1, y: 0 }}
 transition={{ duration: 0.8, delay: 0.1 }}
 viewport={{ once: true }}
-className="mt-4 max-w-xl text-pretty text-white/75"
+className="mt-4 max-w-xl text-pretty text-slate-700 dark:text-white/75"
 >
 Un starter productivo con carga diferida del canvas, efectos sutiles y accesibilidad.
 </motion.p>
@@ -62,10 +62,10 @@ Un starter productivo con carga diferida del canvas, efectos sutiles y accesibil
 
 {/* Canvas 3D */}
 <div className="relative aspect-[4/3] w-full md:aspect-[5/4]">
-<div className="absolute inset-0 rounded-3xl border border-white/15 bg-white/5 p-1 backdrop-blur-xl">
+<div className="absolute inset-0 rounded-3xl border border-white/15 dark:border-white/5 bg-white/5 dark:bg-slate-800/10 p-1 backdrop-blur-xl">
 <div className="glass-inset h-full w-full rounded-[22px]">
 <Canvas shadows camera={{ position: [3, 2, 4], fov: 42 }} dpr={[1, 2]}>
-<Suspense fallback={<Html center className="text-sm text-white/70">Cargando 3D…</Html>}>
+<Suspense fallback={<Html center className="text-sm text-slate-700 dark:text-white/70">Cargando 3D…</Html>}>
 <ambientLight intensity={prefersReduced ? 0.6 : 0.9} />
 <directionalLight position={[2.5, 4, 2]} intensity={1.2} castShadow />
 {!prefersReduced && (

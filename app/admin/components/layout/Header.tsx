@@ -35,6 +35,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import ThemeToggle from '@/components/admin/ui/ThemeToggle';
 
 interface HeaderProps {
   onLogout: () => void;
@@ -217,17 +218,10 @@ export function Header({
 
         {/* Desktop Navigation - Right */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
-          <button
-            onClick={onToggleTheme}
-            className={`${buttonBase} ${themeButtonClasses} hidden lg:flex`}
-            aria-label={`Cambiar a modo ${isDark ? 'claro' : 'oscuro'}`}
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            <span className="text-sm">
-              <TranslateText text={isDark ? 'Claro' : 'Oscuro'} />
-            </span>
-          </button>
+          {/* Theme Toggle (centralized) */}
+          <div className="hidden lg:flex">
+            <ThemeToggle className={`${buttonBase} ${themeButtonClasses}`} />
+          </div>
 
           {/* Logout Button */}
           <button

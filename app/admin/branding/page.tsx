@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { CurrentLogo } from "./CurrentLogo";
 import { LogoUploadForm } from "./LogoUploadForm";
 import { LogoHistory } from "./LogoHistory";
@@ -248,10 +247,10 @@ export default function BrandingPage() {
         ? 'bg-linear-to-br from-gray-900 via-gray-900 to-gray-950' 
         : 'bg-linear-to-br from-blue-50 via-indigo-50/50 to-white'
     }`}>
-      <Sidebar selected="/admin/branding" theme={theme} />
+      
       
       <div className="flex-1 flex flex-col">
-        <Header onLogout={handleLogout} onToggleTheme={handleToggleTheme} theme={theme} />
+        
         
         <main className="flex-1 w-full py-8 px-4 sm:px-6 lg:px-8">
           {/* Header de página */}

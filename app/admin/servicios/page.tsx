@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import { Service } from "./components/ServiceForm";
 import { ServiceEditModal } from "./components/ServiceEditModal";
@@ -7,8 +7,7 @@ import { ServiceCardList } from "./components/ServiceCardList";
 import { SearchBar } from "./components/SearchBar";
 import ServicePageForm from "./components/ServicePageForm";
 import { Button } from "../components/shared/Button";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 
 // Define the API URL from the environment variable
@@ -203,9 +202,9 @@ export default function ServiciosAdminPage() {
 
   return (
     <div className="flex min-h-screen bg-slate-900">
-      <Sidebar selected="/admin/servicios" theme="dark" />
+      
       <div className="flex-1 flex flex-col">
-        <Header theme="dark" onLogout={() => {}} onToggleTheme={() => {}} />
+        
         <main className="max-w-4xl mx-auto py-10 px-4">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -297,3 +296,4 @@ export default function ServiciosAdminPage() {
     </div>
   );
 }
+

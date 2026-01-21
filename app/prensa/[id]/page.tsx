@@ -101,15 +101,13 @@ export default function PressDetailPage() {
     }
   };
 
+  const isDark = theme === 'dark';
+
   if (loading) {
     return (
-      <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen transition-colors duration-300">
+      <main className={`${isDark ? 'bg-slate-900' : 'bg-slate-50'} min-h-screen transition-colors duration-300`}>
         {/* Hero Skeleton */}
-        <div style={{
-          background: theme === 'dark'
-            ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
-            : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
-        }} className="pt-24 pb-32">
+        <div className={`${isDark ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-800' : 'bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500'} pt-24 pb-32`}>
           <div className="max-w-4xl mx-auto px-6">
             <div className="animate-pulse">
               <div className="w-32 h-10 bg-white/20 rounded-xl mb-8" />
@@ -120,14 +118,11 @@ export default function PressDetailPage() {
           </div>
         </div>
         <div className="max-w-4xl mx-auto px-6 -mt-20">
-          <div style={{
-            background: theme === 'dark' ? '#1e293b' : 'white',
-            boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)'
-          }} className="rounded-3xl p-10 animate-pulse transition-colors duration-300">
+          <div className={`${isDark ? 'bg-slate-800 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]' : 'bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.1)]'} rounded-3xl p-10 animate-pulse transition-colors duration-300` }>
             <div className="space-y-4">
-              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-full h-4 rounded transition-colors duration-300" />
-              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-full h-4 rounded transition-colors duration-300" />
-              <div style={{ background: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="w-3/4 h-4 rounded transition-colors duration-300" />
+              <div className={`${isDark ? 'bg-slate-600' : 'bg-gray-200'} w-full h-4 rounded transition-colors duration-300`} />
+              <div className={`${isDark ? 'bg-slate-600' : 'bg-gray-200'} w-full h-4 rounded transition-colors duration-300`} />
+              <div className={`${isDark ? 'bg-slate-600' : 'bg-gray-200'} w-3/4 h-4 rounded transition-colors duration-300`} />
             </div>
           </div>
         </div>
@@ -137,21 +132,19 @@ export default function PressDetailPage() {
 
   if (!press) {
     return (
-      <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen flex items-center justify-center transition-colors duration-300">
+      <main className={`${isDark ? 'bg-slate-900' : 'bg-slate-50'} min-h-screen flex items-center justify-center transition-colors duration-300`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div style={{
-            background: theme === 'dark' ? '#1e293b' : '#f3f4f6'
-          }} className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-300">
-            <FileText size={40} style={{ color: theme === 'dark' ? '#64748b' : '#9ca3af' }} />
+          <div className={`${isDark ? 'bg-slate-800' : 'bg-slate-100'} w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-300`}>
+            <FileText size={40} className={`${isDark ? 'text-slate-400' : 'text-slate-400'}`} />
           </div>
-          <h1 style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="text-2xl font-bold mb-2 transition-colors duration-300">
+          <h1 className="text-2xl font-bold mb-2 transition-colors duration-300 text-slate-900 dark:text-slate-100">
             <TranslateText text="Comunicado no encontrado" />
           </h1>
-          <p style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="mb-6 transition-colors duration-300">
+          <p className="mb-6 transition-colors duration-300 text-slate-600 dark:text-slate-400">
             <TranslateText text="El comunicado que buscas no existe o fue eliminado." />
           </p>
           <Link
@@ -179,13 +172,9 @@ export default function PressDetailPage() {
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   return (
-    <main style={{ background: theme === 'dark' ? '#0f172a' : '#f9fafb' }} className="min-h-screen transition-colors duration-300">
+    <main className={`${isDark ? 'bg-slate-900' : 'bg-slate-50'} min-h-screen transition-colors duration-300`}>
       {/* Hero Section */}
-      <section style={{
-        background: theme === 'dark'
-          ? 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%)'
-          : 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%)',
-      }} className="relative pt-24 pb-40 overflow-hidden transition-colors duration-300">
+      <section className={`relative pt-24 pb-40 overflow-hidden transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-800' : 'bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500'}`}>
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -298,11 +287,7 @@ export default function PressDetailPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            style={{
-              background: theme === 'dark' ? '#1e293b' : 'white',
-              boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)'
-            }}
-            className="rounded-3xl overflow-hidden transition-all duration-300 border border-transparent hover:border-blue-500/20 dark:hover:border-blue-500/30"
+            className={`rounded-3xl overflow-hidden transition-all duration-300 border border-transparent hover:border-blue-500/20 dark:hover:border-blue-500/30 ${isDark ? 'bg-slate-800 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]' : 'bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.1)]'}`}
           >
             {/* Top Accent */}
             <motion.div 
@@ -320,7 +305,7 @@ export default function PressDetailPage() {
                 transition={{ delay: 0.5 }}
                 className="prose prose-lg max-w-none"
               >
-                <p style={{ color: theme === 'dark' ? '#cbd5e1' : '#374151' }} className="text-base md:text-lg leading-8 whitespace-pre-wrap transition-colors duration-300">
+                <p className="text-base md:text-lg leading-8 whitespace-pre-wrap transition-colors duration-300 text-slate-700 dark:text-slate-300">
                   {press.excerpt}
                 </p>
               </motion.div>
@@ -389,7 +374,7 @@ export default function PressDetailPage() {
 
                   {/* Download Section */}
                   <div className="p-8">
-                    <h3 style={{ color: theme === 'dark' ? '#e2e8f0' : '#1f2937' }} className="flex items-center gap-3 font-bold mb-6 transition-colors duration-300 text-lg">
+                    <h3 className="flex items-center gap-3 font-bold mb-6 transition-colors duration-300 text-lg text-slate-900 dark:text-slate-100">
                       <motion.div
                         animate={{ rotate: [0, 10, -10, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
@@ -401,15 +386,12 @@ export default function PressDetailPage() {
                     </h3>
                     
                     {/* File Info */}
-                    <div style={{ 
-                      background: theme === 'dark' ? '#1e293b' : '#f8fafc',
-                      borderColor: theme === 'dark' ? '#334155' : '#cbd5e1'
-                    }} className="p-4 rounded-lg border mb-6 flex items-center justify-between">
+                    <div className={`p-4 rounded-lg border mb-6 flex items-center justify-between ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-gray-200'}`}>
                       <div>
-                        <p style={{ color: theme === 'dark' ? '#cbd5e1' : '#475569' }} className="text-sm font-medium">
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
                           {press.file_url.split("/").pop()}
                         </p>
-                        <p style={{ color: theme === 'dark' ? '#94a3b8' : '#64748b' }} className="text-xs mt-1">
+                        <p className="text-xs mt-1 text-slate-500 dark:text-slate-400">
                           <TranslateText text="Imagen JPG/PNG" />
                         </p>
                       </div>
@@ -445,7 +427,7 @@ export default function PressDetailPage() {
                     </motion.a>
 
                     {/* Additional Info */}
-                    <p style={{ color: theme === 'dark' ? '#94a3b8' : '#64748b' }} className="text-center text-sm mt-4">
+                    <p className="text-center text-sm mt-4 text-slate-500 dark:text-slate-400">
                       <TranslateText text="Haz clic para descargar o haz clic en la imagen arriba" />
                     </p>
                   </div>
@@ -459,11 +441,11 @@ export default function PressDetailPage() {
                 transition={{ delay: 0.7 }}
                 className="my-10 flex items-center gap-4"
               >
-                <div style={{ borderColor: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="flex-1 h-px border-t transition-colors duration-300" />
-                <div style={{ color: theme === 'dark' ? '#94a3b8' : '#9ca3af' }}>
+                <div className="flex-1 h-px border-t transition-colors duration-300 border-gray-200 dark:border-slate-700" />
+                <div className="text-slate-400 dark:text-slate-400">
                   <Share2 size={18} />
                 </div>
-                <div style={{ borderColor: theme === 'dark' ? '#475569' : '#e5e7eb' }} className="flex-1 h-px border-t transition-colors duration-300" />
+                <div className="flex-1 h-px border-t transition-colors duration-300 border-gray-200 dark:border-slate-700" />
               </motion.div>
 
               {/* Share Section */}
@@ -473,23 +455,14 @@ export default function PressDetailPage() {
                 transition={{ delay: 0.8 }}
                 className="flex flex-col md:flex-row items-center justify-between gap-6 pt-4"
               >
-                <div style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="text-sm transition-colors duration-300">
+                <div className="text-sm transition-colors duration-300 text-slate-600 dark:text-slate-400">
                   <TranslateText text="¿Te resultó útil? Comparte este comunicado" />
                 </div>
                 <motion.button
                   onClick={handleShare}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  style={{
-                    background: copied 
-                      ? 'rgb(34, 197, 94)' 
-                      : (theme === 'dark' ? '#1e293b' : '#f3f4f6'),
-                    color: copied 
-                      ? 'white' 
-                      : (theme === 'dark' ? '#e2e8f0' : '#374151'),
-                    borderColor: theme === 'dark' ? '#475569' : 'transparent'
-                  }}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-300"
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-300 ${copied ? 'bg-emerald-500 text-white border-transparent' : (isDark ? 'bg-slate-800 text-slate-100 border-slate-700' : 'bg-slate-100 text-slate-900 border-transparent')}`}
                 >
                   {copied ? (
                     <>
@@ -518,8 +491,7 @@ export default function PressDetailPage() {
               <motion.h2 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                style={{ color: theme === 'dark' ? '#e2e8f0' : '#111827' }} 
-                className="text-3xl font-black mb-8 transition-colors duration-300 flex items-center gap-3"
+                className="text-3xl font-black mb-8 transition-colors duration-300 flex items-center gap-3 text-slate-900 dark:text-slate-100"
               >
                 <Zap size={28} className="text-blue-600 dark:text-blue-400" />
                 <TranslateText text="Otros comunicados" />
@@ -535,12 +507,7 @@ export default function PressDetailPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
-                      style={{
-                        background: theme === 'dark' ? '#1e293b' : 'white',
-                        borderColor: theme === 'dark' ? '#475569' : '#e5e7eb',
-                        boxShadow: theme === 'dark' ? 'none' : '0 10px 15px -3px rgba(0, 0, 0, 0.08)'
-                      }}
-                      className="h-full rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-blue-500/50 dark:hover:border-blue-500/40"
+                      className={`h-full rounded-2xl p-6 border transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-blue-500/50 dark:hover:border-blue-500/40 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.08)]'}`}
                     >
                       <motion.div 
                         className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-semibold mb-4"
@@ -555,10 +522,10 @@ export default function PressDetailPage() {
                           year: "numeric",
                         })}
                       </motion.div>
-                      <h3 style={{ color: theme === 'dark' ? '#e2e8f0' : '#111827' }} className="text-lg font-bold group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-2">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-2">
                         {item.title}
                       </h3>
-                      <p style={{ color: theme === 'dark' ? '#94a3b8' : '#6b7280' }} className="text-sm line-clamp-2">
+                      <p className="text-sm line-clamp-2 text-slate-500 dark:text-slate-400">
                         {item.excerpt}
                       </p>
                     </motion.article>

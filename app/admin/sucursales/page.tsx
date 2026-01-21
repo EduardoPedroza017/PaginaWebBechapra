@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { Building2, RefreshCw, Plus, MapPin, Phone, Mail, Edit2, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import BranchForm from "./components/BranchForm";
@@ -202,9 +201,9 @@ export default function SucursalesPage() {
     <div className={`flex min-h-screen ${
       theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-blue-50 to-indigo-100'
     }`}>
-      <Sidebar selected="/admin/sucursales" theme={theme} />
+      
       <div className="flex-1 flex flex-col">
-        <Header theme={theme} onToggleTheme={handleToggleTheme} onLogout={handleLogout} />
+        
         <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header */}
           <div className="mb-6 md:mb-8">
@@ -553,3 +552,4 @@ export default function SucursalesPage() {
     </div>
   );
 }
+

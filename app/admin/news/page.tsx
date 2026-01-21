@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { Newspaper, RefreshCw } from "lucide-react";
 import NewsFilter, { NewsItem } from "./NewsFilter";
@@ -13,6 +12,7 @@ import NewsPreviewModal from "./NewsPreviewModal";
 import NewsEditModal from "./NewsEditModal";
 import { NewsStats } from "./NewsStats";
 import { DeleteNewsModal } from "./DeleteNewsModal";
+import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 
 
 	export default function AdminNewsPage() {
@@ -211,52 +211,49 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 		});
 
 		return (
-			<div className={`flex min-h-screen ${
+			<AdminPageShell containerClassName={`flex min-h-screen ${
 				theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-blue-50 to-indigo-100'
 			}`}>
-				<Sidebar selected="/admin/news" theme={theme} />
-				<div className="flex-1 flex flex-col">
-					<Header theme={theme} onLogout={handleLogout} onToggleTheme={handleToggleTheme} />
-					<main className="flex-1 p-4 md:p-6 lg:p-8">
-						{/* Header */}
-						<div className="mb-6 md:mb-8">
-							<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-								<div className="flex items-center gap-3">
-									<div className={`p-3 rounded-2xl ${
-										theme === "dark" ? "bg-purple-600 shadow-lg shadow-purple-500/30" : "bg-purple-600 shadow-lg shadow-purple-500/20"
-									}`}>
-										<Newspaper className="text-white" size={28} />
-									</div>
-									<div>
-										<h1 className={`text-2xl md:text-3xl font-bold ${
-											theme === "dark" ? "text-white" : "text-gray-900"
-										}`}>
-											<TranslateText text="Gestión de Noticias" />
-										</h1>
-										<p className={`text-sm ${
-											theme === "dark" ? "text-gray-400" : "text-gray-600"
-										}`}>
-											<TranslateText text="Crea, edita y elimina noticias" />
-										</p>
-									</div>
+				<main className="flex-1 p-4 md:p-6 lg:p-8">
+					{/* Header */}
+					<div className="mb-6 md:mb-8">
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+							<div className="flex items-center gap-3">
+								<div className={`p-3 rounded-2xl ${
+									theme === "dark" ? "bg-purple-600 shadow-lg shadow-purple-500/30" : "bg-purple-600 shadow-lg shadow-purple-500/20"
+								}`}>
+									<Newspaper className="text-white" size={28} />
 								</div>
-              
-								<button
-									onClick={() => fetchNews({ showRefresh: true })}
-									disabled={refreshing}
-									className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
-										theme === "dark"
-											? "bg-gray-800 hover:bg-gray-700 text-gray-300"
-											: "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
-									}`}
-									title="Refrescar"
-								>
-									<RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
-								</button>
+								<div>
+									<h1 className={`text-2xl md:text-3xl font-bold ${
+										theme === "dark" ? "text-white" : "text-gray-900"
+									}`}>
+										<TranslateText text="Gestión de Noticias" />
+									</h1>
+									<p className={`text-sm ${
+										theme === "dark" ? "text-gray-400" : "text-gray-600"
+									}`}>
+										<TranslateText text="Crea, edita y elimina noticias" />
+									</p>
+								</div>
 							</div>
+              
+							<button
+								onClick={() => fetchNews({ showRefresh: true })}
+								disabled={refreshing}
+								className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
+									theme === "dark"
+										? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+										: "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+								}`}
+								title="Refrescar"
+							>
+								<RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+							</button>
 						</div>
+					</div>
 
-						{/* Stats */}
+					{/* Stats */}
 
 			{/* Tabs: Listado | Crear | Estadísticas | Filtros */}
 			<div className="mb-6">
@@ -386,7 +383,7 @@ import { DeleteNewsModal } from "./DeleteNewsModal";
 							theme={theme}
 						/>
 					</main>
-				</div>
-			</div>
+			</AdminPageShell>
 		);
 	}
+

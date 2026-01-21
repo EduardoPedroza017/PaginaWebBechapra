@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState, useCallback } from "react";
 import SearchBar from "../servicios/components/SearchBar";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { Button } from "../components/shared/Button";
 import { TranslateText } from "@/components/TranslateText";
 import { Plus } from 'lucide-react'
@@ -206,9 +205,9 @@ export default function SubServicioAdminPage(){
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900">
-      <Sidebar selected="/admin/sub-servicio" theme="dark" />
+      
       <div className="flex-1 flex flex-col">
-        <Header theme="dark" onLogout={()=>{}} onToggleTheme={()=>{}} />
+        
         <main className="max-w-5xl mx-auto py-10 px-4">
           <div className="mb-6">
             <div className="flex items-start justify-between gap-4 mb-4">
@@ -306,3 +305,4 @@ export default function SubServicioAdminPage(){
     </div>
   )
 }
+

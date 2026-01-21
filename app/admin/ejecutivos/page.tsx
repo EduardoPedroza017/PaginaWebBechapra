@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { Plus, BarChart3, AlertCircle, TrendingUp, Users, Camera, Briefcase, CheckCircle, XCircle, FileText, Eye, Edit, Trash2, Upload } from 'lucide-react';
-import { Sidebar } from '../dashboard/Sidebar';
-import { Header } from '../dashboard/Header';
+
 import { TranslateText } from '@/components/TranslateText';
 
 // Hooks y tipos
@@ -17,6 +16,7 @@ import { EjecutivosForm } from './EjecutivosForm';
 import { EjecutivosModal } from './EjecutivosModal';
 import { EjecutivosStats } from './EjecutivosStats';
 import { EjecutivosPhotoUpload } from './EjecutivosPhotoUpload';
+import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
 
 export default function EjecutivosPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -188,13 +188,9 @@ export default function EjecutivosPage() {
   if (!mounted) return null;
 
   return (
-    <div className="flex min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
-      <Sidebar selected="ejecutivos" theme={theme} />
+    <AdminPageShell containerClassName="flex min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
 
-      <div className="flex-1 flex flex-col min-h-screen">
-        <Header onLogout={() => {}} onToggleTheme={handleToggleTheme} theme={theme} />
-
-        <main className="flex-1 p-6 md:p-8 lg:p-10 space-y-8">
+      <main className="flex-1 p-6 md:p-8 lg:p-10 space-y-8">
           {/* Header de la página */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
@@ -520,7 +516,6 @@ export default function EjecutivosPage() {
           loading={loading}
           theme={theme}
         />
-      </div>
-    </div>
+      </AdminPageShell>
   );
 }

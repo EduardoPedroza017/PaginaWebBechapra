@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { 
@@ -17,8 +17,7 @@ import {
   Network,
   AlertTriangle
 } from "lucide-react";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import useSWR from 'swr';
 import { DBCharts } from './components/DBCharts';
@@ -184,18 +183,10 @@ export default function ConfiguracionDBPage() {
         ? "bg-linear-to-br from-gray-950 via-gray-900 to-gray-950" 
         : "bg-linear-to-br from-blue-50/30 via-indigo-50/20 to-white"
     }`}>
-      <Sidebar selected="/admin/config" theme={theme} />
+      
 
       <div className="flex-1 flex flex-col">
-        <Header
-          onLogout={() => {
-            sessionStorage.removeItem("admin");
-            sessionStorage.removeItem("role");
-            window.location.href = "/admin";
-          }}
-          onToggleTheme={handleToggleTheme}
-          theme={theme}
-        />
+        
 
         <main className="flex-1 p-4 md:p-6 lg:p-8">
           {/* Header premium */}

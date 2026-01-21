@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "./Sidebar";
-import { Header } from "./Header";
+
 import { WelcomeCard } from "./WelcomeCard";
 import { TranslateText } from "@/components/TranslateText";
 import {
@@ -29,13 +28,20 @@ import { motion, AnimatePresence } from "framer-motion";
 // Auditoría
 import AuditLog from "./AuditLog";
 import AdminAuditLogSection from "./AdminAuditLogSection";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
 type TabId = "dashboard" | "actions" | "audit" | "monitoring" | "cookies";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { admin, role, authorized, loading: authLoading, logout } = useAuth();
-  const { theme, toggleTheme, themeReady } = useTheme();
+  const { theme: maybeTheme, resolvedTheme, toggleTheme, themeReady } = useTheme();
+
+  // Normalize theme to the narrow union expected by child components
+  type ThemeMode = 'light' | 'dark' | undefined;
+  const theme: ThemeMode = resolvedTheme === 'dark' ? 'dark' : resolvedTheme === 'light' ? 'light' : (maybeTheme === 'dark' ? 'dark' : maybeTheme === 'light' ? 'light' : undefined);
+  // Provide a strict fallback for components that expect non-optional theme
+  const themeStrict: 'light' | 'dark' = theme === 'dark' ? 'dark' : 'light';
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeTab, setActiveTab] = useState<TabId>("dashboard");
@@ -136,19 +142,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar selected="/admin/dashboard" theme={theme} role={role} admin={admin} />
-
       <div className="flex-1 flex flex-col">
-        <Header
-          onLogout={logout}
-          onToggleTheme={toggleTheme}
-          theme={theme}
-          role={role}
-          admin={admin}
-        />
-
-        <main className="flex-1 p-6 overflow-y-auto">
-          <WelcomeCard role={role} theme={theme} />
+        <DashboardLayout>
+          <WelcomeCard role={role} theme={themeStrict} />
 
           {/* Tabs */}
           <div className="flex gap-2 mb-6">
@@ -173,41 +169,59 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeTab === "dashboard" && (
-                <DashboardStats key={refreshKey} theme={theme} role={role} />
-              )}
-
-              {activeTab === "actions" && (
-                <QuickActions theme={theme} role={role} />
-              )}
-
-              {activeTab === "audit" && (
-                <div id="audit-log">
-                  {role === "superadmin" ? (
-                    <AdminAuditLogSection />
-                  ) : (
-                    <AuditLog theme={theme} />
+          {/* Horizontal grid: main (2/3) + right column (1/3) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  {activeTab === "dashboard" && (
+                    <DashboardStats key={refreshKey} theme={themeStrict} role={role} />
                   )}
+
+                  {activeTab === "actions" && (
+                    <QuickActions theme={themeStrict} role={role} />
+                  )}
+
+                  {activeTab === "audit" && (
+                    <div id="audit-log">
+                      {role === "superadmin" ? (
+                        <AdminAuditLogSection />
+                      ) : (
+                        <AuditLog theme={themeStrict} />
+                      )}
+                    </div>
+                  )}
+
+                  {activeTab === "monitoring" && (
+                    <DashboardStats key={refreshKey} theme={themeStrict} role={role} compact />
+                  )}
+
+                  {activeTab === "cookies" && (
+                    <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <aside className="lg:col-span-1 space-y-6">
+              {/* Quick actions and lightweight widgets live in the right column */}
+              <div className="sticky top-6">
+                <QuickActions theme={themeStrict} role={role} />
+                <div className="mt-4">
+                  <WebVitalsWidget theme={themeStrict} />
                 </div>
-              )}
-
-              {activeTab === "monitoring" && (
-                <WebVitalsWidget theme={theme} />
-              )}
-
-              {activeTab === "cookies" && (
-                <CookieConsentAdmin key={refreshKey} theme={theme} />
-              )}
-            </motion.div>
-          </AnimatePresence>
+                <div className="mt-4">
+                  <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+                </div>
+              </div>
+            </aside>
+          </div>
 
           {/* Nota */}
           <div className="mt-6 p-4 border rounded-xl flex gap-3">
@@ -217,8 +231,9 @@ export default function AdminDashboard() {
               panel.
             </p>
           </div>
-        </main>
+        </DashboardLayout>
       </div>
     </div>
   );
 }
+

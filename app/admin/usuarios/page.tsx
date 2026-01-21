@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import { TranslateText } from "@/components/TranslateText";
 import { Users, Plus, RefreshCw } from "lucide-react";
 
@@ -13,6 +12,7 @@ import UserCardList from "./UserCardList";
 import { UserFormModal } from "./UserFormModal";
 import { DeleteUserModal } from "./DeleteUserModal";
 import UserDetailsModal from "./UserDetailsModal";
+import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 
 export interface Usuario {
   email: string;
@@ -337,72 +337,63 @@ export default function UsuariosPage() {
   }
 
   return (
-    <div className={`flex min-h-screen ${
+    <AdminPageShell containerClassName={`flex min-h-screen ${
       theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
     }`}>
-      <Sidebar selected="/admin/usuarios" theme={theme} />
-      
-      <div className="flex-1 flex flex-col">
-        <Header 
-          onLogout={handleLogout} 
-          onToggleTheme={handleToggleTheme} 
-          theme={theme} 
-        />
-        
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${
-                theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
-              }`}>
-                <Users className={`w-6 h-6 ${
-                  theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                }`} />
-              </div>
-              <div>
-                <h1 className={`text-xl md:text-2xl font-bold ${
-                  theme === 'dark' ? 'text-white' : 'text-slate-900'
-                }`}>
-                  <TranslateText text="Gestión de Usuarios" />
-                </h1>
-                <p className={`text-sm ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-                }`}>
-                  <TranslateText text="Administra usuarios y permisos" />
-                </p>
-              </div>
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className={`p-3 rounded-lg ${
+              theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
+            }`}>
+              <Users className={`w-6 h-6 ${
+                theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+              }`} />
             </div>
-            
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => fetchUsers(true)} 
-                disabled={refreshing}
-                className={`p-2.5 rounded-lg transition-colors ${
-                  refreshing ? 'opacity-50' : ''
-                } ${
-                  theme === 'dark' 
-                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
-                    : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-                }`}
-              >
-                <RefreshCw className={`w-5 h-5 ${
-                  refreshing ? 'animate-spin' : ''
-                }`} />
-              </button>
-              
-              <button 
-                onClick={handleAdd} 
-                disabled={processing}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <TranslateText text="Agregar Usuario" />
-              </button>
+            <div>
+              <h1 className={`text-xl md:text-2xl font-bold ${
+                theme === 'dark' ? 'text-white' : 'text-slate-900'
+              }`}>
+                <TranslateText text="Gestión de Usuarios" />
+              </h1>
+              <p className={`text-sm ${
+                theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+              }`}>
+                <TranslateText text="Administra usuarios y permisos" />
+              </p>
             </div>
           </div>
 
-          {loading ? (
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => fetchUsers(true)} 
+              disabled={refreshing}
+              className={`p-2.5 rounded-lg transition-colors ${
+                refreshing ? 'opacity-50' : ''
+              } ${
+                theme === 'dark' 
+                  ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
+                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+              }`}
+            >
+              <RefreshCw className={`w-5 h-5 ${
+                refreshing ? 'animate-spin' : ''
+              }`} />
+            </button>
+            
+            <button 
+              onClick={handleAdd} 
+              disabled={processing}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <TranslateText text="Agregar Usuario" />
+            </button>
+          </div>
+        </div>
+
+        {loading ? (
             <div className={`rounded-lg border p-12 ${
               theme === 'dark' ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200'
             }`}>
@@ -503,7 +494,6 @@ export default function UsuariosPage() {
             theme={theme} 
           />
         </main>
-      </div>
-    </div>
+    </AdminPageShell>
   );
 }

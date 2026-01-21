@@ -1,10 +1,9 @@
-"use client";
+﻿"use client";
 
 import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TranslateText } from "@/components/TranslateText";
-import { Sidebar } from "../dashboard/Sidebar";
-import { Header } from "../dashboard/Header";
+
 import InternshipsList from "./InternshipsList";
 import InternshipsForm from "./InternshipsForm";
 import InternshipDetail from "./InternshipDetail";
@@ -563,16 +562,10 @@ const InternshipsPage = () => {
           : "bg-linear-to-br from-white via-slate-50 to-slate-100"
       }`}
     >
-      <Sidebar selected="/admin/internships" theme={theme} />
+      
 
       <div className="flex-1 flex flex-col">
-        <Header
-          theme={theme}
-          onLogout={() => console.log("Logout")}
-          onToggleTheme={() =>
-            setTheme((prev) => (prev === "light" ? "dark" : "light"))
-          }
-        />
+        
 
         <main className="flex-1 w-full max-w-400 mx-auto px-4 md:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
