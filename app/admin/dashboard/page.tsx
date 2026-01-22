@@ -116,7 +116,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash === "#audit-log") {
-      handleTabChange("audit");
+      // Use a microtask to avoid cascading renders
+      Promise.resolve().then(() => handleTabChange("audit"));
     }
   }, []);
 
@@ -142,12 +143,12 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4">
         <DashboardLayout>
           <WelcomeCard role={role} theme={themeStrict} />
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-6">
+          <div className="col-span-2 flex gap-2 mb-6">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -168,70 +169,29 @@ export default function AdminDashboard() {
               </button>
             ))}
           </div>
-
-          {/* Horizontal grid: main (2/3) + right column (1/3) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  {activeTab === "dashboard" && (
-                    <DashboardStats key={refreshKey} theme={themeStrict} role={role} />
-                  )}
-
-                  {activeTab === "actions" && (
-                    <QuickActions theme={themeStrict} role={role} />
-                  )}
-
-                  {activeTab === "audit" && (
-                    <div id="audit-log">
-                      {role === "superadmin" ? (
-                        <AdminAuditLogSection />
-                      ) : (
-                        <AuditLog theme={themeStrict} />
-                      )}
-                    </div>
-                  )}
-
-                  {activeTab === "monitoring" && (
-                    <DashboardStats key={refreshKey} theme={themeStrict} role={role} compact />
-                  )}
-
-                  {activeTab === "cookies" && (
-                    <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <aside className="lg:col-span-1 space-y-6">
-              {/* Quick actions and lightweight widgets live in the right column */}
-              <div className="sticky top-6">
-                <QuickActions theme={themeStrict} role={role} />
-                <div className="mt-4">
-                  <WebVitalsWidget theme={themeStrict} />
-                </div>
-                <div className="mt-4">
-                  <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
-                </div>
-              </div>
-            </aside>
-          </div>
-
-          {/* Nota */}
-          <div className="mt-6 p-4 border rounded-xl flex gap-3">
-            <AlertTriangle className="w-5 h-5 text-blue-500" />
-            <p className="text-sm">
-              Consejo: navega por las pestañas para acceder a cada sección del
-              panel.
-            </p>
-          </div>
         </DashboardLayout>
+      </div>
+
+      <aside className="lg:col-span-1 space-y-6">
+        {/* Quick actions and lightweight widgets live in the right column */}
+        <div className="sticky top-6">
+          <QuickActions theme={themeStrict} role={role} />
+          <div className="mt-4">
+            <WebVitalsWidget theme={themeStrict} />
+          </div>
+          <div className="mt-4">
+            <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+          </div>
+        </div>
+      </aside>
+
+      {/* Nota */}
+      <div className="mt-6 p-4 border rounded-xl flex gap-3">
+        <AlertTriangle className="w-5 h-5 text-blue-500" />
+        <p className="text-sm">
+          Consejo: navega por las pestañas para acceder a cada sección del
+          panel.
+        </p>
       </div>
     </div>
   );

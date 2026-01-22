@@ -23,15 +23,14 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 		const [deleting, setDeleting] = useState<NewsItem | null>(null);
 		const [previewing, setPreviewing] = useState<NewsItem | null>(null);
 		const [deleteLoading, setDeleteLoading] = useState(false);
-		const [loading, setLoading] = useState(true);
 		const [refreshing, setRefreshing] = useState(false);
 		const [page, setPage] = useState(1);
 		const [totalPages, setTotalPages] = useState(1);
 		const [total, setTotal] = useState(0);
 		const [search, setSearch] = useState("");
 		const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
-		const pageSize = 12;
 		const [activeTab, setActiveTab] = useState<'list' | 'create' | 'stats'>('list');
+		const [loading, setLoading] = useState(false);
 
 		useEffect(() => {
 			setMounted(true);
@@ -54,31 +53,46 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 				// Support two backend shapes:
 				// - legacy admin route: { ok: true, news: [...] }
 				// - paginated API: { items: [...], total, total_pages, page, per_page }
-				const normalize = (arr: any[]) => arr.map(it => ({
-					// Map backend fields to frontend `NewsItem` shape expectations
-					...it,
-					date: it.date || it.published_date || it.publishedDate || it.createdAt || it.date || undefined,
-					title: it.title || it.name || '',
-					subtitle: it.subtitle || '',
-					description: it.description || it.content || it.excerpt || ''
-				}));
+				const normalize = (arr: unknown[]) => arr.map((itRaw) => {
+					const it = (itRaw || {}) as Record<string, unknown>;
+					const date = typeof it.date === 'string'
+						? it.date as string
+						: typeof it.published_date === 'string'
+						? it.published_date as string
+						: typeof it.publishedDate === 'string'
+						? it.publishedDate as string
+						: typeof it.createdAt === 'string'
+						? it.createdAt as string
+						: undefined;
+					const title = (it.title ?? it.name ?? '') as string;
+					const subtitle = (it.subtitle ?? '') as string;
+					const description = (it.description ?? it.content ?? it.excerpt ?? '') as string;
+					return {
+						...it,
+						date,
+						title,
+						subtitle,
+						description,
+					} as NewsItem;
+				});
 
-				if (Array.isArray(data.news)) {
-					setNews(normalize(data.news || []));
-					setTotal((data.news && data.news.length) || 0);
+				const payload = data as Record<string, unknown>;
+				if (Array.isArray(payload.news)) {
+					setNews(normalize((payload.news as unknown[]) || []));
+					setTotal(((payload.news as unknown[])?.length) || 0);
 					setTotalPages(1);
 					setPage(1);
-				} else if (Array.isArray(data.items)) {
-					setNews(normalize(data.items || []));
-					setTotal(data.total || 0);
-					setTotalPages(data.total_pages || data.totalPages || 1);
-					setPage(data.page || 1);
+				} else if (Array.isArray(payload.items)) {
+					setNews(normalize((payload.items as unknown[]) || []));
+					setTotal((payload.total as number) || 0);
+					setTotalPages((payload.total_pages as number) || (payload.totalPages as number) || 1);
+					setPage((payload.page as number) || 1);
 				} else {
 					// Fallback: try common keys
-					setNews(normalize(data.news || data.items || []));
-					setTotal(data.total || (data.news && data.news.length) || 0);
-					setTotalPages(data.total_pages || data.totalPages || 1);
-					setPage(data.page || 1);
+					setNews(normalize((payload.news as unknown[]) || (payload.items as unknown[]) || []));
+					setTotal((payload.total as number) || (((payload.news as unknown[])?.length) || 0));
+					setTotalPages((payload.total_pages as number) || (payload.totalPages as number) || 1);
+					setPage((payload.page as number) || 1);
 				}
 			} catch (error) {
 				console.error("Error fetching news:", error);
@@ -103,7 +117,7 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 			}
 		};
 
-		const handleCreated = (newItem: NewsItem) => {
+		const handleCreated = () => {
 			fetchNews({ page: 1 });
 		};
 
@@ -111,7 +125,7 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 			setEditing(item);
 		};
 
-		const handleUpdated = (updated: NewsItem) => {
+		const handleUpdated = () => {
 			fetchNews();
 		};
 
@@ -151,18 +165,6 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 				setDeleteLoading(false);
 				setDeleting(null);
 			}
-		};
-
-		const handleLogout = () => {
-			sessionStorage.removeItem("admin");
-			sessionStorage.removeItem("role");
-			window.location.href = "/admin";
-		};
-
-		const handleToggleTheme = () => {
-			const newTheme = theme === 'dark' ? 'light' : 'dark';
-			localStorage.setItem('theme', newTheme);
-			setTheme(newTheme);
 		};
 
 		const handleToggleStatus = async (item: NewsItem) => {
@@ -210,6 +212,18 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 			return n.status !== 'active';
 		});
 
+		const tabOptions: { id: 'list' | 'create' | 'stats'; label: string }[] = [
+			{ id: 'list', label: 'Listado' },
+			{ id: 'create', label: 'Crear' },
+			{ id: 'stats', label: 'Estadísticas' }
+		];
+
+		const statusOptions: { id: 'all' | 'active' | 'inactive'; label: string }[] = [
+			{ id: 'all', label: 'Todas' },
+			{ id: 'active', label: 'Activas' },
+			{ id: 'inactive', label: 'Desactivadas' }
+		];
+
 		return (
 			<AdminPageShell containerClassName={`flex min-h-screen ${
 				theme === 'dark' ? 'bg-gray-950' : 'bg-linear-to-br from-blue-50 to-indigo-100'
@@ -217,7 +231,7 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 				<main className="flex-1 p-4 md:p-6 lg:p-8">
 					{/* Header */}
 					<div className="mb-6 md:mb-8">
-						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+						<div className="flex flex-wrap sm:flex-nowrap sm:items-center sm:justify-between gap-4">
 							<div className="flex items-center gap-3">
 								<div className={`p-3 rounded-2xl ${
 									theme === "dark" ? "bg-purple-600 shadow-lg shadow-purple-500/30" : "bg-purple-600 shadow-lg shadow-purple-500/20"
@@ -240,7 +254,7 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
               
 							<button
 								onClick={() => fetchNews({ showRefresh: true })}
-								disabled={refreshing}
+								disabled={refreshing || loading}
 								className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
 									theme === "dark"
 										? "bg-gray-800 hover:bg-gray-700 text-gray-300"
@@ -248,7 +262,7 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 								}`}
 								title="Refrescar"
 							>
-								<RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+								<RefreshCw className={`w-5 h-5 ${refreshing || loading ? 'animate-spin' : ''}`} />
 							</button>
 						</div>
 					</div>
@@ -258,14 +272,10 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 			{/* Tabs: Listado | Crear | Estadísticas | Filtros */}
 			<div className="mb-6">
 				<div className="rounded-xl border p-2 flex gap-2 bg-transparent">
-					{[
-						{ id: 'list', label: 'Listado' },
-						{ id: 'create', label: 'Crear' },
-						{ id: 'stats', label: 'Estadísticas' }
-					].map(tab => (
+					{tabOptions.map(tab => (
 						<button
 							key={tab.id}
-							onClick={() => setActiveTab(tab.id as any)}
+							onClick={() => setActiveTab(tab.id)}
 							className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === tab.id ? 'bg-blue-600 text-white' : theme === 'dark' ? 'text-gray-300 bg-gray-800/30' : 'text-gray-600 bg-white'}`}
 						>
 							{tab.label}
@@ -299,14 +309,10 @@ import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
 							{/* Status tabs: All / Active / Inactive */}
 							<div className="mt-3 sm:mt-0">
 								<div className="rounded-xl border p-1 flex gap-1 bg-transparent">
-									{[
-										{ id: 'all', label: 'Todas' },
-										{ id: 'active', label: 'Activas' },
-										{ id: 'inactive', label: 'Desactivadas' }
-									].map(tab => (
+									{statusOptions.map(tab => (
 										<button
 											key={tab.id}
-											onClick={() => setStatusFilter(tab.id as any)}
+											onClick={() => setStatusFilter(tab.id)}
 											className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${statusFilter === tab.id ? 'bg-blue-600 text-white' : theme === 'dark' ? 'text-gray-300 bg-gray-800/20' : 'text-gray-600 bg-white'}`}
 										>
 											{tab.label}

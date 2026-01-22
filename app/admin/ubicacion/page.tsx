@@ -21,7 +21,7 @@ export default function LocationAdminPage() {
   return (
     <div className="flex h-screen bg-gray-50">
       
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-hidden">
         
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto">

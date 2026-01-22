@@ -42,13 +42,13 @@ export default function AnimatedOnScroll({ children, className = "", rootMargin 
           // reduce delay on small screens for snappier UX
           const effectiveDelay = isSmallScreen ? Math.max(0, Math.floor(delay/3)) : delay;
           setTimeout(()=> {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
+             
             setVisible(true);
           }, effectiveDelay);
           if(once) observer.unobserve(node);
         } else {
           if(!once) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
+             
             setVisible(false);
           }
         }

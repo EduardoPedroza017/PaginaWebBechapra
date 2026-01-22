@@ -66,7 +66,7 @@ export function useWebVitals() {
       return;
     }
 
-    setIsSupported(true);
+    Promise.resolve().then(() => setIsSupported(true));
     cleanupObservers();
 
     // LCP (Largest Contentful Paint)
@@ -131,7 +131,7 @@ export function useWebVitals() {
     // CLS (Cumulative Layout Shift) - CORREGIDO: no acumular, usar session value
     try {
       let clsValue = 0;
-      let sessionEntries: LayoutShift[] = [];
+      const sessionEntries: LayoutShift[] = [];
 
       const observerCLS = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
@@ -169,7 +169,7 @@ export function useWebVitals() {
       if (navigationEntry) {
         // TTFB (Time to First Byte)
         const ttfb = navigationEntry.responseStart - navigationEntry.requestStart;
-        setMetrics(prev => {
+        Promise.resolve().then(() => setMetrics(prev => {
           const existing = prev.filter(m => m.name !== 'TTFB');
           return [
             ...existing,
@@ -180,7 +180,7 @@ export function useWebVitals() {
               weight: 0.1, // Peso menor para métrica secundaria
             },
           ];
-        });
+        }));
       }
     } catch (e) {
       // Ignorar si no está disponible
@@ -213,7 +213,7 @@ export function WebVitalsWidget({
   // Calcular score ponderado
   useEffect(() => {
     if (metrics.length === 0) {
-      setScore(null);
+      Promise.resolve().then(() => setScore(null));
       return;
     }
 
@@ -223,7 +223,7 @@ export function WebVitalsWidget({
     );
 
     if (mainMetrics.length === 0) {
-      setScore(null);
+      Promise.resolve().then(() => setScore(null));
       return;
     }
 
@@ -249,8 +249,11 @@ export function WebVitalsWidget({
     });
 
     const finalScore = totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
-    setScore(finalScore);
-    setLastUpdated(new Date());
+    const now = new Date();
+    Promise.resolve().then(() => {
+      setScore(finalScore);
+      setLastUpdated(now);
+    });
   }, [metrics]);
 
   const handleRefresh = () => {

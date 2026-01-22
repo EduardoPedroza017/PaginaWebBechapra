@@ -25,7 +25,7 @@ interface AdminAuditLog {
   ip?: string;
   geo?: { country?: string; city?: string };
   timestamp?: string;
-  details?: any;
+  details?: Record<string, React.ReactNode>[];
 }
 
 type SortField = 'timestamp' | 'action' | 'by';

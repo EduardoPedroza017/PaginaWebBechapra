@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? process.env.BACKEND_URL ?? '';
+
+if (!BACKEND_URL) {
+  console.warn('Warning: NEXT_PUBLIC_API_URL and BACKEND_URL are not defined. API backend proxy will return an error.');
+}
 
 async function forwardRequest(
   method: string,
@@ -68,6 +72,10 @@ export async function GET(
     const queryString = searchParams.toString();
     const fullPath = queryString ? `${pathStr}?${queryString}` : pathStr;
 
+    if (!BACKEND_URL) {
+      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+    }
+
     const response = await forwardRequest('GET', fullPath, undefined, incomingHeaders);
     const data = await response.json();
 
@@ -104,7 +112,7 @@ export async function POST(
     // Check if this is a FormData request
     const contentType = request.headers.get('content-type') || '';
     let body: any = undefined;
-    let options: RequestInit = {
+    const options: RequestInit = {
       method: 'POST',
       headers: {
         ...(cookieHeader ? { Cookie: cookieHeader } : {}),
@@ -138,6 +146,10 @@ export async function POST(
           'Content-Type': contentType,
         };
       }
+    }
+
+    if (!BACKEND_URL) {
+      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
     }
 
     const response = await fetch(`${BACKEND_URL}${pathStr}`, options);
@@ -175,7 +187,7 @@ export async function PUT(
     // Check if this is a FormData request
     const contentType = request.headers.get('content-type') || '';
     let body: any = undefined;
-    let options: RequestInit = {
+    const options: RequestInit = {
       method: 'PUT',
       headers: {
         ...(cookieHeader ? { Cookie: cookieHeader } : {}),
@@ -199,6 +211,10 @@ export async function PUT(
         'Content-Type': 'application/json',
       };
       options.body = JSON.stringify(body);
+    }
+
+    if (!BACKEND_URL) {
+      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
     }
 
     const response = await fetch(`${BACKEND_URL}${pathStr}`, options);
@@ -234,6 +250,10 @@ export async function DELETE(
     const incomingHeaders: Record<string, string> = {};
     for (const [k, v] of request.headers.entries()) {
       if (v) incomingHeaders[k] = v;
+    }
+
+    if (!BACKEND_URL) {
+      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
     }
 
     const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);

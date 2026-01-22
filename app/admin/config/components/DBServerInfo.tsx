@@ -460,10 +460,6 @@ export function DBServerInfo({ theme, loading, error, dbName, host, version, upt
               </span>
             </div>
           </div>
-          
-          <div className={theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}>
-            ID: {Date.now().toString(36).toUpperCase()}
-          </div>
         </div>
       </div>
     </div>

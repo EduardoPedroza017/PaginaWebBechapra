@@ -145,7 +145,7 @@ export default function AuditLog({ theme = 'light', compact = false }: AuditLogP
     const now = new Date();
     const cutoffDate = new Date(now.getTime() - filterDays * 24 * 60 * 60 * 1000);
     
-    let result = logs.filter(log => {
+    const result = logs.filter(log => {
       const logDate = log.timestamp ? new Date(log.timestamp) : now;
       const inDateRange = logDate >= cutoffDate;
       

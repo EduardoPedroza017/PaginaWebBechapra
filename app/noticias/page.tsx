@@ -38,6 +38,7 @@ export default function NoticiasPage() {
         return res.json();
       })
       .then((data) => {
+        console.debug('noticias raw response:', data);
         const items = Array.isArray(data) ? data : (Array.isArray((data as any).news) ? (data as any).news : []);
         const sorted = items.sort(
           (a: NewsItem, b: NewsItem) =>

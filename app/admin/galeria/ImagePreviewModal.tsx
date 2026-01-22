@@ -24,7 +24,7 @@ export function ImagePreviewModal({ isOpen, filename, images, theme, onClose }: 
         setCurrentIndex(index);
       }
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setZoom(1);
   }, [filename, images]);
 

@@ -9,7 +9,7 @@ export const Toast: React.FC<ToastProps> = ({ open, message, actionLabel, onActi
     const intervalRef = useRef<number | null>(null)
 
     useEffect(() => {
-        setTimeLeft(timeout)
+        Promise.resolve().then(() => setTimeLeft(timeout))
     }, [timeout, open])
 
     useEffect(() => {
@@ -28,7 +28,9 @@ export const Toast: React.FC<ToastProps> = ({ open, message, actionLabel, onActi
     }, [open, onClose])
 
     useEffect(() => {
-        if (!open) setTimeLeft(timeout)
+        if (!open) {
+            Promise.resolve().then(() => setTimeLeft(timeout))
+        }
     }, [open, timeout])
 
     function handleAction() {

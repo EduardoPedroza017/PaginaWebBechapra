@@ -41,7 +41,7 @@ export function UserFilter({ value, onChange, theme = 'light' }: UserFilterProps
     <div className={`mb-6 p-4 rounded-lg border ${
       isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
     }`}>
-      <div className="flex flex-col md:flex-row gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Selector de campo */}
         <div className={`flex rounded-lg p-1 ${
           isDark ? 'bg-slate-900' : 'bg-slate-100'

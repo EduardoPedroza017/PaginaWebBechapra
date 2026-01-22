@@ -72,7 +72,7 @@ export default function UserCardList({
           return (
             <div
               key={user.email}
-              className={`rounded-lg border p-4 flex flex-col gap-3 transition-colors ${
+              className={`rounded-lg border p-4 grid grid-cols-1 gap-3 transition-colors ${
                 isBlocked ? 'opacity-70' : ''
               } ${
                 isDark 
@@ -90,23 +90,11 @@ export default function UserCardList({
                       isDark ? 'text-blue-400' : 'text-blue-600'
                     }`} />
                   </div>
-                  <div className="min-w-0">
-                    <div className={`font-medium truncate max-w-[180px] ${
-                      isDark ? 'text-white' : 'text-slate-900'
-                    }`}>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {user.email}
-                    </div>
+                    </p>
                   </div>
-                </div>
-                
-                {/* Status Badge */}
-                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                  isBlocked
-                    ? isDark ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-700'
-                    : isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
-                }`}>
-                  {isBlocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-                  <span>{isBlocked ? 'Bloqueado' : 'Activo'}</span>
                 </div>
               </div>
 

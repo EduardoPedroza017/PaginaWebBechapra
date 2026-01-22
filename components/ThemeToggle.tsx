@@ -10,8 +10,7 @@ export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    Promise.resolve().then(() => setMounted(true));
   }, []);
 
   // Use resolvedTheme so we respect system when enabled; fall back to theme

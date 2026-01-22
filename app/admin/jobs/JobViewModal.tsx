@@ -28,7 +28,7 @@ export default function JobViewModal({ isOpen, onClose, job }: Props) {
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-3xl">
       <div className="flex flex-col md:flex-row gap-6">
         {job.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
+           
           <div className="w-full md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden shadow-inner">
             <img src={job.image_url} alt={job.title} className="w-full h-full object-cover" />
           </div>

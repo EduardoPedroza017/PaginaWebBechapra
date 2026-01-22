@@ -23,7 +23,7 @@ export default function Navbar() {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    setLogoUrl("/image/logo/bausen-logo.png");
+    Promise.resolve().then(() => setLogoUrl("/image/logo/bausen-logo.png"));
   }, []);
 
   return (

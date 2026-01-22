@@ -18,8 +18,8 @@ import { TranslateText } from "@/components/TranslateText";
 import Link from "next/link";
 
 interface QuickActionsProps {
-  theme: 'light' | 'dark';
-  role: string;
+  theme?: 'light' | 'dark';
+  role?: string;
 }
 
 interface ActionItem {
@@ -33,7 +33,7 @@ interface ActionItem {
   requiresSuperAdmin?: boolean;
 }
 
-export default function QuickActions({ theme, role }: QuickActionsProps) {
+export default function QuickActions({ theme = 'light', role = '' }: QuickActionsProps) {
   const isDark = theme === 'dark';
 
   const baseActions: ActionItem[] = [

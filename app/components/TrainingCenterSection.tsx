@@ -7,6 +7,12 @@ import { trainingFeatures } from "./data/homeData";
 import { TranslateText } from "@/components/TranslateText";
 import Link from "next/link";
 
+const imageMap: Record<string, string> = {
+  eventos: "/image/traniing/evento.jfif",
+  webinars: "/image/traniing/escuela.jfif",
+  becarios: "/image/traniing/escuela.jfif",
+};
+
 const iconMap = {
   users: Users,
   video: Video,
@@ -63,8 +69,11 @@ export default function TrainingCenterSection() {
           onMouseLeave={startAutoplay}
         >
           <div className="grid lg:grid-cols-2">
-            {/* Left: Image/Visual */}
-            <div className="relative min-h-[300px] lg:min-h-[500px] bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden">
+            {/* Left: Image/Visual (clickable card) */}
+            <Link
+              href="http://localhost:3000/training-center"
+              className="relative min-h-[300px] lg:min-h-[500px] bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden block"
+            >
               {/* <div className="absolute inset-0 bg-[url('/image/pattern.svg')] opacity-10" /> */}
 
               <AnimatePresence mode="wait">
@@ -74,7 +83,7 @@ export default function TrainingCenterSection() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.5 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-8"
+                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 z-10"
                 >
                   <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6">
                     <ActiveIcon className="w-12 h-12" />
@@ -84,9 +93,8 @@ export default function TrainingCenterSection() {
                   </h3>
                 </motion.div>
               </AnimatePresence>
-
               {/* Progress bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-20">
                 <motion.div
                   key={active}
                   className="h-full bg-white"
@@ -95,7 +103,14 @@ export default function TrainingCenterSection() {
                   transition={{ duration: 5, ease: "linear" }}
                 />
               </div>
-            </div>
+
+              {/* Background image */}
+              <img
+                src={imageMap[trainingFeatures[active].id] || "/image/traniing/evento.jfif"}
+                alt={trainingFeatures[active].label}
+                className="absolute inset-0 w-full h-full object-cover z-0"
+              />
+            </Link>
 
             {/* Right: Content */}
             <div className="p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-800/80">

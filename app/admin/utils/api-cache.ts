@@ -282,7 +282,7 @@ export async function cachedFetch<T>(
   }
 
   // Verificar si hay request en vuelo (deduplicación)
-  let inFlight = apiRequestCache.getInFlight<T>(method, url);
+  const inFlight = apiRequestCache.getInFlight<T>(method, url);
   if (inFlight) {
     console.log(`[Cache] Deduplicating request: ${url}`);
     return inFlight.promise;

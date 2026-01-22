@@ -15,27 +15,26 @@ export function TranslateText({ text, asOption = false }: TranslateTextProps) {
 
   useEffect(() => {
     if (lang === 'es') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTranslated(text);
+      Promise.resolve().then(() => setTranslated(text));
       return;
     }
 
     // Añadir pequeño delay aleatorio para evitar llamadas simultáneas
     const delay = Math.random() * 300;
     const timeoutId = setTimeout(() => {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setLoading(true);
       translateText(text, lang)
         .then((value) => {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
+           
           setTranslated(value);
         })
         .catch(() => {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
+           
           setTranslated(text);
         })
         .finally(() => {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
+           
           setLoading(false);
         });
     }, delay);

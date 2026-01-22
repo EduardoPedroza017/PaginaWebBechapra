@@ -66,10 +66,12 @@ export default function Home() {
         </AnimatedSection>
       </Section>
 
-      {/* Awards - Blue Background */}
+      {/* Awards - Blue Background (comentado temporalmente) */}
+      {/*
       <Section variant="blue">
         <AwardsSection />
       </Section>
+      */}
 
       {/* Contact Section */}
       <Section id="contacto">

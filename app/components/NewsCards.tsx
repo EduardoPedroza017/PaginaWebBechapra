@@ -12,6 +12,8 @@ interface NewsItem {
   description: string;
   date: string;
   image_url?: string;
+  status?: string;
+  active?: boolean;
 }
 
 const NewsSkeleton = () => {
@@ -47,9 +49,38 @@ export default function NewsCards() {
       try {
         const response = await fetch('/api/news');
         const data = await response.json();
+        console.debug('news raw response:', data);
         // API may return { news: [...], total, page } or a raw array; normalize it
-        const items = Array.isArray(data) ? data : (Array.isArray(data.news) ? data.news : []);
-        setNews(items.slice(0, 3));
+        const items: NewsItem[] = Array.isArray(data)
+          ? (data as NewsItem[])
+          : (Array.isArray(data.news) ? (data.news as NewsItem[]) : []);
+
+        // Filter only active/published news and sort by date desc, then take first 3
+        const activeItems = items.filter((it: NewsItem) => {
+          // support backend using `status: 'active'` or boolean `active: true`
+          if (typeof it.status === 'string') return it.status === 'active';
+          if (typeof it.active === 'boolean') return it.active === true;
+          // fallback: include if no status/active field
+          return true;
+        });
+
+        type RawNews = Record<string, unknown>;
+
+        const getDateStr = (it: NewsItem | RawNews) => {
+          if (typeof (it as NewsItem).date === 'string' && (it as NewsItem).date) return (it as NewsItem).date;
+          const raw = it as RawNews;
+          if (typeof raw.published_date === 'string') return raw.published_date as string;
+          if (typeof raw.publishedAt === 'string') return raw.publishedAt as string;
+          if (typeof raw.createdAt === 'string') return raw.createdAt as string;
+          return '';
+        };
+
+        const sorted = activeItems.sort((a: NewsItem, b: NewsItem) => {
+          const da = getDateStr(a);
+          const db = getDateStr(b);
+          return new Date(db).getTime() - new Date(da).getTime();
+        });
+        setNews(sorted.slice(0, 3));
       } catch (error) {
         console.error('Error fetching news:', error);
       } finally {

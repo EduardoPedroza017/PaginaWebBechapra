@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 import NavbarConditional from "@/components/NavbarConditional";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
+import ScrollRestorer from "@/components/ScrollRestorer";
 
 // ============================================================================
 // FONT CONFIGURATION
@@ -120,6 +121,9 @@ export default function RootLayout({
             >
               {children}
             </main>
+
+            {/* Persist & restore scroll per-path */}
+            <ScrollRestorer />
             
             {/* Analytics */}
             <Analytics />

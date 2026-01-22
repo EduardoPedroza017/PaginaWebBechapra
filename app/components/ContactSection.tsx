@@ -277,9 +277,9 @@ export default function ContactSection() {
                           </p>
                         </div>
                       ) : error ? (
-                        <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                          <p className="text-red-700 dark:text-red-400">
-                            <TranslateText text={error} />
+                        <div className="p-4 rounded-lg bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700">
+                          <p className="text-slate-800 dark:text-slate-200">
+                            <TranslateText text="Aún no hay sucursales activas. Estamos trabajando para agregarlas pronto." />
                           </p>
                           <button
                             onClick={fetchBranches}

@@ -24,18 +24,7 @@ import { DBCharts } from './components/DBCharts';
 import { DBMetricCards } from './components/DBMetricCards';
 import { DBServerInfo } from './components/DBServerInfo';
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+// Chart.js removed during Tremor migration; keep Tremor-only charts in this page.
 
 // Fetcher para SWR
 const fetcher = (url: string) =>
@@ -685,7 +674,7 @@ export default function ConfiguracionDBPage() {
                               const pages = [];
                               const maxVisiblePages = 5;
                               let startPage = Math.max(1, collectionsPage - Math.floor(maxVisiblePages / 2));
-                              let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                              const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
                               
                               if (endPage - startPage + 1 < maxVisiblePages) {
                                 startPage = Math.max(1, endPage - maxVisiblePages + 1);

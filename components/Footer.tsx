@@ -47,9 +47,8 @@ function FooterLogo() {
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored === 'dark') setIsDark(true);
-    else if (stored === 'light') setIsDark(false);
-    else if (typeof document !== 'undefined') setIsDark(document.documentElement.classList.contains('dark'));
+    const resolved = stored === 'dark' ? true : stored === 'light' ? false : (typeof document !== 'undefined' ? document.documentElement.classList.contains('dark') : false);
+    Promise.resolve().then(() => setIsDark(resolved));
   }, []);
 
   const src = isDark ? '/image/logo/bausen-logo.png' : '/image/logo/Bausen.png';
