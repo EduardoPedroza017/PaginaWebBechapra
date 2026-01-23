@@ -16,6 +16,19 @@ interface NewsItem {
   active?: boolean;
 }
 
+// Create URL-friendly slugs from titles
+const slugify = (s: string) =>
+  s
+    ? s
+        .toString()
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036F]/g, "")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+    : "";
+
 const NewsSkeleton = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -43,17 +56,42 @@ const NewsSkeleton = () => {
 export default function NewsCards() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch('/api/news');
+        setError(null);
+        const apiBase = process.env.NEXT_PUBLIC_API_URL ? String(process.env.NEXT_PUBLIC_API_URL).replace(/\/$/, '') : '';
+        const endpoint = apiBase ? `${apiBase}/api/news` : '/api/news';
+        console.debug('Fetching news from endpoint:', endpoint);
+        const response = await fetch(endpoint);
+        console.debug('news fetch status:', response.status, response.statusText);
+        if (!response.ok) {
+          const text = await response.text().catch(() => '');
+          throw new Error(`HTTP ${response.status} ${response.statusText} ${text}`);
+        }
         const data = await response.json();
         console.debug('news raw response:', data);
-        // API may return { news: [...], total, page } or a raw array; normalize it
-        const items: NewsItem[] = Array.isArray(data)
-          ? (data as NewsItem[])
-          : (Array.isArray(data.news) ? (data.news as NewsItem[]) : []);
+
+        // API may return: raw array OR { news: [...] } OR { items: [...] } OR paginated result
+        const extractItems = (d: unknown): NewsItem[] => {
+          if (Array.isArray(d)) return d as NewsItem[];
+          if (d && typeof d === 'object') {
+            const obj = d as Record<string, unknown>;
+            if (Array.isArray(obj.news)) return obj.news as NewsItem[];
+            if (Array.isArray(obj.items)) return obj.items as NewsItem[];
+            // Some paginated responses may place results under other keys
+            // attempt common keys without using `any`
+            const possible = ['results', 'data', 'rows'];
+            for (const key of possible) {
+              if (Array.isArray(obj[key])) return obj[key] as NewsItem[];
+            }
+          }
+          return [];
+        };
+
+        const items: NewsItem[] = extractItems(data);
 
         // Filter only active/published news and sort by date desc, then take first 3
         const activeItems = items.filter((it: NewsItem) => {
@@ -81,8 +119,9 @@ export default function NewsCards() {
           return new Date(db).getTime() - new Date(da).getTime();
         });
         setNews(sorted.slice(0, 3));
-      } catch (error) {
-        console.error('Error fetching news:', error);
+      } catch (err) {
+        console.error('Error fetching news:', err);
+        setError(String((err as Error).message || 'Error fetching news'));
       } finally {
         setLoading(false);
       }
@@ -121,6 +160,10 @@ export default function NewsCards() {
 
         {loading ? (
           <NewsSkeleton />
+        ) : error ? (
+          <div className="text-center text-red-400">{error}</div>
+        ) : news.length === 0 ? (
+          <div className="text-center text-slate-400">No hay noticias disponibles.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {news.map((item, index) => (
@@ -138,7 +181,6 @@ export default function NewsCards() {
                       <OptimizedImage
                         src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
                         alt={item.title}
-                        fill
                         className="object-cover group-hover:scale-110 transition-transform duration-300"
                         priority={index === 0}
                       />
@@ -155,7 +197,7 @@ export default function NewsCards() {
                       {item.description}
                     </p>
                     <Link
-                      href="/noticias"
+                      href={`/noticias/${slugify(item.title)}`}
                       className="inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:gap-2 transition-all"
                     >
                       <TranslateText text="Leer más" />

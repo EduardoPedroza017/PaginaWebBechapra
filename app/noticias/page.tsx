@@ -13,6 +13,7 @@ interface NewsItem {
   subtitle: string;
   description: string;
   date: string;
+  published_date?: string;
   image_url?: string;
   category?: string;
   tags?: string[];
@@ -21,34 +22,60 @@ interface NewsItem {
   author?: string;
 }
 
+// Create URL-friendly slugs from titles
+const slugify = (s: string) =>
+  s
+    ? s
+        .toString()
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036F]/g, "")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+    : "";
+
 export default function NoticiasPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Preferir proxy interno `/api/backend/news` cuando la app Next.js está en ejecución.
-    // Si `NEXT_PUBLIC_API_URL` está definido (entorno con backend accesible), se puede usar.
-    const externalApi = process.env.NEXT_PUBLIC_API_URL;
+    const externalApi = process.env.NEXT_PUBLIC_API_URL ? String(process.env.NEXT_PUBLIC_API_URL).replace(/\/$/, '') : '';
     const url = externalApi ? `${externalApi}/api/news` : '/api/backend/news';
 
+    const extractItems = (d: unknown): NewsItem[] => {
+      if (Array.isArray(d)) return d as NewsItem[];
+      if (d && typeof d === 'object') {
+        const obj = d as Record<string, unknown>;
+        if (Array.isArray(obj.news)) return obj.news as NewsItem[];
+        if (Array.isArray(obj.items)) return obj.items as NewsItem[];
+        const possible = ['results', 'data', 'rows'];
+        for (const key of possible) {
+          if (Array.isArray(obj[key])) return obj[key] as NewsItem[];
+        }
+      }
+      return [];
+    };
+
+    console.debug('Fetching noticias from:', url);
     fetch(url)
       .then((res) => {
+        console.debug('noticias fetch status:', res.status, res.statusText);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data) => {
         console.debug('noticias raw response:', data);
-        const items = Array.isArray(data) ? data : (Array.isArray((data as any).news) ? (data as any).news : []);
+        const items = extractItems(data);
         const sorted = items.sort(
-          (a: NewsItem, b: NewsItem) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a: NewsItem, b: NewsItem) => new Date((b.date || b.published_date || '')).getTime() - new Date((a.date || a.published_date || '')).getTime()
         );
         setNews(sorted);
       })
       .catch((err) => {
-        console.error("Error fetching news:", err);
-        setError("No se pudieron cargar las noticias");
+        console.error('Error fetching news:', err);
+        setError('No se pudieron cargar las noticias');
         setNews([]);
       })
       .finally(() => setLoading(false));
@@ -242,38 +269,59 @@ export default function NoticiasPage() {
             </p>
           </motion.div>
 
-          {/* Categories Grid */}
+          {/* Categories Grid (computed from real data) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {[
-              {
-                icon: Newspaper,
-                title: "Blog Corporativo",
-                count: "42 artículos",
-                color: "blue" as const,
-                description: "Tendencias, insights y mejores prácticas",
-              },
-              {
-                icon: Calendar,
-                title: "Eventos",
-                count: "18 eventos",
-                color: "indigo" as const,
-                description: "Webinars, conferencias y capacitaciones",
-              },
-              {
-                icon: TrendingUp,
-                title: "Cambios Legislativos",
-                count: "27 actualizaciones",
-                color: "cyan" as const,
-                description: "Reformas fiscales, laborales y normativas",
-              },
-            ].map((category, i) => (
-              <CategoryCard key={i} category={category} index={i} />
-            ))}
+            {(() => {
+              type CategoryDisplay = {
+                icon: React.ComponentType<{ className?: string }>;
+                title: string;
+                count: string;
+                color: 'blue' | 'indigo' | 'cyan';
+                description: string;
+              };
+
+              const meta: Record<string, { icon: React.ComponentType<{ className?: string }>; color: 'blue' | 'indigo' | 'cyan'; description: string }> = {
+                general: { icon: Newspaper, color: 'blue', description: 'Noticias corporativas y artículos de interés' },
+                eventos: { icon: Calendar, color: 'indigo', description: 'Webinars, conferencias y capacitaciones' },
+                'cambios-legislativos': { icon: TrendingUp, color: 'cyan', description: 'Actualizaciones normativas y legales' }
+              };
+
+              const categoriesArray: CategoryDisplay[] = Object.entries(
+                news.reduce<Record<string, number>>((acc, it) => {
+                  const key = (it.category || it.subtitle || 'general').toString().toLowerCase();
+                  acc[key] = (acc[key] || 0) + 1;
+                  return acc;
+                }, {})
+              ).map(([key, count]) => {
+                const mapped = meta[key] || meta['general'];
+                // Friendly title
+                const title = key.replace(/[-_]/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase());
+                return {
+                  icon: mapped.icon,
+                  title,
+                  count: `${count} artículo${count !== 1 ? 's' : ''}`,
+                  color: mapped.color,
+                  description: mapped.description
+                };
+              });
+
+              if (categoriesArray.length === 0) {
+                return (
+                  <CategoryCard
+                    key="none"
+                    category={{ icon: Newspaper, title: 'Sin categoría', count: '0 artículos', color: 'blue', description: 'Aún no hay contenido' }}
+                    index={0}
+                  />
+                );
+              }
+
+              return categoriesArray.map((category, i) => <CategoryCard key={i} category={category} index={i} />);
+            })()}
           </motion.div>
         </div>
       </section>
@@ -288,7 +336,7 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
   const isFeatured = item.featured || index < 2;
 
   return (
-    <Link href={`/noticias/${encodeURIComponent(item.title)}`}>
+    <Link href={`/noticias/${slugify(item.title)}`}>
       <motion.article
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

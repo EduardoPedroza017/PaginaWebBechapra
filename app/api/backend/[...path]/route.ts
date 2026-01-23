@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? process.env.BACKEND_URL ?? '';
+// Prefer explicit public env var; fall back to server-side BACKEND_URL
+// If none configured and we're in development, default to localhost backend for convenience
+const envPublic = process.env.NEXT_PUBLIC_API_URL ?? '';
+const envServer = process.env.BACKEND_URL ?? '';
+let BACKEND_URL = envPublic || envServer || '';
+if (!BACKEND_URL && process.env.NODE_ENV !== 'production') {
+  BACKEND_URL = 'http://localhost:5000';
+  console.info(`Proxy: no BACKEND_URL configured — falling back to ${BACKEND_URL} for local development.`);
+}
 
 if (!BACKEND_URL) {
-  console.warn('Warning: NEXT_PUBLIC_API_URL and BACKEND_URL are not defined. API backend proxy will return an error.');
+  console.warn('Warning: NEXT_PUBLIC_API_URL and BACKEND_URL are not defined and not in development. API backend proxy will return an error.');
 }
 
 async function forwardRequest(
@@ -76,10 +84,20 @@ export async function GET(
       return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
     }
 
+    console.info('Proxy forwarding GET to:', `${BACKEND_URL}${fullPath}`);
     const response = await forwardRequest('GET', fullPath, undefined, incomingHeaders);
-    const data = await response.json();
 
-    return NextResponse.json(data, { status: response.status });
+    // Read text to handle both JSON and non-JSON responses (avoid throwing on invalid JSON)
+    const text = await response.text();
+    const contentType = response.headers.get('content-type') || '';
+    try {
+      const data = JSON.parse(text);
+      return NextResponse.json(data, { status: response.status });
+    } catch (e) {
+      // Return raw body inside JSON so frontend can inspect when backend returns HTML
+      console.warn('Proxy received non-JSON response for', fullPath, 'content-type:', contentType);
+      return NextResponse.json({ _raw: text, contentType }, { status: response.status });
+    }
   } catch (error) {
     console.error('Error forwarding GET request:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
