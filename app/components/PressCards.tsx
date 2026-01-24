@@ -57,12 +57,18 @@ export default function PressCards() {
           const imageStr = rawImage ? String(rawImage) : '';
           const resolvedImage = imageStr.startsWith('/uploads/') ? `${API}${imageStr}` : (imageStr || undefined);
 
+          const titleSlug = String(p['title'] || '')
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/-$/, ''); // Eliminar el guion al final si existe
+
           return {
             id: String(p['id']),
             title: String(p['title'] || ''),
             date: String(p['date'] || ''),
             excerpt: String(p['excerpt'] || p['summary'] || p['description'] || ''),
-            link: String(p['link'] || p['url'] || ''),
+            link: `/prensa/${encodeURIComponent(titleSlug)}`, // Usar el título ajustado en la URL
             image_url: resolvedImage,
           } as PressItem;
         });
