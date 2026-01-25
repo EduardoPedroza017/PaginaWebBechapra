@@ -186,20 +186,7 @@ export const sidebarItems: SidebarItem[] = [
     section: "Sistema",
     description: "Configuración BD"
   },
-  { 
-    label: "Configuración", 
-    path: "/admin/settings", 
-    icon: <Settings size={22} />,
-    section: "Sistema",
-    description: "Ajustes del sistema"
-  },
-  { 
-    label: "API", 
-    path: "/admin/api", 
-    icon: <Code size={22} />,
-    section: "Sistema",
-    description: "API & Webhooks"
-  },
+  
 ];
 
 interface SidebarProps {
@@ -307,17 +294,17 @@ export function Sidebar({
               <>
                 <div className="flex items-center gap-3">
                   <div className={`relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ${
-                    isDark ? 'bg-gray-700' : 'bg-gray-100'
-                  }`}>
-                    <NextImage
-                      src="/image/logo/bausen-logo.png"
-                      alt="Logo BAUSEN"
-                      fill
-                      sizes="40px"
-                      className="object-contain p-2"
-                      priority
-                    />
-                  </div>
+                      isDark ? 'bg-gray-700' : 'bg-gray-100'
+                    }`}>
+                      <NextImage
+                        src="/image/logo/Bausen.png"
+                        alt="Logo BAUSEN"
+                        fill
+                        sizes="40px"
+                        className="object-contain p-2"
+                        priority
+                      />
+                    </div>
                 </div>
                 
                 {/* Collapse Toggle Button */}
@@ -335,13 +322,13 @@ export function Sidebar({
               </>
             ) : (
               // Logo solo en modo minimizado
-              <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-2">
                 <div className={`relative w-10 h-10 rounded-lg overflow-hidden ${
                   isDark ? 'bg-gray-700' : 'bg-gray-100'
                 }`}>
                   <NextImage
-                    src="/image/logo/bausen-logo.png"
-                    alt="Logo Bausen"
+                    src="/image/logo/Favicon_Bausen_01.png"
+                    alt="Bausen mark"
                     fill
                     sizes="40px"
                     className="object-contain p-2"
@@ -537,10 +524,10 @@ export function Sidebar({
                 </div>
               </div>
 
-              {/* Quick Actions */}
+              {/* Quick Actions: only help — logout is centralized in header */}
               <div className="flex items-center gap-2">
                 <button
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                     isDark 
                       ? 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white' 
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
@@ -548,41 +535,22 @@ export function Sidebar({
                 >
                   <TranslateText text="Ayuda" />
                 </button>
-                <button
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                    isDark 
-                      ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50 hover:text-red-300' 
-                      : 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700'
-                  }`}
-                >
-                  <TranslateText text="Salir" />
-                </button>
               </div>
             </>
           ) : (
             // Footer minimizado
-            <div className="flex flex-col items-center gap-4">
-              <button
-                className={`p-2 rounded-lg ${
-                  isDark 
-                    ? 'hover:bg-gray-800 text-gray-400' 
-                    : 'hover:bg-gray-100 text-gray-600'
-                }`}
-                title="Ayuda"
-              >
-                <HelpCircle size={20} />
-              </button>
-              <button
-                className={`p-2 rounded-lg ${
-                  isDark 
-                    ? 'hover:bg-red-900/30 text-red-400' 
-                    : 'hover:bg-red-100 text-red-600'
-                }`}
-                title="Salir"
-              >
-                <LogOut size={20} />
-              </button>
-            </div>
+              <div className="flex flex-col items-center gap-4">
+                <button
+                  className={`p-2 rounded-lg ${
+                    isDark 
+                      ? 'hover:bg-gray-800 text-gray-400' 
+                      : 'hover:bg-gray-100 text-gray-600'
+                  }`}
+                  title="Ayuda"
+                >
+                  <HelpCircle size={20} />
+                </button>
+              </div>
           )}
         </div>
       </aside>

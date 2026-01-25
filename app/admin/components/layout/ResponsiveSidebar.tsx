@@ -20,8 +20,8 @@ export default function ResponsiveSidebar({
         <div className="flex items-center gap-3">
           <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden flex-shrink-0`}>
             <NextImage
-              src="/image/logo/bausen-logo.png"
-              alt="Logo BAUSEN"
+              src={expanded ? '/image/logo/bausen-logo.png' : '/image/logo/Favicon_Bausen_01.png'}
+              alt={expanded ? 'Logo BAUSEN' : 'Bausen mark'}
               fill
               sizes="40px"
               className="object-contain p-2"
@@ -77,7 +77,7 @@ export default function ResponsiveSidebar({
       </nav>
 
       <div className="px-3 py-4">
-        <a href="/admin/logout" className="w-full btn btn-outline block text-center">Salir</a>
+        {/* Logout is provided in the header to avoid duplicate controls; keep this area for future utilities */}
       </div>
     </aside>
   );

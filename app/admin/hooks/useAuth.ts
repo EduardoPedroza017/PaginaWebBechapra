@@ -9,7 +9,7 @@ interface UseAuthReturn {
   role: string;
   authorized: boolean;
   loading: boolean;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export function useAuth(): UseAuthReturn {
@@ -36,9 +36,19 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    sessionStorage.removeItem('admin');
-    sessionStorage.removeItem('role');
+  const logout = useCallback(async () => {
+    try {
+      await fetch('/api/backend/admin/logout', { method: 'POST', credentials: 'include' });
+    } catch (e) {
+      // ignore
+    }
+    try { sessionStorage.removeItem('admin'); } catch (e) {}
+    try { sessionStorage.removeItem('role'); } catch (e) {}
+    try { sessionStorage.removeItem('admin_token'); } catch (e) {}
+    try { sessionStorage.removeItem('user_email'); } catch (e) {}
+    try { sessionStorage.removeItem('user_name'); } catch (e) {}
+    try { localStorage.removeItem('token'); } catch (e) {}
+    try { localStorage.removeItem('user'); } catch (e) {}
     router.push('/admin');
   }, [router]);
 

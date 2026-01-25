@@ -225,9 +225,29 @@ export function Header({
 
           {/* Logout Button */}
           <button
-            onClick={() => {
-              onLogout();
+            onClick={async () => {
               setUserMenuOpen(false);
+              try {
+                if (onLogout) onLogout();
+              } catch (e) {
+                // ignore
+              }
+              // Call backend logout via proxy so server-side session is cleared
+              try {
+                const resp = await fetch('/api/backend/admin/logout', {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: { 'Content-Type': 'application/json' }
+                });
+                // Clear local client-side auth artifacts (if any)
+                try { localStorage.removeItem('token'); } catch (e) {}
+                try { localStorage.removeItem('user'); } catch (e) {}
+                // Redirect to admin landing
+                window.location.href = '/admin';
+              } catch (err) {
+                // Fallback: still redirect
+                window.location.href = '/admin';
+              }
             }}
             className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm ${logoutButtonClasses} hover:shadow-lg transition-all`}
           >
