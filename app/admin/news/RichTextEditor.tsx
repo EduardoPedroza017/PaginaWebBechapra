@@ -17,6 +17,7 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  AlertTriangle,
 } from "lucide-react";
 
 interface Props {
@@ -316,7 +317,9 @@ export default function RichTextEditor({
         </div>
         <span className={isOverLimit ? "text-red-500 font-medium" : ""}>
           Caracteres: <strong>{textLength}</strong>/{maxLength}
-          {isOverLimit && " ⚠️ Límite excedido"}
+          {isOverLimit && (
+            <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Límite excedido</span>
+          )}
         </span>
       </div>
     </div>

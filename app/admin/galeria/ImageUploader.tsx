@@ -213,24 +213,24 @@ export function ImageUploader({
   }, []);
 
   const handleFileSelect = async (files: FileList | File[]) => {
-    console.log('🚀 handleFileSelect called with:', files.length, 'files');
+    console.log('handleFileSelect called with:', files.length, 'files');
     const fileArray = Array.from(files);
     const newFiles: UploadFile[] = [];
     
     // Validar cantidad máxima
     if (fileArray.length > UPLOAD_CONFIG.MAX_BATCH_SIZE) {
-      console.log('❌ Too many files:', fileArray.length, '>', UPLOAD_CONFIG.MAX_BATCH_SIZE);
+      console.log('Too many files:', fileArray.length, '>', UPLOAD_CONFIG.MAX_BATCH_SIZE);
       onMessage('error', `Máximo ${UPLOAD_CONFIG.MAX_BATCH_SIZE} imágenes por lote`);
       return;
     }
     
     // Validar archivos
     const { valid, errors } = validateFiles(fileArray);
-    console.log('📋 Validation result:', { valid: valid.length, errors: errors.length });
+    console.log('Validation result:', { valid: valid.length, errors: errors.length });
     
     // Mostrar errores
     if (errors.length > 0) {
-      console.log('⚠️ Validation errors:', errors);
+      console.log('Validation errors:', errors);
       errors.slice(0, 3).forEach(error => onMessage('error', error));
       if (errors.length > 3) {
         onMessage('error', `Y ${errors.length - 3} errores más...`);
@@ -238,11 +238,11 @@ export function ImageUploader({
     }
     
     if (valid.length === 0) {
-      console.log('❌ No valid files to process');
+      console.log('No valid files to process');
       return;
     }
     
-    console.log('✅ Processing', valid.length, 'valid files');
+    console.log('Processing', valid.length, 'valid files');
     
     // Procesar archivos validados en paralelo con límite optimizado
     const batchSize = Math.min(10, valid.length); // Procesar hasta 10 imágenes a la vez, o todas si son menos
@@ -505,23 +505,23 @@ export function ImageUploader({
   }, [uploadFiles, updateUploadStats]);
 
   const processUploadQueue = useCallback(async () => {
-    console.log('🔄 processUploadQueue called', { isPaused, uploading: uploadingRef.current, activeUploadsSize: activeUploads.size, queueLength: uploadQueueRef.current.length });
+    console.log('processUploadQueue called', { isPaused, uploading: uploadingRef.current, activeUploadsSize: activeUploads.size, queueLength: uploadQueueRef.current.length });
     if (isPaused || !uploadingRef.current) {
-      console.log('⏸️ Queue processing paused or not uploading');
+      console.log('Queue processing paused or not uploading');
       return;
     }
     
     const availableSlots = UPLOAD_CONFIG.MAX_CONCURRENT_UPLOADS - activeUploads.size;
-    console.log(`📊 Available slots: ${availableSlots}`);
+    console.log(`Available slots: ${availableSlots}`);
     
     if (availableSlots <= 0 || uploadQueueRef.current.length === 0) {
-      console.log('⏳ No available slots or empty queue');
+      console.log('No available slots or empty queue');
       // Verificar si terminó todo
       if (activeUploads.size === 0 && uploadQueueRef.current.length === 0) {
-        console.log(`🏁 Checking completion: completed=${completedUploadsRef.current.size}, total=${uploadFiles.length}`);
+        console.log(`Checking completion: completed=${completedUploadsRef.current.size}, total=${uploadFiles.length}`);
         
         if (completedUploadsRef.current.size === uploadFilesRef.current.length) {
-          console.log('🎊 All uploads completed!');
+          console.log('All uploads completed!');
           finishUpload();
         }
       }
@@ -530,22 +530,22 @@ export function ImageUploader({
     
     // Tomar los próximos archivos disponibles
     const nextBatch = uploadQueueRef.current.slice(0, availableSlots);
-    console.log(`📦 Processing next batch:`, nextBatch);
+    console.log(`Processing next batch:`, nextBatch);
     uploadQueueRef.current = uploadQueueRef.current.slice(availableSlots);
     setUploadQueue(uploadQueueRef.current);
     
     for (const fileId of nextBatch) {
-      console.log(`▶️ Starting upload for fileId: ${fileId}`);
+      console.log(`Starting upload for fileId: ${fileId}`);
       setActiveUploads(prev => new Set([...prev, fileId]));
       await uploadSingleFile(fileId);
     }
   }, [isPaused, activeUploads.size, uploadFiles]);
 
   const uploadSingleFile = async (fileId: string, retryCount = 0): Promise<void> => {
-    console.log(`📤 Starting upload for fileId: ${fileId}, retry: ${retryCount}`);
+    console.log(`Starting upload for fileId: ${fileId}, retry: ${retryCount}`);
     const fileIndex = uploadFiles.findIndex(f => f.id === fileId);
     if (fileIndex === -1) {
-      console.log(`❌ File not found in uploadFiles: ${fileId}`);
+      console.log(`File not found in uploadFiles: ${fileId}`);
       setActiveUploads(prev => {
         const next = new Set(prev);
         next.delete(fileId);
@@ -555,10 +555,10 @@ export function ImageUploader({
     }
     
     const uploadFile = uploadFiles[fileIndex];
-    console.log(`📄 Uploading file: ${uploadFile.file.name} (${formatFileSize(uploadFile.file.size)})`);
+    console.log(`Uploading file: ${uploadFile.file.name} (${formatFileSize(uploadFile.file.size)})`);
     
     if (!uploadFile || uploadFile.status === 'success' || (isPaused && uploadFile.status !== 'uploading')) {
-      console.log(`⏭️ Skipping file ${fileId} - status: ${uploadFile?.status}, paused: ${isPaused}`);
+      console.log(`Skipping file ${fileId} - status: ${uploadFile?.status}, paused: ${isPaused}`);
       setActiveUploads(prev => {
         const next = new Set(prev);
         next.delete(fileId);
@@ -594,7 +594,7 @@ export function ImageUploader({
       formData.append("maxDimension", autoResize ? maxDimension.toString() : "0");
       formData.append("tags", JSON.stringify(uploadFile.tags));
       
-      console.log(`📋 FormData prepared for ${uploadFile.file.name}:`, {
+      console.log(`FormData prepared for ${uploadFile.file.name}:`, {
         fileName: uploadFile.file.name,
         fileSize: uploadFile.file.size,
         compression: compressionLevel,
@@ -633,9 +633,9 @@ export function ImageUploader({
       
       xhr.onload = () => {
         clearTimeout(timeoutId);
-        console.log(`✅ XHR onload for ${uploadFile.file.name}: status ${xhr.status}`);
+        console.log(`XHR onload for ${uploadFile.file.name}: status ${xhr.status}`);
         if (xhr.status >= 200 && xhr.status < 300) {
-          console.log(`🎉 Upload successful for ${uploadFile.file.name}`);
+          console.log(`Upload successful for ${uploadFile.file.name}`);
           setUploadFiles(prev => {
             const newFiles = prev.map(f => 
               f.id === fileId ? { ...f, status: 'success' as const, progress: 100 } : f
@@ -646,8 +646,8 @@ export function ImageUploader({
           completedUploadsRef.current.add(fileId);
           
           onMessage('success', `${uploadFile.file.name} subida exitosamente`);
-        } else {
-          console.error(`❌ XHR error for ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
+          } else {
+          console.error(`XHR error for ${uploadFile.file.name}: HTTP ${xhr.status} - ${xhr.statusText}`);
           setUploadFiles(prev => {
             const newFiles = prev.map(f => 
               f.id === fileId ? { 
@@ -665,7 +665,7 @@ export function ImageUploader({
       
       xhr.onerror = () => {
         clearTimeout(timeoutId);
-        console.error(`🔥 XHR network error for ${uploadFile.file.name}`);
+        console.error(`XHR network error for ${uploadFile.file.name}`);
         setUploadFiles(prev => {
           const newFiles = prev.map(f => 
             f.id === fileId ? { 
@@ -682,7 +682,7 @@ export function ImageUploader({
       
       xhr.onabort = () => {
         clearTimeout(timeoutId);
-        console.log(`🛑 XHR aborted for ${uploadFile.file.name}`);
+        console.log(`XHR aborted for ${uploadFile.file.name}`);
         setUploadFiles(prev => {
           const newFiles = prev.map(f => 
             f.id === fileId ? { ...f, status: 'paused' as const } : f
@@ -695,7 +695,7 @@ export function ImageUploader({
       console.time(`XHR ${uploadFile.file.name}`);
       xhr.send(formData);
     } catch (error) {
-      console.error(`💥 Upload failed for ${uploadFile.file.name}:`, error);
+      console.error(`Upload failed for ${uploadFile.file.name}:`, error);
       // Cancelar el abort controller si existe
       const controller = abortControllers.current.get(fileId);
       if (controller) {
@@ -704,7 +704,7 @@ export function ImageUploader({
 
       if ((error as any)?.name === 'AbortError' || (error as any)?.message === 'Upload aborted') {
         // Upload cancelado por pausa o timeout
-        console.log(`⏸️ Upload paused/aborted for ${uploadFile.file.name}`);
+        console.log(`Upload paused/aborted for ${uploadFile.file.name}`);
         setUploadFiles(prev => {
           const newFiles = prev.map(f => 
             f.id === fileId ? { ...f, status: 'paused' as const } : f
@@ -791,13 +791,13 @@ export function ImageUploader({
   };
 
   const handleUpload = async () => {
-    console.log('🚀 handleUpload called');
+    console.log('handleUpload called');
     if (uploadFiles.length === 0) {
-      console.log('❌ No files to upload');
+      console.log('No files to upload');
       return;
     }
     
-    console.log(`📤 Starting upload process for ${uploadFilesRef.current.length} files`);
+    console.log(`Starting upload process for ${uploadFilesRef.current.length} files`);
     uploadingRef.current = true;
     setUploading(true);
     setIsPaused(false);
@@ -811,7 +811,7 @@ export function ImageUploader({
       .filter(f => f.status === 'pending' || f.status === 'error')
       .map(f => f.id);
     
-    console.log(`📋 Pending files queue:`, pendingFiles);
+    console.log(`Pending files queue:`, pendingFiles);
     uploadQueueRef.current = pendingFiles;
     setUploadQueue(pendingFiles);
     setActiveUploads(new Set());

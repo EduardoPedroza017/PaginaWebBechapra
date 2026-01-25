@@ -1,12 +1,12 @@
-# 🎨 Mejoras UI/UX del Panel de Administración v2.0
+# Mejoras UI/UX del Panel de Administración v2.0
 
-## 📋 Resumen de Mejoras Implementadas
+## Resumen de Mejoras Implementadas
 
 Se ha realizado una renovación completa del sistema de diseño del panel de administración de BAUSEN, enfocándose en mejorar la experiencia de usuario, consistencia visual y modernidad.
 
 ---
 
-## ✨ Cambios Principales
+## Cambios Principales
 
 ### 1. **Sistema de Diseño Unificado** (`design-system.ts`)
 
@@ -476,6 +476,6 @@ Uso interno - BAUSEN CMS © 2026
 
 ---
 
-**¡Panel de administración completamente renovado! 🎉**
+**Panel de administración completamente renovado!**
 
 Para cualquier duda o sugerencia, consulta el código en `design-system.ts` o los componentes en `components/shared/`.

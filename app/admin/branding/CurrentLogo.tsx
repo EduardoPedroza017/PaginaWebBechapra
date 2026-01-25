@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { TranslateText } from '@/components/TranslateText';
-import { ExternalLink, Eye, Check, Edit2, X, Save, Info, Download, Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { ExternalLink, Eye, Check, Edit2, X, Save, Info, Download, Trash2, RefreshCw, AlertTriangle, Image as ImageIcon, Box, Calendar, Zap } from 'lucide-react';
 import Image from 'next/image';
 
 interface LogoMeta {
@@ -121,8 +121,8 @@ export const CurrentLogo: React.FC<CurrentLogoProps> = ({
         </div>
         
         <div className={`bg-gradient-to-r ${theme === 'dark' ? 'from-gray-800/50 to-gray-900/50 border-gray-700' : 'from-gray-50 to-blue-50/30 border-gray-300'} border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 hover:border-emerald-500/50 hover:shadow-lg`}>
-          <div className={`mx-auto w-20 h-20 rounded-2xl ${theme === 'dark' ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-gray-100 to-blue-100'} flex items-center justify-center mb-4`}>
-            <span className="text-4xl">🎨</span>
+            <div className={`mx-auto w-20 h-20 rounded-2xl ${theme === 'dark' ? 'bg-gradient-to-br from-gray-700 to-gray-800' : 'bg-gradient-to-br from-gray-100 to-blue-100'} flex items-center justify-center mb-4`}>
+            <ImageIcon className="w-10 h-10 text-gray-400" />
           </div>
           <p className={`text-lg font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
             <TranslateText text="No hay logo activo" />
@@ -234,17 +234,17 @@ export const CurrentLogo: React.FC<CurrentLogoProps> = ({
                 <div className="flex flex-wrap gap-2">
                   {meta.size && (
                     <span className={`px-2 py-1 rounded text-xs font-medium ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                      📦 {formatFileSize(meta.size)}
+                      <Box className="inline-block w-3 h-3 mr-1" /> {formatFileSize(meta.size)}
                     </span>
                   )}
                   {meta.upload_date && (
                     <span className={`px-2 py-1 rounded text-xs font-medium ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                      📅 {formatDate(meta.upload_date)}
+                      <Calendar className="inline-block w-3 h-3 mr-1" /> {formatDate(meta.upload_date)}
                     </span>
                   )}
                   {meta.width && meta.height && (
                     <span className={`px-2 py-1 rounded text-xs font-medium ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                      ⚡ {meta.width}×{meta.height}px
+                      <Zap className="inline-block w-3 h-3 mr-1" /> {meta.width}×{meta.height}px
                     </span>
                   )}
                 </div>

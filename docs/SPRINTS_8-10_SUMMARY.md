@@ -1,35 +1,35 @@
-# SPRINTS 8-10: SEGURIDAD, OPTIMIZACIÓN Y ANÁLISIS DETALLADO 🎯
+# SPRINTS 8-10: SEGURIDAD, OPTIMIZACIÓN Y ANÁLISIS DETALLADO
 
-## 📊 RESUMEN EJECUTIVO
+## RESUMEN EJECUTIVO
 
-**Estado General**: ✅ **EXITOSO** (Sprints 8-9 completados, Sprint 10 parcial)
+**Estado General**: EXITOSO (Sprints 8-9 completados, Sprint 10 parcial)
 
 ### Logros Principales
 
 | Sprint | Objetivo | Estado | Resultado |
 |--------|----------|--------|-----------|
-| **Sprint 8** | Seguridad + Variables de Entorno | ✅ Completado | Env vars implementadas, 47 archivos migrados |
-| **Sprint 9** | Optimización de Performance | ✅ Completado | ISR configurado, lazy loading aplicado |
-| **Sprint 10** | Análisis Detallado + Avanzadas | ⚠️ Parcial | webpack-bundle-analyzer instalado, incompatibilidad Turbopack |
+| **Sprint 8** | Seguridad + Variables de Entorno | Completado | Env vars implementadas, 47 archivos migrados |
+| **Sprint 9** | Optimización de Performance | Completado | ISR configurado, lazy loading aplicado |
+| **Sprint 10** | Análisis Detallado + Avanzadas | Parcial | webpack-bundle-analyzer instalado, incompatibilidad Turbopack |
 
 ---
 
-## 🔐 SPRINT 8: SEGURIDAD Y VARIABLES DE ENTORNO
+## SPRINT 8: SEGURIDAD Y VARIABLES DE ENTORNO
 
 ### Objetivos Alcanzados
 
-✅ **Sistema de configuración centralizado**
+ - **Sistema de configuración centralizado**
 - `lib/config.ts` (261 líneas): Validación de env vars, logging
 - `lib/api-client.ts` (268 líneas): Cliente HTTP centralizado
 - `.env.example`: Plantilla de variables
 - `.env.local`: Configuración local
 
-✅ **Migración de URLs hardcodeadas**
+ - **Migración de URLs hardcodeadas**
 - 330+ archivos escaneados
 - 47 archivos modificados
 - 73+ URLs migradas de hardcoded a `config.api.url`
 
-✅ **Optimización de next.config.ts**
+ - **Optimización de next.config.ts**
 - Headers de seguridad
 - Compresión GZIP
 - Optimización de imágenes (AVIF, WebP)
@@ -38,17 +38,17 @@
 ### Métricas
 
 ```
-📊 Cobertura de variables:
-├── NEXT_PUBLIC_API_URL     ✅ Centralizado
-├── Dominios remotos        ✅ Dinámicos
-├── Analytics IDs           ✅ Configurados
-└── Feature flags           ✅ Implementados
+Cobertura de variables:
+├── NEXT_PUBLIC_API_URL     Centralizado
+├── Dominios remotos        Dinámicos
+├── Analytics IDs           Configurados
+└── Feature flags           Implementados
 
-🔒 Seguridad:
-├── No más URLs hardcodeadas ✅
-├── Env vars validadas      ✅
-├── Logs condicionales      ✅
-└── Error handling mejorado ✅
+Seguridad:
+├── No más URLs hardcodeadas
+├── Env vars validadas
+├── Logs condicionales
+└── Error handling mejorado
 ```
 
 ### Archivos Modificados
@@ -65,11 +65,11 @@ Sprint 8 Changes:
 
 ---
 
-## ⚡ SPRINT 9: OPTIMIZACIÓN Y PERFORMANCE
+## SPRINT 9: OPTIMIZACIÓN Y PERFORMANCE
 
 ### Fase 1: Infraestructura (Completado)
 
-✅ **Lazy loading utilities**
+ - **Lazy loading utilities**
 ```typescript
 lib/lazy-components.tsx (77 líneas)
 ├── createDynamicComponent<P>()  // Factory pattern
@@ -77,7 +77,7 @@ lib/lazy-components.tsx (77 líneas)
 └── LoadingFallback component      // UI mientras carga
 ```
 
-✅ **Static generation configs**
+ - **Static generation configs**
 ```typescript
 lib/static-generation.ts (194 líneas)
 ├── staticPageConfig               // revalidate: false
@@ -86,7 +86,7 @@ lib/static-generation.ts (194 líneas)
 └── dynamicRouteConfig()           // Factory
 ```
 
-✅ **Image optimization**
+ - **Image optimization**
 ```typescript
 lib/image-optimization.ts (85 líneas)
 ├── heroImageProps, cardImageProps, thumbnailProps
@@ -96,7 +96,7 @@ lib/image-optimization.ts (85 líneas)
 └── calculateImageHeight()         // Utils
 ```
 
-✅ **Bundle analysis scripts**
+ - **Bundle analysis scripts**
 ```
 scripts/analyze-bundle.js         // Análisis de .next
 scripts/cleanup-console-logs.js   // Limpieza de logs
@@ -104,13 +104,13 @@ scripts/cleanup-console-logs.js   // Limpieza de logs
 
 ### Fase 2: Aplicación (Completado)
 
-✅ **ISR en rutas API**
+ - **ISR en rutas API**
 ```typescript
 app/api/news/route.ts      → revalidate: 3600  (1 hora)
 app/api/press/route.ts     → revalidate: 3600  (1 hora)
 ```
 
-✅ **Lazy loading en homepage**
+ - **Lazy loading en homepage**
 ```typescript
 app/page.tsx:
 ├── PressCards            → dynamic()
@@ -124,17 +124,17 @@ app/page.tsx:
 ### Resultados de Build
 
 ```
-📦 Bundle Size:
+Bundle Size:
 ├── Total .next          34.77 MB
 ├── .next/server         25.59 MB  (73%)
 └── .next/static          4.73 MB  (14%)
 
-📊 Top 3 Chunks:
-1. 98bf57d9283bdd1a.js   948.49 KB ⚠️ (Muy grande)
+Top 3 Chunks:
+1. 98bf57d9283bdd1a.js   948.49 KB (Muy grande)
 2. 5c66db6e17be0744.js   405.69 KB
 3. 6895b37289857edd.js   197.34 KB
 
-⏱️ Build Times:
+Build Times:
 ├── Compilation          18.0s
 ├── TypeScript check     29.6s
 ├── Page generation     1280.9ms
@@ -144,16 +144,16 @@ app/page.tsx:
 ### Optimizaciones Aplicadas
 
 ```
-✅ ISR implementado en APIs críticas
-✅ 6 componentes lazy-loaded en home
-✅ 58 páginas pre-renderizadas (SSG)
-✅ Dynamic routes on-demand
-✅ Static generation configurado
+ - ISR implementado en APIs críticas
+ - 6 componentes lazy-loaded en home
+ - 58 páginas pre-renderizadas (SSG)
+ - Dynamic routes on-demand
+ - Static generation configurado
 ```
 
 ---
 
-## 🔬 SPRINT 10: ANÁLISIS DETALLADO
+## SPRINT 10: ANÁLISIS DETALLADO
 
 ### Configuración
 
@@ -179,13 +179,13 @@ export default withBundleAnalyzer(nextConfig);
 
 ### Hallazgos
 
-⚠️ **Incompatibilidad Turbopack**
-- Webpack Bundle Analyzer NO es compatible con Turbopack
-- Next.js 16 usa Turbopack por defecto
-- Soluciones:
-  1. `next build --webpack` para usar webpack
-  2. `next experimental-analyze` para Turbopack analyzer
-  3. Usar nuestro script personalizado `analyze-bundle.js`
+Incompatibilidad Turbopack
+ - Webpack Bundle Analyzer NO es compatible con Turbopack
+ - Next.js 16 usa Turbopack por defecto
+ - Soluciones:
+   1. `next build --webpack` para usar webpack
+   2. `next experimental-analyze` para Turbopack analyzer
+   3. Usar nuestro script personalizado `analyze-bundle.js`
 
 ⚠️ **Problemas de Dependencias**
 - Error de tipos en Tiptap (version conflicts)
@@ -210,7 +210,7 @@ export default withBundleAnalyzer(nextConfig);
 
 ---
 
-## 📈 COMPARATIVA ANTES/DESPUÉS
+## COMPARATIVA ANTES/DESPUÉS
 
 ### Seguridad (Sprint 8)
 
@@ -241,23 +241,23 @@ export default withBundleAnalyzer(nextConfig);
 
 ---
 
-## 🏗️ ARQUITECTURA ACTUAL
+## ARQUITECTURA ACTUAL
 
 ```
 Frontend (Next.js 16.1.0-canary.32)
-├── 📂 lib/
-│   ├── config.ts                 ✅ Env vars + logging
-│   ├── api-client.ts             ✅ HTTP client centralizado
-│   ├── lazy-components.tsx       ✅ Dynamic imports
-│   ├── static-generation.ts      ✅ SSG/ISR patterns
-│   └── image-optimization.ts     ✅ Image presets
-├── 📂 app/
-│   ├── page.tsx                  ✅ Lazy-loaded components
-│   ├── api/news/route.ts         ✅ ISR: 3600s
-│   ├── api/press/route.ts        ✅ ISR: 3600s
-│   └── [pages]/                  ✅ 58 pages (SSG)
-├── 📂 scripts/
-│   ├── analyze-bundle.js         ✅ Bundle analysis
+├── lib/
+│   ├── config.ts                 Env vars + logging
+│   ├── api-client.ts             HTTP client centralizado
+│   ├── lazy-components.tsx       Dynamic imports
+│   ├── static-generation.ts      SSG/ISR patterns
+│   └── image-optimization.ts     Image presets
+├── app/
+│   ├── page.tsx                  Lazy-loaded components
+│   ├── api/news/route.ts         ISR: 3600s
+│   ├── api/press/route.ts        ISR: 3600s
+│   └── [pages]/                  58 pages (SSG)
+├── scripts/
+│   ├── analyze-bundle.js         Bundle analysis
 │   ├── cleanup-console-logs.js   ✅ Console cleanup
 │   └── migrate-urls.js           ✅ URL migration
 ├── next.config.ts                ✅ Optimizaciones

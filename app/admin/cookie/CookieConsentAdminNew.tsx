@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TranslateText } from "@/components/TranslateText";
-import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle, Activity, LineChart } from "lucide-react";
+import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle, Activity, LineChart, AlertTriangle, CheckCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import CookieStats from "./CookieStats";
 import CookieTable from "./CookieTable";
@@ -217,19 +217,19 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
                 <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
                   theme === 'dark' ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-700'
                 }`}>
-                  ⚠️ <TranslateText text="Error: " /> {error}
+                  <AlertTriangle className="w-4 h-4 inline-block mr-2" /> <TranslateText text="Error: " /> {error}
                 </div>
               ) : (
                 <>
                   <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
                     theme === 'dark' ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
                   }`}>
-                    ✓ <TranslateText text="Conectado" />
+                    <CheckCircle className="w-4 h-4 inline-block mr-2" /> <TranslateText text="Conectado" />
                   </div>
                   <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
                     theme === 'dark' ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'
                   }`}>
-                    📊 {data.length} <TranslateText text="registros" />
+                    <BarChart3 className="w-4 h-4 inline-block mr-2" /> {data.length} <TranslateText text="registros" />
                   </div>
                 </>
               )}
@@ -371,7 +371,7 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
                 <div className={`p-3 rounded-lg ${
                   theme === 'dark' ? 'bg-red-900/30' : 'bg-red-100'
                 }`}>
-                  <span className="text-2xl">⚠️</span>
+                  <AlertTriangle className="w-8 h-8" />
                 </div>
                 <div className="flex-1">
                   <h4 className={`text-lg font-semibold mb-2 ${
@@ -528,17 +528,17 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
                           <span className={`px-2 py-1 rounded ${
                             theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
                           }`}>
-                            🖱️ <TranslateText text="Arrastra para rotar" />
+                            <TranslateText text="Arrastra para rotar" />
                           </span>
                           <span className={`px-2 py-1 rounded ${
                             theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
                           }`}>
-                            🔍 <TranslateText text="Scroll para zoom" />
+                            <TranslateText text="Scroll para zoom" />
                           </span>
                           <span className={`px-2 py-1 rounded ${
                             theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
                           }`}>
-                            👆 <TranslateText text="Click en barras para detalles" />
+                            <TranslateText text="Click en barras para detalles" />
                           </span>
                         </div>
                       </div>

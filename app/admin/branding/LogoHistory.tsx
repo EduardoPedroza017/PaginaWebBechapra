@@ -7,7 +7,7 @@ import {
   Image, Edit2, Save, X, History, Download, 
   Trash2, Tag, Filter, Search, ChevronLeft, 
   ChevronRight, Loader2, AlertTriangle, Grid,
-  RefreshCw, Info
+  RefreshCw, Info, Box, Zap
 } from 'lucide-react';
 
 interface Logo {
@@ -422,12 +422,12 @@ export const LogoHistory: React.FC<LogoHistoryProps> = ({
                   <div className="flex flex-wrap gap-2">
                     {logo.size && (
                       <span className={`px-2 py-1 rounded text-xs ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                        📦 {formatFileSize(logo.size)}
+                        <Box className="inline-block w-3 h-3 mr-1" /> {formatFileSize(logo.size)}
                       </span>
                     )}
                     {logo.width && logo.height && (
                       <span className={`px-2 py-1 rounded text-xs ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                        ⚡ {logo.width}×{logo.height}px
+                        <Zap className="inline-block w-3 h-3 mr-1" /> {logo.width}×{logo.height}px
                       </span>
                     )}
                   </div>

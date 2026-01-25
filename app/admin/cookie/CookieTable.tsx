@@ -7,6 +7,9 @@ import {
   XCircle, 
   Globe, 
   Monitor, 
+  Smartphone,
+  Tablet,
+  Compass,
   Clock, 
   ChevronLeft, 
   ChevronRight, 
@@ -94,33 +97,33 @@ export default function CookieTable({ data, theme = 'light' }: CookieTableProps)
     
     // Dispositivo
     let device = 'Desktop';
-    let deviceIcon = '💻';
+    let deviceIcon: JSX.Element = <Monitor className="w-5 h-5" />;
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       device = 'Mobile';
-      deviceIcon = '📱';
+      deviceIcon = <Smartphone className="w-5 h-5" />;
     } else if (ua.includes('tablet') || ua.includes('ipad')) {
       device = 'Tablet';
-      deviceIcon = '📟';
+      deviceIcon = <Tablet className="w-5 h-5" />;
     }
     
     // Navegador
     let browser = 'Unknown';
-    let browserIcon = '🌐';
+    let browserIcon: JSX.Element = <Globe className="w-4 h-4" />;
     if (ua.includes('chrome') && !ua.includes('edge')) {
       browser = 'Chrome';
-      browserIcon = '🌐';
+      browserIcon = <Globe className="w-4 h-4" />;
     } else if (ua.includes('firefox')) {
       browser = 'Firefox';
-      browserIcon = '🦊';
+      browserIcon = <Globe className="w-4 h-4" />;
     } else if (ua.includes('safari') && !ua.includes('chrome')) {
       browser = 'Safari';
-      browserIcon = '🧭';
+      browserIcon = <Compass className="w-4 h-4" />;
     } else if (ua.includes('edge')) {
       browser = 'Edge';
-      browserIcon = '📐';
+      browserIcon = <Globe className="w-4 h-4" />;
     } else if (ua.includes('opera')) {
       browser = 'Opera';
-      browserIcon = '🔴';
+      browserIcon = <Globe className="w-4 h-4" />;
     }
     
     // Sistema operativo

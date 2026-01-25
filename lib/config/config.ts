@@ -182,13 +182,13 @@ export function validateConfig(): void {
   
   // En producción, validar que no se use localhost
   if (config.env.isProduction && config.api.url.includes('localhost')) {
-    errors.push('⚠️ ADVERTENCIA: Usando localhost en producción');
+    errors.push('ADVERTENCIA: Usando localhost en producción');
   }
   
   // Mostrar errores
   if (errors.length > 0) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('❌ Errores de configuración:');
+      console.error('Errores de configuración:');
       errors.forEach(error => {
         console.error(`  - ${error}`);
       });

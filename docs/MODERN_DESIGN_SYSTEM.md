@@ -1,10 +1,10 @@
 # Sistema de Diseño Moderno - Dashboard Admin
 
-## 🎨 Filosofía de Diseño
+## Filosofía de Diseño
 
 El sistema de diseño moderno se basa en principios de minimalismo, claridad y consistencia. Eliminamos elementos visuales innecesarios para enfocarnos en la funcionalidad y legibilidad.
 
-## 📐 Sistema de Espaciado
+## Sistema de Espaciado
 
 ### Escala de Espaciado
 - `4px` (1) - Espaciado mínimo para elementos compactos
@@ -22,7 +22,7 @@ El sistema de diseño moderno se basa en principios de minimalismo, claridad y c
 - **Elementos de lista**: `space-y-3` (12px) entre elementos
 - **Secciones principales**: `space-y-6` (24px) entre secciones
 
-## 🔤 Jerarquía Tipográfica
+## Jerarquía Tipográfica
 
 ### Escala Tipográfica
 - **Títulos principales**: `text-2xl font-bold` (24px)
@@ -36,7 +36,7 @@ El sistema de diseño moderno se basa en principios de minimalismo, claridad y c
 - **Normal**: `font-medium` para texto interactivo
 - **Regular**: `font-normal` para texto descriptivo
 
-## 🎯 Paleta de Colores
+## Paleta de Colores
 
 ### Tema Claro
 - **Fondo principal**: `bg-white`
@@ -54,7 +54,7 @@ El sistema de diseño moderno se basa en principios de minimalismo, claridad y c
 - **Texto terciario**: `text-gray-400`
 - **Bordes**: `border-gray-800` / `border-gray-700`
 
-## 📦 Componentes Base
+## Componentes Base
 
 ### Tarjetas
 ```tsx
@@ -77,7 +77,7 @@ El sistema de diseño moderno se basa en principios de minimalismo, claridad y c
 </div>
 ```
 
-## ✨ Principios Aplicados
+## Principios Aplicados
 
 ### 1. Minimalismo Visual
 - Eliminación de gradientes complejos
@@ -99,7 +99,7 @@ El sistema de diseño moderno se basa en principios de minimalismo, claridad y c
 - Tamaños de toque apropiados
 - Estados de hover claros
 
-## 🔧 Implementación Técnica
+## Implementación Técnica
 
 ### Clases CSS Utilizadas
 - **Espaciado**: `p-6`, `space-y-6`, `gap-4`

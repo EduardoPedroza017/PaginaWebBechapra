@@ -85,7 +85,7 @@ export default function BranchEditModal({ open, branch, onClose, onUpdated, them
       }
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiUrl}/api/branches/${branch.id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/branches/${branch.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...adminHeaders },
         credentials: 'include',

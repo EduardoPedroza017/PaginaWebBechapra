@@ -289,19 +289,19 @@ class AdminApiClient {
 
   // BRANCHES
   async getBranches() {
-    return apiClient.get('/api/branches');
+    return apiClient.get('/api/admin/branches');
   }
 
   async createBranch(data: any) {
-    return apiClient.post('/api/branches', data);
+    return apiClient.post('/api/admin/branches', data);
   }
 
   async updateBranch(id: string, data: any) {
-    return apiClient.put(`/api/branches/${id}`, data);
+    return apiClient.put(`/api/admin/branches/${id}`, data);
   }
 
   async deleteBranch(id: string) {
-    return apiClient.delete(`/api/branches/${id}`);
+    return apiClient.delete(`/api/admin/branches/${id}`);
   }
 
   // CONTACTS

@@ -18,7 +18,8 @@ import {
   FaSortAmountUp,
   FaChartBar,
   FaDownload,
-  FaFileExport
+  FaFileExport,
+  FaExclamationTriangle
 } from "react-icons/fa";
 
 // Ensure consistent `Internship` type definitions
@@ -134,13 +135,20 @@ const InternshipsPage = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const res = await fetch(`${API_URL}/api/internships`);
-      
+
+      const res = await fetch(`${API_URL}/api/internships`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User": sessionStorage.getItem('user_email') || '', // Enviar email del usuario logueado
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN || ''}` // Agregar token si es necesario
+        },
+      });
+
       if (!res.ok) {
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
-      
+
       const data: ApiResponse = await res.json();
       console.log("Datos obtenidos del backend:", data);
 
@@ -169,7 +177,7 @@ const InternshipsPage = () => {
       }));
 
       setInternships(mappedInternships);
-      
+
       // Calculate statistics
       calculateStats(mappedInternships);
     } catch (error) {
@@ -281,34 +289,41 @@ const InternshipsPage = () => {
       setIsSubmitting(true);
       console.log("Datos enviados al backend:", internshipData);
 
+      const internshipsData = {
+        title: internshipData.title,
+        description: internshipData.description,
+        posted_date: new Date().toISOString().split('T')[0],
+        closing_date: internshipData.endDate,
+        is_active: internshipData.isActive,
+        department: internshipData.area,
+        requirements: internshipData.requisitos,
+        modality: internshipData.modalidad,
+        location: internshipData.ubicacion,
+        duration_months: parseInt(internshipData.duracion || '6'), // Convertir a número
+        horario: internshipData.horario,
+        beneficios: internshipData.beneficios,
+        what_you_will_do: internshipData.whatYouWillDo,
+        what_you_will_learn: internshipData.whatYouWillLearn,
+        what_we_are_looking_for: internshipData.whatWeAreLookingFor,
+      };
+
       const res = await fetch(`${API_URL}/api/internships`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          titulo: internshipData.title,
-          descripcion: internshipData.description,
-          fecha_publicacion: new Date().toISOString().split('T')[0],
-          fecha_cierre: internshipData.endDate,
-          is_active: internshipData.isActive,
-          area: internshipData.area,
-          requisitos: internshipData.requisitos,
-          modalidad: internshipData.modalidad,
-          ubicacion: internshipData.ubicacion,
-          duracion: internshipData.duracion,
-          horario: internshipData.horario,
-          beneficios: internshipData.beneficios,
-          what_you_will_do: internshipData.whatYouWillDo,
-          what_you_will_learn: internshipData.whatYouWillLearn,
-          what_we_are_looking_for: internshipData.whatWeAreLookingFor,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-User": sessionStorage.getItem('user_email') || '', // Enviar email del usuario logueado
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN || ''}` // Agregar token si es necesario
+        },
+        body: JSON.stringify(internshipsData),
       });
 
       if (!res.ok) {
-        throw new Error(`Error ${res.status}: ${res.statusText}`);
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || `Error ${res.status}: ${res.statusText}`);
       }
 
       const data = await res.json();
-      
+
       if (data.data) {
         const newInternship: Internship = {
           _id: data.data._id || Date.now().toString(),
@@ -320,11 +335,11 @@ const InternshipsPage = () => {
       }
     } catch (error) {
       console.error("Error creating internship:", error);
-      alert(error instanceof Error ? error.message : "Error al crear la pasantía");
+      setError(error instanceof Error ? error.message : "Error al crear la pasantía");
     } finally {
       setIsSubmitting(false);
     }
-  }, [internships]);
+  }, [API_URL, calculateStats, internships]);
 
   const handlePreview = useCallback((internship: Internship) => {
     setSelectedInternship(internship);
@@ -491,7 +506,9 @@ const InternshipsPage = () => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          <div className={`text-5xl mb-4 ${theme === "dark" ? "text-red-400" : "text-red-500"}`}>⚠️</div>
+          <div className={`text-5xl mb-4 ${theme === "dark" ? "text-red-400" : "text-red-500"}`}>
+            <FaExclamationTriangle className="w-12 h-12 mx-auto" />
+          </div>
           <h2 className={`text-2xl font-bold mb-3 ${theme === "dark" ? "text-white" : "text-slate-900"}`}>
             Error al cargar datos
           </h2>

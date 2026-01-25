@@ -7,8 +7,8 @@ export default function useLenis() {
   useEffect(() => {
     const lenis = new Lenis({
       lerp: 0.08,
-      smoothWheel: true, // ✅ válido
-      // ❌ smoothTouch: ya no existe en tus types
+      smoothWheel: true, // válido
+      // smoothTouch: ya no existe en tus types
     });
 
     let rafId = 0;

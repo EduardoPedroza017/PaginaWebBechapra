@@ -1,10 +1,10 @@
-# 🎨 Quick Reference: Componentes UI/UX v2.0
+# Quick Reference: Componentes UI/UX v2.0
 
 Referencia rápida para uso diario de los componentes del panel admin.
 
 ---
 
-## 🔵 Buttons
+## Buttons
 
 ### Variantes
 
@@ -93,7 +93,7 @@ import { Save, Trash, Eye, Download } from 'lucide-react';
 
 ---
 
-## 📝 Form Inputs
+## Form Inputs
 
 ### Input Básico
 
@@ -202,7 +202,7 @@ import { User, Mail, Lock, Phone } from 'lucide-react';
 
 ---
 
-## 🎴 Cards
+## Cards
 
 ### Card Básica
 
@@ -279,7 +279,7 @@ import { Card, CardHeader, CardBody, CardFooter } from '../components/shared';
 
 ---
 
-## 📊 Stat Cards
+## Stat Cards
 
 ### Stat Card Básica
 
@@ -507,7 +507,7 @@ import { Inbox } from 'lucide-react';
 
 ---
 
-## 🎨 Utilidades del Design System
+## Utilidades del Design System
 
 ### Obtener Clases de Tema
 
@@ -548,7 +548,7 @@ const inputClasses = getInputClasses(theme, hasError);
 
 ---
 
-## 🔄 Patrones Comunes
+## Patrones Comunes
 
 ### Formulario Completo
 
@@ -728,4 +728,4 @@ const inputClasses = getInputClasses(theme, hasError);
 
 ---
 
-**¡Usa esta referencia para desarrollo rápido! 🚀**
+**Usa esta referencia para desarrollo rápido!**

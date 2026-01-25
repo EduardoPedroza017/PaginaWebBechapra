@@ -18,7 +18,7 @@ import { canUseAnalytics } from './cookieConsent';
 export const initMicrosoftClarity = () => {
   // Integración de Microsoft Clarity desactivada temporalmente
   // Para reactivar, descomenta la constante CLARITY_PROJECT_ID y el código de inicialización
-  console.log('ℹ️ Microsoft Clarity está desactivado');
+	console.log('Microsoft Clarity está desactivado');
 };
 
 /**
@@ -30,7 +30,7 @@ export const initGoogleAnalytics = () => {
 	if (typeof window === 'undefined') return;
 
 	if (!canUseAnalytics()) {
-		console.log('📊 Google Analytics deshabilitado - Usuario rechazó cookies');
+		console.log('Google Analytics deshabilitado - Usuario rechazó cookies');
 		return;
 	}
 
@@ -52,7 +52,7 @@ export const initGoogleAnalytics = () => {
 		cookie_flags: 'SameSite=None;Secure'
 	});
 
-	console.log('✅ Google Analytics inicializado');
+	console.log('Google Analytics inicializado');
 };
 
 /**
@@ -64,7 +64,7 @@ export const trackClarityEvent = (eventName: string, eventData?: Record<string, 
 	const win = window as unknown as { clarity?: (...args: unknown[]) => void };
 	if (typeof window !== 'undefined' && win.clarity) {
 		win.clarity('event', eventName);
-		console.log(`📊 Evento Clarity: ${eventName}`, eventData);
+		console.log(`Evento Clarity: ${eventName}`, eventData);
 	}
 };
 
@@ -77,7 +77,7 @@ export const identifyClarityUser = (userId: string, sessionData?: Record<string,
 	const win = window as unknown as { clarity?: (...args: unknown[]) => void };
 	if (typeof window !== 'undefined' && win.clarity) {
 		win.clarity('identify', userId, sessionData);
-		console.log(`👤 Usuario identificado en Clarity: ${userId}`);
+		console.log(`Usuario identificado en Clarity: ${userId}`);
 	}
 };
 
@@ -90,7 +90,7 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, unkno
 	const win = window as unknown as { gtag?: (...args: unknown[]) => void };
 	if (typeof window !== 'undefined' && win.gtag) {
 		win.gtag('event', eventName, eventParams);
-		console.log(`📊 Evento GA: ${eventName}`, eventParams);
+		console.log(`Evento GA: ${eventName}`, eventParams);
 	}
 };
 
@@ -105,7 +105,7 @@ export const trackPageView = (url: string) => {
 		win.gtag('config', GA_MEASUREMENT_ID, {
 			page_path: url
 		});
-		console.log(`📊 Página vista: ${url}`);
+		console.log(`Página vista: ${url}`);
 	}
 };
 
@@ -152,5 +152,5 @@ export const disableGoogleAnalytics = () => {
 	const win = window as unknown as Record<string, boolean>;
 	win[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
 	
-	console.log('❌ Google Analytics deshabilitado');
+	console.log('Google Analytics deshabilitado');
 };

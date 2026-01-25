@@ -29,7 +29,7 @@ export default function CookieConsent() {
 		// Guardar preferencia en backend
 		await setCookieConsentBackend(true);
 		
-		console.log('✅ Cookies aceptadas - Todas las cookies habilitadas');
+		console.log('Cookies aceptadas - Todas las cookies habilitadas');
 	};
 
 	const handleReject = async () => {
@@ -43,7 +43,7 @@ export default function CookieConsent() {
 		// Guardar preferencia en backend
 		await setCookieConsentBackend(false);
 		
-		console.log('❌ Cookies rechazadas - Solo cookies esenciales');
+		console.log('Cookies rechazadas - Solo cookies esenciales');
 	};
 
 	// Función para habilitar todas las cookies
@@ -103,7 +103,7 @@ export default function CookieConsent() {
 		localStorage.setItem('marketing_enabled', 'false');
 		localStorage.setItem('functionality_enabled', 'false');
 
-		console.log('🧹 Cookies no esenciales eliminadas');
+		console.log('Cookies no esenciales eliminadas');
 	};
 
 	const handleClose = () => {
