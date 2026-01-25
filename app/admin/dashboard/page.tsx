@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -8,14 +8,11 @@ import { TranslateText } from "@/components/TranslateText";
 import {
   LayoutDashboard,
   AlertCircle,
-  RefreshCw,
   Activity,
   Zap,
   BarChart3,
   Shield,
-  ChevronRight,
   Loader2,
-  CheckCircle,
   AlertTriangle,
 } from "lucide-react";
 import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
@@ -25,22 +22,21 @@ import { WebVitalsWidget } from "@/lib/utils/web-vitals";
 import { useAuth, useTheme } from "../hooks";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Auditoría
-import AuditLog from "./AuditLog";
 import AdminAuditLogSection from "./AdminAuditLogSection";
-import DashboardLayout from "../components/layout/DashboardLayout";
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { GRID_COLS } from "../design-system";
 
 type TabId = "dashboard" | "actions" | "audit" | "monitoring" | "cookies";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { admin, role, authorized, loading: authLoading, logout } = useAuth();
-  const { theme: maybeTheme, resolvedTheme, toggleTheme, themeReady } = useTheme();
+  const { role, authorized, loading: authLoading } = useAuth();
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
 
-  // Normalize theme to the narrow union expected by child components
   type ThemeMode = 'light' | 'dark' | undefined;
   const theme: ThemeMode = resolvedTheme === 'dark' ? 'dark' : resolvedTheme === 'light' ? 'light' : (maybeTheme === 'dark' ? 'dark' : maybeTheme === 'light' ? 'light' : undefined);
-  // Provide a strict fallback for components that expect non-optional theme
   const themeStrict: 'light' | 'dark' = theme === 'dark' ? 'dark' : 'light';
 
   const [refreshKey, setRefreshKey] = useState(0);
@@ -54,12 +50,6 @@ export default function AdminDashboard() {
     cookies: false,
   });
 
-  const [systemStatus] = useState({
-    online: true,
-    latency: 42,
-    lastSync: "hoy 09:15",
-  });
-
   const handleRefresh = useCallback(() => {
     setRefreshKey((prev) => prev + 1);
   }, []);
@@ -71,52 +61,25 @@ export default function AdminDashboard() {
     setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
   };
 
-  const getTabs = () => {
-    const baseTabs = [
-      {
-        id: "dashboard" as TabId,
-        label: "Dashboard",
-        icon: <LayoutDashboard size={18} />,
-        description: "Estadísticas generales del sistema",
-      },
-      {
-        id: "actions" as TabId,
-        label: "Acciones",
-        icon: <Zap size={18} />,
-        description: "Accesos rápidos y atajos",
-      },
-      {
-        id: "monitoring" as TabId,
-        label: "Monitoreo",
-        icon: <BarChart3 size={18} />,
-        description: "Métricas y rendimiento en tiempo real",
-      },
-      {
-        id: "cookies" as TabId,
-        label: "Cookies",
-        icon: <Shield size={18} />,
-        description: "Privacidad y consentimiento",
-      },
+  const getTabs = (): TabItem[] => {
+    const baseTabs: TabItem[] = [
+      { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
+      { id: "actions", label: "Acciones", icon: <Zap size={18} /> },
+      { id: "monitoring", label: "Monitoreo", icon: <BarChart3 size={18} /> },
+      { id: "cookies", label: "Cookies", icon: <Shield size={18} /> },
     ];
 
     if (role === "superadmin" || role === "admin") {
-      baseTabs.splice(2, 0, {
-        id: "audit" as TabId,
-        label: "Auditoría",
-        icon: <Activity size={18} />,
-        description: "Logs y seguridad",
-      });
+      baseTabs.splice(2, 0, { id: "audit", label: "Auditoría", icon: <Activity size={18} /> });
     }
 
     return baseTabs;
   };
 
   const tabs = getTabs();
-  const activeTabInfo = tabs.find((t) => t.id === activeTab);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash === "#audit-log") {
-      // Use a microtask to avoid cascading renders
       Promise.resolve().then(() => handleTabChange("audit"));
     }
   }, []);
@@ -141,62 +104,96 @@ export default function AdminDashboard() {
     );
   }
 
+  const roleLabel = role === 'superadmin' ? 'Super Administrador' : role === 'admin' ? 'Administrador' : role || 'Usuario';
+
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1400px] mx-auto w-full px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="col-span-2">
-            <DashboardLayout>
-              <WelcomeCard role={role} theme={themeStrict} />
+      <AdminPageHeader
+        title="Panel de Administración"
+        subtitle={`Bienvenido de nuevo, ${roleLabel}`}
+        icon={<LayoutDashboard className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: loadingTabs.dashboard }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Dashboard" }]}
+      />
 
-              {/* Tabs */}
-              <div className="col-span-2 flex gap-2 mb-6">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => handleTabChange(tab.id)}
-                    disabled={loadingTabs[tab.id]}
-                    className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                      activeTab === tab.id
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 dark:bg-gray-800"
-                    }`}
-                  >
-                    {loadingTabs[tab.id] ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      tab.icon
-                    )}
-                    {tab.label}
-                  </button>
-                ))}
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+        >
+          {activeTab === "dashboard" && (
+            <AdminSection theme={themeStrict}>
+              <div className={GRID_COLS[2]}>
+                <div className="col-span-2 lg:col-span-2">
+                  <WelcomeCard role={role} theme={themeStrict} />
+                  <div className="mt-6">
+                    <DashboardStats theme={themeStrict} />
+                  </div>
+                </div>
+                <aside className="col-span-1 space-y-6">
+                  <QuickActions theme={themeStrict} role={role} />
+                  <div className="mt-4">
+                    <WebVitalsWidget theme={themeStrict} />
+                  </div>
+                  <div className="mt-4">
+                    <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+                  </div>
+                </aside>
               </div>
-            </DashboardLayout>
-          </div>
+            </AdminSection>
+          )}
 
-          <aside className="col-span-1 space-y-6">
-            <div className="sticky top-6">
+          {activeTab === "actions" && (
+            <AdminSection theme={themeStrict}>
               <QuickActions theme={themeStrict} role={role} />
-              <div className="mt-4">
+            </AdminSection>
+          )}
+
+          {activeTab === "audit" && (
+            <AdminSection theme={themeStrict}>
+              <AdminAuditLogSection theme={themeStrict} />
+            </AdminSection>
+          )}
+
+          {activeTab === "monitoring" && (
+            <AdminSection theme={themeStrict}>
+              <div className="space-y-6">
+                <DashboardStats theme={themeStrict} />
                 <WebVitalsWidget theme={themeStrict} />
               </div>
-              <div className="mt-4">
-                <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
-              </div>
-            </div>
-          </aside>
-        </div>
+            </AdminSection>
+          )}
 
-        {/* Nota */}
-        <div className="mt-6 p-4 border rounded-xl flex gap-3">
-          <AlertTriangle className="w-5 h-5 text-blue-500" />
-          <p className="text-sm">
-            Consejo: navega por las pestañas para acceder a cada sección del
-            panel.
-          </p>
-        </div>
+          {activeTab === "cookies" && (
+            <AdminSection theme={themeStrict}>
+              <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+            </AdminSection>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="mt-6 p-4 border rounded-xl flex gap-3">
+        <AlertTriangle className="w-5 h-5 text-blue-500 shrink-0" />
+        <p className="text-sm">
+          Consejo: navega por las pestaas para acceder a cada seccion del panel.
+        </p>
       </div>
     </div>
   );
 }
-

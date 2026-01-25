@@ -4,26 +4,20 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { ExportAuditLogsButton } from "./ExportAuditLogsButton";
 import { TranslateText } from "@/components/TranslateText";
-import { Activity, CheckCircle, XCircle, BarChart3, Database, Shield, AlertTriangle, RefreshCw } from "lucide-react";
+import { Activity, CheckCircle, XCircle, BarChart3, Shield, RefreshCw } from "lucide-react";
 
 // Componentes modularizados
 import { MetricCard } from "./MetricCard";
 import { AuditLogFilters } from "./AuditLogFilters";
 import { AuditLogCharts } from "./AuditLogCharts";
 import { AuditLogTable } from "./AuditLogTable";
-import { DbMetricsSection } from "./DbMetricsSection";
 
-import dynamic from "next/dynamic";
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
 
-// Importación dinámica para evitar problemas de SSR
-// const AdminAuditLogSection = dynamic(() => import("../dashboard/AdminAuditLogSection"), { 
-//   ssr: false,
-//   loading: () => (
-//     <div className="py-8 text-center text-gray-400">
-//       <TranslateText text="Cargando registros administrativos..." />
-//     </div>
-//   )
-// });
+type TabId = 'centro' | 'registros';
 
 export type AuditLogFiltersState = {
   user: string;
@@ -47,8 +41,9 @@ export default function AuditLogPage() {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [themeReady, setThemeReady] = useState(false);
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
+  
   const [filters, setFilters] = useState<AuditLogFiltersState>({ 
     user: '', 
     ip: '', 
@@ -57,58 +52,27 @@ export default function AuditLogPage() {
     dateTo: '' 
   });
   const [page, setPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<'centro' | 'registros'>('centro');
+  const [activeTab, setActiveTab] = useState<TabId>("centro");
   const [refreshing, setRefreshing] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const rowsPerPage = 5;
+  
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    centro: false,
+    registros: false,
+  });
 
-  // Cargar tema desde localStorage después de montar el componente
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || savedTheme === 'light') {
-      setTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setTheme(prefersDark ? "dark" : "light");
-    }
-    setThemeReady(true);
-  }, []);
-
-  // Cargar pestaña activa desde localStorage
-  useEffect(() => {
-    const savedTab = localStorage.getItem('auditLogActiveTab');
-    if (savedTab === 'centro' || savedTab === 'registros') {
-      setActiveTab(savedTab);
-    }
-  }, []);
-
-  // Save theme to localStorage when it changes
-  useEffect(() => {
-    if (themeReady && typeof window !== "undefined") {
-      localStorage.setItem("theme", theme);
-      document.documentElement.classList.toggle("dark", theme === "dark");
-    }
-  }, [theme, themeReady]);
-
-  // Save active tab to localStorage when it changes
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("auditLogActiveTab", activeTab);
-    }
-  }, [activeTab]);
-
-  const handleToggleTheme = () => {
-    setTheme((prev) => {
-      const newTheme = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin');
-    sessionStorage.removeItem('role');
-    window.location.href = '/admin';
-  };
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchAuditLogs(true);
+  }, []);
 
   const fetchAuditLogs = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -122,7 +86,6 @@ export default function AuditLogPage() {
         throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
       }
       
-      // Prefer admin action logs (admin_audit). Fallback to login audit if empty.
       const tryAdminAudit = async () => {
         return fetch(`${apiBase}/admin/audit-admin`, {
           headers: {
@@ -144,7 +107,6 @@ export default function AuditLogPage() {
       };
 
       let response = await tryAdminAudit();
-      // if admin audit returned a non-ok status, fallback to login audit
       if (!response.ok) {
         response = await tryLoginAudit();
       }
@@ -155,8 +117,6 @@ export default function AuditLogPage() {
 
       const data = await response.json();
 
-      // Backend has two shapes: {ok:true, logs: [...] } (legacy auth endpoints)
-      // or {ok:true, data: { items: [...] }} (newer paginated admin endpoint).
       let items: any[] = [];
       if (data.logs && Array.isArray(data.logs)) {
         items = data.logs;
@@ -166,13 +126,10 @@ export default function AuditLogPage() {
         items = data;
       }
 
-      // Normalize items to AuditLogEntry shape expected by the UI
       const normalized = items.map((it: any) => {
-        // If this is a login_audit record it already has user_id, success, etc.
         if (it.user_id || typeof it.success !== 'undefined') {
           return it as AuditLogEntry;
         }
-        // Otherwise map admin_audit fields
         return {
           user_id: it.by || it.user || it.user_id || 'system',
           timestamp: it.timestamp ? (typeof it.timestamp === 'string' ? it.timestamp : new Date(it.timestamp).toISOString()) : undefined,
@@ -198,14 +155,14 @@ export default function AuditLogPage() {
     fetchAuditLogs();
   }, [fetchAuditLogs]);
 
-  // Reset página cuando cambien los filtros
+  // Reset page when filters change
   useEffect(() => {
     if (page > totalPages) {
       setPage(1);
     }
   }, [totalPages, page, setPage]);
 
-  // Filtrado de logs usando useMemo para mejor performance
+  // Filtrado de logs usando useMemo
   const filteredLogs = useMemo(() => {
     return logs.filter(log => {
       if (filters.user && !log.user_id.toLowerCase().includes(filters.user.toLowerCase())) return false;
@@ -232,7 +189,7 @@ export default function AuditLogPage() {
     });
   }, [logs, filters]);
 
-  // Detección de anomalías usando useMemo
+  // Detección de anomalías
   const anomalies = useMemo(() => {
     const ipFailCounts: { [key: string]: number } = {};
     logs.forEach(log => {
@@ -252,17 +209,13 @@ export default function AuditLogPage() {
     };
   }, [logs]);
 
-  // Paginación
-  const rowsPerPage = 5;
-
-  // Métricas calculadas usando useMemo
+  // Métricas calculadas
   const metrics = useMemo(() => {
     const total = filteredLogs.length;
     const successCount = filteredLogs.filter(l => l.success).length;
     const failCount = total - successCount;
     const successRate = total > 0 ? Math.round((successCount / total) * 100) : 0;
 
-    // Calcular trends comparando última semana vs semana anterior
     const now = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
@@ -298,7 +251,7 @@ export default function AuditLogPage() {
     };
   }, [filteredLogs, logs]);
 
-  // Datos agrupados para gráficas usando useMemo
+  // Datos agrupados para gráficas
   const chartData = useMemo(() => {
     const byUser: { [key: string]: number } = {};
     const byDate: { [key: string]: number } = {};
@@ -314,12 +267,17 @@ export default function AuditLogPage() {
     return { byUser, byDate };
   }, [filteredLogs]);
 
+  const tabs: TabItem[] = [
+    { id: 'centro', label: 'Centro de Auditoría', icon: <Shield size={18} /> },
+    { id: 'registros', label: 'Registros', icon: <Activity size={18} /> },
+  ];
+
   if (loading && !refreshing) {
     return (
-      <div className={`flex min-h-screen items-center justify-center ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
+      <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
+          <p className={themeStrict === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
             <TranslateText text="Cargando auditoría..." />
           </p>
         </div>
@@ -329,14 +287,18 @@ export default function AuditLogPage() {
 
   if (error && !refreshing) {
     return (
-      <div className={`flex min-h-screen items-center justify-center ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center p-8 max-w-md">
-          <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <p className="text-red-500 text-lg font-medium mb-4">{error}</p>
+          <div className={`w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full ${
+            themeStrict === 'dark' ? 'bg-red-900/30' : 'bg-red-100'
+          }`}>
+            <Shield className="w-8 h-8 text-red-500" />
+          </div>
+          <p className={themeStrict === 'dark' ? 'text-red-400' : 'text-red-600'}>{error}</p>
           <button
             onClick={() => fetchAuditLogs(true)}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-              theme === 'dark'
+            className={`mt-4 px-6 py-2 rounded-lg font-medium transition-colors ${
+              themeStrict === 'dark'
                 ? 'bg-red-600 hover:bg-red-700 text-white'
                 : 'bg-red-100 hover:bg-red-200 text-red-700'
             }`}
@@ -349,178 +311,114 @@ export default function AuditLogPage() {
   }
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
-      
-      <div className="flex-1 flex flex-col">
-        
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-400 mx-auto w-full">
-          {/* Header principal */}
-          <div className="mb-6">
-            <div className={`rounded-2xl p-5 md:p-6 border ${
-              theme === 'dark'
-                ? 'bg-linear-to-br from-gray-900 to-gray-800 border-gray-800'
-                : 'bg-linear-to-br from-white to-gray-50 border-gray-200'
-            }`}>
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${
-                    theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
-                  }`}>
-                    <Shield className={`w-6 h-6 ${
-                      theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                    }`} />
-                  </div>
-                  <div>
-                    <h1 className={`text-xl md:text-2xl font-bold ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      <TranslateText text="Centro de Auditoría" />
-                    </h1>
-                    <p className={`text-sm mt-1 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      <TranslateText text="Monitoreo y análisis de accesos al sistema" />
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    onClick={() => fetchAuditLogs(true)}
-                    disabled={refreshing}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                      theme === 'dark'
-                        ? 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                    } ${refreshing ? 'opacity-50' : ''}`}
-                  >
-                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    <TranslateText text="Actualizar" />
-                  </button>
-                  <ExportAuditLogsButton logs={logs} theme={theme} />
-                </div>
-              </div>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Centro de Auditoría"
+        subtitle="Monitoreo y análisis de accesos al sistema"
+        icon={<Shield className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          custom: <ExportAuditLogsButton logs={logs} theme={themeStrict} />
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Auditoría" }]}
+      />
+
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AdminSection theme={themeStrict}>
+        {activeTab === 'centro' && (
+          <>
+            {/* Export button */}
+            <div className="flex justify-end mb-4">
+              <ExportAuditLogsButton logs={logs} theme={themeStrict} />
             </div>
-          </div>
 
-          {/* Tabs */}
-          <div className="mb-6">
-            <div className={`rounded-xl border ${
-              theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
-            }`}>
-              <div className="flex">
-                <button
-                  onClick={() => setActiveTab('centro')}
-                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
-                    activeTab === 'centro'
-                      ? theme === 'dark'
-                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
-                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
-                      : theme === 'dark'
-                        ? 'text-gray-400 hover:text-gray-300'
-                        : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                >
-                  CENTRO DE AUDITORIA
-                </button>
-                <button
-                  onClick={() => setActiveTab('registros')}
-                  className={`flex-1 px-6 py-3 text-center font-medium transition-colors ${
-                    activeTab === 'registros'
-                      ? theme === 'dark'
-                        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
-                        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
-                      : theme === 'dark'
-                        ? 'text-gray-400 hover:text-gray-300'
-                        : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                >
-                  REGISTROS DE AUDITORIA
-                </button>
-              </div>
+            {/* Métricas principales */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <MetricCard
+                icon={<Activity className="w-6 h-6 text-blue-500" />}
+                title="Total Registros"
+                value={metrics.total.toLocaleString()}
+                color="blue"
+                theme={themeStrict}
+                trend={metrics.totalTrend}
+                loading={refreshing}
+              />
+              <MetricCard
+                icon={<CheckCircle className="w-6 h-6 text-green-500" />}
+                title="Exitosos"
+                value={metrics.successCount.toLocaleString()}
+                color="green"
+                theme={themeStrict}
+                trend={metrics.successTrend}
+                loading={refreshing}
+              />
+              <MetricCard
+                icon={<XCircle className="w-6 h-6 text-red-500" />}
+                title="Fallidos"
+                value={metrics.failCount.toLocaleString()}
+                color="red"
+                theme={themeStrict}
+                trend={metrics.failTrend}
+                loading={refreshing}
+                anomaly={anomalies.hasAnomalies}
+              />
+              <MetricCard
+                icon={<BarChart3 className="w-6 h-6 text-purple-500" />}
+                title="Tasa de Éxito"
+                value={`${metrics.successRate}%`}
+                color="purple"
+                theme={themeStrict}
+                trend={metrics.rateTrend}
+                loading={refreshing}
+                anomaly={metrics.successRate < 85}
+              />
             </div>
-          </div>
 
-          {/* Tab Content */}
-          {activeTab === 'centro' && (
-            <>
-              {/* Métricas principales */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <MetricCard
-                  icon={<Activity className="w-6 h-6 text-blue-500" />}
-                  title="Total Registros"
-                  value={metrics.total.toLocaleString()}
-                  color="blue"
-                  theme={theme}
-                  trend={metrics.totalTrend}
-                  loading={refreshing}
-                />
-                <MetricCard
-                  icon={<CheckCircle className="w-6 h-6 text-green-500" />}
-                  title="Exitosos"
-                  value={metrics.successCount.toLocaleString()}
-                  color="green"
-                  theme={theme}
-                  trend={metrics.successTrend}
-                  loading={refreshing}
-                />
-                <MetricCard
-                  icon={<XCircle className="w-6 h-6 text-red-500" />}
-                  title="Fallidos"
-                  value={metrics.failCount.toLocaleString()}
-                  color="red"
-                  theme={theme}
-                  trend={metrics.failTrend}
-                  loading={refreshing}
-                  anomaly={anomalies.hasAnomalies}
-                />
-                <MetricCard
-                  icon={<BarChart3 className="w-6 h-6 text-purple-500" />}
-                  title="Tasa de Éxito"
-                  value={`${metrics.successRate}%`}
-                  color="purple"
-                  theme={theme}
-                  trend={metrics.rateTrend}
-                  loading={refreshing}
-                  anomaly={metrics.successRate < 85}
-                />
-              </div>
+            {/* Gráficas */}
+            <AuditLogCharts
+              successCount={metrics.successCount}
+              failCount={metrics.failCount}
+              byUser={chartData.byUser}
+              byDate={chartData.byDate}
+              theme={themeStrict}
+            />
+          </>
+        )}
 
-              {/* Gráficas */}
-              <AuditLogCharts
-                successCount={metrics.successCount}
-                failCount={metrics.failCount}
-                byUser={chartData.byUser}
-                byDate={chartData.byDate}
-                theme={theme}
-              />
-            </>
-          )}
+        {activeTab === 'registros' && (
+          <>
+            {/* Filtros */}
+            <AuditLogFilters
+              filters={filters}
+              setFilters={setFilters}
+              theme={themeStrict}
+            />
 
-          {activeTab === 'registros' && (
-            <>
-              {/* Filtros */}
-              <AuditLogFilters
-                filters={filters}
-                setFilters={setFilters}
-                theme={theme}
-              />
-
-              {/* Tabla de logs de accesos */}
-              <AuditLogTable
-                logs={filteredLogs}
-                theme={theme}
-                page={page}
-                setPage={setPage}
-                totalPages={totalPages}
-                setTotalPages={setTotalPages}
-                totalItems={filteredLogs.length}
-                itemsPerPage={rowsPerPage}
-              />
-            </>
-          )}
-        </main>
-      </div>
+            {/* Tabla de logs */}
+            <AuditLogTable
+              logs={filteredLogs}
+              theme={themeStrict}
+              page={page}
+              setPage={setPage}
+              totalPages={totalPages}
+              setTotalPages={setTotalPages}
+              totalItems={filteredLogs.length}
+              itemsPerPage={rowsPerPage}
+            />
+          </>
+        )}
+      </AdminSection>
     </div>
   );
 }
+

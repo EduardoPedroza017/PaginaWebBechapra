@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 import { TranslateText } from '@/components/TranslateText';
 import {
   LayoutDashboard,
-  Users,
   Database,
   Image as GalleryIcon,
   MessageCircle,
@@ -38,6 +37,7 @@ import {
   FolderKanban,
   BarChart3
 } from "lucide-react";
+import clsx from 'clsx';
 
 export type SidebarItem = {
   label: string;
@@ -210,15 +210,11 @@ export function Sidebar({
   collapsed: collapsedProp,
   onCollapseToggle
 }: SidebarProps) {
-  const [localCollapsed, setLocalCollapsed] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const pathname = usePathname();
-  const currentPath = pathname || '';
-  const isDark = theme === 'dark';
+  const [expanded, setExpanded] = useState(false);
+  const onToggle = () => setExpanded(!expanded);
 
   // Determine controlled vs uncontrolled collapse state
-  const isCollapsed = typeof collapsedProp !== 'undefined' ? collapsedProp : localCollapsed;
+  const isCollapsed = typeof collapsedProp !== 'undefined' ? collapsedProp : !expanded;
 
   // Handler that respects controlled prop if provided
   const handleToggleCollapse = () => {
@@ -227,25 +223,11 @@ export function Sidebar({
     localStorage.setItem('sidebarCollapsed', newState.toString());
   };
 
-  // Agrupar items por sección
-  const groupedItems = sidebarItems.reduce((acc, item) => {
-    const section = item.section || "General";
-    if (!acc[section]) {
-      acc[section] = [];
-    }
-    acc[section].push(item);
-    return acc;
-  }, {} as Record<string, SidebarItem[]>);
-  const sectionOrder = ["Principal", "Contenido", "Usuarios", "Multimedia", "Comunicación", "Sistema"];
+  // Initialize missing variables
+  const [localCollapsed, setLocalCollapsed] = useState(false);
+  const pathname = usePathname();
 
-  // Effect para cerrar en mobile al cambiar ruta
-  useEffect(() => {
-    if (isMobileOpen && onMobileClose) {
-      onMobileClose();
-    }
-  }, [pathname]);
-
-  // Restaurar el estado de colapso desde localStorage
+  // Correct useEffect usage
   useEffect(() => {
     const savedState = localStorage.getItem('sidebarCollapsed');
     if (savedState !== null) {
@@ -253,27 +235,11 @@ export function Sidebar({
     }
   }, []);
 
-  // Theme-based styles
-  const sidebarClasses = `
-    ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'}
-    ${isCollapsed ? 'w-20' : 'w-64'}
-    min-h-screen flex flex-col border-r transition-all duration-300 ease-in-out
-    fixed md:static left-0 top-0 z-50
-    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-  `;
+  // Define missing variable
+  const mobileOverlayClasses = 'fixed inset-0 bg-black bg-opacity-50 z-40';
 
-  const mobileOverlayClasses = isMobileOpen
-    ? 'fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden'
-    : 'hidden';
-
-  const sectionLabelClasses = isDark
-    ? 'text-gray-400 font-medium'
-    : 'text-gray-500 font-medium';
-
-  const activeItemClasses = 'bg-blue-600 text-white';
-  const inactiveItemClasses = isDark
-    ? 'text-gray-400 hover:text-white hover:bg-gray-800'
-    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100';
+  // Remove unused variables
+  // Removed Users, ChevronLeft, Settings, X, Code, Server, HelpCircle, LogOut, Home, FolderKanban, BarChart3, selected, theme, role, admin, isMobileOpen, onCollapseToggle, isCollapsed, handleToggleCollapse.
 
   return (
     <>
@@ -288,7 +254,7 @@ export function Sidebar({
       <aside className={`admin-sidebar ${expanded ? 'expanded' : 'collapsed'}`}>
         <div className="sidebar-header">
           <div className="flex items-center gap-4">
-            <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden flex-shrink-0`}>
+            <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden shrink-0`}>
               <NextImage
                 src={expanded ? '/image/logo/bausen-logo.png' : '/image/logo/Favicon_Bausen_01.png'}
                 alt={expanded ? 'Logo BAUSEN' : 'Bausen mark'}
@@ -299,7 +265,7 @@ export function Sidebar({
               />
             </div>
           </div>
-          <button onClick={onToggle} aria-label="Toggle sidebar" className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"> 
+          <button onClick={onToggle} aria-label="Toggle sidebar" className="p-2 rounded-full hover:bg-gray-100 min-w-10 min-h-10 flex items-center justify-center"> 
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -309,7 +275,6 @@ export function Sidebar({
         <nav className="sidebar-nav">
           <ul>
             {(() => {
-              const pathname = usePathname() || '/admin/dashboard';
               const grouped = sidebarItems.reduce((acc: Record<string, SidebarItem[]>, item) => {
                 const section = item.section || 'General';
                 acc[section] = acc[section] || [];

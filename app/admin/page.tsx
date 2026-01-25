@@ -2,47 +2,88 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, Eye, EyeOff, Loader2, AlertCircle, Shield, User, Key, ArrowRight, CheckCircle } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Loader2, CheckCircle, Building2 } from 'lucide-react';
 import Image from 'next/image';
+
+// Types for form state
+interface FormState {
+  email: string;
+  password: string;
+}
+
+interface FocusState {
+  email: boolean;
+  password: boolean;
+}
+
+interface ValidationErrors {
+  email?: string;
+  password?: string;
+}
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [usuario, setUsuario] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [logueado, setLogueado] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [remember, setRemember] = useState(false);
+  
+  // Form state
+  const [form, setForm] = useState<FormState>({ email: '', password: '' });
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isFocused, setIsFocused] = useState({ email: false, password: false });
+  const [focused, setFocused] = useState<FocusState>({ email: false, password: false });
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  
+  // Remember me state
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // Verificar credenciales guardadas
+  // Load saved credentials on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem('remembered_email');
     const savedRemember = localStorage.getItem('remember_me') === 'true';
     
     if (savedEmail && savedRemember) {
-      setUsuario(savedEmail);
-      setRemember(true);
+      setForm(prev => ({ ...prev, email: savedEmail }));
+      setRememberMe(true);
     }
   }, []);
 
-  const handleLogin = async (e?: FormEvent) => {
-    if (e) e.preventDefault();
-    setError('');
+  // Validation function
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
     
-    // Validación básica
-    if (!usuario.trim() || !password.trim()) {
-      setError('Por favor, completa todos los campos');
-      return;
+    if (!form.email.trim()) {
+      newErrors.email = 'El correo electrónico es requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Por favor, ingresa un correo válido';
     }
-
-    if (!usuario.includes('@')) {
-      setError('Por favor, ingresa un correo electrónico válido');
-      return;
+    
+    if (!form.password) {
+      newErrors.password = 'La contraseña es requerida';
+    } else if (form.password.length < 4) {
+      newErrors.password = 'Mínimo 4 caracteres';
     }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    setLoading(true);
+  // Handle input changes with real-time validation
+  const handleInputChange = (field: keyof FormState, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e?: FormEvent) => {
+    if (e) e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    setErrors({});
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/login`, {
@@ -53,281 +94,330 @@ export default function AdminLogin() {
         },
         credentials: 'include',
         body: JSON.stringify({ 
-          email: usuario.trim().toLowerCase(), 
-          password: password 
+          email: form.email.trim().toLowerCase(), 
+          password: form.password 
         }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.ok) {
-        // Guardar datos de sesión
+        // Save session data
         sessionStorage.setItem('admin', String(data.admin).toLowerCase());
         sessionStorage.setItem('role', data.role);
         sessionStorage.setItem('admin_token', 'true');
-        sessionStorage.setItem('user_email', data.email || usuario);
+        sessionStorage.setItem('user_email', data.email || form.email);
         sessionStorage.setItem('user_name', data.name || '');
         sessionStorage.setItem('last_login', new Date().toISOString());
 
-        // Guardar credenciales si "Recordarme" está activado
-        if (remember) {
-          localStorage.setItem('remembered_email', usuario);
+        // Handle remember me
+        if (rememberMe) {
+          localStorage.setItem('remembered_email', form.email);
           localStorage.setItem('remember_me', 'true');
         } else {
           localStorage.removeItem('remembered_email');
           localStorage.removeItem('remember_me');
         }
 
-        setLogueado(true);
+        setLoginSuccess(true);
         
-        // Redirigir con retraso para mostrar feedback
+        // Redirect after showing success animation
         setTimeout(() => {
           router.push('/admin/dashboard');
           router.refresh();
-        }, 1200);
+        }, 1500);
       } else {
         const backendError = data.error || data.message || 'Credenciales incorrectas';
-        setError(backendError);
+        setErrors({ email: backendError });
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Error de conexión con el servidor. Verifica tu conexión a internet.');
+      setErrors({ email: 'Error de conexión. Verifica tu conexión a internet.' });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  // Manejar Enter para enviar formulario
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !loading) {
+  // Handle keyboard submit
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isSubmitting) {
       e.preventDefault();
-      handleLogin();
+      handleSubmit();
     }
   };
 
-  // Pantalla de acceso autorizado
-  if (logueado) {
+  // Success screen
+  if (loginSuccess) {
     return (
-      <div className="relative min-h-screen w-full flex items-center justify-center">
-        <Image
-          src="/image/login/bg-login.jpg"
-          alt="Fondo login admin"
-          fill
-          style={{ objectFit: 'cover', zIndex: 0 }}
-          priority
-          className="absolute inset-0"
-        />
-        <div className="absolute inset-0 bg-linear-to-br from-blue-900/90 via-slate-900/85 to-blue-900/90 backdrop-blur-sm" />
+      <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900" />
+        <div className="absolute inset-0 bg-[url('/image/login/bg-login.jpg')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40" />
         
-        <div className="relative z-10 text-center p-8 max-w-md">
-          <div className="mb-8 animate-scale">
-            <div className="w-24 h-24 bg-linear-to-br from-blue-500 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/40">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        </div>
+
+        {/* Success card */}
+        <div className="relative z-10 text-center animate-fade-in-up">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
+            <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30 animate-scale">
               <CheckCircle className="w-12 h-12 text-white" />
             </div>
-            <h2 className="text-4xl font-bold text-transparent mb-3 bg-linear-to-r from-blue-300 to-cyan-300 bg-clip-text">
+            <h2 className="text-3xl font-bold text-white mb-3">
               ¡Acceso Autorizado!
             </h2>
-            <p className="text-blue-100 text-lg mb-6">
+            <p className="text-slate-300 text-lg mb-8">
               Bienvenido al panel de administración
             </p>
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <span className="text-blue-300 text-sm ml-2">Redirigiendo...</span>
+            <div className="flex items-center justify-center gap-2">
+              <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <span className="text-blue-300 text-sm ml-3">Redirigiendo...</span>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <main className="relative min-h-screen w-full flex items-center justify-center p-4">
-      {/* Fondo con imagen */}
-      <Image
-        src="/image/login/bg-login.jpg"
-        alt="Fondo login admin"
-        fill
-        style={{ objectFit: 'cover', zIndex: 0 }}
-        priority
-        className="absolute inset-0"
-      />
-
-      {/* Overlay azul para mejor contraste */}
-      <div className="absolute inset-0 bg-linear-to-br from-blue-900/80 via-slate-900/75 to-blue-900/80 backdrop-blur-sm"></div>
-
-      {/* Efectos de partículas azules */}
+    <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden p-4">
+      {/* Background layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900" />
+      <div className="absolute inset-0 bg-[url('/image/login/bg-login.jpg')] bg-cover bg-center opacity-20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40" />
+      
+      {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md animate-slide-up">
-        <div className="bg-linear-to-br from-slate-900/90 to-blue-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-800/30 overflow-hidden">
-          {/* Header con gradiente azul */}
-          <div className="relative pt-10 pb-8 px-8 text-center bg-linear-to-r from-blue-900/40 via-blue-800/30 to-cyan-900/40">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-400 via-cyan-400 to-blue-500"></div>
-            
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative mb-4">
-                <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-400/20 p-2 shadow-lg flex items-center justify-center">
+      {/* Main login card */}
+      <div className="relative z-10 w-full max-w-md animate-fade-in-up">
+        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
+          
+          {/* Header section */}
+          <div className="relative pt-10 pb-8 px-8 text-center border-b border-white/10">
+            {/* Logo container */}
+            <div className="flex justify-center mb-6">
+              <div className="relative group">
+                <div className="absolute -inset-2 bg-gradient-to-br from-blue-500/30 to-cyan-400/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative bg-white/10 rounded-2xl p-4 border border-white/20">
                   <Image
                     src="/image/logo/Bausen.png"
                     alt="Logo Bausen"
-                    width={96}
-                    height={96}
-                    className="rounded-xl"
+                    width={180}
+                    height={72}
+                    className="h-16 w-auto object-contain"
                     priority
+                    sizes="(max-width: 768px) 140px, 180px"
                   />
                 </div>
               </div>
-              <h1 className="text-2xl font-bold text-transparent mb-2 bg-linear-to-r from-blue-300 to-cyan-300 bg-clip-text">
-                Portal Administrativo
-              </h1>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                <p className="text-blue-300/80 text-sm">Acceso seguro restringido</p>
+            </div>
+            
+            {/* Title and subtitle */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Building2 className="w-5 h-5 text-blue-400" />
+                <h1 className="text-2xl font-bold text-white tracking-tight">
+                  Portal Administrativo
+                </h1>
               </div>
+              <p className="text-slate-400 text-sm">
+                Ingresa tus credenciales para continuar
+              </p>
             </div>
           </div>
 
-          {/* Formulario */}
-          <div className="px-8 pb-10 space-y-6">
-            <form onSubmit={handleLogin} className="space-y-6">
-              {/* Campo Email */}
+          {/* Form section */}
+          <div className="px-8 pb-10 pt-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              {/* Email field */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-blue-200 flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <label 
+                  htmlFor="email" 
+                  className="text-sm font-medium text-slate-200 flex items-center gap-2 ml-1"
+                >
+                  <Mail className="w-4 h-4 text-blue-400" />
                   Correo electrónico
                 </label>
-                <div className={`relative transition-all duration-300 ${isFocused.email ? 'scale-[1.02]' : ''}`}>
-                  <div className="absolute inset-0 rounded-xl bg-linear-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400/70 transition-colors duration-300" />
+                <div className="relative">
+                  <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-opacity duration-200 ${focused.email ? 'opacity-100' : 'opacity-50'}`}>
+                    <Mail className={`w-5 h-5 transition-colors ${focused.email ? 'text-blue-400' : 'text-slate-400'}`} />
+                  </div>
                   <input
+                    id="email"
                     type="email"
+                    value={form.email}
+                    onChange={e => handleInputChange('email', e.target.value)}
+                    onFocus={() => setFocused(prev => ({ ...prev, email: true }))}
+                    onBlur={() => setFocused(prev => ({ ...prev, email: false }))}
+                    onKeyDown={handleKeyDown}
                     placeholder="admin@empresa.com"
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-800/40 border-2 border-blue-800/50 rounded-xl text-white placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300 cursor-text"
-                    value={usuario}
-                    onChange={e => setUsuario(e.target.value)}
-                    onFocus={() => setIsFocused(prev => ({ ...prev, email: true }))}
-                    onBlur={() => setIsFocused(prev => ({ ...prev, email: false }))}
-                    onKeyDown={handleKeyPress}
+                    disabled={isSubmitting}
                     autoComplete="email"
                     autoFocus
-                    disabled={loading}
-                    id="email-input"
-                    name="email"
+                    className={`w-full pl-12 pr-4 py-3.5 bg-white/5 border-2 rounded-xl text-white placeholder-slate-400 
+                      transition-all duration-200 outline-none
+                      ${errors.email 
+                        ? 'border-rose-500/50 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' 
+                        : 'border-white/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
+                      }
+                      ${focused.email ? 'bg-white/10' : ''}
+                    `}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-rose-400 text-xs ml-1 mt-1 flex items-center gap-1">
+                    <span className="w-1 h-1 bg-rose-400 rounded-full" />
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
-              {/* Campo Contraseña */}
+              {/* Password field */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-blue-200 flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
+                <label 
+                  htmlFor="password" 
+                  className="text-sm font-medium text-slate-200 flex items-center gap-2 ml-1"
+                >
+                  <Lock className="w-4 h-4 text-blue-400" />
                   Contraseña
                 </label>
-                <div className={`relative transition-all duration-300 ${isFocused.password ? 'scale-[1.02]' : ''}`}>
-                  <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400/70 transition-colors duration-300" />
+                <div className="relative">
+                  <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-opacity duration-200 ${focused.password ? 'opacity-100' : 'opacity-50'}`}>
+                    <Lock className={`w-5 h-5 transition-colors ${focused.password ? 'text-blue-400' : 'text-slate-400'}`} />
+                  </div>
                   <input
+                    id="password"
                     type={showPassword ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={e => handleInputChange('password', e.target.value)}
+                    onFocus={() => setFocused(prev => ({ ...prev, password: true }))}
+                    onBlur={() => setFocused(prev => ({ ...prev, password: false }))}
+                    onKeyDown={handleKeyDown}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-12 py-3.5 bg-slate-800/40 border-2 border-blue-800/50 rounded-xl text-white placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300 cursor-text"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    onFocus={() => setIsFocused(prev => ({ ...prev, password: true }))}
-                    onBlur={() => setIsFocused(prev => ({ ...prev, password: false }))}
-                    onKeyDown={handleKeyPress}
+                    disabled={isSubmitting}
                     autoComplete="current-password"
-                    disabled={loading}
-                    id="password-input"
-                    name="password"
+                    className={`w-full pl-12 pr-12 py-3.5 bg-white/5 border-2 rounded-xl text-white placeholder-slate-400 
+                      transition-all duration-200 outline-none
+                      ${errors.password 
+                        ? 'border-rose-500/50 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' 
+                        : 'border-white/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
+                      }
+                      ${focused.password ? 'bg-white/10' : ''}
+                    `}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400/70 hover:text-blue-300 transition-colors"
-                    disabled={loading}
-                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    disabled={isSubmitting}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-rose-400 text-xs ml-1 mt-1 flex items-center gap-1">
+                    <span className="w-1 h-1 bg-rose-400 rounded-full" />
+                    {errors.password}
+                  </p>
+                )}
               </div>
 
-              {/* Opciones y recordar */}
-              <div className="flex items-center justify-between text-sm">
+              {/* Remember me checkbox */}
+              <div className="flex items-center justify-between pt-1">
                 <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      checked={remember}
-                      onChange={e => setRemember(e.target.checked)}
-                      className="sr-only"
-                      disabled={loading}
-                      id="remember-me"
-                    />
-                    <div 
-                      className={`w-5 h-5 rounded border-2 ${remember ? 'bg-blue-500 border-blue-500' : 'bg-slate-800/60 border-blue-700/50 group-hover:border-blue-500'} transition-all duration-200 flex items-center justify-center cursor-pointer`}
-                      onClick={() => setRemember(!remember)}
-                    >
-                      {remember && (
-                        <CheckCircle className="w-3 h-3 text-white" />
-                      )}
-                    </div>
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                    disabled={isSubmitting}
+                    className="sr-only"
+                    id="remember"
+                  />
+                  <div 
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200 cursor-pointer
+                      ${rememberMe 
+                        ? 'bg-blue-500 border-blue-500' 
+                        : 'border-slate-500 group-hover:border-slate-400'
+                      }
+                    `}
+                    onClick={() => !isSubmitting && setRememberMe(!rememberMe)}
+                  >
+                    {rememberMe && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                   </div>
-                  <span className="text-blue-200 group-hover:text-blue-100 transition-colors select-none">
-                    Recordar credenciales
+                  <span className="text-slate-300 text-sm group-hover:text-white transition-colors select-none">
+                    Recordar sesión
                   </span>
                 </label>
+                
+                <a 
+                  href="#" 
+                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  ¿Olvidaste tu contraseña?
+                </a>
               </div>
 
-              {/* Mensaje de error */}
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-start gap-3 animate-shake">
-                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-red-200 text-sm font-medium">{error}</p>
-                    <p className="text-red-300/70 text-xs mt-1">Verifica tus credenciales e intenta nuevamente</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Botón de login */}
+              {/* Submit button */}
               <button
                 type="submit"
-                disabled={loading || !usuario.trim() || !password.trim()}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold py-4 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
               >
-                <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-                {loading ? (
+                {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Verificando acceso...</span>
+                    <span>Verificando credenciales...</span>
                   </>
                 ) : (
                   <>
-                    <span>Acceder al panel</span>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <span>Iniciar sesión</span>
+                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </>
                 )}
               </button>
             </form>
           </div>
+          
+          {/* Footer */}
+          <div className="px-8 py-4 bg-black/10 border-t border-white/5">
+            <p className="text-center text-slate-400 text-xs">
+              © {new Date().getFullYear()} Bausen. Todos los derechos reservados.
+            </p>
+          </div>
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-          20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1, transform: translateY(0); }
+      {/* CSS Animations - using style tag for simplicity */}
+      <style jsx global>{`
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         
         @keyframes scale {
@@ -335,18 +425,15 @@ export default function AdminLogin() {
           50% { transform: scale(1.05); }
         }
         
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
         .animate-scale {
           animation: scale 1.5s ease-in-out infinite;
-        }
-        
-        .animate-slide-up {
-          animation: slide-up 0.7s ease-out forwards;
-        }
-        
-        .animate-shake {
-          animation: shake 0.6s ease-in-out forwards;
         }
       `}</style>
     </main>
   );
 }
+

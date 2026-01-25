@@ -1,10 +1,10 @@
 ﻿"use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { TranslateText } from "@/components/TranslateText";
-import { Users, Plus, RefreshCw } from "lucide-react";
+import { Users, Plus, RefreshCw, BarChart3, Search } from "lucide-react";
 
 import UserStats from "./UserStats";
 import { UserFilter } from "./UserFilter";
@@ -12,7 +12,11 @@ import UserCardList from "./UserCardList";
 import { UserFormModal } from "./UserFormModal";
 import { DeleteUserModal } from "./DeleteUserModal";
 import UserDetailsModal from "./UserDetailsModal";
-import AdminPageShell from "@/app/admin/components/layout/AdminPageShell";
+
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
 
 export interface Usuario {
   email: string;
@@ -21,12 +25,15 @@ export interface Usuario {
   bloqueado?: boolean;
 }
 
+type TabId = 'list' | 'stats';
+
 export default function UsuariosPage() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [themeReady, setThemeReady] = useState(false);
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
+  
   const [users, setUsers] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,30 +44,30 @@ export default function UsuariosPage() {
   const [filter, setFilter] = useState("");
   const [detailsUser, setDetailsUser] = useState<Usuario | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>("list");
+  
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    list: false,
+    stats: false,
+  });
 
-  // Theme initialization
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
+  };
+
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchUsers(true);
+  }, []);
+
+  // Theme initialization and page size persistence
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedPageSize = window.localStorage.getItem('usuarios_pageSize');
       if (savedPageSize) setPageSize(parseInt(savedPageSize));
-      
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        setTheme(savedTheme);
-      }
-      
-      setThemeReady(true);
-
-      const handleStorage = (e: StorageEvent) => {
-        if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) {
-          setTheme(e.newValue);
-        }
-      };
-      
-      window.addEventListener('storage', handleStorage);
-      return () => window.removeEventListener('storage', handleStorage);
-    } else {
-      setThemeReady(true);
     }
   }, []);
 
@@ -74,7 +81,6 @@ export default function UsuariosPage() {
       const storedRole = sessionStorage.getItem("role") || "";
       const storedAdmin = sessionStorage.getItem("admin") === "true";
       
-      // Obtener token de autenticación si existe
       const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
       
       const headers: Record<string, string> = { 
@@ -83,7 +89,6 @@ export default function UsuariosPage() {
         'Content-Type': 'application/json'
       };
       
-      // Agregar token si existe
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -95,20 +100,15 @@ export default function UsuariosPage() {
       });
       
       const data = await res.json();
-      // console.log('API Response:', res.status, res.ok, data);
       let userList = [];
       
       if (res.ok && data.items && Array.isArray(data.items)) {
         userList = data.items;
-        // console.log('Using data.items (paginated response):', userList.length, 'users');
       } else if (res.ok && data.ok && Array.isArray(data.users)) {
         userList = data.users;
-        // console.log('Using data.users:', userList.length, 'users');
       } else if (res.ok && Array.isArray(data)) {
         userList = data;
-        // console.log('Using data as array:', userList.length, 'users');
       } else {
-        // console.error('Unexpected response structure:', data);
         setError(data.message || data.error || "No se pudieron obtener los usuarios.");
         return;
       }
@@ -302,198 +302,148 @@ export default function UsuariosPage() {
     }
   };
 
-  const handleToggleTheme = () => {
-    setTheme(prev => {
-      const newTheme = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      // No necesitamos dispatchEvent aquí ya que el cambio es local
-      return newTheme;
-    });
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin');
-    sessionStorage.removeItem('role');
-    router.push('/admin');
-  };
+  const tabs: TabItem[] = [
+    { id: 'list', label: 'Usuarios', icon: <Users size={18} /> },
+    { id: 'stats', label: 'Estadísticas', icon: <BarChart3 size={18} /> },
+  ];
 
   if (!themeReady) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
-      }`}>
-        <div className="text-center">
-          <div className={`inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4 ${
-            theme === 'dark' ? 'border-blue-500' : 'border-blue-600'
-          }`}></div>
-          <p className={`text-lg font-semibold ${
-            theme === 'dark' ? 'text-white' : 'text-slate-800'
-          }`}>
-            Cargando...
-          </p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <AdminPageShell containerClassName={`flex min-h-screen ${
-      theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
-    }`}>
-      <main className="flex-1 p-4 md:p-6 lg:p-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <div className={`p-3 rounded-lg ${
-              theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
-            }`}>
-              <Users className={`w-6 h-6 ${
-                theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-              }`} />
-            </div>
-            <div>
-              <h1 className={`text-xl md:text-2xl font-bold ${
-                theme === 'dark' ? 'text-white' : 'text-slate-900'
-              }`}>
-                <TranslateText text="Gestión de Usuarios" />
-              </h1>
-              <p className={`text-sm ${
-                theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-              }`}>
-                <TranslateText text="Administra usuarios y permisos" />
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Gestión de Usuarios"
+        subtitle="Administra usuarios y permisos"
+        icon={<Users className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          add: { onClick: handleAdd, label: 'Agregar Usuario', loading: processing }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Usuarios" }]}
+      />
 
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => fetchUsers(true)} 
-              disabled={refreshing}
-              className={`p-2.5 rounded-lg transition-colors ${
-                refreshing ? 'opacity-50' : ''
-              } ${
-                theme === 'dark' 
-                  ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
-                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-              }`}
-            >
-              <RefreshCw className={`w-5 h-5 ${
-                refreshing ? 'animate-spin' : ''
-              }`} />
-            </button>
-            
-            <button 
-              onClick={handleAdd} 
-              disabled={processing}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              <TranslateText text="Agregar Usuario" />
-            </button>
-          </div>
-        </div>
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
 
-        {loading ? (
-            <div className={`rounded-lg border p-12 ${
-              theme === 'dark' ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200'
-            }`}>
-              <div className="flex flex-col items-center justify-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-blue-600 mb-4"></div>
-                <p className={`text-sm ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-                }`}>
+      <AdminSection theme={themeStrict}>
+        {activeTab === 'stats' && (
+          <UserStats users={users} theme={themeStrict} />
+        )}
+
+        {activeTab === 'list' && (
+          <>
+            {/* Error state */}
+            {error && (
+              <div className={`rounded-lg border p-6 mb-6 ${
+                themeStrict === 'dark' ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'
+              }`}>
+                <p className={themeStrict === 'dark' ? 'text-red-400' : 'text-red-600'}>
+                  {error}
+                </p>
+              </div>
+            )}
+
+            {/* Loading state */}
+            {loading ? (
+              <div className="rounded-lg border p-12 flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-blue-600 mb-4"></div>
+                <p className={themeStrict === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
                   <TranslateText text="Cargando usuarios..." />
                 </p>
               </div>
-            </div>
-          ) : error ? (
-            <div className={`rounded-lg border p-6 ${
-              theme === 'dark' ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'
-            }`}>
-              <p className={`text-sm ${
-                theme === 'dark' ? 'text-red-400' : 'text-red-600'
-              }`}>
-                {error}
-              </p>
-            </div>
-          ) : (
-            <>
-              <UserStats users={users} theme={theme} />
-              
-              <UserFilter value={filter} onChange={setFilter} theme={theme} />
-              
-              {/* Page Size Selector */}
-              <div className="flex items-center justify-end gap-3 mb-4">
-                <label className={`text-sm ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-                }`}>
-                  <TranslateText text="Mostrar:" />
-                </label>
-                <select 
-                  value={pageSize} 
-                  onChange={e => { 
-                    setPageSize(Number(e.target.value)); 
-                    localStorage.setItem('usuarios_pageSize', e.target.value); 
-                    setPage(1); 
-                  }}
-                  className={`px-3 py-1.5 rounded-lg border text-sm ${
-                    theme === 'dark' 
-                      ? 'bg-slate-800 border-slate-700 text-white' 
-                      : 'bg-white border-slate-300 text-slate-900'
-                  }`}
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-              </div>
+            ) : (
+              <>
+                <UserFilter value={filter} onChange={setFilter} theme={themeStrict} />
+                
+                {/* Page Size Selector */}
+                <div className="flex items-center justify-end gap-3 mb-4">
+                  <label className={`text-sm ${
+                    themeStrict === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    <TranslateText text="Mostrar:" />
+                  </label>
+                  <select 
+                    value={pageSize} 
+                    onChange={e => { 
+                      setPageSize(Number(e.target.value)); 
+                      localStorage.setItem('usuarios_pageSize', e.target.value); 
+                      setPage(1); 
+                    }}
+                    className={`px-3 py-1.5 rounded-lg border text-sm ${
+                      themeStrict === 'dark' 
+                        ? 'bg-gray-800 border-gray-700 text-white' 
+                        : 'bg-white border-gray-300 text-gray-900'
+                    }`}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                  </select>
+                </div>
 
-              <UserCardList
-                users={filteredUsers}
-                page={page}
-                pageSize={pageSize}
-                onPageChange={setPage}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onBlock={handleBlock}
-                onViewDetails={setDetailsUser}
-                theme={theme}
-              />
-            </>
-          )}
+                <UserCardList
+                  users={filteredUsers}
+                  page={page}
+                  pageSize={pageSize}
+                  onPageChange={setPage}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onBlock={handleBlock}
+                  onViewDetails={setDetailsUser}
+                  theme={themeStrict}
+                />
+              </>
+            )}
+          </>
+        )}
+      </AdminSection>
 
-          {/* Modals */}
-          {showForm && (
-            <UserFormModal
-              initial={editUser ? { 
-                email: editUser.email, 
-                roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []),
-              } : undefined}
-              isEdit={!!editUser} 
-              onSubmit={handleFormSubmit} 
-              onClose={() => setShowForm(false)} 
-            />
-          )}
-          
-          <UserDetailsModal 
-            user={detailsUser} 
-            onClose={() => setDetailsUser(null)} 
-            theme={theme} 
-          />
-          
-          <DeleteUserModal 
-            userEmail={deleteUser?.email || ""} 
-            open={!!deleteUser} 
-            onConfirm={confirmDeleteUser}
-            onCancel={() => { 
-              setDeleteUser(null); 
-              setProcessing(false); 
-            }} 
-            processing={processing} 
-            theme={theme} 
-          />
-        </main>
-    </AdminPageShell>
+      {/* Modals */}
+      {showForm && (
+        <UserFormModal
+          initial={editUser ? { 
+            email: editUser.email, 
+            roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []),
+          } : undefined}
+          isEdit={!!editUser} 
+          onSubmit={handleFormSubmit} 
+          onClose={() => setShowForm(false)} 
+        />
+      )}
+      
+      <UserDetailsModal 
+        user={detailsUser} 
+        onClose={() => setDetailsUser(null)} 
+        theme={themeStrict} 
+      />
+      
+      <DeleteUserModal 
+        userEmail={deleteUser?.email || ""} 
+        open={!!deleteUser} 
+        onConfirm={confirmDeleteUser}
+        onCancel={() => { 
+          setDeleteUser(null); 
+          setProcessing(false); 
+        }} 
+        processing={processing} 
+        theme={themeStrict} 
+      />
+    </div>
   );
 }
+

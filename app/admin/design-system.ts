@@ -278,8 +278,201 @@ export function useAdminTheme() {
     getButtonClasses,
     getInputClasses,
     getTableClasses,
+    getPageHeaderClasses,
+    getSectionClasses,
+    getTabClasses,
+    getTabsContainerClasses,
+    getFilterBarClasses,
     ADMIN_COLORS,
     CARD_STYLES,
     BUTTON_STYLES
   };
+}
+
+// ============================================================================
+// HEADERS DE PÁGINA
+// ============================================================================
+
+export function getPageHeaderClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `rounded-2xl p-5 md:p-6 border transition-all duration-300 ${
+    isDark
+      ? 'bg-linear-to-br from-slate-900 to-slate-800 border-slate-700/50'
+      : 'bg-linear-to-br from-white to-slate-50 border-slate-200'
+  }`;
+}
+
+export function getPageTitleClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `text-xl md:text-2xl font-bold ${
+    isDark ? 'text-white' : 'text-slate-900'
+  }`;
+}
+
+export function getPageSubtitleClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`;
+}
+
+// ============================================================================
+// SECCIONES
+// ============================================================================
+
+export function getSectionClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `transition-all duration-300 ${
+    isDark ? 'bg-slate-900/50' : 'bg-white'
+  }`;
+}
+
+export function getSectionPadding(): string {
+  return 'p-4 md:p-6 lg:p-8';
+}
+
+// ============================================================================
+// TABS
+// ============================================================================
+
+export function getTabsContainerClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `rounded-xl border overflow-hidden ${
+    isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+  }`;
+}
+
+export function getTabClasses(active: boolean, theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  if (active) {
+    return `px-6 py-3 font-medium transition-colors ${
+      isDark
+        ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+        : 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+    }`;
+  }
+  return `px-6 py-3 font-medium transition-colors ${
+    isDark
+      ? 'text-slate-400 hover:text-slate-300'
+      : 'text-slate-600 hover:text-slate-800'
+  }`;
+}
+
+export function getTabListClass(): string {
+  return 'flex';
+}
+
+// ============================================================================
+// BARRAS DE FILTRO
+// ============================================================================
+
+export function getFilterBarClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 ${
+    isDark ? 'text-slate-300' : 'text-slate-700'
+  }`;
+}
+
+export function getFilterChipClasses(active: boolean, theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  if (active) {
+    return 'bg-blue-600 text-white';
+  }
+  return isDark
+    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+    : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200';
+}
+
+// ============================================================================
+// BOTONES DE ACCIÓN RÁPIDA
+// ============================================================================
+
+export function getActionButtonClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+    isDark
+      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'
+      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+  }`;
+}
+
+export function getRefreshButtonClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
+    isDark
+      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+      : 'bg-white hover:bg-slate-50 text-slate-700 shadow-sm'
+  }`;
+}
+
+// ============================================================================
+// CARGANDO Y ESTADOS
+// ============================================================================
+
+export function getLoadingSpinnerClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `inline-block animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 ${
+    isDark ? 'border-blue-500' : 'border-blue-600'
+  }`;
+}
+
+export function getLoadingContainerClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `flex min-h-screen items-center justify-center ${
+    isDark ? 'bg-slate-950' : 'bg-slate-50'
+  }`;
+}
+
+export function getErrorContainerClasses(theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  return `text-center p-8 max-w-md ${
+    isDark ? 'text-slate-400' : 'text-slate-600'
+  }`;
+}
+
+// ============================================================================
+// ESPACIADO Y GRID
+// ============================================================================
+
+export const SPACING = {
+  xs: '0.25rem',   // 4px
+  sm: '0.5rem',    // 8px
+  md: '1rem',      // 16px
+  lg: '1.5rem',    // 24px
+  xl: '2rem',      // 32px
+  '2xl': '3rem',   // 48px
+};
+
+export const GRID_COLS = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-1 sm:grid-cols-2',
+  3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+  5: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5',
+  6: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6',
+};
+
+// ============================================================================
+// BORDER RADIUS CONSISTENTE
+// ============================================================================
+
+export const BORDER_RADIUS = {
+  sm: 'rounded-lg',
+  md: 'rounded-xl',
+  lg: 'rounded-2xl',
+  full: 'rounded-full',
+};
+
+// ============================================================================
+// ICONOS Y BADGES
+// ============================================================================
+
+export function getBadgeClasses(variant: 'default' | 'success' | 'warning' | 'error' | 'info', theme: 'light' | 'dark'): string {
+  const isDark = theme === 'dark';
+  const variants = {
+    default: isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-700',
+    success: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    warning: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    error: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
+    info: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  };
+  return `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]}`;
 }
