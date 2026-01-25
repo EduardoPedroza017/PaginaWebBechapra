@@ -1,6 +1,6 @@
-﻿"use client";
+﻿﻿"use client";
 import React, { useEffect, useState } from "react";
-import { Service } from "./components/ServiceForm";
+import type { Service } from "./components/ServiceForm";
 import { ServiceEditModal } from "./components/ServiceEditModal";
 import { DeleteServiceModal } from "./components/DeleteServiceModal";
 import { ServiceCardList } from "./components/ServiceCardList";
@@ -9,6 +9,11 @@ import ServicePageForm from "./components/ServicePageForm";
 import { Button } from "../components/shared/Button";
 
 import { TranslateText } from "@/components/TranslateText";
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
+import { List, Plus, Settings, Briefcase } from "lucide-react";
 
 // Define the API URL from the environment variable
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -16,18 +21,12 @@ if (!apiUrl) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
 }
 
-// Define the headers variable
-const headers: Record<string, string> = { "Content-Type": "application/json" };
-if (typeof window !== "undefined") {
-  const storedUser = sessionStorage.getItem("user_email");
-  const storedRole = sessionStorage.getItem("role");
-  const storedAdmin = sessionStorage.getItem("admin");
-  if (storedUser) headers["X-User"] = storedUser;
-  if (storedRole) headers["X-Role"] = storedRole;
-  if (storedAdmin) headers["X-Admin"] = storedAdmin;
-}
+type TabId = 'list' | 'create' | 'settings';
 
 export default function ServiciosAdminPage() {
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
+  
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -42,6 +41,24 @@ export default function ServiciosAdminPage() {
   const [pageInitialHandle, setPageInitialHandle] = useState<string | undefined>(undefined);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const toastTimerRef = { current: null as number | null };
+  
+  const [activeTab, setActiveTab] = useState<TabId>("list");
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    list: false,
+    create: false,
+    settings: false,
+  });
+
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
+  };
+
+  const handleRefresh = () => {
+    fetchServices();
+  };
 
   useEffect(() => {
     fetchServices();
@@ -169,6 +186,13 @@ export default function ServiciosAdminPage() {
 
   async function handleDeleteConfirm() {
     if (deleteData?.id) {
+      const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
+      const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
+      const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
+      const headers: Record<string, string> = {};
+      if (storedUser) headers['X-User'] = storedUser;
+      if (storedRole) headers['X-Role'] = storedRole;
+      if (storedAdmin) headers['X-Admin'] = storedAdmin;
       await fetch(`${apiUrl}/api/services/cards/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
     }
     setDeleteOpen(false);
@@ -200,99 +224,163 @@ export default function ServiciosAdminPage() {
     }
   }
 
+  const tabs: TabItem[] = [
+    { id: 'list', label: 'Listado', icon: <List size={18} /> },
+    { id: 'create', label: 'Crear', icon: <Plus size={18} /> },
+    { id: 'settings', label: 'Configuración', icon: <Settings size={18} /> },
+  ];
+
+  // Note: Since we don't have access to Service and Button icons here, we'll use placeholder icons
+  // In a real implementation, you'd import the correct icons from lucide-react
+
+  if (!themeReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  // Filter services
+  const filteredServices = services.filter(s => {
+    if (onlyActive && !s.active) return false;
+    if (query && !s.name?.toLowerCase().includes(query.toLowerCase())) return false;
+    return true;
+  });
+
   return (
-    <div className="flex min-h-screen bg-slate-900">
-      
-      <div className="flex-1 flex flex-col">
-        
-        <main className="max-w-4xl mx-auto py-10 px-4">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-3xl font-extrabold text-gradient bg-linear-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
-                <TranslateText text="Servicios" />
-              </h1>
-              <p className="text-sm text-gray-400">Administra los servicios disponibles en tu plataforma</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative w-72">
-                <div className="rounded-lg border border-gray-600 bg-gray-800 text-white pl-10 pr-4 py-2">
-                  <SearchBar
-                    value={query}
-                    onChange={(q: string) => {
-                      setQuery(q);
-                      if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
-                      const t = window.setTimeout(() => {
-                        fetchServices();
-                        setSearchDebounceTimer(null);
-                      }, 300);
-                      setSearchDebounceTimer(t as unknown as number);
-                    }}
-                  />
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <i className="fas fa-search"></i>
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="text-sm mr-2">Activas</label>
-                <input type="checkbox" checked={onlyActive} onChange={(e) => { setOnlyActive(e.target.checked); fetchServices(); }} />
-              </div>
-              <Button
-                onClick={handleNew}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200"
-              >
-                <TranslateText text="Nuevo Servicio" />
-              </Button>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Gestión de Servicios"
+        subtitle="Administra los servicios disponibles"
+        icon={<Briefcase className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh },
+          add: { onClick: handleNew, label: 'Nuevo Servicio' }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Servicios" }]}
+      />
+
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AdminSection theme={themeStrict}>
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-300">
+                La configuración global de servicios se gestiona desde el backend.
+              </p>
             </div>
           </div>
-          {loading && (
-            <div className="flex justify-center items-center mt-10">
-              <div className="loader"></div>
-            </div>
-          )}
-          <ServiceCardList
-            services={services}
-            loading={loading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onToggleActive={handleToggleActive}
-            toggleLoading={toggleLoading}
-          />
-          {/* Mensaje amigable cuando no hay servicios */}
-          {!loading && services.length === 0 && (
-            <div className="text-center text-gray-500 mt-10">
-              <p>No hay servicios disponibles. ¡Crea uno nuevo!</p>
-            </div>
-          )}
-          {/* Toast */}
-          {toast.visible && (
-            <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
-              <div className="rounded-lg p-3 shadow-lg max-w-xs bg-blue-600 text-white">
-                <div className="text-sm font-medium">{toast.message}</div>
-              </div>
-            </div>
-          )}
-          <ServiceEditModal
-            open={editOpen}
-            initialData={editData}
-            onClose={() => setEditOpen(false)}
-            onSave={handleSave}
-            onContinue={(h?: string) => { if (h) { setPageInitialHandle(h); setPageFormOpen(true); setEditOpen(false); } }}
-          />
-          <DeleteServiceModal
-            open={deleteOpen}
-            service={deleteData}
-            onClose={() => setDeleteOpen(false)}
-            onConfirm={handleDeleteConfirm}
-          />
+        )}
+
+        {activeTab === 'create' && (
           <ServicePageForm
             open={pageFormOpen}
             initialHandle={pageInitialHandle}
             onClose={() => setPageFormOpen(false)}
             onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
           />
-        </main>
-      </div>
+        )}
+
+        {activeTab === 'list' && (
+          <>
+            {/* Filters */}
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="relative w-72">
+                  <div className="rounded-lg border border-gray-600 bg-gray-800 text-white pl-10 pr-4 py-2">
+                    <SearchBar
+                      value={query}
+                      onChange={(q: string) => {
+                        setQuery(q);
+                        if (searchDebounceTimer) window.clearTimeout(searchDebounceTimer);
+                        const t = window.setTimeout(() => {
+                          fetchServices();
+                          setSearchDebounceTimer(null);
+                        }, 300);
+                        setSearchDebounceTimer(t as unknown as number);
+                      }}
+                    />
+                    <span className="absolute left-3 top-2.5 text-gray-400">
+                      {/* Search icon placeholder */}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm mr-2">Activas</label>
+                  <input 
+                    type="checkbox" 
+                    checked={onlyActive} 
+                    onChange={(e) => { setOnlyActive(e.target.checked); fetchServices(); }} 
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Services List */}
+            {loading ? (
+              <div className="flex justify-center items-center mt-10">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <ServiceCardList
+                services={filteredServices}
+                loading={loading}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onToggleActive={handleToggleActive}
+                toggleLoading={toggleLoading}
+              />
+            )}
+            
+            {/* Mensaje amigable cuando no hay servicios */}
+            {!loading && filteredServices.length === 0 && (
+              <div className="text-center text-gray-500 mt-10">
+                <p>No hay servicios disponibles. ¡Crea uno nuevo!</p>
+              </div>
+            )}
+          </>
+        )}
+      </AdminSection>
+
+      {/* Toast */}
+      {toast.visible && (
+        <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+          <div className="rounded-lg p-3 shadow-lg max-w-xs bg-blue-600 text-white">
+            <div className="text-sm font-medium">{toast.message}</div>
+          </div>
+        </div>
+      )}
+
+      <ServiceEditModal
+        open={editOpen}
+        initialData={editData}
+        onClose={() => setEditOpen(false)}
+        onSave={handleSave}
+        onContinue={(h?: string) => { if (h) { setPageInitialHandle(h); setPageFormOpen(true); setEditOpen(false); } }}
+      />
+      <DeleteServiceModal
+        open={deleteOpen}
+        service={deleteData}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={handleDeleteConfirm}
+      />
+      <ServicePageForm
+        open={pageFormOpen}
+        initialHandle={pageInitialHandle}
+        onClose={() => setPageFormOpen(false)}
+        onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
+      />
     </div>
   );
 }

@@ -17,12 +17,13 @@ interface AdminPageHeaderProps {
   title: string;
   subtitle?: string;
   icon?: React.ReactNode;
-  iconColor?: 'blue' | 'purple' | 'green' | 'orange' | 'red' | 'yellow' | 'gray';
+  iconColor?: 'blue' | 'purple' | 'green' | 'emerald' | 'orange' | 'red' | 'yellow' | 'gray';
   theme?: 'light' | 'dark';
   actions?: {
     refresh?: { onClick: () => void; loading?: boolean };
-    add?: { onClick: () => void; label?: string };
+    add?: { onClick: () => void; label?: string; loading?: boolean };
     settings?: { onClick: () => void };
+    custom?: React.ReactNode;
   };
   breadcrumbs?: { label: string; href?: string }[];
   children?: React.ReactNode;
@@ -48,6 +49,7 @@ export default function AdminPageHeader({
     blue: isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-600',
     purple: isDark ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-600',
     green: isDark ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-100 text-emerald-600',
+    emerald: isDark ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-100 text-emerald-600',
     orange: isDark ? 'bg-orange-900/30 text-orange-400' : 'bg-orange-100 text-orange-600',
     red: isDark ? 'bg-rose-900/30 text-rose-400' : 'bg-rose-100 text-rose-600',
     yellow: isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-600',
@@ -122,8 +124,10 @@ export default function AdminPageHeader({
           </div>
 
           {/* Right: Actions */}
-          {(actions?.refresh || actions?.add || actions?.settings) && (
+          {(actions?.refresh || actions?.add || actions?.settings || actions?.custom) && (
             <div className="flex items-center gap-3 justify-start sm:justify-end">
+              {actions.custom && <>{actions.custom}</>}
+
               {actions.refresh && (
                 <button
                   onClick={actions.refresh.onClick}
@@ -140,9 +144,10 @@ export default function AdminPageHeader({
               {actions.add && (
                 <button
                   onClick={actions.add.onClick}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors"
+                  disabled={actions.add.loading}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className={`w-4 h-4 ${actions.add.loading ? 'animate-spin' : ''}`} />
                   <TranslateText text={actions.add.label || 'Agregar'} />
                 </button>
               )}

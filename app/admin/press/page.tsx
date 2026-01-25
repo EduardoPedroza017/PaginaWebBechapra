@@ -1,7 +1,7 @@
-﻿"use client";
+﻿﻿"use client";
 
 import React, { useEffect, useState } from "react";
-import { FileText, RefreshCw } from "lucide-react";
+import { FileText, RefreshCw, Plus, BarChart3 } from "lucide-react";
 import PressTable from "./PressTable";
 import { PressCardList } from "./PressCardList";
 import PressPreviewModal from "./PressPreviewModal";
@@ -15,6 +15,10 @@ import { TranslateText } from "@/components/TranslateText";
 import { PressSearchBar } from "./PressSearchBar";
 import { adminApi } from "../utils/admin-api";
 import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
 
 export interface PressItem {
   id: string;
@@ -25,8 +29,12 @@ export interface PressItem {
   file_url?: string;
 }
 
+type TabId = 'list' | 'create' | 'stats';
+
 export default function PressAdminApp() {
-  const [theme, setTheme] = useState<'light'|'dark'>('light');
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
+  
   const [mounted, setMounted] = useState(false);
   const [press, setPress] = useState<PressItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,18 +46,28 @@ export default function PressAdminApp() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [previewItem, setPreviewItem] = useState<PressItem | null>(null);
   const [search, setSearch] = useState("");
+  
+  const [activeTab, setActiveTab] = useState<TabId>("list");
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    list: false,
+    create: false,
+    stats: false,
+  });
+
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
+  };
+
+  const handleRefresh = () => {
+    fetchPress(true);
+  };
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        requestAnimationFrame(() => setTheme(savedTheme));
-      }
-    }
   }, []);
-
-  const handleToggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
   // Fetch press releases
   const fetchPress = async (isRefresh = false) => {
@@ -136,123 +154,107 @@ export default function PressAdminApp() {
     setShowDelete(true);
   };
 
-  if (!mounted) return null;
+  const tabs: TabItem[] = [
+    { id: 'list', label: 'Listado', icon: <FileText size={18} /> },
+    { id: 'create', label: 'Crear', icon: <Plus size={18} /> },
+    { id: 'stats', label: 'Estadísticas', icon: <BarChart3 size={18} /> },
+  ];
+
+  if (!mounted || !themeReady) return null;
+
+  const filteredPress = press.filter(item => {
+    const q = search.toLowerCase();
+    return (
+      item.title.toLowerCase().includes(q) ||
+      item.excerpt.toLowerCase().includes(q) ||
+      (item.date && new Date(item.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }).toLowerCase().includes(q))
+    );
+  });
 
   return (
-    <AdminPageShell containerClassName={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      <main className="flex-1 p-6 lg:p-8 overflow-auto">
-          {/* Page Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-            <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                theme === 'dark' ? 'bg-emerald-600/20' : 'bg-emerald-100'
-              }`}>
-                <FileText className={`w-7 h-7 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`} />
-              </div>
-              <div>
-                <h1 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  <TranslateText text="Gestión de Prensa" />
-                </h1>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <TranslateText text="Administra los comunicados de prensa" />
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => fetchPress(true)}
-              disabled={refreshing}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
-                refreshing ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'
-              } ${
-                theme === 'dark' 
-                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 shadow-sm border border-gray-200'
-              }`}
-            >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              <TranslateText text="Actualizar" />
-            </button>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Gestión de Prensa"
+        subtitle="Administra los comunicados de prensa"
+        icon={<FileText className="w-6 h-6 text-white" />}
+        iconColor="emerald"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Prensa" }]}
+      />
+
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AdminSection theme={themeStrict}>
+        {activeTab === 'stats' && (
+          <div className="space-y-6">
+            <PressStats data={press} theme={themeStrict} />
+            <PressChart data={press} theme={themeStrict} />
           </div>
+        )}
 
-          {/* Stats */}
-          <div className="mb-8">
-            <PressStats data={press} theme={theme} />
-          </div>
+        {activeTab === 'create' && (
+          <PressForm onCreate={handleCreate} theme={themeStrict} />
+        )}
 
-          {/* Form & Chart Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <PressForm onCreate={handleCreate} theme={theme} />
-            <PressChart data={press} theme={theme} />
-          </div>
+        {activeTab === 'list' && (
+          <>
+            {/* Barra de búsqueda */}
+            <PressSearchBar value={search} onChange={setSearch} theme={themeStrict} />
 
-
-          {/* Barra de búsqueda */}
-          <PressSearchBar value={search} onChange={setSearch} theme={theme} />
-
-          {/* Cards visuales filtradas */}
-          <div className="mb-8">
+            {/* Cards visuales filtradas */}
             <PressCardList
-              data={press.filter(item => {
-                const q = search.toLowerCase();
-                return (
-                  item.title.toLowerCase().includes(q) ||
-                  item.excerpt.toLowerCase().includes(q) ||
-                  (item.date && new Date(item.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }).toLowerCase().includes(q))
-                );
-              })}
-              theme={theme}
+              data={filteredPress}
+              theme={themeStrict}
               onEdit={(item) => { setEditItem(item); setShowEdit(true); }}
               onDelete={openDeleteModal}
               onPreview={setPreviewItem}
             />
-          </div>
+          </>
+        )}
+      </AdminSection>
 
-          {/* Tabla clásica (puedes eliminarla si solo quieres cards) */}
-          {/*
-          <PressTable
-            data={press}
-            loading={loading}
-            onEdit={(item: PressItem) => {
-              setEditItem(item);
-              setShowEdit(true);
-            }}
-            onDelete={openDeleteModal}
-            theme={theme}
-          />
-          */}
-          {/* Modal de previsualización */}
-          <PressPreviewModal
-            open={!!previewItem}
-            onClose={() => setPreviewItem(null)}
-            press={previewItem}
-            theme={theme}
-          />
+      {/* Modal de previsualización */}
+      <PressPreviewModal
+        open={!!previewItem}
+        onClose={() => setPreviewItem(null)}
+        press={previewItem}
+        theme={themeStrict}
+      />
 
-          {/* Edit Modal */}
-          {showEdit && editItem && (
-            <PressEditModal
-              item={editItem}
-              onClose={() => setShowEdit(false)}
-              onUpdate={handleUpdate}
-              theme={theme}
-            />
-          )}
+      {/* Edit Modal */}
+      {showEdit && editItem && (
+        <PressEditModal
+          item={editItem}
+          onClose={() => setShowEdit(false)}
+          onUpdate={handleUpdate}
+          theme={themeStrict}
+        />
+      )}
 
-          {/* Delete Modal */}
-          {showDelete && deleteItem && (
-            <DeletePressModal
-              title={deleteItem.title}
-              onCancel={() => {
-                setShowDelete(false);
-                setDeleteItem(null);
-              }}
-              onConfirm={handleDelete}
-              loading={deleteLoading}
-              theme={theme}
-            />
-          )}
-        </main>
-    </AdminPageShell>
+      {/* Delete Modal */}
+      {showDelete && deleteItem && (
+        <DeletePressModal
+          title={deleteItem.title}
+          onCancel={() => {
+            setShowDelete(false);
+            setDeleteItem(null);
+          }}
+          onConfirm={handleDelete}
+          loading={deleteLoading}
+          theme={themeStrict}
+        />
+      )}
+    </div>
   );
 }
 

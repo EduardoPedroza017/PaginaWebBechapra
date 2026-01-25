@@ -1,4 +1,4 @@
-﻿"use client";
+﻿﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 
@@ -12,6 +12,10 @@ import { DeleteImageModal } from "./DeleteImageModal";
 import { ImagePreviewModal } from "./ImagePreviewModal";
 import { adminApi } from "../utils/admin-api";
 import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
 
 interface GalleryImage {
   filename: string;
@@ -20,40 +24,47 @@ interface GalleryImage {
   tags?: string[];
 }
 
+type TabId = 'list' | 'upload' | 'albums';
+
 const GaleriaPage = () => {
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
+  
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info' | 'warning', text: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [allTags, setAllTags] = useState<string[]>([]);
   
-  // Tema con persistencia
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [themeReady, setThemeReady] = useState(false);
-
   // Modal de eliminación
   const [deleteModal, setDeleteModal] = useState<{ open: boolean, filename: string | null }>({ open: false, filename: null });
   
   // Modal de previsualización
   const [previewModal, setPreviewModal] = useState<{ open: boolean, filename: string | null }>({ open: false, filename: null });
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark" || savedTheme === "light") {
-        setTheme(savedTheme);
-      }
-      setThemeReady(true);
-    } else {
-      setThemeReady(true);
-    }
-  }, []);
+  const [activeTab, setActiveTab] = useState<TabId>("list");
+  const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
+    list: false,
+    upload: false,
+    albums: false,
+  });
 
-  const handleToggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-    setTheme(newTheme);
+  const handleTabChange = async (tabId: TabId) => {
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    setActiveTab(tabId);
+    setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
   };
+
+  const handleRefresh = () => {
+    fetchImages(true);
+  };
+
+  useEffect(() => {
+    if (themeReady) {
+      fetchImages();
+    }
+  }, [themeReady]);
 
   const showMessage = useCallback((type: 'success' | 'error' | 'info' | 'warning', text: string) => {
     setMessage({ type, text });
@@ -144,13 +155,19 @@ const GaleriaPage = () => {
     });
   };
 
+  const tabs: TabItem[] = [
+    { id: 'list', label: 'Imágenes', icon: <Images size={18} /> },
+    { id: 'upload', label: 'Subir', icon: <RefreshCw size={18} /> },
+    { id: 'albums', label: 'Álbumes', icon: <AlertCircle size={18} /> },
+  ];
+
   if (!themeReady) {
     return (
-      <div className={`flex min-h-screen ${theme === "dark" ? "bg-gray-950" : "bg-gradient-to-br from-blue-50 to-indigo-100"}`}>
+      <div className={`flex min-h-screen ${themeStrict === "dark" ? "bg-gray-950" : "bg-gradient-to-br from-blue-50 to-indigo-100"}`}>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-            <p className={`text-lg font-medium ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
+            <p className={`text-lg font-medium ${themeStrict === "dark" ? "text-white" : "text-gray-800"}`}>
               <TranslateText text="Cargando galería..." />
             </p>
           </div>
@@ -160,158 +177,128 @@ const GaleriaPage = () => {
   }
 
   return (
-    <AdminPageShell containerClassName={`flex min-h-screen ${
-      theme === "dark" ? "bg-gray-950" : "bg-gradient-to-br from-blue-50 to-indigo-100"
-    }`}>
-      <main className="flex-1 p-4 md:p-6 lg:p-8">
-          {/* Header de la página */}
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className={`p-3 rounded-2xl ${
-                  theme === "dark" ? "bg-blue-600 shadow-lg shadow-blue-500/30" : "bg-blue-600 shadow-lg shadow-blue-500/20"
-                }`}>
-                  <Images className="text-white" size={28} />
-                </div>
-                <div>
-                  <h1 className={`text-2xl md:text-3xl font-bold ${
-                    theme === "dark" ? "text-white" : "text-gray-900"
-                  }`}>
-                    <TranslateText text="Galería de Imágenes" />
-                  </h1>
-                  <p className={`text-sm ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
-                  }`}>
-                    <TranslateText text="Gestión avanzada de imágenes con subida masiva" />
-                  </p>
-                </div>
-              </div>
-              
-              {/* Botón de refrescar y contador */}
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-end">
-                  <span className={`px-4 py-2 rounded-xl text-sm font-semibold ${
-                    theme === "dark" 
-                      ? "bg-blue-600/20 text-blue-400 border border-blue-500/30" 
-                      : "bg-blue-100 text-blue-700 border border-blue-200"
-                  }`}>
-                    {images.length} {images.length === 1 ? 'imagen' : 'imágenes'}
-                  </span>
-                  {allTags.length > 0 && (
-                    <span className={`text-xs mt-1 ${theme === "dark" ? "text-gray-500" : "text-gray-500"}`}>
-                      {allTags.length} etiquetas
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={() => fetchImages(true)}
-                  disabled={refreshing}
-                  className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
-                    theme === "dark"
-                      ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
-                      : "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
-                  }`}
-                  title="Refrescar"
-                >
-                  <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
-                </button>
-              </div>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Galería de Imágenes"
+        subtitle="Gestión avanzada de imágenes con subida masiva"
+        icon={<Images className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Galería" }]}
+      />
+
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => handleTabChange(tabId as TabId)}
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AdminSection theme={themeStrict}>
+        {activeTab === 'albums' && (
+          <div className="space-y-6">
+            <div className={`rounded-xl border p-8 text-center ${
+              themeStrict === 'dark' 
+                ? 'bg-gray-800/50 border-gray-700' 
+                : 'bg-gray-50 border-gray-200'
+            }`}>
+              <p className={themeStrict === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
+                La gestión de álbumes estará disponible próximamente.
+              </p>
             </div>
           </div>
+        )}
 
-          {/* Mensaje de notificación */}
-          {message && (
-            <div className={`mb-6 p-4 rounded-2xl border flex items-center gap-3 animate-in slide-in-from-top shadow-lg ${
-              message.type === 'success'
-                ? theme === 'dark'
-                  ? 'bg-green-900/40 border-green-700 text-green-400'
-                  : 'bg-green-50 border-green-200 text-green-800'
-                : message.type === 'error'
-                ? theme === 'dark'
-                  ? 'bg-red-900/40 border-red-700 text-red-400'
-                  : 'bg-red-50 border-red-200 text-red-800'
-                : message.type === 'warning'
-                ? theme === 'dark'
-                  ? 'bg-amber-900/40 border-amber-700 text-amber-400'
-                  : 'bg-amber-50 border-amber-200 text-amber-800'
-                : theme === 'dark'
-                  ? 'bg-blue-900/40 border-blue-700 text-blue-400'
-                  : 'bg-blue-50 border-blue-200 text-blue-800'
-            }`}>
-              {message.type === 'success' ? (
-                <CheckCircle className="w-5 h-5 flex-shrink-0" />
-              ) : message.type === 'error' ? (
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              ) : message.type === 'warning' ? (
-                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-              ) : (
-                <RefreshCw className="w-5 h-5 flex-shrink-0" />
-              )}
-              <span className="font-medium">{message.text}</span>
-            </div>
-          )}
-
-          {/* Advertencia si hay muchas imágenes */}
-          {images.length > 50 && (
-            <div className={`mb-6 p-4 rounded-2xl border flex items-start gap-3 ${
-              theme === 'dark'
-                ? 'bg-amber-900/20 border-amber-700/30 text-amber-300'
-                : 'bg-amber-50 border-amber-200 text-amber-800'
-            }`}>
-              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium mb-1">Galería grande detectada</p>
-                <p className="text-sm">
-                  Tienes {images.length} imágenes en la galería. Para un mejor rendimiento, 
-                  considera organizarlas en carpetas o usar la paginación.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Sección de subida */}
-          <div className={`rounded-2xl shadow-lg p-6 border mb-6 ${
-            theme === "dark" ? "bg-gray-900/80 border-gray-800" : "bg-white border-gray-100"
+        {activeTab === 'upload' && (
+          <div className={`rounded-2xl shadow-lg p-6 border ${
+            themeStrict === "dark" ? "bg-gray-900/80 border-gray-800" : "bg-white border-gray-100"
           }`}>
             <h2 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${
-              theme === "dark" ? "text-white" : "text-gray-900"
+              themeStrict === "dark" ? "text-white" : "text-gray-900"
             }`}>
               <TranslateText text="Subida Masiva de Imágenes" />
             </h2>
             <ImageUploader 
-              theme={theme} 
+              theme={themeStrict} 
               onUploadSuccess={handleUploadSuccess}
               onMessage={showMessage}
               onAddTags={handleAddTags}
               existingTags={allTags}
             />
           </div>
+        )}
 
-          {/* Grid de imágenes */}
-          <div className={`rounded-2xl shadow-lg p-6 border ${
-            theme === "dark" ? "bg-gray-900/80 border-gray-800" : "bg-white border-gray-100"
-          }`}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
-              <h2 className={`text-lg font-semibold ${
-                theme === "dark" ? "text-white" : "text-gray-900"
+        {activeTab === 'list' && (
+          <>
+            {/* Mensaje de notificación */}
+            {message && (
+              <div className={`mb-6 p-4 rounded-2xl border flex items-center gap-3 animate-in slide-in-from-top shadow-lg ${
+                message.type === 'success'
+                  ? themeStrict === 'dark'
+                    ? 'bg-green-900/40 border-green-700 text-green-400'
+                    : 'bg-green-50 border-green-200 text-green-800'
+                  : message.type === 'error'
+                  ? themeStrict === 'dark'
+                    ? 'bg-red-900/40 border-red-700 text-red-400'
+                    : 'bg-red-50 border-red-200 text-red-800'
+                  : message.type === 'warning'
+                  ? themeStrict === 'dark'
+                    ? 'bg-amber-900/40 border-amber-700 text-amber-400'
+                    : 'bg-amber-50 border-amber-200 text-amber-800'
+                  : themeStrict === 'dark'
+                    ? 'bg-blue-900/40 border-blue-700 text-blue-400'
+                    : 'bg-blue-50 border-blue-200 text-blue-800'
               }`}>
-                <TranslateText text="Imágenes Cargadas" />
-              </h2>
-              
-              {images.length > 0 && (
-                <div className={`text-sm mt-2 sm:mt-0 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}>
-                  Ordenadas por: <span className="font-medium">Más recientes</span>
+                {message.type === 'success' ? (
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                ) : message.type === 'error' ? (
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                ) : message.type === 'warning' ? (
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                ) : (
+                  <RefreshCw className="w-5 h-5 flex-shrink-0" />
+                )}
+                <span className="font-medium">{message.text}</span>
+              </div>
+            )}
+
+            {/* Advertencia si hay muchas imágenes */}
+            {images.length > 50 && (
+              <div className={`mb-6 p-4 rounded-2xl border flex items-start gap-3 ${
+                themeStrict === 'dark'
+                  ? 'bg-amber-900/20 border-amber-700/30 text-amber-300'
+                  : 'bg-amber-50 border-amber-200 text-amber-800'
+              }`}>
+                <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-medium mb-1">Galería grande detectada</p>
+                  <p className="text-sm">
+                    Tienes {images.length} imágenes en la galería. Para un mejor rendimiento, 
+                    considera organizarlas en carpetas o usar la paginación.
+                  </p>
                 </div>
-              )}
+              </div>
+            )}
+
+            {/* Contador de imágenes */}
+            <div className={`mb-6 px-4 py-2 rounded-xl text-sm font-semibold ${
+              themeStrict === "dark" 
+                ? "bg-blue-600/20 text-blue-400 border border-blue-500/30" 
+                : "bg-blue-100 text-blue-700 border border-blue-200"
+            }`}>
+              {images.length} {images.length === 1 ? 'imagen' : 'imágenes'} • {allTags.length} etiquetas
             </div>
 
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <div className="text-center">
                   <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-blue-600 mb-3"></div>
-                  <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                  <p className={`text-sm ${themeStrict === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                     <TranslateText text="Cargando imágenes..." />
                   </p>
                 </div>
@@ -319,33 +306,34 @@ const GaleriaPage = () => {
             ) : images.length === 0 ? (
               <div className="text-center py-16">
                 <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-                  theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+                  themeStrict === "dark" ? "bg-gray-800" : "bg-gray-100"
                 }`}>
-                  <Images className={`w-10 h-10 ${theme === "dark" ? "text-gray-600" : "text-gray-400"}`} />
+                  <Images className={`w-10 h-10 ${themeStrict === "dark" ? "text-gray-600" : "text-gray-400"}`} />
                 </div>
-                <p className={`text-base font-medium mb-1 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                <p className={`text-base font-medium mb-1 ${themeStrict === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                   <TranslateText text="No hay imágenes en la galería" />
                 </p>
-                <p className={`text-sm ${theme === "dark" ? "text-gray-500" : "text-gray-500"}`}>
+                <p className={`text-sm ${themeStrict === "dark" ? "text-gray-500" : "text-gray-500"}`}>
                   <TranslateText text="Sube tu primera imagen para comenzar" />
                 </p>
               </div>
             ) : (
               <ImageGrid 
                 images={images}
-                theme={theme}
+                theme={themeStrict}
                 onDelete={handleDelete}
                 onPreview={handlePreview}
               />
             )}
-          </div>
-        </main>
+          </>
+        )}
+      </AdminSection>
 
       {/* Modal de eliminación */}
       <DeleteImageModal
         isOpen={deleteModal.open}
         filename={deleteModal.filename}
-        theme={theme}
+        theme={themeStrict}
         onClose={() => setDeleteModal({ open: false, filename: null })}
         onConfirm={confirmDelete}
       />
@@ -355,10 +343,10 @@ const GaleriaPage = () => {
         isOpen={previewModal.open}
         filename={previewModal.filename}
         images={images}
-        theme={theme}
+        theme={themeStrict}
         onClose={() => setPreviewModal({ open: false, filename: null })}
       />
-    </AdminPageShell>
+    </div>
   );
 };
 
