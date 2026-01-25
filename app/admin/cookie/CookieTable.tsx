@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { TranslateText } from "@/components/TranslateText";
 import { 
   CheckCircle, 
@@ -97,7 +97,7 @@ export default function CookieTable({ data, theme = 'light' }: CookieTableProps)
     
     // Dispositivo
     let device = 'Desktop';
-    let deviceIcon: JSX.Element = <Monitor className="w-5 h-5" />;
+    let deviceIcon: React.ReactElement = <Monitor className="w-5 h-5" />;
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       device = 'Mobile';
       deviceIcon = <Smartphone className="w-5 h-5" />;
@@ -108,7 +108,7 @@ export default function CookieTable({ data, theme = 'light' }: CookieTableProps)
     
     // Navegador
     let browser = 'Unknown';
-    let browserIcon: JSX.Element = <Globe className="w-4 h-4" />;
+    let browserIcon: React.ReactElement = <Globe className="w-4 h-4" />;
     if (ua.includes('chrome') && !ua.includes('edge')) {
       browser = 'Chrome';
       browserIcon = <Globe className="w-4 h-4" />;
