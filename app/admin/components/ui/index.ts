@@ -11,5 +11,26 @@ export { default as AdminSection, SectionHeader, SectionBody, SectionFooter } fr
 export { default as AdminTabs, type TabItem } from './AdminTabs';
 export { default as AdminFilterBar, FilterChip, FilterGroup, SearchInput, StatusFilterBar, CommonFilterBar } from './AdminFilterBar';
 
+// Responsive components
+export { default as ResponsiveTable, type ResponsiveTableColumn, type ResponsiveTableAction, type ResponsiveTableProps, TableSkeleton } from './ResponsiveTable';
+export { default as ResponsiveCardGrid, ResponsiveStatGrid, InfoCard, ActionCard, EmptyState, type StatCardData } from './ResponsiveCardGrid';
+export { default as DynamicBreadcrumbs, createBreadcrumbs, BREADCRUMB_CONFIGS } from './DynamicBreadcrumbs';
+
+// Loading & skeleton components
+export { 
+  Skeleton, 
+  SkeletonText, 
+  SkeletonCard, 
+  SkeletonTable, 
+  SkeletonList, 
+  SkeletonForm,
+  PageSkeleton,
+  LoadingSpinner,
+  FullPageLoading,
+  DotsLoader
+} from './SkeletonLoader';
+
 // Design system utilities
 export * from '../../design-system';
+// Note: Use responsive-design-system.ts for responsive-specific utilities
+

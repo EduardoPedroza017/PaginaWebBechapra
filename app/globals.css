@@ -13,6 +13,105 @@
 @variant dark (&:is(:where(.dark) *));
 
 /* ==========================================================================
+   RESPONSIVE DESIGN SYSTEM - BREAKPOINTS & UTILITIES
+   ========================================================================== */
+
+
+/* 
+   Breakpoint variables matching responsive-design-system.ts:
+   sm: 640px
+   md: 768px
+   lg: 1024px
+   xl: 1280px
+   2xl: 1536px
+*/
+
+
+/* Touch target utilities - minimum 44px for mobile accessibility */
+
+@utility touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+@utility touch-manipulation {
+    touch-action: manipulation;
+}
+
+@utility touch-click {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Responsive spacing utilities */
+
+@utility p-responsive {
+    padding: 1rem;
+}
+
+@utility px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@utility py-responsive {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+    .sm\:p-responsive {
+        padding: 1.5rem;
+    }
+    .sm\:px-responsive {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    .sm\:py-responsive {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:p-responsive {
+        padding: 2rem;
+    }
+    .lg\:px-responsive {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    .lg\:py-responsive {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+}
+
+
+/* Gap utilities */
+
+@utility gap-responsive {
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .sm\:gap-responsive {
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:gap-responsive {
+        gap: 1.5rem;
+    }
+}
+
+
+/* ==========================================================================
    CONFIGURATION
    ========================================================================== */
 
