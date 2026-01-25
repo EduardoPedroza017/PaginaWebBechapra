@@ -11,12 +11,12 @@ export default function AdminHeader({
   onToggleSidebar: () => void;
 }) {
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b bg-card sticky top-0 z-40">
-      <div className="flex items-center gap-3">
-        <div className="text-sm font-semibold">Panel de Administración</div>
+    <header className="admin-header">
+      <div className="flex items-center gap-4">
+        <div className="text-lg font-bold">Panel de Administración</div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <ThemeToggle className="hidden sm:inline-flex" />
         <button
           onClick={async () => {
@@ -34,9 +34,9 @@ export default function AdminHeader({
             try { localStorage.removeItem('user'); } catch (e) {}
             window.location.href = '/admin';
           }}
-          className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-red-50 dark:bg-red-900/20 hover:opacity-95"
+          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium bg-red-50 dark:bg-red-900/20 hover:opacity-95"
         >
-          <LogOut size={16} />
+          <LogOut size={18} />
           <span className="hidden sm:inline">Cerrar sesión</span>
         </button>
       </div>

@@ -30,6 +30,7 @@ export function AdminThemeProvider({ children }: { children: ReactNode }) {
   const toggleTheme = () => {
     const current = resolvedTheme || theme || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
+    console.log(`Switching theme from ${current} to ${next}`); // Debugging log
     setTheme?.(next);
   };
 

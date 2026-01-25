@@ -142,56 +142,59 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <DashboardLayout>
-          <WelcomeCard role={role} theme={themeStrict} />
+    <div className="min-h-screen">
+      <div className="max-w-[1400px] mx-auto w-full px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="col-span-2">
+            <DashboardLayout>
+              <WelcomeCard role={role} theme={themeStrict} />
 
-          {/* Tabs */}
-          <div className="col-span-2 flex gap-2 mb-6">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                disabled={loadingTabs[tab.id]}
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 dark:bg-gray-800"
-                }`}
-              >
-                {loadingTabs[tab.id] ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  tab.icon
-                )}
-                {tab.label}
-              </button>
-            ))}
+              {/* Tabs */}
+              <div className="col-span-2 flex gap-2 mb-6">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    disabled={loadingTabs[tab.id]}
+                    className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                      activeTab === tab.id
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 dark:bg-gray-800"
+                    }`}
+                  >
+                    {loadingTabs[tab.id] ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      tab.icon
+                    )}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </DashboardLayout>
           </div>
-        </DashboardLayout>
-      </div>
 
-      <aside className="lg:col-span-1 space-y-6">
-        {/* Quick actions and lightweight widgets live in the right column */}
-        <div className="sticky top-6">
-          <QuickActions theme={themeStrict} role={role} />
-          <div className="mt-4">
-            <WebVitalsWidget theme={themeStrict} />
-          </div>
-          <div className="mt-4">
-            <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
-          </div>
+          <aside className="col-span-1 space-y-6">
+            <div className="sticky top-6">
+              <QuickActions theme={themeStrict} role={role} />
+              <div className="mt-4">
+                <WebVitalsWidget theme={themeStrict} />
+              </div>
+              <div className="mt-4">
+                <CookieConsentAdmin key={refreshKey} theme={themeStrict} />
+              </div>
+            </div>
+          </aside>
         </div>
-      </aside>
 
-      {/* Nota */}
-      <div className="mt-6 p-4 border rounded-xl flex gap-3">
-        <AlertTriangle className="w-5 h-5 text-blue-500" />
-        <p className="text-sm">
-          Consejo: navega por las pestañas para acceder a cada sección del
-          panel.
-        </p>
+        {/* Nota */}
+        <div className="mt-6 p-4 border rounded-xl flex gap-3">
+          <AlertTriangle className="w-5 h-5 text-blue-500" />
+          <p className="text-sm">
+            Consejo: navega por las pestañas para acceder a cada sección del
+            panel.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -214,6 +214,7 @@ export function Sidebar({
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const pathname = usePathname();
+  const currentPath = pathname || '';
   const isDark = theme === 'dark';
 
   // Determine controlled vs uncontrolled collapse state
@@ -284,274 +285,72 @@ export function Sidebar({
       />
 
       {/* Sidebar */}
-      <aside className={sidebarClasses}>
-        {/* Header */}
-        <div className={`px-4 py-4 border-b ${
-          isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-        } ${isCollapsed ? 'px-3' : ''}`}>
-          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-            {!isCollapsed ? (
-              <>
-                <div className="flex items-center gap-3">
-                  <div className={`relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ${
-                      isDark ? 'bg-gray-700' : 'bg-gray-100'
-                    }`}>
-                      <NextImage
-                        src="/image/logo/Bausen.png"
-                        alt="Logo BAUSEN"
-                        fill
-                        sizes="40px"
-                        className="object-contain p-2"
-                        priority
-                      />
-                    </div>
-                </div>
-                
-                {/* Collapse Toggle Button */}
-                <button
-                  onClick={handleToggleCollapse}
-                  className={`p-2 rounded-lg transition-all ${
-                    isDark 
-                      ? 'hover:bg-gray-700 text-gray-400 hover:text-white' 
-                      : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-                  }`}
-                  aria-label={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
-                >
-                  <ChevronLeft size={20} className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
-                </button>
-              </>
-            ) : (
-              // Logo solo en modo minimizado
-                <div className="flex flex-col items-center gap-2">
-                <div className={`relative w-10 h-10 rounded-lg overflow-hidden ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-100'
-                }`}>
-                  <NextImage
-                    src="/image/logo/Favicon_Bausen_01.png"
-                    alt="Bausen mark"
-                    fill
-                    sizes="40px"
-                    className="object-contain p-2"
-                    priority
-                  />
-                </div>
-                {/* Expand Button in collapsed mode */}
-                <button
-                  onClick={handleToggleCollapse}
-                  className={`p-2 rounded-lg transition-all ${
-                    isDark 
-                      ? 'hover:bg-gray-700 text-gray-400 hover:text-white' 
-                      : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-                  }`}
-                  aria-label="Expandir sidebar"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            )}
-            
-            {/* Mobile Close Button */}
-            <button
-              onClick={onMobileClose}
-              className={`p-2 rounded-lg md:hidden ${isCollapsed ? 'absolute top-4 right-4' : ''} ${
-                isDark 
-                  ? 'hover:bg-gray-700 text-gray-400' 
-                  : 'hover:bg-gray-100 text-gray-600'
-              }`}
-              aria-label="Cerrar menú"
-            >
-              <X size={20} />
-            </button>
+      <aside className={`admin-sidebar ${expanded ? 'expanded' : 'collapsed'}`}>
+        <div className="sidebar-header">
+          <div className="flex items-center gap-4">
+            <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden flex-shrink-0`}>
+              <NextImage
+                src={expanded ? '/image/logo/bausen-logo.png' : '/image/logo/Favicon_Bausen_01.png'}
+                alt={expanded ? 'Logo BAUSEN' : 'Bausen mark'}
+                fill
+                sizes="40px"
+                className="object-contain p-2"
+                priority
+              />
+            </div>
           </div>
+          <button onClick={onToggle} aria-label="Toggle sidebar" className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"> 
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
-          {sectionOrder.map((section) => {
-            const items = groupedItems[section];
-            if (!items || items.length === 0) return null;
+        <nav className="sidebar-nav">
+          <ul>
+            {(() => {
+              const pathname = usePathname() || '/admin/dashboard';
+              const grouped = sidebarItems.reduce((acc: Record<string, SidebarItem[]>, item) => {
+                const section = item.section || 'General';
+                acc[section] = acc[section] || [];
+                acc[section].push(item);
+                return acc;
+              }, {} as Record<string, SidebarItem[]>);
 
-            // En modo minimizado, solo mostrar iconos sin secciones
-            if (isCollapsed) {
-              return (
-                <div key={section} className="space-y-1">
-                  {items
-                    .filter((item) => {
-                      if (admin === false) {
-                        const adminOnly = [
-                          '/admin/usuarios',
-                          '/admin/audit-log',
-                          '/admin/config',
-                          '/admin/branding',
-                          '/admin/api',
-                          '/admin/settings'
-                        ];
-                        if (adminOnly.includes(item.path)) return false;
-                      }
-                      return true;
-                    })
-                    .map((item) => {
-                      const isActive = selected === item.path;
-                      return (
-                        <div key={item.path} className="relative">
-                          <Link
-                            href={item.path}
-                            onClick={onMobileClose}
-                            onMouseEnter={() => setHoveredItem(item.path)}
-                            onMouseLeave={() => setHoveredItem(null)}
-                            className={`group flex items-center justify-center p-3 rounded-lg font-medium transition-all ${
-                              isActive ? activeItemClasses : inactiveItemClasses
-                            }`}
-                          >
-                            <span className={`${isActive ? 'text-white' : ''}`}>
-                              {item.icon}
-                            </span>
-                          </Link>
-                          
-                          {/* Tooltip para modo minimizado */}
-                          {hoveredItem === item.path && (
-                            <div className={`
-                              absolute left-full ml-2 top-1/2 transform -translate-y-1/2
-                              px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap z-50
-                              ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}
-                              shadow-lg border ${isDark ? 'border-gray-700' : 'border-gray-200'}
-                            `}>
-                              {item.label}
-                              {item.description && (
-                                <div className={`text-xs mt-1 ${
-                                  isDark ? 'text-gray-300' : 'text-gray-600'
-                                }`}>
-                                  {item.description}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              );
-            }
+              const order = ['Principal','Contenido','Usuarios','Multimedia','Comunicación','Sistema'];
 
-            // Modo expandido
-            return (
-              <div key={section} className="space-y-1">
-                {/* Section Label (solo en modo expandido) */}
-                <div className="px-3">
-                  <span className={`text-xs uppercase tracking-wider ${sectionLabelClasses}`}>
-                    {section}
-                  </span>
-                </div>
-
-                {/* Section Items */}
-                <div className="space-y-1">
-                  {items
-                    .filter((item) => {
-                      if (admin === false) {
-                        const adminOnly = [
-                          '/admin/usuarios',
-                          '/admin/audit-log',
-                          '/admin/config',
-                          '/admin/branding',
-                          '/admin/api',
-                          '/admin/settings'
-                        ];
-                        if (adminOnly.includes(item.path)) return false;
-                      }
-                      return true;
-                    })
-                    .map((item) => {
-                      const isActive = selected === item.path;
-                      return (
-                        <Link
-                          key={item.path}
-                          href={item.path}
-                          onClick={onMobileClose}
-                          className={`group flex items-center justify-between px-3 py-3 rounded-lg font-medium transition-all ${
-                            isActive ? activeItemClasses : inactiveItemClasses
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <span className={`flex-shrink-0 ${isActive ? 'text-white' : ''}`}>
-                              {item.icon}
-                            </span>
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-sm font-medium truncate">
-                                <TranslateText text={item.label} />
-                              </span>
-                              {item.description && (
-                                <span className={`text-xs truncate ${
-                                  isActive ? 'text-blue-100' : isDark ? 'text-gray-500' : 'text-gray-500'
-                                }`}>
-                                  {item.description}
-                                </span>
-                              )}
-                            </div>
+              return order.map((section) => {
+                const items = grouped[section];
+                if (!items) return null;
+                return (
+                  <li key={section}>
+                    {expanded && <div className="px-3 text-xs text-gray-500 mb-2">{section}</div>}
+                    <div>
+                      {items.map((item) => {
+                        const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+                        return (
+                          <div key={item.path} className="relative">
+                            {!expanded && <span className={`absolute left-0 top-0 bottom-0 w-1 rounded-r-lg ${isActive ? 'bg-blue-600' : ''}`} />}
+                            <Link key={item.path} href={item.path} className={clsx('flex items-center gap-4 px-4 py-3 rounded-md transition-colors', isActive ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800') } title={!expanded ? item.label : undefined}>
+                              <span className="flex-shrink-0">{item.icon}</span>
+                              {expanded && <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-medium truncate"><TranslateText text={item.label} /></span>
+                                {item.description && <span className="text-xs text-gray-500 truncate">{item.description}</span>}
+                              </div>}
+                            </Link>
                           </div>
-
-                          {isActive && (
-                            <ChevronRight size={16} className="flex-shrink-0" />
-                          )}
-                        </Link>
-                      );
-                    })}
-                </div>
-              </div>
-            );
-          })}
+                        );
+                      })}
+                    </div>
+                  </li>
+                );
+              });
+            })()}
+          </ul>
         </nav>
 
-        {/* Footer */}
-        <div className={`px-4 py-4 border-t ${
-          isDark ? 'border-gray-800' : 'border-gray-200'
-        } ${isCollapsed ? 'px-3' : ''}`}>
-          {!isCollapsed ? (
-            <>
-              {/* User Info */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  isDark ? 'bg-gray-800' : 'bg-gray-100'
-                }`}>
-                  <Users size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {role || 'Administrador'}
-                  </span>
-                  <span className={`text-xs truncate ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {admin ? 'Admin completo' : 'Acceso limitado'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Quick Actions: only help — logout is centralized in header */}
-              <div className="flex items-center gap-2">
-                <button
-                  className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                    isDark 
-                      ? 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
-                  }`}
-                >
-                  <TranslateText text="Ayuda" />
-                </button>
-              </div>
-            </>
-          ) : (
-            // Footer minimizado
-              <div className="flex flex-col items-center gap-4">
-                <button
-                  className={`p-2 rounded-lg ${
-                    isDark 
-                      ? 'hover:bg-gray-800 text-gray-400' 
-                      : 'hover:bg-gray-100 text-gray-600'
-                  }`}
-                  title="Ayuda"
-                >
-                  <HelpCircle size={20} />
-                </button>
-              </div>
-          )}
+        <div className="px-4 py-5">
+          {/* Logout is provided in the header to avoid duplicate controls; keep this area for future utilities */}
         </div>
       </aside>
     </>

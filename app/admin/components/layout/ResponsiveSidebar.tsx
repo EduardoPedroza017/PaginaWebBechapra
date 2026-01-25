@@ -16,9 +16,9 @@ export default function ResponsiveSidebar({
 }) {
   const pathname = usePathname() || '/admin/dashboard';
   return (
-    <aside className={`flex flex-col h-screen transition-all duration-300 ease-in-out border-r bg-card ${expanded ? 'w-72' : 'w-20'}`}>
-      <div className="px-4 py-3 border-b flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <aside className={`admin-sidebar ${expanded ? 'expanded' : 'collapsed'}`}>
+      <div className="sidebar-header">
+        <div className="flex items-center gap-4">
           <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden flex-shrink-0`}>
             <NextImage
               src={expanded ? '/image/logo/bausen-logo.png' : '/image/logo/Favicon_Bausen_01.png'}
@@ -30,15 +30,15 @@ export default function ResponsiveSidebar({
             />
           </div>
         </div>
-        <button onClick={onToggle} aria-label="Toggle sidebar" className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"> 
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button onClick={onToggle} aria-label="Toggle sidebar" className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"> 
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto mt-2">
-        <ul className="space-y-1 px-2">
+      <nav className="sidebar-nav">
+        <ul>
           {(() => {
             const pathname = usePathname() || '/admin/dashboard';
             const grouped = sidebarItems.reduce((acc: Record<string, SidebarItem[]>, item) => {
@@ -54,16 +54,15 @@ export default function ResponsiveSidebar({
               const items = grouped[section];
               if (!items) return null;
               return (
-                <li key={section} className="mb-2">
-                  {expanded && <div className="px-3 text-xs text-gray-500 mb-1">{section}</div>}
-                  <div className="space-y-1">
+                <li key={section}>
+                  {expanded && <div className="px-3 text-xs text-gray-500 mb-2">{section}</div>}
+                  <div>
                     {items.map((item) => {
                       const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
                       return (
                         <div key={item.path} className="relative">
-                          {/* left indicator when collapsed */}
                           {!expanded && <span className={`absolute left-0 top-0 bottom-0 w-1 rounded-r-lg ${isActive ? 'bg-blue-600' : ''}`} />}
-                          <Link key={item.path} href={item.path} className={clsx('flex items-center gap-3 px-3 py-2 rounded-md transition-colors', isActive ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800') } title={!expanded ? item.label : undefined}>
+                          <Link key={item.path} href={item.path} className={clsx('flex items-center gap-4 px-4 py-3 rounded-md transition-colors', isActive ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800') } title={!expanded ? item.label : undefined}>
                             <span className="flex-shrink-0">{item.icon}</span>
                             {expanded && <div className="flex flex-col min-w-0">
                               <span className="text-sm font-medium truncate"><TranslateText text={item.label} /></span>
@@ -81,7 +80,7 @@ export default function ResponsiveSidebar({
         </ul>
       </nav>
 
-      <div className="px-3 py-4">
+      <div className="px-4 py-5">
         {/* Logout is provided in the header to avoid duplicate controls; keep this area for future utilities */}
       </div>
     </aside>
