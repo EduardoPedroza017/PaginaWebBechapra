@@ -117,7 +117,7 @@ export default function RootLayout({
             {/* Main content with proper spacing */}
             <main 
               id="main-content"
-              className="min-h-screen pt-20"  /* Increased padding to ensure navbar doesn't cover content */
+              className="min-h-screen pt-0"  /* Reduced top padding to remove excessive space above admin header */
             >
               {children}
             </main>
