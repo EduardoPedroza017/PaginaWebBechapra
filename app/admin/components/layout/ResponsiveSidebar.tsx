@@ -7,10 +7,11 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { sidebarItems, SidebarItem } from './Sidebar';
 import { TranslateText } from '@/components/TranslateText';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 interface ResponsiveSidebarProps {
   expanded: boolean;
-  onToggle: () => void;
+  onToggle?: () => void;
 }
 
 export default function ResponsiveSidebar({
@@ -18,6 +19,16 @@ export default function ResponsiveSidebar({
   onToggle,
 }: ResponsiveSidebarProps) {
   const pathname = usePathname() || '/admin/dashboard';
+  const { toggleSidebar } = useSidebar();
+
+  // Handle toggle - use provided onToggle or fall back to context toggle
+  const handleToggle = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      toggleSidebar();
+    }
+  };
 
   // Group sidebar items by section
   const groupedItems = sidebarItems.reduce((acc: Record<string, SidebarItem[]>, item) => {
@@ -46,7 +57,7 @@ export default function ResponsiveSidebar({
           </div>
         </div>
         <button
-          onClick={onToggle}
+          onClick={handleToggle}
           aria-label={expanded ? "Contraer sidebar" : "Expandir sidebar"}
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 min-w-10 min-h-10 flex items-center justify-center transition-all duration-200"
         >

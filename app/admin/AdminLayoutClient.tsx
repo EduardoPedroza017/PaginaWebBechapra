@@ -1,47 +1,70 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import AdminThemeProvider from './providers/ThemeProvider';
 import ResponsiveSidebar from './components/layout/ResponsiveSidebar';
 import AdminHeader from './components/layout/AdminHeader';
 import MobileDrawerOverlay from './components/layout/MobileDrawerOverlay';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { GRID_COLS } from './design-system';
+
+// Login page path - should be completely isolated
+const LOGIN_PATH = '/admin';
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { isExpanded } = useSidebar();
+  const pathname = usePathname() || '';
+  const router = useRouter();
+  
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [needsRedirect, setNeedsRedirect] = useState(false);
+
+  // Check if we're on the login page
+  const isLoginPage = pathname === LOGIN_PATH;
 
   // Detect mobile viewport
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024; // lg breakpoint
       setIsMobile(mobile);
-      if (mobile && isExpanded) {
-        // On mobile, always collapse sidebar
-      }
     };
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, [isExpanded]);
+  }, []);
 
-  // Verify authentication
+  // Verify authentication and handle redirect
   useEffect(() => {
     const checkAuth = () => {
       try {
         const adminToken = sessionStorage.getItem('admin_token');
-        setIsAuthenticated(!!adminToken);
+        const isAuth = !!adminToken;
+        
+        // If not authenticated and not on login page, need redirect
+        if (!isAuth && !isLoginPage) {
+          setNeedsRedirect(true);
+        }
+        setIsAuthenticated(isAuth);
       } catch {
         setIsAuthenticated(false);
+        if (!isLoginPage) {
+          setNeedsRedirect(true);
+        }
       }
     };
 
     checkAuth();
-  }, []);
+  }, [isLoginPage]);
+
+  // Handle redirect when needed
+  useEffect(() => {
+    if (needsRedirect) {
+      router.push(LOGIN_PATH);
+    }
+  }, [needsRedirect, router]);
 
   // Handle sidebar toggle
   const handleSidebarToggle = useCallback(() => {
@@ -55,20 +78,30 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     setIsMobileDrawerOpen(false);
   }, []);
 
-  // Show loading while verifying authentication
-  if (isAuthenticated === null) {
+  // If login page, render it directly without any layout wrapper
+  if (isLoginPage) {
+    // If already authenticated, show loading while redirecting
+    if (isAuthenticated === true) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+          <div className="animate-pulse text-slate-500 dark:text-slate-400">Redirigiendo...</div>
+        </div>
+      );
+    }
+
+    // Render login page directly - no sidebar, no header
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="animate-pulse text-slate-500 dark:text-slate-400">Cargando...</div>
+      <div className="admin-login-page">
+        {children}
       </div>
     );
   }
 
-  // If not authenticated, show only the content (login)
-  if (!isAuthenticated) {
+  // Show loading while verifying authentication for other pages
+  if (isAuthenticated === null) {
     return (
-      <div className="admin-login-page">
-        {children}
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="animate-pulse text-slate-500 dark:text-slate-400">Cargando...</div>
       </div>
     );
   }
@@ -92,7 +125,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       {!isMobile && (
         <aside className={`admin-sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-          <ResponsiveSidebar expanded={isExpanded} onToggle={() => {}} />
+          <ResponsiveSidebar expanded={isExpanded} />
         </aside>
       )}
 

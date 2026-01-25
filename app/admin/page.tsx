@@ -123,8 +123,8 @@ export default function AdminLogin() {
         
         // Redirect after showing success animation
         setTimeout(() => {
-          router.push('/admin/dashboard');
-          router.refresh();
+          // Force hard navigation to ensure proper auth state
+          window.location.href = '/admin/dashboard';
         }, 1500);
       } else {
         const backendError = data.error || data.message || 'Credenciales incorrectas';
