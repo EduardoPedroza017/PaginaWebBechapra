@@ -293,16 +293,16 @@ export default function BoardPage() {
 						viewport={{ once: true }}
 					>
 						<h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-							Do you want to know more about us?
+							¿Quieres saber más sobre nosotros?
 						</h2>
 						<p className="text-blue-50 mb-8 text-lg">
-							Discover our history, values, and vision for the future
+							Conoce nuestra historia, valores y visión de futuro
 						</p>
 						<a
-							href="/about-us"
+							href="/acerca-de"
 							className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
 						>
-							Learn More
+							Conocer más
 							<ArrowRight className="w-5 h-5" />
 						</a>
 					</motion.div>
