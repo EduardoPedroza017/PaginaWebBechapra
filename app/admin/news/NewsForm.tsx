@@ -198,56 +198,19 @@ function NewsFormComponent({ onCreated, theme }: Props) {
     if (image) form.append("image", image);
 
     try {
-      const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const API = process.env.NEXT_PUBLIC_API_URL || '';
-      const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
-      const baseHeaders: Record<string, string> = {
-        ...(userEmail ? { "X-User": userEmail } : {}),
-        "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
-      };
-      const bypassHeaders: Record<string, string> = {};
-      if (isLocal) {
-        bypassHeaders["X-Bypass-Login"] = 'true';
-        bypassHeaders["X-Role"] = 'superadmin';
-        bypassHeaders["X-Admin"] = 'true';
-      }
+      // Use centralized admin API client so requests go to the correct admin endpoint
+      const { adminApi } = await import('../utils/admin-api');
+      const res = await adminApi.createNews(form as FormData);
 
-      const res = await fetch(`${API}/api/news`, {
-        method: "POST",
-        body: form,
-        headers: {
-          ...baseHeaders,
-          ...bypassHeaders
-        },
-        credentials: 'include',
-      });
-
-      const status = res.status;
-      let body: any = null;
-      try {
-        body = await res.json();
-      } catch {
-        const text = await res.text();
-        console.log('Server response:', text);
-      }
-
-      if (res.ok) {
-        if (body && body.news) {
-          showMessage('success', `Noticia creada exitosamente`);
-          onCreated(body.news);
-        } else {
-          showMessage('success', 'Noticia creada exitosamente');
-        }
-        resetForm();
-        setIsExpanded(false);
+      // adminApi.createNews returns the parsed response or throws
+      if (res && (res as any).news) {
+        showMessage('success', `Noticia creada exitosamente`);
+        onCreated((res as any).news);
       } else {
-        const errorMsg = body?.error || (body?.errors ? JSON.stringify(body.errors) : 'Error desconocido');
-        if (errorMsg === 'Se requiere permiso: news.create') {
-          showMessage('error', 'No tienes permisos para crear noticias.');
-        } else {
-          showMessage('error', `Error al crear noticia: ${errorMsg}`);
-        }
+        showMessage('success', 'Noticia creada exitosamente');
       }
+      resetForm();
+      setIsExpanded(false);
     } catch {
       showMessage('error', 'Error al crear la noticia');
     } finally {

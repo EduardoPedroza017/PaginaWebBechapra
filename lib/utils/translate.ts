@@ -39,8 +39,8 @@ loadCacheFromStorage();
 // Cola de solicitudes pendientes
 const pendingRequests = new Map<string, Promise<string>>();
 
-// Update the API endpoint to match the backend
-const API_TRANSLATE_ENDPOINT = '/api/admin/translate';
+// Update the API endpoint to match the backend proxy (use /api/backend to forward to localhost:5000)
+const API_TRANSLATE_ENDPOINT = '/api/backend/admin/translate/translate';
 
 export async function translateText(text: string, dest: string): Promise<string> {
   // Si es español, devolver el texto original

@@ -24,10 +24,11 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
 
   useEffect(() => {
     if (!galleryOpen) return
-    fetch(`${API}/api/gallery`).then(r => r.json()).then(d => {
-      if (Array.isArray(d.images)) setGalleryImages(d.images)
-      else if (Array.isArray(d)) setGalleryImages(d.map((it:any)=>it.filename))
-    }).catch(()=>{})
+    import('../../utils/admin-api').then(({ adminApi }) => {
+      adminApi.listImages().then(result => {
+        if (result.success && result.data) setGalleryImages(result.data);
+      }).catch(()=>{});
+    }).catch(()=>{});
   }, [galleryOpen, API])
 
   function addBenefit() { setBenefits(prev => [...prev, { title: 'Nuevo beneficio', description: '' }]) }

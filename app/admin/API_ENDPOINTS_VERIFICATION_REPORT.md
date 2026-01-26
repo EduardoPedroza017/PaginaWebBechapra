@@ -1,6 +1,6 @@
 # Reporte de Verificación de Endpoints API Frontend/Backend
 
-**Fecha:** 2024
+**Fecha:** 2026
 **Objetivo:** Sincronizar frontend (/admin/**) con backend - identificar endpoints faltantes u obsoletos
 
 ---

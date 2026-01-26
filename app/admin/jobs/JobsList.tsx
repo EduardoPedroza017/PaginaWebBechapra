@@ -1,34 +1,21 @@
 import React, { useState } from 'react';
 import { Briefcase, Clock, MapPin, DollarSign, Building, Users, Calendar, X } from 'lucide-react';
 import { TranslateText } from '@/components/TranslateText';
+import type { JobItem } from '../utils/admin-api';
 import { motion, AnimatePresence } from 'framer-motion';
 import JobViewModal from './JobViewModal';
 import JobEditModal from './JobEditModal';
 import JobDeleteModal from './JobDeleteModal';
 
-interface Job {
-  id?: string;
-  _id?: string;
-  title: string;
-  description?: string;
-  image_url?: string;
-  location?: string;
-  salary?: string;
-  type?: string;
-  modality?: string;
-  company?: string;
-  department?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+export type Job = JobItem;
 
 interface JobsListProps {
-  jobs: Job[];
+  jobs: JobItem[];
   loading?: boolean;
   emptyMessage?: string;
-  onJobClick?: (job: Job) => void;
-  onEdit?: (job: Job) => void;
-  onDelete?: (job: Job) => void;
+  onJobClick?: (job: JobItem) => void;
+  onEdit?: (job: JobItem) => void;
+  onDelete?: (job: JobItem) => void;
 }
 
 // modals are in separate files: JobViewModal, JobEditModal, JobDeleteModal

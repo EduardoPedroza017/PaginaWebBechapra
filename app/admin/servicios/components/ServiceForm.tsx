@@ -56,12 +56,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
   // Cargar imágenes de galería al abrir el modal
   useEffect(() => {
     if (galleryOpen) {
-      const API = (process.env.NEXT_PUBLIC_API_URL as string);
-      // Update the API URL in the gallery fetch
-      fetch(`${apiUrl}/api/gallery`).then(r => r.json()).then(d => {
-        if (Array.isArray(d.images)) setGalleryImages(d.images);
-        else if (Array.isArray(d)) setGalleryImages(d.map((it:any)=>it.filename));
-      }).catch(()=>{});
+      // Use adminApi.listImages which hits the correct gallery admin endpoint
+      import('../../utils/admin-api').then(({ adminApi }) => {
+        adminApi.listImages().then(result => {
+          if (result.success && result.data) setGalleryImages(result.data);
+        }).catch(() => {});
+      }).catch(() => {});
     }
   }, [galleryOpen]);
 
@@ -70,9 +70,13 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
     const API = (process.env.NEXT_PUBLIC_API_URL as string);
     fetch(`${API}/api/service_pages`)
       .then(res => res.json())
-      .then(data => {
+      .then((data) => {
         if (Array.isArray(data)) {
-          setPages(data.map((p: any) => ({ handle: p.handle, heroTitle: p.heroTitle })));
+          type RawPage = Record<string, unknown>;
+          setPages(data.map((p: RawPage) => ({
+            handle: String(p.handle || ''),
+            heroTitle: typeof p.heroTitle === 'string' ? p.heroTitle : undefined,
+          })));
         }
       })
       .catch(() => {});
@@ -103,17 +107,17 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
     if (!initialData) return true; // creating new -> treat as changed
     const keys: (keyof Service)[] = ["name", "description", "icon", "image", "handle"];
     for (const k of keys) {
-      const a = (initialData as any)[k] || "";
-      const b = (form as any)[k] || "";
-      if (a !== b) return true;
+      const a = (initialData as Service)[k] ?? "";
+      const b = (form as Service)[k] ?? "";
+      if (String(a) !== String(b)) return true;
     }
     return false;
   })();
 
   function handleContinue() {
     // prefer explicit handle, fallback to slug from name
-    const maybeHandle = (form as any).handle || (form.name || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    if (typeof (onContinue as any) === 'function') (onContinue as any)(maybeHandle);
+    const maybeHandle = form.handle || (form.name || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (typeof onContinue === 'function') onContinue(maybeHandle);
   }
 
   return (
@@ -121,12 +125,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
       <form onSubmit={handleSubmit} className="space-y-4 flex-1">
         <FormInput label="Nombre" name="name" value={form.name} onChange={handleChange} required theme={theme} />
         <FormInput label="Descripción corta" name="description" value={form.description} onChange={handleChange} theme={theme} />
-        <FormInput label="Handle (clave única)" name="handle" value={(form as any).handle || ''} onChange={handleChange} theme={theme} />
+        <FormInput label="Handle (clave única)" name="handle" value={form.handle ?? ''} onChange={handleChange} theme={theme} />
         <div className="text-xs text-slate-400 mb-2">Selecciona una página existente o deja el handle para crear/usar una nueva página.</div>
         {pages.length > 0 && (
           <div className="mb-2">
             <label className="block text-sm font-medium mb-1">Páginas existentes</label>
-            <select className="w-full rounded border px-2 py-1" onChange={e => setForm(prev => ({ ...prev, handle: e.target.value }))} value={(form as any).handle || ''}>
+            <select className="w-full rounded border px-2 py-1" onChange={e => setForm(prev => ({ ...prev, handle: e.target.value }))} value={form.handle ?? ''}>
               <option value="">-- (no asociada) --</option>
               {pages.map(p => (
                 <option key={p.handle} value={p.handle}>{p.heroTitle || p.handle} — {p.handle}</option>

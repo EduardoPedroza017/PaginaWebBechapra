@@ -299,37 +299,16 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
         bypassHeaders["X-Admin"] = 'true';
       }
 
-      const res = await fetch(`${API}/api/news`, {
-        method: "POST",
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
-        credentials: 'include',
-      });
-
-      let body: NewsApiResponse | null = null;
-      try {
-        body = await res.json() as NewsApiResponse;
-      } catch {
-        const text = await res.text();
-        console.log('Server response:', text);
-      }
-
-      if (res.ok) {
-        if (body && body.news) {
-          showMessage('success', `Noticia creada exitosamente`);
-          onCreated(body.news);
-        } else {
-          showMessage('success', 'Noticia creada exitosamente');
-        }
-        onClose();
+      // Use centralized admin API client
+      const { adminApi } = await import('../utils/admin-api');
+      const res = await adminApi.createNews(form as FormData);
+      if (res && (res as any).news) {
+        showMessage('success', `Noticia creada exitosamente`);
+        onCreated((res as any).news);
       } else {
-        const errorMsg = body?.error || (body?.errors ? JSON.stringify(body.errors) : 'Error desconocido');
-        if (errorMsg === 'Se requiere permiso: news.create') {
-          showMessage('error', 'No tienes permisos para crear noticias.');
-        } else {
-          showMessage('error', `Error al crear noticia: ${errorMsg}`);
-        }
+        showMessage('success', 'Noticia creada exitosamente');
       }
+      onClose();
     } catch {
       showMessage('error', 'Error al crear la noticia');
     } finally {

@@ -94,7 +94,7 @@ ejecutivos/
 
 ### Versionado Automático
 - **Formato**: `{ID}_{YYYYMM}_{nombre_original}.{ext}`
-- **Ejemplo**: `507f1f77bcf86cd799439011_202412_Juan_Gonzalez.jpg`
+- **Ejemplo**: `507f1f77bcf86cd799439011_202612_Juan_Gonzalez.jpg`
 - **Directorio**: `backend/uploads/organigrama/{ID}/`
 
 ### Optimización

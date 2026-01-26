@@ -1,8 +1,7 @@
 ﻿﻿"use client";
 
 import React, { useEffect, useState } from "react";
-import { FileText, RefreshCw, Plus, BarChart3 } from "lucide-react";
-import PressTable from "./PressTable";
+import { FileText, Plus, BarChart3 } from "lucide-react";
 import { PressCardList } from "./PressCardList";
 import PressPreviewModal from "./PressPreviewModal";
 import PressForm from "./PressForm";
@@ -11,10 +10,10 @@ import PressChart from "./PressChart";
 import PressStats from "./PressStats";
 import DeletePressModal from "./DeletePressModal";
 
-import { TranslateText } from "@/components/TranslateText";
+// import { TranslateText } from "@/components/TranslateText"; // not used
 import { PressSearchBar } from "./PressSearchBar";
 import { adminApi } from "../utils/admin-api";
-import AdminPageShell from '@/app/admin/components/layout/AdminPageShell';
+// AdminPageShell not used in this file
 import AdminPageHeader from "../components/ui/AdminPageHeader";
 import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
 import AdminSection from "../components/ui/AdminSection";
@@ -32,12 +31,12 @@ export interface PressItem {
 type TabId = 'list' | 'create' | 'stats';
 
 export default function PressAdminApp() {
-  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const { theme: _maybeTheme, resolvedTheme, themeReady } = useTheme();
   const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
   
   const [mounted, setMounted] = useState(false);
   const [press, setPress] = useState<PressItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [editItem, setEditItem] = useState<PressItem | null>(null);
   const [showEdit, setShowEdit] = useState(false);
@@ -73,19 +72,25 @@ export default function PressAdminApp() {
     requestAnimationFrame(() => setMounted(true));
   }, []);
 
-  // Fetch press releases
+  // Fetch press releases using admin endpoint (no cache)
   const fetchPress = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     
     try {
+      // Use admin endpoint without cache
       const data = await adminApi.getPress();
       // API may return a paginated object { items, page, total, ... }
       // Normalize to an array for the UI
       if (Array.isArray(data)) {
         setPress(data);
-      } else if (data && Array.isArray((data as any).items)) {
-        setPress((data as any).items);
+      } else if (data && typeof data === 'object') {
+        const maybeItems = (data as { items?: unknown }).items;
+        if (Array.isArray(maybeItems)) {
+          setPress(maybeItems as PressItem[]);
+        } else {
+          setPress([]);
+        }
       } else {
         setPress([]);
       }
@@ -101,11 +106,12 @@ export default function PressAdminApp() {
     fetchPress();
   }, []);
 
-  // Create
+  // Create - use admin endpoint
   const handleCreate = async (formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    await fetch(`${apiUrl}/api/press`, {
+    // Use admin endpoint
+    await fetch(`${apiUrl}/api/admin/press`, {
       method: "POST",
       body: formData,
       headers: {
@@ -116,11 +122,12 @@ export default function PressAdminApp() {
     fetchPress();
   };
 
-  // Update
+  // Update - use admin endpoint
   const handleUpdate = async (id: string, formData: FormData) => {
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    await fetch(`${apiUrl}/api/press/${id}`, {
+    // Use admin endpoint
+    await fetch(`${apiUrl}/api/admin/press/${id}`, {
       method: "PUT",
       body: formData,
       headers: {
@@ -132,13 +139,14 @@ export default function PressAdminApp() {
     fetchPress();
   };
 
-  // Delete
+  // Delete - use admin endpoint
   const handleDelete = async () => {
     if (!deleteItem) return;
     setDeleteLoading(true);
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/press/${deleteItem.id}`, {
+      // Use admin endpoint
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/press/${deleteItem.id}`, {
         method: "DELETE",
         headers: {
           ...(userEmail ? { "X-User": userEmail } : {})

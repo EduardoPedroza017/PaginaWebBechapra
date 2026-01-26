@@ -315,7 +315,7 @@ const HeavyChart = dynamic(
 
 | Criterio | Resultado |
 |----------|-----------|
-| Modernidad | ✅ Cumple (diseño actualizado 2024) |
+| Modernidad | ✅ Cumple (diseño actualizado 2026) |
 | Bundle Size | ✅ Óptimo (~70kb) |
 | TypeScript | ✅ Nativo |
 | Animaciones | ✅ Smooth y profesionales |

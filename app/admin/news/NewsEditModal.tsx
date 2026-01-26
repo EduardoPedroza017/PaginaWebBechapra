@@ -63,18 +63,12 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
     if (image) form.append("image", image);
     
     try {
-      const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const res = await fetch(`${apiUrl}/api/news/${encodeURIComponent(item!.title)}`, {
-        method: "PUT",
-        body: form,
-        headers: {
-          ...(userEmail ? { "X-User": userEmail } : {})
-        },
-        credentials: 'include',
-      });
-      if (!res.ok) throw new Error("Error al actualizar noticia");
-      const data = await res.json();
-      onUpdated(data.news);
+      const { adminApi } = await import('../utils/admin-api');
+      const id = (item as any)._id || (item as any).id || item!.slug || item!.title;
+      const res = await adminApi.updateNews(id, form as FormData);
+      if (res && (res as any).news) {
+        onUpdated((res as any).news);
+      }
       onClose();
     } catch (err) {
       if (err instanceof Error) setError(err.message);

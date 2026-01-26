@@ -119,10 +119,30 @@ class ApiClient {
         defaultHeaders['Content-Type'] = 'application/json';
       }
 
+      // Agregar cabeceras de bypass en entorno de desarrollo cuando estemos
+      // en el navegador y useProxy esté activado. Tomar valores desde
+      // sessionStorage si están presentes para no forzar credenciales.
+      const runtimeHeaders: Record<string, string> = {};
+      try {
+        if (typeof window !== 'undefined' && this.useProxy) {
+          const role = window.sessionStorage.getItem('role');
+          const user = window.sessionStorage.getItem('email') || window.sessionStorage.getItem('user') || window.sessionStorage.getItem('X-User');
+          const bypass = window.sessionStorage.getItem('X-Bypass-Login') || 'true';
+          if (bypass) runtimeHeaders['X-Bypass-Login'] = bypass;
+          if (role) runtimeHeaders['X-Role'] = role;
+          if (user) runtimeHeaders['X-User'] = user;
+          // Marcar admin si role indica admin/superadmin
+          if (role && (role === 'admin' || role === 'superadmin')) runtimeHeaders['X-Admin'] = 'true';
+        }
+      } catch (e) {
+        // No bloquear en caso de error de acceso a sessionStorage
+      }
+
       const response = await fetch(url, {
         ...options,
         headers: {
           ...defaultHeaders,
+          ...runtimeHeaders,
           ...providedHeaders,
         },
       });

@@ -66,7 +66,8 @@ export default function AdminNewsPage() {
     setLoading(true);
     try {
       const API = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${API}/api/news?page=${pageParam}&search=${searchParam}`, { credentials: 'include' });
+      // Use admin endpoint without cache
+      const res = await fetch(`${API}/api/admin/news?page=${pageParam}&search=${searchParam}`, { credentials: 'include' });
       const data = await res.json();
       
       const normalize = (arr: unknown[]) => arr.map((itRaw) => {
@@ -158,7 +159,8 @@ export default function AdminNewsPage() {
       }
 
       const identifier = deleting.slug || deleting._id || deleting.title;
-      const res = await fetch(`${apiUrl}/api/news/${encodeURIComponent(identifier)}`, {
+      // Use admin endpoint
+      const res = await fetch(`${apiUrl}/api/admin/news/${encodeURIComponent(identifier)}`, {
         method: "DELETE",
         headers: {
           ...(userEmail ? { "X-User": userEmail } : {}),
@@ -196,7 +198,8 @@ export default function AdminNewsPage() {
 
       const identifier = item.slug || item._id || item.title;
       const encodedId = encodeURIComponent(identifier);
-      const res = await fetch(`${apiUrl}/api/news/${encodedId}`, {
+      // Use admin endpoint
+      const res = await fetch(`${apiUrl}/api/admin/news/${encodedId}`, {
         method: 'PUT',
         headers,
         credentials: 'include',

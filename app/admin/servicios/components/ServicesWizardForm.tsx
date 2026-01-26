@@ -163,20 +163,11 @@ export function ServicesWizardForm({
   // Load gallery images
   useEffect(() => {
     if (data.galleryOpen) {
-      fetch(`${API}/api/gallery`)
-        .then(res => res.json())
-        .then((d: unknown) => {
-          const galleryData = d as Record<string, unknown>;
-          if (Array.isArray(galleryData.images)) {
-            setGalleryImages(galleryData.images as string[]);
-          } else if (Array.isArray(d)) {
-            setGalleryImages(d.map((it: unknown) => {
-              const item = it as Record<string, unknown>;
-              return String(item.filename || '');
-            }));
-          }
-        })
-        .catch(() => {});
+      import('../../utils/admin-api').then(({ adminApi }) => {
+        adminApi.listImages().then(result => {
+          if (result.success && result.data) setGalleryImages(result.data);
+        }).catch(() => {});
+      }).catch(() => {});
     }
   }, [data.galleryOpen, API]);
 

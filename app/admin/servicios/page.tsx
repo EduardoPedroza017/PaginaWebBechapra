@@ -1,5 +1,5 @@
 ﻿﻿"use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { Service } from "./components/ServiceForm";
 import { ServiceEditModal } from "./components/ServiceEditModal";
 import ServicesWizardForm from "./components/ServicesWizardForm";
@@ -7,9 +7,9 @@ import { DeleteServiceModal } from "./components/DeleteServiceModal";
 import { ServiceCardList } from "./components/ServiceCardList";
 import { SearchBar } from "./components/SearchBar";
 import ServicePageForm from "./components/ServicePageForm";
-import { Button } from "../components/shared/Button";
-
-import { TranslateText } from "@/components/TranslateText";
+// Button and TranslateText not used in this file
+// import { Button } from "../components/shared/Button";
+// import { TranslateText } from "@/components/TranslateText";
 import AdminPageHeader from "../components/ui/AdminPageHeader";
 import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
 import AdminSection from "../components/ui/AdminSection";
@@ -25,7 +25,7 @@ if (!apiUrl) {
 type TabId = 'list' | 'create' | 'settings';
 
 export default function ServiciosAdminPage() {
-  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const { resolvedTheme, themeReady } = useTheme();
   const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
   
   const [services, setServices] = useState<Service[]>([]);
@@ -41,7 +41,7 @@ export default function ServiciosAdminPage() {
   const [pageFormOpen, setPageFormOpen] = useState(false);
   const [pageInitialHandle, setPageInitialHandle] = useState<string | undefined>(undefined);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
-  const toastTimerRef = { current: null as number | null };
+  const toastTimerRef = useRef<number | null>(null);
   
   const [activeTab, setActiveTab] = useState<TabId>("list");
   const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
@@ -63,24 +63,23 @@ export default function ServiciosAdminPage() {
     fetchServices();
   };
 
-  useEffect(() => {
-    fetchServices();
-  }, []);
-
-  async function fetchServices() {
+  const fetchServices = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
       if (query) params.set('search', query);
       if (onlyActive) params.set('active', 'true');
-      const res = await fetch(`${apiUrl}/api/services/cards?${params.toString()}`, { credentials: 'include' });
+      // Use admin endpoint without cache
+      const res = await fetch(`${apiUrl}/api/admin/services?${params.toString()}`, { credentials: 'include' });
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       // Normalize API response: could be array or paginated object { items, page, total }
       if (Array.isArray(data)) {
-        setServices(data);
-      } else if (data && Array.isArray((data as any).items)) {
-        setServices((data as any).items);
+        setServices(data as Service[]);
+      } else if (data && typeof data === 'object') {
+        const maybeItems = (data as { items?: unknown }).items;
+        if (Array.isArray(maybeItems)) setServices(maybeItems as Service[]);
+        else setServices([]);
       } else {
         setServices([]);
       }
@@ -90,7 +89,11 @@ export default function ServiciosAdminPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [query, onlyActive]);
+
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
 
   function handleNew() {
     setEditData(undefined);
@@ -98,10 +101,18 @@ export default function ServiciosAdminPage() {
     setEditOpen(true);
   }
 
+  function getStringField(obj: unknown, ...keys: string[]): string | undefined {
+    if (typeof obj !== 'object' || obj === null) return undefined;
+    for (const k of keys) {
+      const val = (obj as Record<string, unknown>)[k];
+      if (typeof val === 'string' && val.trim()) return val;
+    }
+    return undefined;
+  }
+
   const handleServiceSaved = (savedService: Service) => {
     fetchServices();
-    // Optionally open page form for the handle
-    const maybeHandle = (savedService as any).slug || (savedService as any).handle || savedService.name?.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const maybeHandle = getStringField(savedService, 'slug', 'handle') || savedService.name?.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     setPageInitialHandle(maybeHandle);
     setPageFormOpen(true);
   };
@@ -119,8 +130,13 @@ export default function ServiciosAdminPage() {
       const res = await fetch(`${apiUrl}/api/services/cards/${service.id}`, { credentials: 'include', headers });
       if (res.ok) {
         const data = await res.json();
-        setEditData(data);
-        setEditingService(data);
+        if (data && typeof data === 'object') {
+          setEditData(data as Service);
+          setEditingService(data as Service);
+        } else {
+          setEditData(service);
+          setEditingService(service);
+        }
       } else {
         // fallback al objeto reducido
         setEditData(service);
@@ -135,8 +151,8 @@ export default function ServiciosAdminPage() {
   }
 
   async function handleSave(data: Service) {
-    const maybeSlug = (data as any).slug || (data as any).handle || (data.name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    const payload: any = {
+    const maybeSlug = getStringField(data, 'slug', 'handle') || (data.name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const payload: Record<string, unknown> = {
       icon: data.icon,
       image: data.image,
       name: data.name,
@@ -153,7 +169,8 @@ export default function ServiciosAdminPage() {
     if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
     if (data.id) {
-      await fetch(`${apiUrl}/api/services/cards/${data.id}`, {
+      // Use admin endpoint for update
+      await fetch(`${apiUrl}/api/admin/services/${data.id}`, {
         method: "PUT",
         headers,
         credentials: 'include',
@@ -162,27 +179,30 @@ export default function ServiciosAdminPage() {
       // Note: handle errors
       // (For now we optimistically continue; errors will be shown by toast below)
       // after updating an existing service, open the page form for this handle
-      const maybeHandle = payload.slug;
+      const maybeHandle = typeof maybeSlug === 'string' ? maybeSlug : undefined;
       setPageInitialHandle(maybeHandle);
       setPageFormOpen(true);
     } else {
-      const res = await fetch(`${apiUrl}/api/services/cards`, {
+      // Use admin endpoint for create
+      const res = await fetch(`${apiUrl}/api/admin/services`, {
         method: "POST",
         headers,
         credentials: 'include',
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
-        const created = await res.json();
-        // Open page creation form prefilled with handle (slug) from created service or generated from name
-        const maybeHandle = created.slug || created.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        setPageInitialHandle(maybeHandle);
-        setPageFormOpen(true);
+        if (res.ok) {
+            const created = await res.json();
+            // Open page creation form prefilled with handle (slug) from created service or generated from name
+            const createdHandle = getStringField(created, 'slug') || (typeof created === 'object' && created !== null && typeof (created as Record<string, unknown>).name === 'string'
+              ? ((created as Record<string, unknown>).name as string).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+              : undefined);
+            setPageInitialHandle(createdHandle);
+            setPageFormOpen(true);
       } else {
-        const body = await res.json().catch(() => ({}));
+          const body = await res.json().catch(() => ({} as Record<string, unknown>));
         setToast({ message: body.error || 'Error al crear servicio', visible: true });
         if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
-        toastTimerRef.current = window.setTimeout(() => setToast({ message: '', visible: false }), 4000) as unknown as number;
+        toastTimerRef.current = window.setTimeout(() => setToast({ message: '', visible: false }), 4000);
       }
     }
     setEditOpen(false);
@@ -208,7 +228,8 @@ export default function ServiciosAdminPage() {
       if (storedUser) headers['X-User'] = storedUser;
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
-      await fetch(`${apiUrl}/api/services/cards/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
+      // Use admin endpoint for delete
+      await fetch(`${apiUrl}/api/admin/services/${deleteData.id}`, { method: "DELETE", credentials: 'include', headers });
     }
     setDeleteOpen(false);
     fetchServices();
@@ -225,7 +246,8 @@ export default function ServiciosAdminPage() {
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
-      const res = await fetch(`${apiUrl}/api/services/cards/${service.id}/toggle`, {
+      // Use admin endpoint for toggle active
+      const res = await fetch(`${apiUrl}/api/admin/services/${service.id}/toggle-active`, {
         method: "PATCH",
         headers,
         credentials: 'include',
@@ -344,7 +366,7 @@ export default function ServiciosAdminPage() {
                 open={pageFormOpen}
                 initialHandle={pageInitialHandle}
                 onClose={() => setPageFormOpen(false)}
-                onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
+                onCreated={(p: unknown) => { console.log('page created', p); setPageFormOpen(false); }}
               />
             )}
           </div>
@@ -437,7 +459,7 @@ export default function ServiciosAdminPage() {
         open={pageFormOpen}
         initialHandle={pageInitialHandle}
         onClose={() => setPageFormOpen(false)}
-        onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
+        onCreated={(p: unknown) => { console.log('page created', p); setPageFormOpen(false); }}
       />
       
       {/* Wizard Form for Editing */}
