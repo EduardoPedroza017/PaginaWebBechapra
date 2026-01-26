@@ -6,7 +6,11 @@ import JobsList from './JobsList';
 import JobsForm from './JobsForm';
 import { TranslateText } from '@/components/TranslateText';
 
-import { Briefcase, Plus, RefreshCw, AlertCircle } from 'lucide-react';import { adminApi } from '../utils/admin-api';
+import { Briefcase, Plus, RefreshCw, AlertCircle } from 'lucide-react';
+import { adminApi } from '../utils/admin-api';
+import AdminPageHeader from '../components/ui/AdminPageHeader';
+import AdminSection from '../components/ui/AdminSection';
+import { useTheme } from '../hooks';
 // Adjust the `Job` type to ensure `updatedAt` is consistently optional
 interface Job {
   id?: string;
@@ -43,22 +47,14 @@ const JobsPage = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem('theme');
-        if (saved === 'dark' || saved === 'light') return saved as 'dark' | 'light';
-      }
-    } catch {
-      // ignore
-    }
-    return 'light';
-  });
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [role, setRole] = useState('');
   const [admin, setAdmin] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Theme initialized from localStorage in the useState initializer to avoid
   // a flash / overwrite by child components (Header writes theme to storage)
@@ -157,19 +153,12 @@ const JobsPage = () => {
     }
   };
 
-  const handleToggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setRefreshKey(prev => prev + 1);
+    setTimeout(() => setRefreshing(false), 500);
   };
 
-  const handleLogout = () => {
-    sessionStorage.clear();
-    localStorage.removeItem('token');
-    router.push('/admin');
-  };
-
-  // Correct the explicit cast syntax for `handleJobClick`
   const handleJobClick = (job: Job): void => {
     const id = (job as any).id || job._id;
     if (!id) {
@@ -177,8 +166,6 @@ const JobsPage = () => {
       return;
     }
     console.log('Job clicked:', job);
-    // Aquí podrías navegar a una página de detalles
-    // router.push(`/admin/jobs/${id}`);
   };
 
   const handleDelete = async (job: Job) => {
@@ -208,7 +195,6 @@ const JobsPage = () => {
     }
     try {
       setLoading(true);
-      // Build payload from job (avoid sending internal fields)
       const payload: any = {
         title: job.title,
         description: (job as any).description,
@@ -219,7 +205,6 @@ const JobsPage = () => {
         is_active: (job as any).is_active
       };
       const res = await adminApi.updateJob(id, payload);
-      // update local list
       setJobs(prev => prev.map(j => (((j as any).id || j._id) === id ? (res.data || res) : j)));
       setRefreshKey(k => k + 1);
     } catch (err: any) {
@@ -230,137 +215,85 @@ const JobsPage = () => {
     }
   };
 
-  const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1);
-  };
-
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${
-      theme === 'dark' 
-        ? 'bg-linear-to-br from-slate-950 via-slate-900 to-slate-950' 
-        : 'bg-linear-to-br from-white via-slate-50 to-slate-100'
-    }`}>
-      
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        
-        
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-350 mx-auto w-full overflow-y-auto">
-          {/* Header de la página */}
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className={`p-4 rounded-2xl shadow-lg ${
-                  theme === 'dark' 
-                    ? 'bg-linear-to-br from-blue-600 to-blue-700 shadow-blue-500/30' 
-                    : 'bg-linear-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
-                }`}>
-                  <Briefcase className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h1 className={`text-2xl md:text-3xl font-bold ${
-                    theme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}>
-                    <TranslateText text="Feria de Empleo" />
-                  </h1>
-                  <p className={`text-sm font-medium mt-0.5 ${
-                    theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-                  }`}>
-                    <TranslateText text="Gestión de vacantes laborales" />
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleRefresh}
-                  disabled={loading}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 disabled:opacity-50'
-                      : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 disabled:opacity-50'
-                  }`}
-                >
-                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                  <TranslateText text="Actualizar" />
-                </button>
+  if (!themeReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
 
-                <button
-                  onClick={handleOpenModal}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'bg-green-700 hover:bg-green-600 text-white border border-green-600'
-                      : 'bg-green-500 hover:bg-green-400 text-white border border-green-500'
-                  }`}
-                >
-                  <Plus className="w-4 h-4" />
-                  <TranslateText text="Crear Vacante" />
-                </button>
-              </div>
+  return (
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Feria de Empleo"
+        subtitle="Gestión de vacantes laborales"
+        icon={<Briefcase className="w-6 h-6 text-white" />}
+        iconColor="blue"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          add: { onClick: handleOpenModal, label: 'Crear Vacante' }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Empleo" }]}
+      />
+
+      <AdminSection theme={themeStrict}>
+        {error && (
+          <div className={`mb-6 p-4 rounded-xl border ${
+            themeStrict === 'dark'
+              ? 'bg-red-900/20 border-red-700/50 text-red-300'
+              : 'bg-red-50 border-red-200 text-red-700'
+          }`}>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
+              <p className="font-medium">{error}</p>
             </div>
-            
-            {error && (
-              <div className={`mb-6 p-4 rounded-xl border ${
-                theme === 'dark'
-                  ? 'bg-red-900/20 border-red-700/50 text-red-300'
-                  : 'bg-red-50 border-red-200 text-red-700'
-              }`}>
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5" />
-                  <p className="font-medium">{error}</p>
-                </div>
-              </div>
-            )}
+          </div>
+        )}
+
+        <div className={`rounded-2xl p-6 ${
+          themeStrict === 'dark'
+            ? 'bg-slate-900/50 backdrop-blur-sm border border-slate-700/50'
+            : 'bg-white/80 backdrop-blur-sm border border-slate-200/60'
+        }`}>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={`text-xl font-semibold ${
+              themeStrict === 'dark' ? 'text-white' : 'text-slate-900'
+            }`}>
+              <TranslateText text="Vacantes activas" />
+            </h2>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              themeStrict === 'dark'
+                ? 'bg-blue-900/40 text-blue-300'
+                : 'bg-blue-100 text-blue-700'
+            }`}>
+              {jobs.length} <TranslateText text="vacantes" />
+            </span>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Lista de vacantes */}
-            <div className="lg:col-span-2">
-              <div className={`rounded-2xl p-6 ${
-                theme === 'dark'
-                  ? 'bg-slate-900/50 backdrop-blur-sm border border-slate-700/50'
-                  : 'bg-white/80 backdrop-blur-sm border border-slate-200/60'
-              }`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className={`text-xl font-semibold ${
-                    theme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}>
-                    <TranslateText text="Vacantes activas" />
-                  </h2>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    theme === 'dark'
-                      ? 'bg-blue-900/40 text-blue-300'
-                      : 'bg-blue-100 text-blue-700'
-                  }`}>
-                    {jobs.length} <TranslateText text="vacantes" />
-                  </span>
-                </div>
-                
-                <JobsList 
-                  jobs={jobs}
-                  loading={loading}
-                  emptyMessage="No hay vacantes publicadas"
-                  onJobClick={handleJobClick}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
-            </div>
-          </div>
-        </main>
-
-        {/* JobsForm modal rendered at top-level so it centers and adapts to theme */}
-        <div className={theme === 'dark' ? 'dark' : ''}>
-          <JobsForm
-            onCreate={(job) => handleCreateJob(job)}
-            isSubmitting={submitting}
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
+          <JobsList 
+            jobs={jobs}
+            loading={loading}
+            emptyMessage="No hay vacantes publicadas"
+            onJobClick={handleJobClick}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         </div>
+      </AdminSection>
+
+      {/* JobsForm modal */}
+      <div className={themeStrict === 'dark' ? 'dark' : ''}>
+        <JobsForm
+          onCreate={(job) => handleCreateJob(job)}
+          isSubmitting={submitting}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
       </div>
     </div>
   );

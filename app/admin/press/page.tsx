@@ -65,6 +65,10 @@ export default function PressAdminApp() {
     fetchPress(true);
   };
 
+  const openCreateTab = () => {
+    setActiveTab("create");
+  };
+
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
   }, []);
@@ -180,7 +184,8 @@ export default function PressAdminApp() {
         iconColor="emerald"
         theme={themeStrict}
         actions={{
-          refresh: { onClick: handleRefresh, loading: refreshing }
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          add: { onClick: openCreateTab, label: 'Crear Comunicado' }
         }}
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Prensa" }]}
       />

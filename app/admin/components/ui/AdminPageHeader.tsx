@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { RefreshCw, Plus, Settings, ChevronRight } from 'lucide-react';
+import { RefreshCw, Plus, Settings, ChevronRight, Download } from 'lucide-react';
 import clsx from 'clsx';
 import {
   getPageHeaderClasses,
@@ -22,6 +22,7 @@ interface AdminPageHeaderProps {
   actions?: {
     refresh?: { onClick: () => void; loading?: boolean };
     add?: { onClick: () => void; label?: string; loading?: boolean };
+    export?: { onClick: () => void; label?: string; loading?: boolean };
     settings?: { onClick: () => void };
     custom?: React.ReactNode;
   };
@@ -124,7 +125,7 @@ export default function AdminPageHeader({
           </div>
 
           {/* Right: Actions */}
-          {(actions?.refresh || actions?.add || actions?.settings || actions?.custom) && (
+          {(actions?.refresh || actions?.add || actions?.export || actions?.settings || actions?.custom) && (
             <div className="flex items-center gap-3 justify-start sm:justify-end">
               {actions.custom && <>{actions.custom}</>}
 
@@ -149,6 +150,17 @@ export default function AdminPageHeader({
                 >
                   <Plus className={`w-4 h-4 ${actions.add.loading ? 'animate-spin' : ''}`} />
                   <TranslateText text={actions.add.label || 'Agregar'} />
+                </button>
+              )}
+
+              {actions.export && (
+                <button
+                  onClick={actions.export.onClick}
+                  disabled={actions.export.loading}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium text-sm hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Download className={`w-4 h-4 ${actions.export.loading ? 'animate-spin' : ''}`} />
+                  <TranslateText text={actions.export.label || 'Exportar'} />
                 </button>
               )}
 

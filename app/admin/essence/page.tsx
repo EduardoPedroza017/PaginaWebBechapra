@@ -4,6 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Sparkles, RefreshCw } from "lucide-react";
 
 import { TranslateText } from "@/components/TranslateText";
+import AdminPageHeader from "../components/ui/AdminPageHeader";
+import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
+import AdminSection from "../components/ui/AdminSection";
+import { useTheme } from "../hooks";
 import EssenceStats from "./EssenceStats";
 import EssenceForm from "./EssenceForm";
 import EssenceHistory from "./EssenceHistory";
@@ -26,7 +30,8 @@ interface EssenceHistoryItem {
 }
 
 export default function EssenceAdminPage() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
+  const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
   const [mounted, setMounted] = useState(false);
   const [essence, setEssence] = useState<Essence>({ mision: "", vision: "", valores: "" });
   const [loading, setLoading] = useState(true);
@@ -42,19 +47,7 @@ export default function EssenceAdminPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark' || saved === 'light') setTheme(saved);
-    }
   }, []);
-
-  const handleToggleTheme = () => {
-    setTheme((prev) => {
-      const next = prev === 'light' ? 'dark' : 'light';
-      if (typeof window !== 'undefined') localStorage.setItem('theme', next);
-      return next;
-    });
-  };
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl) {
@@ -225,160 +218,125 @@ export default function EssenceAdminPage() {
     fetchHistory();
   };
 
-  if (!mounted) return null;
+  const handleEdit = () => {
+    setActiveTab('edit');
+  };
+
+  if (!mounted || !themeReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-emerald-600"></div>
+      </div>
+    );
+  }
+
+  const tabs: TabItem[] = [
+    { id: 'edit', label: 'Editar', icon: <Sparkles size={18} /> },
+    { id: 'preview', label: 'Vista Previa', icon: <Sparkles size={18} /> },
+    { id: 'history', label: 'Historial', icon: <Sparkles size={18} /> },
+  ];
 
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-[#0a1627]' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
-      
-      <div className="flex-1 flex flex-col">
-        
-        <main className="flex-1 p-6 lg:p-8 overflow-auto">
-          {/* Page Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-            <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                theme === 'dark' ? 'bg-emerald-600/20' : 'bg-emerald-100'
-              }`}>
-                <Sparkles className={`w-7 h-7 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`} />
-              </div>
-              <div>
-                <h1 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  <TranslateText text="Misión, Visión y Valores" />
-                </h1>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <TranslateText text="Administra la esencia institucional" />
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
-                refreshing ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'
-              } ${
-                theme === 'dark' 
-                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 shadow-sm border border-gray-200'
-              }`}
-            >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              <TranslateText text="Actualizar" />
-            </button>
+    <div className="min-h-screen">
+      <AdminPageHeader
+        title="Misión, Visión y Valores"
+        subtitle="Administra la esencia institucional"
+        icon={<Sparkles className="w-6 h-6 text-white" />}
+        iconColor="emerald"
+        theme={themeStrict}
+        actions={{
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          add: { onClick: handleEdit, label: 'Editar Contenido' }
+        }}
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Esencia" }]}
+      />
+
+      <AdminTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(tabId) => setActiveTab(tabId as typeof activeTab)}
+        theme={themeStrict}
+        variant="pills"
+      />
+
+      <AdminSection theme={themeStrict}>
+        {/* Success/Error Messages */}
+        {success && (
+          <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
+            themeStrict === 'dark' ? 'bg-green-900/30 border border-green-800' : 'bg-green-50 border border-green-200'
+          }`}>
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-green-400' : 'text-green-700'}`}>
+              {success}
+            </span>
           </div>
-
-          {/* Success/Error Messages */}
-          {success && (
-            <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
-              theme === 'dark' ? 'bg-green-900/30 border border-green-800' : 'bg-green-50 border border-green-200'
-            }`}>
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-green-400' : 'text-green-700'}`}>
-                {success}
-              </span>
-            </div>
-          )}
-          {error && (
-            <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
-              theme === 'dark' ? 'bg-red-900/30 border border-red-800' : 'bg-red-50 border border-red-200'
-            }`}>
-              <div className="w-2 h-2 rounded-full bg-red-500" />
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-red-400' : 'text-red-700'}`}>
-                {error}
-              </span>
-            </div>
-          )}
-
-          {/* Stats */}
-          <div className="mb-8">
-            <EssenceStats essence={essence} lastUpdate={lastUpdate} theme={theme} />
+        )}
+        {error && (
+          <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
+            themeStrict === 'dark' ? 'bg-red-900/30 border border-red-800' : 'bg-red-50 border border-red-200'
+          }`}>
+            <div className="w-2 h-2 rounded-full bg-red-500" />
+            <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-red-400' : 'text-red-700'}`}>
+              {error}
+            </span>
           </div>
+        )}
 
-          {/* Main Content */}
-          {loading ? (
-            <div className={`rounded-2xl border p-12 text-center ${
-              theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
-            }`}>
-              <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-emerald-600 mb-3"></div>
-              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                <TranslateText text="Cargando datos..." />
-              </p>
+        {/* Stats */}
+        <div className="mb-8">
+          <EssenceStats essence={essence} lastUpdate={lastUpdate} theme={themeStrict} />
+        </div>
+
+        {/* Main Content */}
+        {loading ? (
+          <div className={`rounded-2xl border p-12 text-center ${
+            themeStrict === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+          }`}>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-emerald-600 mb-3"></div>
+            <p className={`text-sm ${themeStrict === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              <TranslateText text="Cargando datos..." />
+            </p>
+          </div>
+        ) : (
+          <div className={`rounded-2xl border overflow-hidden ${
+            themeStrict === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
+          }`}>
+            <div className="p-6">
+              {activeTab === 'edit' && (
+                <EssenceForm essence={essence} onSave={handleSave} theme={themeStrict} onDraftChange={(d) => setDraft(d)} onEditingChange={(e) => setIsEditing(e)} />
+              )}
+              {activeTab === 'preview' && (
+                <EssencePreview essence={isEditing && draft ? draft : essence} theme={themeStrict} />
+              )}
+              {activeTab === 'history' && (
+                <EssenceHistory history={history} loading={loadingHistory} theme={themeStrict} onRestore={handleRestore} onRequestRestore={requestRestore} />
+              )}
             </div>
-          ) : (
-            <div className={`rounded-2xl border overflow-hidden ${
-              theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-100 shadow-sm'
-            }`}>
-              {/* Tabs */}
-              <div className={`flex border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
-                <button
-                  onClick={() => setActiveTab('edit')}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-                    activeTab === 'edit'
-                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
-                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <TranslateText text="Editar" />
-                </button>
-                <button
-                  onClick={() => setActiveTab('preview')}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-                    activeTab === 'preview'
-                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
-                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <TranslateText text="Vista Previa" />
-                </button>
-                <button
-                  onClick={() => setActiveTab('history')}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-                    activeTab === 'history'
-                      ? theme === 'dark' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-emerald-600 border-b-2 border-emerald-600'
-                      : theme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <TranslateText text="Historial" />
-                </button>
-              </div>
+          </div>
+        )}
+      </AdminSection>
 
-              {/* Tab Content */}
-              <div className="p-6">
-                {activeTab === 'edit' && (
-                  <EssenceForm essence={essence} onSave={handleSave} theme={theme} onDraftChange={(d) => setDraft(d)} onEditingChange={(e) => setIsEditing(e)} />
-                )}
-                {activeTab === 'preview' && (
-                  <EssencePreview essence={isEditing && draft ? draft : essence} theme={theme} />
-                )}
-                {activeTab === 'history' && (
-                  <EssenceHistory history={history} loading={loadingHistory} theme={theme} onRestore={handleRestore} onRequestRestore={requestRestore} />
-                )}
-              </div>
-            </div>
-          )}
+      {/* Confirm restore modal */}
+      <ConfirmModal
+        open={!!restorePendingId}
+        title="Restaurar versión"
+        description="¿Estás seguro de que quieres restaurar esta versión anterior? Esto reemplazará el contenido actual."
+        confirmLabel="Restaurar"
+        cancelLabel="Cancelar"
+        loading={confirmLoading}
+        onClose={() => setRestorePendingId(null)}
+        onConfirm={confirmRestore}
+      />
 
-          {/* Confirm restore modal */}
-          <ConfirmModal
-            open={!!restorePendingId}
-            title="Restaurar versión"
-            description="¿Estás seguro de que quieres restaurar esta versión anterior? Esto reemplazará el contenido actual."
-            confirmLabel="Restaurar"
-            cancelLabel="Cancelar"
-            loading={confirmLoading}
-            onClose={() => setRestorePendingId(null)}
-            onConfirm={confirmRestore}
-          />
-
-          {/* Undo banner */}
-          {undoRestoreId && (
-            <div className="fixed bottom-6 right-6 z-50">
-              <div className={`rounded-lg p-3 shadow-lg flex items-center gap-3 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-900'}`}>
-                <div className="text-sm">Restaurado —</div>
-                <button onClick={undoRestore} className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm">Deshacer</button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
+      {/* Undo banner */}
+      {undoRestoreId && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className={`rounded-lg p-3 shadow-lg flex items-center gap-3 ${themeStrict === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-900'}`}>
+            <div className="text-sm">Restaurado —</div>
+            <button onClick={undoRestore} className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm">Deshacer</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

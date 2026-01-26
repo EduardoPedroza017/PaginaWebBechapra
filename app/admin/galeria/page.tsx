@@ -60,6 +60,10 @@ const GaleriaPage = () => {
     fetchImages(true);
   };
 
+  const handleUpload = () => {
+    setActiveTab("upload");
+  };
+
   useEffect(() => {
     if (themeReady) {
       fetchImages();
@@ -185,7 +189,8 @@ const GaleriaPage = () => {
         iconColor="blue"
         theme={themeStrict}
         actions={{
-          refresh: { onClick: handleRefresh, loading: refreshing }
+          refresh: { onClick: handleRefresh, loading: refreshing },
+          add: { onClick: handleUpload, label: 'Subir Imágenes' }
         }}
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Galería" }]}
       />

@@ -104,9 +104,32 @@ export const useCv = () => {
     }
   }, []);
 
+  const exportFormularios = useCallback(async () => {
+    try {
+      const res = await fetch(`${backendBase}/api/admin/formularios/export`, {
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cvs_exportados_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      return true;
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Error al exportar CVs');
+      return false;
+    }
+  }, []);
+
   useEffect(() => {
     fetchFormularios();
   }, [fetchFormularios]);
 
-  return { items, loading, error, fetchFormularios, downloadCv };
+  return { items, loading, error, fetchFormularios, downloadCv, exportFormularios };
 };
