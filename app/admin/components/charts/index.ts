@@ -9,6 +9,7 @@
  * - Responsive design
  * - Bausen brand color palette
  * - TypeScript support
+ * - Lazy loading support
  * 
  * @example
  * import { LineChart, BarChart, PieChart } from '@/app/admin/components/charts';
@@ -42,4 +43,60 @@ export {
 
 // Re-export echarts for advanced configurations
 export { echarts } from './EChartBase';
+
+// ============================================================================
+// Lazy Loading Exports
+// ============================================================================
+// Use these for better initial page load performance
+// Components are loaded dynamically with ssr: false
+
+export {
+  // Base Chart Components
+  LazyBarChart,
+  LazyLineChart,
+  LazyAreaChart,
+  LazyPieChart,
+  LazyRadarChart,
+  LazyGaugeChart,
+  LazyEChartBase,
+  
+  // Dashboard Components
+  LazyDashboardECharts,
+  
+  // Admin Page Components
+  LazyPressChart,
+  LazyNewsChart,
+  LazyCookieCharts,
+  LazyAuditLogCharts,
+  LazyDbMetricsSection,
+  LazyDBCharts,
+  LazyContactChart,
+  
+  // Loading Skeletons
+  ChartLoadingSkeleton,
+  DashboardLoadingSkeleton,
+} from './lazy-charts';
+
+// ============================================================================
+// Admin Page Chart Exports (for direct imports)
+// ============================================================================
+
+// Press
+export { default as PressChart } from '../../press/PressChart';
+
+// News
+export { default as NewsChart } from '../../news/NewsChart';
+
+// Cookie
+export { default as CookieCharts } from '../../cookie/CookieCharts';
+
+// Audit Log
+export { default as AuditLogCharts } from '../../audit-log/AuditLogCharts';
+export { default as DbMetricsSection } from '../../audit-log/DbMetricsSection';
+
+// Config
+export { default as DBCharts } from '../../config/components/DBCharts';
+
+// Contact Form
+export { default as ContactChart } from '../../conctform/ContactChart';
 
