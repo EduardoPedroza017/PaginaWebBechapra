@@ -225,7 +225,7 @@ export default function ServiciosAdminPage() {
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
-      const res = await fetch(`${apiUrl}/api/services/cards/${service.id}/activate`, {
+      const res = await fetch(`${apiUrl}/api/services/cards/${service.id}/toggle`, {
         method: "PATCH",
         headers,
         credentials: 'include',

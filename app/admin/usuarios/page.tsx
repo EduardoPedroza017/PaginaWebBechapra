@@ -216,8 +216,8 @@ export default function UsuariosPage() {
     if (!deleteUser) return;
     setProcessing(true);
     try {
-      const apiBase = "/api/admin";
-      const res = await fetch(`${apiBase}/users-mutations?id=${encodeURIComponent(deleteUser.email)}`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiBase}/api/admin/users/${encodeURIComponent(deleteUser.email)}`, {
         method: "DELETE",
         headers: {
           'X-Role': sessionStorage.getItem("role") || "",
@@ -226,18 +226,18 @@ export default function UsuariosPage() {
         },
         credentials: 'include',
       });
-      
+
       const data = await res.json();
-      if (data.success) {
+      if (data.success || res.ok) {
         setUsers((prev: Usuario[]) => prev.filter((u: Usuario) => u.email !== deleteUser.email));
         setDeleteUser(null);
       } else {
-        alert(data.message || "Error eliminando usuario");
+        alert(data.message || data.error || "Error eliminando usuario");
       }
-    } catch { 
-      alert("Error eliminando usuario"); 
-    } finally { 
-      setProcessing(false); 
+    } catch {
+      alert("Error eliminando usuario");
+    } finally {
+      setProcessing(false);
     }
   };
 
