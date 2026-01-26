@@ -51,11 +51,21 @@ export default function AdminContactPage() {
       }
       const res = await fetch(`${apiUrl}/api/contact`);
       const data = await res.json();
-      setMessages(data);
-      setFiltered(data);
-      
+      // Normalizar respuesta: algunos endpoints devuelven { success:true, data: [...] }
+      const arr = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+      // Asegurarse de que cada item tenga los campos esperados
+      const normalized: ContactMessage[] = arr.map((m: any) => ({
+        name: m?.name || m?.fullName || '',
+        email: m?.email || '',
+        message: m?.message || m?.body || '',
+        timestamp: m?.timestamp || m?.createdAt || new Date().toISOString()
+      }));
+
+      setMessages(normalized);
+      setFiltered(normalized);
+
       // Simular mensajes no leídos (en un caso real, vendría del backend)
-      const unread = data.filter((msg: ContactMessage) => {
+      const unread = normalized.filter((msg: ContactMessage) => {
         const msgDate = new Date(msg.timestamp);
         const now = new Date();
         return (now.getTime() - msgDate.getTime()) < 3600000; // Última hora
