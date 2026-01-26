@@ -401,16 +401,24 @@ export default function PrensaDetalle() {
       <ReadingProgress />
 
       <main className="min-h-screen bg-white dark:bg-gray-950">
+        {!article?.file_url && (
+          <div className="fixed top-20 left-6 md:top-4 md:left-4 z-60">
+            <Link href="/prensa" className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-full shadow-md">
+              <ArrowLeft size={16} />
+              <span className="text-sm font-medium">Volver</span>
+            </Link>
+          </div>
+        )}
         {article.file_url && (
           <div className="relative w-full h-100 md:h-125 lg:h-150 bg-gray-900">
-            <div className="absolute top-4 left-4 z-50">
-              <Link href="/prensa" className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm">
+            <div className="absolute top-20 left-6 md:top-4 md:left-4 z-60">
+              <Link href="/prensa" className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-full shadow-md backdrop-blur-sm">
                 <ArrowLeft size={16} />
-                <span className="text-sm font-medium">Prensa</span>
+                <span className="text-sm font-medium">Volver</span>
               </Link>
             </div>
 
-            <div className="absolute top-4 right-4 z-50 hidden md:flex">
+            <div className="absolute right-6 top-20 z-40 hidden md:flex">
               <ShareBar title={article.title} url={currentUrl} />
             </div>
 
@@ -423,9 +431,9 @@ export default function PrensaDetalle() {
               priority
             />
 
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
 
-            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-12">
+            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-20">
               <div className="max-w-4xl mx-auto">
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                   {article.tags && article.tags.length > 0 && (
@@ -436,7 +444,7 @@ export default function PrensaDetalle() {
                   )}
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">{article.title}</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 text-left">{article.title}</h1>
 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
                   {article.date && (
@@ -470,13 +478,13 @@ export default function PrensaDetalle() {
             <article className="lg:col-span-9">
               {article.description && (
                 <div className="mb-8 pb-8 border-b border-gray-200 dark:border-gray-800">
-                  <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">{article.description}</p>
+                  <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed text-justify">{article.description}</p>
                 </div>
               )}
 
               {hasContent ? (
                 <div
-                  className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-lg"
+                  className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-lg text-justify"
                   dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                 />
               ) : (

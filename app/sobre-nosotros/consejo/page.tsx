@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { TranslateText } from "@/components/TranslateText";
 import Footer from "@/components/Footer";
-import { Phone, Mail, ArrowRight, Calendar, Users, Award, Building2 } from "lucide-react";
+import { Phone, Mail, ArrowRight, Calendar, Users, Award, Building2, Search, Filter, X, ChevronDown, MapPin, Briefcase, GraduationCap } from "lucide-react";
 import axios from "axios";
 
 interface BoardMember {
