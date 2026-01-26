@@ -1,19 +1,27 @@
 "use client";
 
-import React from 'react';
-import { BarChart3, Activity, Shield } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { BarChart3, Activity, Shield, RefreshCw } from 'lucide-react';
 import { TranslateText } from '@/components/TranslateText';
 import { useStats } from '../../hooks';
+import { DashboardECharts } from '../../components/charts/DashboardECharts';
+import type { ThemeMode } from '../../components/charts/echartsTheme';
 
 interface DashboardFullStatsProps {
-  theme: 'light' | 'dark';
+  theme: ThemeMode;
+}
+
+// Seeded random number generator for stable chart data
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
 }
 
 export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
   const { stats, systemStatus, loading, refreshing, refreshStats } = useStats();
   const isDark = theme === 'dark';
 
-  // Obtener estado del sistema
+  // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'operational': return 'green';
@@ -23,6 +31,7 @@ export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
     }
   };
 
+  // Get status text
   const getStatusText = (status: string) => {
     switch (status) {
       case 'operational': return 'Operativo';
@@ -32,7 +41,7 @@ export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
     }
   };
 
-  // Formatear tiempo
+  // Format time
   const formatTimeSince = (dateString?: string) => {
     if (!dateString) return 'Nunca';
     const date = new Date(dateString);
@@ -45,6 +54,28 @@ export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
     return `Hace ${Math.floor(diffMins / 1440)} d`;
   };
 
+  // Generate stable mock trend data for charts (using seeded random)
+  const trendData = useMemo(() => {
+    const trends = [];
+    const today = new Date();
+    
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const seed = i * 100 + date.getDate();
+      
+      trends.push({
+        date: date.toISOString().split('T')[0],
+        news: Math.floor(seededRandom(seed) * 5) + 1,
+        gallery: Math.floor(seededRandom(seed + 1) * 8) + 2,
+        press: Math.floor(seededRandom(seed + 2) * 3) + 1,
+      });
+    }
+    
+    return trends;
+  }, []);
+
+  // Loading skeleton
   if (loading) {
     return (
       <div className="space-y-6">
@@ -73,9 +104,37 @@ export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
             </p>
           </div>
         </div>
+        
+        <button
+          onClick={() => refreshStats()}
+          disabled={refreshing}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            isDark 
+              ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' 
+              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+          } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          <span className="text-sm font-medium">
+            <TranslateText text={refreshing ? 'Actualizando...' : 'Actualizar'} />
+          </span>
+        </button>
       </div>
 
-      {/* System Status Card */}
+      {/* ECharts Dashboard */}
+      <DashboardECharts
+        theme={theme}
+        stats={{
+          news: stats.news,
+          gallery: stats.gallery,
+          press: stats.press,
+          users: stats.users,
+        }}
+        trends={trendData}
+        loading={loading}
+      />
+
+      {/* Stats Grid */}
       <div className={`p-6 rounded-xl border ${
         isDark 
           ? 'bg-gray-900/50 border-gray-800' 
@@ -205,7 +264,7 @@ export function DashboardFullStats({ theme }: DashboardFullStatsProps) {
   );
 }
 
-// Componente auxiliar para mostrar estadísticas
+// Helper component for stat items
 function StatItem({ 
   label, 
   value, 
