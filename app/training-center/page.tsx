@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import { GraduationCap, BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Trophy, Zap, Shield, Lightbulb, BarChart, Gift, Send } from 'lucide-react';
+import { BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Zap, Shield, Lightbulb, Gift, Send } from 'lucide-react';
 import Footer from '@/components/Footer';
 
 export default function TrainingCenterPage() {
   const [activeTab, setActiveTab] = useState('todos');
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [areaInteres, setAreaInteres] = useState('');
@@ -562,8 +562,8 @@ export default function TrainingCenterPage() {
                   formData.append('area_interes', areaInteres);
                   if (cvFile) formData.append('cv', cvFile, cvFile.name);
 
-                  const base = process.env.NEXT_PUBLIC_API_BASE;
-                  const res = await fetch(`${base}/api/formularios`, {
+                  const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+                  const res = await fetch(`${apiUrl}/api/formularios`, {
                     method: 'POST',
                     body: formData,
                   });
@@ -573,7 +573,7 @@ export default function TrainingCenterPage() {
                     throw new Error(err?.message || 'Error al enviar el formulario');
                   }
 
-                  setSuccessMessage('CV enviado correctamente. ¡Gracias!');
+                  setSuccessMessage('¡Listo! Hemos recibido tu CV y tus datos correctamente. Nos pondremos en contacto pronto.');
                   setNombre(''); setCorreo(''); setAreaInteres(''); setCvFile(null);
                 } catch (err) {
                   setErrorMessage(err instanceof Error ? err.message : 'Error al enviar');
@@ -707,7 +707,7 @@ export default function TrainingCenterPage() {
                   ))}
                 </div>
                 <p className="text-gray-700 dark:text-gray-300 mb-6 text-lg italic leading-relaxed">
-                  "{testimonial.content}"
+                  &quot;{testimonial.content}&quot;
                 </p>
                 <div className="flex items-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                   <div className="w-14 h-14 bg-linear-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
