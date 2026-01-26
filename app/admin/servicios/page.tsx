@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { Service } from "./components/ServiceForm";
 import { ServiceEditModal } from "./components/ServiceEditModal";
+import ServicesWizardForm from "./components/ServicesWizardForm";
 import { DeleteServiceModal } from "./components/DeleteServiceModal";
 import { ServiceCardList } from "./components/ServiceCardList";
 import { SearchBar } from "./components/SearchBar";
@@ -48,6 +49,8 @@ export default function ServiciosAdminPage() {
     create: false,
     settings: false,
   });
+  const [useWizardForm, setUseWizardForm] = useState(true); // Usar wizard por defecto
+  const [editingService, setEditingService] = useState<Service | null>(null);
 
   const handleTabChange = async (tabId: TabId) => {
     setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
@@ -91,8 +94,17 @@ export default function ServiciosAdminPage() {
 
   function handleNew() {
     setEditData(undefined);
+    setEditingService(null);
     setEditOpen(true);
   }
+
+  const handleServiceSaved = (savedService: Service) => {
+    fetchServices();
+    // Optionally open page form for the handle
+    const maybeHandle = (savedService as any).slug || (savedService as any).handle || savedService.name?.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    setPageInitialHandle(maybeHandle);
+    setPageFormOpen(true);
+  };
 
   async function handleEdit(service: Service) {
     // Obtener detalle completo antes de abrir el modal
@@ -108,13 +120,16 @@ export default function ServiciosAdminPage() {
       if (res.ok) {
         const data = await res.json();
         setEditData(data);
+        setEditingService(data);
       } else {
         // fallback al objeto reducido
         setEditData(service);
+        setEditingService(service);
       }
     } catch (err) {
       console.error('Error fetching service detail', err);
       setEditData(service);
+      setEditingService(service);
     }
     setEditOpen(true);
   }
@@ -284,12 +299,55 @@ export default function ServiciosAdminPage() {
         )}
 
         {activeTab === 'create' && (
-          <ServicePageForm
-            open={pageFormOpen}
-            initialHandle={pageInitialHandle}
-            onClose={() => setPageFormOpen(false)}
-            onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
-          />
+          <div>
+            {/* Toggle entre formularios */}
+            <div className="mb-4 flex items-center gap-4">
+              <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                Formulario:
+              </span>
+              <button
+                onClick={() => setUseWizardForm(true)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Wizard (Nuevo)
+              </button>
+              <button
+                onClick={() => setUseWizardForm(false)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  !useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Tradicional
+              </button>
+            </div>
+            
+            {useWizardForm ? (
+              <ServicesWizardForm
+                isOpen={true}
+                onClose={() => setActiveTab("list")}
+                onSaved={handleServiceSaved}
+                initialData={undefined}
+                theme={themeStrict}
+              />
+            ) : (
+              <ServicePageForm
+                open={pageFormOpen}
+                initialHandle={pageInitialHandle}
+                onClose={() => setPageFormOpen(false)}
+                onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
+              />
+            )}
+          </div>
         )}
 
         {activeTab === 'list' && (
@@ -380,6 +438,21 @@ export default function ServiciosAdminPage() {
         initialHandle={pageInitialHandle}
         onClose={() => setPageFormOpen(false)}
         onCreated={(p: any) => { console.log('page created', p); setPageFormOpen(false); }}
+      />
+      
+      {/* Wizard Form for Editing */}
+      <ServicesWizardForm
+        isOpen={!!editingService}
+        onClose={() => {
+          setEditingService(null);
+          setEditOpen(false);
+        }}
+        onSaved={(savedService: Service) => {
+          handleServiceSaved(savedService);
+          setEditingService(null);
+        }}
+        initialData={editingService || undefined}
+        theme={themeStrict}
       />
     </div>
   );

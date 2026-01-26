@@ -5,6 +5,7 @@ import { Calendar, Plus, BarChart3, RefreshCw } from 'lucide-react';
 import EventosList from './EventosList';
 import EventosFilters from './EventosFilters';
 import EventosModal from './EventosModal';
+import EventosWizardForm from './EventosWizardForm';
 import EventosStats from './EventosStats';
 import useEventos from './hooks/useEventos';
 
@@ -36,6 +37,8 @@ const EventosPage: React.FC = () => {
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("list");
   const [refreshing, setRefreshing] = useState(false);
+  const [useWizardForm, setUseWizardForm] = useState(true); // Usar wizard por defecto
+  const [editingWizardEvento, setEditingWizardEvento] = useState<Evento | null>(null);
   
   const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
     list: false,
@@ -61,7 +64,21 @@ const EventosPage: React.FC = () => {
 
   const handleOpenModal = (evento: Evento | null = null) => {
     setSelectedEvento(evento);
+    if (evento) {
+      setEditingWizardEvento(evento);
+    }
     setIsModalOpen(true);
+  };
+
+  const handleEventoSaved = (savedEvento: Record<string, unknown>) => {
+    // Refresh will be handled by the useEventos hook
+    setEditingWizardEvento(null);
+  };
+
+  const handleCloseWizard = () => {
+    setEditingWizardEvento(null);
+    setIsModalOpen(false);
+    setSelectedEvento(null);
   };
 
   const handleCloseModal = () => {
@@ -135,12 +152,55 @@ const EventosPage: React.FC = () => {
         )}
 
         {activeTab === 'create' && (
-          <EventosModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onSubmit={handleSaveEvento}
-            initialData={selectedEvento || undefined}
-          />
+          <div>
+            {/* Toggle entre formularios */}
+            <div className="mb-4 flex items-center gap-4">
+              <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                Formulario:
+              </span>
+              <button
+                onClick={() => setUseWizardForm(true)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Wizard (Nuevo)
+              </button>
+              <button
+                onClick={() => setUseWizardForm(false)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  !useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Tradicional
+              </button>
+            </div>
+            
+            {useWizardForm ? (
+              <EventosWizardForm
+                isOpen={true}
+                onClose={() => setActiveTab("list")}
+                onSaved={handleEventoSaved}
+                initialData={undefined}
+                theme={themeStrict}
+              />
+            ) : (
+              <EventosModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSaveEvento}
+                initialData={undefined}
+              />
+            )}
+          </div>
         )}
 
         {activeTab === 'list' && (
@@ -176,6 +236,15 @@ const EventosPage: React.FC = () => {
         onClose={handleCloseModal}
         onSubmit={handleSaveEvento}
         initialData={selectedEvento || undefined}
+      />
+      
+      {/* Wizard Form for Editing */}
+      <EventosWizardForm
+        isOpen={!!editingWizardEvento}
+        onClose={handleCloseWizard}
+        onSaved={handleEventoSaved}
+        initialData={editingWizardEvento || undefined}
+        theme={themeStrict}
       />
     </div>
   );

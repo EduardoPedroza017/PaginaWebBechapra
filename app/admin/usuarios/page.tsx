@@ -10,6 +10,7 @@ import UserStats from "./UserStats";
 import { UserFilter } from "./UserFilter";
 import UserCardList from "./UserCardList";
 import { UserFormModal } from "./UserFormModal";
+import UserWizardForm from "./UserWizardForm";
 import { DeleteUserModal } from "./DeleteUserModal";
 import UserDetailsModal from "./UserDetailsModal";
 
@@ -45,6 +46,8 @@ export default function UsuariosPage() {
   const [detailsUser, setDetailsUser] = useState<Usuario | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("list");
+  const [useWizardForm, setUseWizardForm] = useState(true); // Usar wizard por defecto
+  const [editingWizardUser, setEditingWizardUser] = useState<Usuario | null>(null);
   
   const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
     list: false,
@@ -188,12 +191,21 @@ export default function UsuariosPage() {
 
   const handleAdd = () => { 
     setEditUser(null); 
+    setEditingWizardUser(null);
     setShowForm(true); 
   };
 
   const handleEdit = (user: Usuario) => { 
     setEditUser(user); 
+    setEditingWizardUser(user);
     setShowForm(true); 
+  };
+
+  const handleUserSaved = (user: Record<string, unknown>) => {
+    fetchUsers();
+    setShowForm(false);
+    setEditUser(null);
+    setEditingWizardUser(null);
   };
 
   const handleDelete = (user: Usuario) => { 
@@ -415,15 +427,67 @@ export default function UsuariosPage() {
 
       {/* Modals */}
       {showForm && (
-        <UserFormModal
-          initial={editUser ? { 
-            email: editUser.email, 
-            roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []),
-          } : undefined}
-          isEdit={!!editUser} 
-          onSubmit={handleFormSubmit} 
-          onClose={() => setShowForm(false)} 
-        />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Toggle entre formularios */}
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-lg shadow-lg">
+            <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+              Formulario:
+            </span>
+            <button
+              onClick={() => setUseWizardForm(true)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                useWizardForm
+                  ? 'bg-blue-600 text-white'
+                  : themeStrict === 'dark'
+                    ? 'bg-gray-800 text-gray-300'
+                    : 'bg-gray-200 text-gray-600'
+              }`}
+            >
+              Wizard (Nuevo)
+            </button>
+            <button
+              onClick={() => setUseWizardForm(false)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                !useWizardForm
+                  ? 'bg-blue-600 text-white'
+                  : themeStrict === 'dark'
+                    ? 'bg-gray-800 text-gray-300'
+                    : 'bg-gray-200 text-gray-600'
+              }`}
+            >
+              Tradicional
+            </button>
+          </div>
+          
+          {useWizardForm ? (
+            <UserWizardForm
+              isOpen={true}
+              onClose={() => {
+                setShowForm(false);
+                setEditUser(null);
+                setEditingWizardUser(null);
+              }}
+              onSaved={handleUserSaved}
+              initialData={editingWizardUser ? {
+                email: editingWizardUser.email,
+                roles: Array.isArray(editingWizardUser.role) ? editingWizardUser.role : (editingWizardUser.roles || []),
+                active: !editingWizardUser.bloqueado,
+              } : undefined}
+              theme={themeStrict}
+            />
+          ) : (
+            <UserFormModal
+              initial={editUser ? { 
+                email: editUser.email, 
+                roles: Array.isArray(editUser.role) ? editUser.role : (editUser.roles || []),
+                active: !editUser.bloqueado,
+              } : undefined}
+              isEdit={!!editUser} 
+              onSubmit={handleFormSubmit} 
+              onClose={() => setShowForm(false)} 
+            />
+          )}
+        </div>
       )}
       
       <UserDetailsModal 

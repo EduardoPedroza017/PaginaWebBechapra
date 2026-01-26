@@ -7,6 +7,7 @@ import { Newspaper, RefreshCw, Plus, BarChart3 } from "lucide-react";
 import NewsFilter, { NewsItem } from "./NewsFilter";
 import NewsChart from "./NewsChart";
 import NewsForm from "./NewsForm";
+import NewsWizardForm from "./NewsWizardForm";
 import { NewsCardList } from "./NewsCardList";
 import NewsPreviewModal from "./NewsPreviewModal";
 import NewsEditModal from "./NewsEditModal";
@@ -39,6 +40,7 @@ export default function AdminNewsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [activeTab, setActiveTab] = useState<TabId>("list");
   const [loading, setLoading] = useState(false);
+  const [useWizardForm, setUseWizardForm] = useState(true); // Usar wizard por defecto
   
   const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
     list: false,
@@ -263,7 +265,49 @@ export default function AdminNewsPage() {
         )}
 
         {activeTab === 'create' && (
-          <NewsForm onCreated={handleCreated} theme={themeStrict} />
+          <div>
+            {/* Toggle entre formularios */}
+            <div className="mb-4 flex items-center gap-4">
+              <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                Formulario:
+              </span>
+              <button
+                onClick={() => setUseWizardForm(true)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Wizard (Nuevo)
+              </button>
+              <button
+                onClick={() => setUseWizardForm(false)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  !useWizardForm
+                    ? 'bg-blue-600 text-white'
+                    : themeStrict === 'dark'
+                      ? 'bg-gray-800 text-gray-300'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                Tradicional
+              </button>
+            </div>
+            
+            {useWizardForm ? (
+              <NewsWizardForm
+                isOpen={true}
+                onClose={() => setActiveTab("list")}
+                onCreated={handleCreated}
+                theme={themeStrict}
+              />
+            ) : (
+              <NewsForm onCreated={handleCreated} theme={themeStrict} />
+            )}
+          </div>
         )}
 
         {activeTab === 'list' && (
