@@ -83,43 +83,47 @@ export function useStats(): UseStatsReturn {
       setError(null);
 
       // Fetch data, handling failures gracefully
-      const [news, gallery, press] = await Promise.all([
+      const results = await Promise.all([
         adminApi.getNews().catch(() => []),
         adminApi.getGallery().catch(() => []),
         adminApi.getPress().catch(() => []),
       ]);
+      const news = Array.isArray(results[0]) ? results[0] as unknown[] : [];
+      const gallery = Array.isArray(results[1]) ? results[1] as unknown[] : [];
+      const press = Array.isArray(results[2]) ? results[2] as unknown[] : [];
 
       // Optional fetches that may not exist
-      let users = [];
-      let systemStatusData = {};
-      let systemHealthData = {};
+      let usersRes: unknown = [];
+      let systemStatusDataRes: unknown = {};
+      let systemHealthDataRes: unknown = {};
 
       try {
-        users = await adminApi.getUsers();
+        usersRes = await adminApi.getUsers();
       } catch (err) {
         console.warn('Users API not available:', err);
-        users = [];
+        usersRes = [];
       }
 
       try {
-        systemStatusData = await adminApi.getSystemStatus();
+        systemStatusDataRes = await adminApi.getSystemStatus();
       } catch (err) {
         console.warn('System status API not available:', err);
-        systemStatusData = {};
+        systemStatusDataRes = {};
       }
 
       try {
-        systemHealthData = await adminApi.getSystemHealth();
+        systemHealthDataRes = await adminApi.getSystemHealth();
       } catch (err) {
         console.warn('System health API not available:', err);
-        systemHealthData = {};
+        systemHealthDataRes = {};
       }
 
       // Process real data
       const newsCount = Array.isArray(news) ? news.length : 0;
       const galleryCount = Array.isArray(gallery) ? gallery.length : 0;
       const pressCount = Array.isArray(press) ? press.length : 0;
-      const usersCount = Array.isArray(users) ? users.length : 0;
+      const users = Array.isArray(usersRes) ? usersRes as unknown[] : [];
+      const usersCount = users.length;
 
       // Calculate deltas based on stored previous values
       const calculateDelta = (current: number, key: string): number => {
@@ -145,8 +149,8 @@ export function useStats(): UseStatsReturn {
       let systemStatusInfo: SystemStatusData;
       let systemHealthInfo: SystemHealthData;
 
-      if (systemStatusData && typeof systemStatusData === 'object' && 'status' in systemStatusData) {
-        systemStatusInfo = systemStatusData as SystemStatusData;
+      if (systemStatusDataRes && typeof systemStatusDataRes === 'object' && 'status' in (systemStatusDataRes as Record<string, unknown>)) {
+        systemStatusInfo = systemStatusDataRes as SystemStatusData;
       } else {
         systemStatusInfo = {
           status: 'operational',
@@ -156,8 +160,8 @@ export function useStats(): UseStatsReturn {
         };
       }
 
-      if (systemHealthData && typeof systemHealthData === 'object' && 'uptime' in systemHealthData) {
-        systemHealthInfo = systemHealthData as SystemHealthData;
+      if (systemHealthDataRes && typeof systemHealthDataRes === 'object' && 'uptime' in (systemHealthDataRes as Record<string, unknown>)) {
+        systemHealthInfo = systemHealthDataRes as SystemHealthData;
       } else {
         systemHealthInfo = {
           uptime: 99.9,
@@ -185,11 +189,12 @@ export function useStats(): UseStatsReturn {
       };
 
       // Process system services status
+      type RawService = Partial<{ name: unknown; status: unknown; responseTime: unknown }>;
       const services = Array.isArray(systemStatusInfo.services) && systemStatusInfo.services.length > 0
-        ? systemStatusInfo.services.map((service: any) => ({
-            name: service.name || 'Servicio',
-            status: (service.status === 'up' || service.status === 'down' || service.status === 'slow')
-              ? service.status : 'up' as const,
+        ? systemStatusInfo.services.map((service: RawService) => ({
+            name: typeof service.name === 'string' ? service.name : 'Servicio',
+            status: (typeof service.status === 'string' && (service.status === 'up' || service.status === 'down' || service.status === 'slow'))
+              ? (service.status as 'up' | 'down' | 'slow') : 'up',
             responseTime: typeof service.responseTime === 'number' ? service.responseTime : 0
           }))
         : [

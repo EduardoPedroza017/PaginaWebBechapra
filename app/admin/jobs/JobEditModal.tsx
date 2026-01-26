@@ -1,24 +1,12 @@
 import React, { useState } from 'react';
 import { Modal } from './utils/Modal';
-
-interface Job {
-  id?: string;
-  _id?: string;
-  title: string;
-  description?: string;
-  requirements?: string;
-  location?: string;
-  salary?: string;
-  modality?: string;
-  image_url?: string;
-  is_active?: boolean;
-}
+import type { JobItem } from '../utils/admin-api';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  job: Job | null;
-  onSave: (updated: Job) => void;
+  job: JobItem | null;
+  onSave: (updated: JobItem) => void;
 }
 
 export default function JobEditModal({ isOpen, onClose, job, onSave }: Props) {
@@ -44,8 +32,8 @@ export default function JobEditModal({ isOpen, onClose, job, onSave }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!job) return;
-    const updated: Job = {
-      ...job,
+    const updated: JobItem = {
+      ...(job as JobItem),
       title,
       description,
       requirements,
@@ -53,7 +41,7 @@ export default function JobEditModal({ isOpen, onClose, job, onSave }: Props) {
       modality,
       salary,
       is_active: isActive
-    };
+    } as JobItem;
     onSave(updated);
   };
 

@@ -124,9 +124,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
       {/* Desktop Sidebar */}
       {!isMobile && (
-        <aside className={`admin-sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-          <ResponsiveSidebar expanded={isExpanded} />
-        </aside>
+        <ResponsiveSidebar expanded={isExpanded} />
       )}
 
       {/* Main content area */}

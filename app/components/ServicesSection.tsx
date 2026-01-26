@@ -4,13 +4,24 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 // import { services } from "./data/homeData";
 import { ArrowUpRight } from "lucide-react";
+import Image from 'next/image';
 import { TranslateText } from "@/components/TranslateText";
 import { services as staticServices } from "./data/homeData";
 
-function ServiceCard({ service, index }: { service: any; index: number }) {
+type Service = {
+  id?: string;
+  slug?: string;
+  name?: string;
+  description?: string;
+  image?: string;
+  icon?: string;
+};
+
+function ServiceCard({ service, index }: { service: Service; index: number }) {
+  const slugOrName = String(service.slug ?? service.name ?? '');
   return (
     <motion.a
-      href={`/servicios/${encodeURIComponent(service.slug || service.name)}`}
+      href={`/servicios/${encodeURIComponent(slugOrName)}`}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -20,9 +31,15 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
       {/* Image Container */}
       <div className="relative h-56 overflow-hidden">
         {service.image ? (
-          <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <Image
+            src={service.image}
+            alt={service.name || 'Servicio'}
+            fill
+            sizes="(max-width: 1024px) 100vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+          />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+          <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
             <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
           </div>
         )}
@@ -30,7 +47,9 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
         
         {/* Icon Badge */}
         <div className="absolute top-4 left-4 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-white/95 backdrop-blur-sm dark:bg-slate-800/95 dark:border dark:border-slate-700">
-          {service.icon ? <img src={service.icon} alt="" className="w-9 h-9 object-contain" /> : null}
+          {service.icon ? (
+            <Image src={service.icon} alt="" width={36} height={36} className="object-contain" />
+          ) : null}
         </div>
         
         {/* Arrow */}
@@ -59,7 +78,7 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
 }
 
 export default function ServicesSection() {
-  const [services, setServices] = useState<any[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,21 +87,36 @@ export default function ServicesSection() {
     (async () => {
       try {
         const API = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${API}/api/admin/services/cards?active=true`);
+        const res = await fetch(`${API}/api/services/cards?active=true`);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
         if (mounted && Array.isArray(data)) {
-          const fetched = data.map((s: any) => {
-            const normalize = (url: string | undefined) => url && String(url).startsWith('/uploads/') ? `${API}${url}` : url;
-            return { ...s, icon: normalize(s.icon), image: normalize(s.image) };
+          const fetched = data.map((s: unknown) => {
+            const raw = s as Record<string, unknown>;
+            const normalize = (url?: unknown) => {
+              if (!url) return undefined;
+              const u = String(url);
+              return u.startsWith('/uploads/') ? `${API}${u}` : u;
+            };
+            const svc: Service = {
+              id: raw['id'] ? String(raw['id']) : undefined,
+              slug: raw['slug'] ? String(raw['slug']) : undefined,
+              name: raw['name'] ? String(raw['name']) : undefined,
+              description: raw['description'] ? String(raw['description']) : undefined,
+              icon: normalize(raw['icon']),
+              image: normalize(raw['image']),
+            };
+
+            return svc;
           });
+          const mappedStaticFormatted: Service[] = mappedStatic.map(s => ({ id: s.id, slug: s.slug ?? s.id, name: s.name, description: s.description, image: s.image, icon: s.icon }));
           const merged = [
             ...fetched,
-            ...mappedStatic.filter(ms => !fetched.some(f => (f.id && ms.id && f.id === ms.id) || (f.slug && ms.slug && f.slug === ms.slug) || (f.name && ms.name && f.name === ms.name)))
+            ...mappedStaticFormatted.filter(ms => !fetched.some(f => (f.id && ms.id && f.id === ms.id) || (f.slug && ms.slug && f.slug === ms.slug) || (f.name && ms.name && f.name === ms.name)))
           ];
           setServices(merged);
         } else if (mounted) {
-          setServices(mappedStatic);
+          setServices(mappedStatic.map(s => ({ id: s.id, slug: s.slug ?? s.id, name: s.name, description: s.description, image: s.image, icon: s.icon })));
         }
       } catch (err) {
         console.error('Error fetching services', err);

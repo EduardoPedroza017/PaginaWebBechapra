@@ -24,11 +24,12 @@ export function useAuth(): UseAuthReturn {
       const adminVal = sessionStorage.getItem('admin') === 'true';
       const roleVal = sessionStorage.getItem('role') || '';
 
-      const data = await adminApi.checkAuth(adminVal, roleVal);
-      setAdmin(Boolean(data.admin));
-      setRole(data.role || '');
-      setAuthorized(Boolean(data.role));
-    } catch (error) {
+      const res = await adminApi.checkAuth(adminVal, roleVal);
+      const data = (res ?? {}) as Record<string, unknown>;
+      setAdmin(Boolean(data['admin']));
+      setRole(typeof data['role'] === 'string' ? (data['role'] as string) : '');
+      setAuthorized(Boolean(data['role']));
+    } catch {
       setAdmin(false);
       setAuthorized(false);
     } finally {
@@ -39,16 +40,16 @@ export function useAuth(): UseAuthReturn {
   const logout = useCallback(async () => {
     try {
       await fetch('/api/backend/admin/logout', { method: 'POST', credentials: 'include' });
-    } catch (e) {
+    } catch {
       // ignore
     }
-    try { sessionStorage.removeItem('admin'); } catch (e) {}
-    try { sessionStorage.removeItem('role'); } catch (e) {}
-    try { sessionStorage.removeItem('admin_token'); } catch (e) {}
-    try { sessionStorage.removeItem('user_email'); } catch (e) {}
-    try { sessionStorage.removeItem('user_name'); } catch (e) {}
-    try { localStorage.removeItem('token'); } catch (e) {}
-    try { localStorage.removeItem('user'); } catch (e) {}
+    try { sessionStorage.removeItem('admin'); } catch {}
+    try { sessionStorage.removeItem('role'); } catch {}
+    try { sessionStorage.removeItem('admin_token'); } catch {}
+    try { sessionStorage.removeItem('user_email'); } catch {}
+    try { sessionStorage.removeItem('user_name'); } catch {}
+    try { localStorage.removeItem('token'); } catch {}
+    try { localStorage.removeItem('user'); } catch {}
     router.push('/admin');
   }, [router]);
 
