@@ -12,13 +12,13 @@ export default function DivisionsSection() {
     {
       label: "BTC",
       description: "Soluciones tecnológicas y transformación digital",
-      image: "/imagen/division-btc.jpg",
+
       icon: <FiCpu size={44} color="#fff" />
     },
     {
       label: "BAUSEN Studio",
       description: "Diseño y desarrollo de experiencias digitales",
-      image: "/imagen/division-studio.jpg",
+
       icon: <FiMonitor size={44} color="#fff" />
     },
     {
@@ -130,11 +130,7 @@ export default function DivisionsSection() {
                       </button>
                     </div>
                   </div>
-                  <div
-                    className="absolute inset-0 rounded-3xl bg-cover bg-center opacity-30"
-                    style={{ backgroundImage: `url(${d.image})` }}
-                    aria-hidden
-                  />
+
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-blue-900/70 to-transparent z-0" />
                 </div>
               );
