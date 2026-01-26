@@ -140,6 +140,9 @@ class ApiClient {
 
       const response = await fetch(url, {
         ...options,
+        // ensure cookies (session) are sent to the Next.js proxy so backend
+        // can validate server-side session. Allow caller to override via options.
+        credentials: (options && (options as any).credentials) || 'include',
         headers: {
           ...defaultHeaders,
           ...runtimeHeaders,
