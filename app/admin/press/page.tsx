@@ -21,6 +21,7 @@ import { useTheme } from "../hooks";
 
 export interface PressItem {
   id: string;
+  _id?: string; // Para compatibilidad con MongoDB
   title: string;
   date: string;
   excerpt: string;
@@ -82,18 +83,23 @@ export default function PressAdminApp() {
       const data = await adminApi.getPress();
       // API may return a paginated object { items, page, total, ... }
       // Normalize to an array for the UI
+      let pressItems: PressItem[] = [];
       if (Array.isArray(data)) {
-        setPress(data);
+        pressItems = data;
       } else if (data && typeof data === 'object') {
         const maybeItems = (data as { items?: unknown }).items;
         if (Array.isArray(maybeItems)) {
-          setPress(maybeItems as PressItem[]);
-        } else {
-          setPress([]);
+          pressItems = maybeItems as PressItem[];
         }
-      } else {
-        setPress([]);
       }
+      
+      // Map _id to id for compatibility
+      pressItems = pressItems.map(item => ({
+        ...item,
+        id: item.id || item._id || '',
+      }));
+      
+      setPress(pressItems);
     } catch (error) {
       console.error("Error fetching press:", error);
     } finally {
@@ -108,33 +114,13 @@ export default function PressAdminApp() {
 
   // Create - use admin endpoint
   const handleCreate = async (formData: FormData) => {
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    // Use admin endpoint
-    await fetch(`${apiUrl}/api/admin/press`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        ...(userEmail ? { "X-User": userEmail } : {})
-      },
-      credentials: 'include',
-    });
+    await adminApi.createPress(formData);
     fetchPress();
   };
 
   // Update - use admin endpoint
   const handleUpdate = async (id: string, formData: FormData) => {
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    // Use admin endpoint
-    await fetch(`${apiUrl}/api/admin/press/${id}`, {
-      method: "PUT",
-      body: formData,
-      headers: {
-        ...(userEmail ? { "X-User": userEmail } : {})
-      },
-      credentials: 'include',
-    });
+    await adminApi.updatePress(id, formData);
     setShowEdit(false);
     fetchPress();
   };
@@ -143,16 +129,8 @@ export default function PressAdminApp() {
   const handleDelete = async () => {
     if (!deleteItem) return;
     setDeleteLoading(true);
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     try {
-      // Use admin endpoint
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/press/${deleteItem.id}`, {
-        method: "DELETE",
-        headers: {
-          ...(userEmail ? { "X-User": userEmail } : {})
-        },
-        credentials: 'include',
-      });
+      await adminApi.deletePress(deleteItem.id);
       setShowDelete(false);
       setDeleteItem(null);
       fetchPress();
