@@ -264,7 +264,26 @@ export function warnLog(...args: any[]): void {
  */
 export function errorLog(...args: any[]): void {
   if (process.env.NODE_ENV === "development") {
-    console.error('[ERROR]', ...args);
+    const safeStringify = (obj: any) => {
+      try {
+        if (obj instanceof Error) {
+          return `${obj.name}: ${obj.message}${obj.stack ? '\n' + obj.stack : ''}`;
+        }
+        const seen = new WeakSet();
+        return JSON.stringify(obj, function (_key, value) {
+          if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) return '[Circular]';
+            seen.add(value);
+          }
+          return value;
+        }, 2);
+      } catch (e) {
+        try { return String(obj); } catch { return '[unserializable]'; }
+      }
+    };
+
+    const serialized = args.map(a => (typeof a === 'object' ? safeStringify(a) : String(a)));
+    console.error('[ERROR]', ...serialized);
   }
 }
 

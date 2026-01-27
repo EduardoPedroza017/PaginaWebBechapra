@@ -141,13 +141,6 @@ export const sidebarItems: SidebarItem[] = [
     description: "Galería multimedia"
   },
   { 
-    label: "Branding", 
-    path: "/admin/branding", 
-    icon: <Palette size={22} />,
-    section: "Multimedia",
-    description: "Identidad visual"
-  },
-  { 
     label: "Eventos", 
     path: "/admin/eventos", 
     icon: <BookOpen size={22} />,

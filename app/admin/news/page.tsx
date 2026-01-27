@@ -3,31 +3,33 @@
 import { useEffect, useState, useCallback } from "react";
 
 import { TranslateText } from "@/components/TranslateText";
-import { Newspaper, RefreshCw, Plus, BarChart3 } from "lucide-react";
-import NewsFilter, { NewsItem } from "./NewsFilter";
-import NewsChart from "./NewsChart";
-import NewsForm from "./NewsForm";
-import NewsWizardForm from "./NewsWizardForm";
+import { Newspaper, Plus, BarChart3 } from "lucide-react";
+import { NewsFilters } from "./components/NewsFilters/NewsFilters";
 import { NewsCardList } from "./NewsCardList";
+import NewsChart from "./NewsChart";
+import NewsCreateModal from "./NewsCreateModal";
 import NewsPreviewModal from "./NewsPreviewModal";
 import NewsEditModal from "./NewsEditModal";
 import { NewsStats } from "./NewsStats";
 import { DeleteNewsModal } from "./DeleteNewsModal";
+import { NewsItem } from "./types";
+import apiClient from '@/lib/api/api-client';
+import { useDebounce } from "@/hooks/useDebounce";
 
 import AdminPageHeader from "../components/ui/AdminPageHeader";
 import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
 import AdminSection from "../components/ui/AdminSection";
-import { GRID_COLS } from "../design-system";
+// GRID_COLS removed (unused)
 import { useTheme } from "../hooks";
 
 type TabId = 'list' | 'create' | 'stats';
 
 export default function AdminNewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
-  const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
-  
+  const { resolvedTheme, themeReady } = useTheme();
+
   const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
-  
+
   const [editing, setEditing] = useState<NewsItem | null>(null);
   const [deleting, setDeleting] = useState<NewsItem | null>(null);
   const [previewing, setPreviewing] = useState<NewsItem | null>(null);
@@ -37,21 +39,19 @@ export default function AdminNewsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const debouncedSearch = useDebounce(search, 500);
   const [activeTab, setActiveTab] = useState<TabId>("list");
   const [loading, setLoading] = useState(false);
-  const [useWizardForm, setUseWizardForm] = useState(true); // Usar wizard por defecto
-  
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  // wizard form flag removed (unused)
+
   const [loadingTabs, setLoadingTabs] = useState<Record<TabId, boolean>>({
     list: false,
     create: false,
     stats: false,
   });
 
-  const handleRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchNews({ showRefresh: true });
-  }, []);
+
 
   const handleTabChange = async (tabId: TabId) => {
     setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
@@ -61,51 +61,61 @@ export default function AdminNewsPage() {
   };
 
   const fetchNews = useCallback(async (params: { page?: number; search?: string; showRefresh?: boolean } = {}) => {
-    const { page: pageParam = page, search: searchParam = search, showRefresh = false } = params;
+    const { page: pageParam = page, search: searchParam = debouncedSearch, showRefresh = false } = params;
     if (showRefresh) setRefreshing(true);
     setLoading(true);
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL;
-      // Use admin endpoint without cache
-      const res = await fetch(`${API}/api/admin/news?page=${pageParam}&search=${searchParam}`, { credentials: 'include' });
-      const data = await res.json();
-      
+      const data = await apiClient.get(`/api/admin/news?page=${pageParam}&search=${encodeURIComponent(searchParam || '')}`);
+      console.log('Fetched news data:', data); // Debug log
+
       const normalize = (arr: unknown[]) => arr.map((itRaw) => {
         const it = (itRaw || {}) as Record<string, unknown>;
+        // Ensure _id is captured from _id or id
+        const _id = (it._id ?? it.id ?? '') as string;
+
         const date = typeof it.date === 'string'
           ? it.date as string
           : typeof it.published_date === 'string'
-          ? it.published_date as string
-          : typeof it.publishedDate === 'string'
-          ? it.publishedDate as string
-          : typeof it.createdAt === 'string'
-          ? it.createdAt as string
-          : undefined;
+            ? it.published_date as string
+            : typeof it.publishedDate === 'string'
+              ? it.publishedDate as string
+              : typeof it.createdAt === 'string'
+                ? it.createdAt as string
+                : '';
         const title = (it.title ?? it.name ?? '') as string;
         const subtitle = (it.subtitle ?? '') as string;
         const description = (it.description ?? it.content ?? it.excerpt ?? '') as string;
+        const category = (it.category ?? '') as string;
+        const tags = Array.isArray(it.tags) ? (it.tags as string[]) : [];
+        const featured = Boolean(it.featured);
+        const status = (it.status as 'active' | 'inactive') || 'active';
+
         return {
           ...it,
           date,
           title,
           subtitle,
           description,
+          category,
+          tags,
+          featured,
+          status,
         } as NewsItem;
       });
 
       const payload = data as Record<string, unknown>;
       if (Array.isArray(payload.news)) {
-        setNews(normalize((payload.news as unknown[]) || []));
+        setNews(normalize((payload.news as unknown[]) || []) as unknown as NewsItem[]);
         setTotal(((payload.news as unknown[])?.length) || 0);
         setTotalPages(1);
         setPage(1);
       } else if (Array.isArray(payload.items)) {
-        setNews(normalize((payload.items as unknown[]) || []));
+        setNews(normalize((payload.items as unknown[]) || []) as unknown as NewsItem[]);
         setTotal((payload.total as number) || 0);
         setTotalPages((payload.total_pages as number) || (payload.totalPages as number) || 1);
         setPage((payload.page as number) || 1);
       } else {
-        setNews(normalize((payload.news as unknown[]) || (payload.items as unknown[]) || []));
+        setNews(normalize((payload.news as unknown[]) || (payload.items as unknown[]) || []) as unknown as NewsItem[]);
         setTotal((payload.total as number) || (((payload.news as unknown[])?.length) || 0));
         setTotalPages((payload.total_pages as number) || (payload.totalPages as number) || 1);
         setPage((payload.page as number) || 1);
@@ -116,17 +126,21 @@ export default function AdminNewsPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => {
     fetchNews();
+  }, [fetchNews]);
+
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchNews({ showRefresh: true });
   }, [fetchNews]);
 
   const handleFilter = (filtered: NewsItem[], searchValue?: string) => {
     if (typeof searchValue === "string") {
       setSearch(searchValue);
       setPage(1);
-      fetchNews({ page: 1, search: searchValue });
     }
   };
 
@@ -153,25 +167,15 @@ export default function AdminNewsPage() {
     const admin = typeof window !== "undefined" ? sessionStorage.getItem("admin") : null;
     const role = typeof window !== "undefined" ? sessionStorage.getItem("role") : null;
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error("NEXT_PUBLIC_API_URL is not defined");
-      }
-
       const identifier = deleting.slug || deleting._id || deleting.title;
-      // Use admin endpoint
-      const res = await fetch(`${apiUrl}/api/admin/news/${encodeURIComponent(identifier)}`, {
-        method: "DELETE",
+      await apiClient.delete(`/api/admin/news/${encodeURIComponent(identifier)}`, {
         headers: {
           ...(userEmail ? { "X-User": userEmail } : {}),
           ...(admin ? { "X-Admin": admin } : {}),
           ...(role ? { "X-Role": role } : {})
-        },
-        credentials: 'include',
+        }
       });
-      if (res.ok) {
-        fetchNews();
-      }
+      await fetchNews();
     } catch (error) {
       console.error("Error deleting:", error);
     } finally {
@@ -181,8 +185,43 @@ export default function AdminNewsPage() {
   };
 
   const handleToggleStatus = async (item: NewsItem) => {
+    const itemId = item._id || item.slug || item.title;
+    const updatedStatus = item.status === 'active' ? 'inactive' : 'active';
+
+    // Prevenir múltiples clicks
+    if (togglingId) return;
+
+    setTogglingId(itemId);
+
+    // 1. Actualización optimista - actualizar estado local INMEDIATAMENTE
+    setNews(prevNews =>
+      prevNews.map(n => {
+        // Strict matching to avoid undefined === undefined
+        const matchId = (n._id && item._id && n._id === item._id);
+        const matchSlug = (n.slug && item.slug && n.slug === item.slug);
+        const matchTitle = (n.title && item.title && n.title === item.title);
+
+        if (matchId || matchSlug || matchTitle) {
+          return { ...n, status: updatedStatus };
+        }
+        return n;
+      })
+    );
+
     try {
-      const updatedStatus = item.status === 'active' ? 'inactive' : 'active';
+      // 2. Actualizar backend
+      const identifier = item.slug || item._id || item.title;
+      const encodedId = encodeURIComponent(identifier);
+
+      console.log('📡 Sending status toggle request:', {
+        id: item._id,
+        slug: item.slug,
+        title: item.title,
+        newStatus: updatedStatus,
+        method: 'PATCH',
+        url: `/api/admin/news/${encodedId}/toggle-status`
+      });
+
       const storedUser = typeof window !== 'undefined' ? sessionStorage.getItem('user_email') : null;
       const storedRole = typeof window !== 'undefined' ? sessionStorage.getItem('role') : null;
       const storedAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('admin') : null;
@@ -191,28 +230,38 @@ export default function AdminNewsPage() {
       if (storedRole) headers['X-Role'] = storedRole;
       if (storedAdmin) headers['X-Admin'] = storedAdmin;
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error("NEXT_PUBLIC_API_URL is not defined");
-      }
+      // Usar PATCH y el endpoint específico /toggle-status
+      const response = await apiClient.patch(`/api/admin/news/${encodedId}/toggle-status`, { status: updatedStatus }, { headers });
+      console.log('✅ Server response for status toggle:', response);
 
-      const identifier = item.slug || item._id || item.title;
-      const encodedId = encodeURIComponent(identifier);
-      // Use admin endpoint
-      const res = await fetch(`${apiUrl}/api/admin/news/${encodedId}`, {
-        method: 'PUT',
-        headers,
-        credentials: 'include',
-        body: JSON.stringify({ status: updatedStatus }),
+    } catch (error) {
+      console.error('❌ Error toggling status:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorResponse = (error as { response?: { data?: unknown; status?: number } })?.response;
+      console.error('Error details:', {
+        message: errorMessage,
+        response: errorResponse?.data,
+        status: errorResponse?.status
       });
 
-      if (res.ok) {
-        fetchNews();
-      } else {
-        console.error('Failed to update status');
-      }
-    } catch (error) {
-      console.error('Error toggling status:', error);
+      // 3. Revertir cambio si falla
+      setNews(prevNews =>
+        prevNews.map(n => {
+          const matchId = (n._id && item._id && n._id === item._id);
+          const matchSlug = (n.slug && item.slug && n.slug === item.slug);
+          const matchTitle = (n.title && item.title && n.title === item.title);
+
+          if (matchId || matchSlug || matchTitle) {
+            return { ...n, status: item.status }; // Revert to original
+          }
+          return n;
+        })
+      );
+
+      // 4. Mostrar error al usuario
+      alert('Error al cambiar el estado. Por favor intenta de nuevo.');
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -224,11 +273,8 @@ export default function AdminNewsPage() {
     );
   }
 
-  const filteredNews = news.filter(n => {
-    if (statusFilter === 'all') return true;
-    if (statusFilter === 'active') return n.status === 'active';
-    return n.status !== 'active';
-  });
+  // Filtering is now handled by NewsFilters component
+  const filteredNews = news;
 
   const tabs: TabItem[] = [
     { id: 'list', label: 'Listado', icon: <Newspaper size={18} /> },
@@ -268,82 +314,21 @@ export default function AdminNewsPage() {
         )}
 
         {activeTab === 'create' && (
-          <div>
-            {/* Toggle entre formularios */}
-            <div className="mb-4 flex items-center gap-4">
-              <span className={`text-sm font-medium ${themeStrict === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                Formulario:
-              </span>
-              <button
-                onClick={() => setUseWizardForm(true)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  useWizardForm
-                    ? 'bg-blue-600 text-white'
-                    : themeStrict === 'dark'
-                      ? 'bg-gray-800 text-gray-300'
-                      : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                Wizard (Nuevo)
-              </button>
-              <button
-                onClick={() => setUseWizardForm(false)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  !useWizardForm
-                    ? 'bg-blue-600 text-white'
-                    : themeStrict === 'dark'
-                      ? 'bg-gray-800 text-gray-300'
-                      : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                Tradicional
-              </button>
-            </div>
-            
-            {useWizardForm ? (
-              <NewsWizardForm
-                isOpen={true}
-                onClose={() => setActiveTab("list")}
-                onCreated={handleCreated}
-                theme={themeStrict}
-              />
-            ) : (
-              <NewsForm onCreated={handleCreated} theme={themeStrict} />
-            )}
-          </div>
+          <>
+            <NewsCreateModal
+              open={true}
+              onClose={() => setActiveTab('list')}
+              onCreated={handleCreated}
+              theme={themeStrict}
+            />
+          </>
         )}
 
         {activeTab === 'list' && (
           <>
             {/* Filtros */}
             <div className="mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <NewsFilter news={news} onFilter={handleFilter} theme={themeStrict} />
-                {/* Status tabs */}
-                <div className="mt-3 sm:mt-0">
-                  <div className="rounded-xl border p-1 flex gap-1 bg-transparent">
-                    {[
-                      { id: 'all', label: 'Todas' },
-                      { id: 'active', label: 'Activas' },
-                      { id: 'inactive', label: 'Desactivadas' }
-                    ].map((tab) => (
-                      <button
-                        key={tab.id}
-                        onClick={() => setStatusFilter(tab.id as typeof statusFilter)}
-                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                          statusFilter === tab.id 
-                            ? 'bg-blue-600 text-white' 
-                            : themeStrict === 'dark' 
-                              ? 'text-gray-300 bg-gray-800/20' 
-                              : 'text-gray-600 bg-white'
-                        }`}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <NewsFilters news={news} onFilter={handleFilter} theme={themeStrict} />
             </div>
 
             {/* Loading state */}
@@ -356,7 +341,7 @@ export default function AdminNewsPage() {
               </div>
             ) : (
               <>
-                {/* Cards de noticias */}
+                {/* Tarjetas de noticias */}
                 <NewsCardList
                   news={filteredNews}
                   theme={themeStrict}
@@ -364,6 +349,7 @@ export default function AdminNewsPage() {
                   onDelete={handleDeleteClick}
                   onPreview={setPreviewing}
                   onToggleStatus={handleToggleStatus}
+                  togglingId={togglingId}
                 />
 
                 {/* Paginador */}
@@ -372,11 +358,10 @@ export default function AdminNewsPage() {
                     <button
                       onClick={() => { if (page > 1) setPage(page - 1); }}
                       disabled={page === 1}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium ${
-                        page === 1 
-                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                          : 'bg-blue-500 text-white hover:bg-blue-600'
-                      }`}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium ${page === 1
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                        }`}
                     >
                       Anterior
                     </button>
@@ -386,11 +371,10 @@ export default function AdminNewsPage() {
                     <button
                       onClick={() => { if (page < totalPages) setPage(page + 1); }}
                       disabled={page === totalPages}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium ${
-                        page === totalPages 
-                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                          : 'bg-blue-500 text-white hover:bg-blue-600'
-                      }`}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium ${page === totalPages
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                        }`}
                     >
                       Siguiente
                     </button>
@@ -403,14 +387,14 @@ export default function AdminNewsPage() {
       </AdminSection>
 
       {/* Modals */}
-      <NewsEditModal 
-        open={!!editing} 
-        item={editing} 
-        onClose={() => setEditing(null)} 
-        onUpdated={handleUpdated} 
-        theme={themeStrict} 
+      <NewsEditModal
+        open={!!editing}
+        item={editing}
+        onClose={() => setEditing(null)}
+        onUpdated={handleUpdated}
+        theme={themeStrict}
       />
-      
+
       <DeleteNewsModal
         isOpen={!!deleting}
         newsTitle={deleting?.title || null}
@@ -419,7 +403,7 @@ export default function AdminNewsPage() {
         onClose={() => setDeleting(null)}
         onConfirm={confirmDelete}
       />
-      
+
       <NewsPreviewModal
         open={!!previewing}
         onClose={() => setPreviewing(null)}

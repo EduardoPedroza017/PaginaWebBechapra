@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, Trash2 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 interface DeleteNewsModalProps {
@@ -16,9 +16,9 @@ export function DeleteNewsModal({ isOpen, newsTitle, theme, loading, onClose, on
   if (!isOpen || !newsTitle) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div 
-        className={`w-full max-w-md rounded-2xl shadow-2xl border p-6 ${
+        className={`w-full max-w-md rounded-2xl shadow-2xl border transform transition-all scale-100 ${
           theme === 'dark' 
             ? 'bg-gray-900 border-gray-800' 
             : 'bg-white border-gray-200'
@@ -26,18 +26,27 @@ export function DeleteNewsModal({ isOpen, newsTitle, theme, loading, onClose, on
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-red-100 dark:bg-red-900/30">
-              <AlertTriangle className="w-6 h-6 text-red-600" />
+        <div className="flex items-start justify-between p-6 pb-0">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${
+              theme === 'dark' ? 'bg-red-900/30' : 'bg-red-50'
+            }`}>
+              <div className="p-2 bg-red-500 rounded-full shadow-lg shadow-red-500/30">
+                <Trash2 className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              <TranslateText text="¿Eliminar noticia?" />
-            </h3>
+            <div>
+              <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <TranslateText text="¿Eliminar noticia?" />
+              </h3>
+              <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                <TranslateText text="Esta acción es irreversible" />
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`p-2 rounded-full transition-colors ${
               theme === 'dark' 
                 ? 'hover:bg-gray-800 text-gray-400' 
                 : 'hover:bg-gray-100 text-gray-500'
@@ -48,28 +57,31 @@ export function DeleteNewsModal({ isOpen, newsTitle, theme, loading, onClose, on
         </div>
 
         {/* Content */}
-        <div className="mb-6">
-          <p className={`text-sm mb-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-            <TranslateText text="Estás a punto de eliminar la siguiente noticia:" />
-          </p>
-          <div className={`p-3 rounded-xl ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+        <div className="p-6">
+          <div className={`p-4 rounded-xl border ${
+            theme === 'dark' 
+              ? 'bg-gray-800/50 border-gray-700' 
+              : 'bg-red-50 border-red-100'
           }`}>
-            <p className={`font-semibold truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              {newsTitle}
+            <p className={`text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-400' : 'text-red-600'}`}>
+              <TranslateText text="Estás eliminando:" />
+            </p>
+            <p className={`font-bold text-lg line-clamp-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              "{newsTitle}"
             </p>
           </div>
-          <p className={`text-sm mt-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-            <TranslateText text="Esta acción no se puede deshacer." />
+          
+          <p className={`text-sm mt-4 text-center ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+            <TranslateText text="Al eliminar esta noticia, dejará de ser visible para los usuarios inmediatamente." />
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className={`flex gap-3 p-6 pt-2 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-100'}`}>
           <button
             onClick={onClose}
             disabled={loading}
-            className={`flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
+            className={`flex-1 px-4 py-3 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
               theme === 'dark'
                 ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -80,7 +92,7 @@ export function DeleteNewsModal({ isOpen, newsTitle, theme, loading, onClose, on
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm bg-red-600 text-white hover:bg-red-700 transition-all active:scale-95 disabled:opacity-50"
+            className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-red-600 text-white hover:bg-red-700 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-red-600/20"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -88,7 +100,7 @@ export function DeleteNewsModal({ isOpen, newsTitle, theme, loading, onClose, on
                 <TranslateText text="Eliminando..." />
               </span>
             ) : (
-              <TranslateText text="Eliminar" />
+              <TranslateText text="Sí, eliminar" />
             )}
           </button>
         </div>

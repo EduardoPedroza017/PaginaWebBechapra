@@ -111,25 +111,8 @@ function withErrorBoundary<P extends object>(
 // NEWS COMPONENTS
 // ============================================
 
-// NewsForm necesita SSR por accesibilidad y SEO
-export const DynamicNewsForm = dynamic(
-  () => import('../news/NewsForm')
-    .then(module => withErrorBoundary(module.default)),
-  {
-    loading: () => <CompactLoadingSpinner />,
-    ssr: true,
-  }
-);
-
-// NewsTable puede ser SSR para contenido inicial
-export const DynamicNewsTable = dynamic(
-  () => import('../news/NewsTable')
-    .then(module => withErrorBoundary(module.default)),
-  {
-    loading: () => <SkeletonLoader lines={5} />,
-    ssr: true,
-  }
-);
+// NewsForm and NewsTable have been removed - now using NewsWizardForm and NewsCardList
+// These components are imported directly in the news page
 
 // ============================================
 // PRESS COMPONENTS  
@@ -252,11 +235,11 @@ export function createDynamicComponent<P extends object>(
   } = options || {};
 
   const importComponent = useErrorBoundary
-    ? () => importFn().then(module => 
-        errorFallback 
-          ? withErrorBoundary(module.default, errorFallback)
-          : withErrorBoundary(module.default)
-      )
+    ? () => importFn().then(module =>
+      errorFallback
+        ? withErrorBoundary(module.default, errorFallback)
+        : withErrorBoundary(module.default)
+    )
     : importFn;
 
   return dynamic(importComponent, {
@@ -306,22 +289,20 @@ export function withSuspense<P extends object>(
 // ============================================
 
 export const LazyComponents = {
-  // News
-  NewsForm: withSuspense(DynamicNewsForm),
-  NewsTable: withSuspense(DynamicNewsTable),
-  
+  // News components removed - using direct imports in news page
+
   // Press
   PressForm: withSuspense(DynamicPressForm),
   PressTable: withSuspense(DynamicPressTable),
-  
+
   // Gallery
   GalleryUploader: withSuspense(DynamicGalleryUploader),
   ImageGrid: withSuspense(DynamicImageGrid),
-  
+
   // Jobs
   JobsForm: withSuspense(DynamicJobsForm),
   JobsTable: withSuspense(DynamicJobsTable),
-  
+
   // Utility functions
   createDynamicComponent,
   preloadComponents,

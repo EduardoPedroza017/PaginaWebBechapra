@@ -63,62 +63,75 @@ export function NewsChart({ data, theme }: NewsChartProps) {
   const values = labels.map((_, i) => stats.counts[stats.dates[stats.dates.length - 10 + i]] || 0);
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border ${isDark ? "bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700" : "bg-white border-gray-200"}`}>
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600" />
+    <div className={`relative overflow-hidden rounded-2xl border ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200 shadow-sm"}`}>
+      {/* Decorative gradient background */}
+      <div className={`absolute top-0 inset-x-0 h-32 opacity-10 ${
+        isDark 
+          ? 'bg-gradient-to-b from-blue-600 to-transparent' 
+          : 'bg-gradient-to-b from-blue-500 to-transparent'
+      }`} />
       
-      <div className="p-5 pb-0">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`p-2.5 rounded-xl ${isDark ? "bg-blue-900/40" : "bg-blue-50"}`}>
-              <svg viewBox="0 0 24 24" fill="currentColor" className={`w-5 h-5 ${isDark ? "text-blue-400" : "text-blue-600"}`}>
+      <div className="relative p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-xl shadow-lg ${
+              isDark ? "bg-gradient-to-br from-blue-600 to-blue-800" : "bg-gradient-to-br from-blue-500 to-blue-600"
+            }`}>
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
               </svg>
             </div>
             <div>
-              <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>
-                <TranslateText text="Noticias por dia" />
+              <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
+                <TranslateText text="Tendencia de Publicaciones" />
               </h3>
-              <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>
-                Ultimas 2 semanas
+              <p className={`text-sm mt-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                Actividad de los últimos 14 días
               </p>
             </div>
           </div>
           
           <div className="flex items-center gap-3">
-            <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${isDark ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"}`}>
-              <span className={isDark ? "text-blue-400" : "text-blue-600"}>{stats.total}</span> total
+            <div className={`px-4 py-2 rounded-lg text-sm font-medium border ${
+              isDark ? "bg-gray-800 border-gray-700 text-gray-300" : "bg-gray-50 border-gray-100 text-gray-600"
+            }`}>
+              <span className={`font-bold mr-1 ${isDark ? "text-blue-400" : "text-blue-600"}`}>{stats.total}</span> total
             </div>
-            <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${isDark ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"}`}>
-              <span className={isDark ? "text-green-400" : "text-green-600"}>{stats.average}</span> / dia
+            <div className={`px-4 py-2 rounded-lg text-sm font-medium border ${
+              isDark ? "bg-gray-800 border-gray-700 text-gray-300" : "bg-gray-50 border-gray-100 text-gray-600"
+            }`}>
+              <span className={`font-bold mr-1 ${isDark ? "text-green-400" : "text-green-600"}`}>{stats.average}</span> / día
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="h-56 px-5">
-        <BarChart
-          categories={labels}
-          data={values}
-          theme={theme}
-          height="100%"
-          colors={[isDark ? "#3b82f6" : "#0057D9"]}
-          valueFormatter={(v: number) => `${v} ${v === 1 ? "noticia" : "noticias"}`}
-          barRadius={6}
-          showLabels={false}
-        />
-      </div>
-
-      <div className={`mt-4 p-4 border-t flex items-center justify-between text-xs ${isDark ? "border-slate-700 text-slate-400" : "border-gray-100 text-gray-500"}`}>
-        <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${isDark ? "bg-blue-500" : "bg-blue-600"}`}></span>
-          <span>Maximo: {stats.maxValue} noticias</span>
+        <div className="h-[300px] w-full">
+          <BarChart
+            categories={labels}
+            data={values}
+            theme={theme}
+            height="100%"
+            colors={[isDark ? "#3b82f6" : "#2563eb"]}
+            valueFormatter={(v: number) => `${v} ${v === 1 ? "noticia" : "noticias"}`}
+            barRadius={8}
+            showLabels={true}
+          />
         </div>
-        <div className="flex items-center gap-1">
+      </div>
+
+      <div className={`p-4 border-t flex items-center justify-between text-xs font-medium ${
+        isDark ? "border-gray-800 text-gray-400 bg-gray-800/30" : "border-gray-100 text-gray-500 bg-gray-50/50"
+      }`}>
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full animate-pulse ${isDark ? "bg-blue-500" : "bg-blue-600"}`}></span>
+          <span>Pico máximo: {stats.maxValue} noticias en un día</span>
+        </div>
+        <div className="flex items-center gap-1.5">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
           </svg>
-          <span>Actualizado ahora</span>
+          <span>Actualizado en tiempo real</span>
         </div>
       </div>
     </div>

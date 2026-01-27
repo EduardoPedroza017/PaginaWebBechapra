@@ -1,25 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, Pencil } from "lucide-react";
+import { Plus } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 import { NewsItem } from "./types";
 import { NewsWizardForm } from "./NewsWizardForm";
 
 interface Props {
   open: boolean;
-  item: NewsItem | null;
   onClose: () => void;
-  onUpdated: (news: NewsItem) => void;
+  onCreated: (news: NewsItem) => void;
   theme: 'light' | 'dark';
 }
 
-export default function NewsEditModal({ open, item, onClose, onUpdated, theme }: Props) {
+export default function NewsCreateModal({ open, onClose, onCreated, theme }: Props) {
   useEffect(() => {
-    // keep in sync when item changes
-  }, [item]);
+    // no-op
+  }, [open]);
 
-  if (!open || !item) return null;
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-auto">
@@ -30,11 +29,11 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
           theme === 'dark' ? 'border-gray-800' : 'border-gray-100'
         }`}>
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-xl ${theme === 'dark' ? 'bg-amber-600' : 'bg-amber-500'}`}>
-              <Pencil className="w-5 h-5 text-white" />
+            <div className={`p-2 rounded-xl ${theme === 'dark' ? 'bg-blue-600' : 'bg-blue-500'}`}>
+              <Plus className="w-5 h-5 text-white" />
             </div>
             <h3 className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              <TranslateText text="Editar Noticia" />
+              <TranslateText text="Crear Noticia" />
             </h3>
           </div>
           <button
@@ -43,7 +42,8 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
               theme === 'dark' ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
             }`}
           >
-            <X className="w-5 h-5" />
+            <span className="sr-only">Cerrar</span>
+            ✕
           </button>
         </div>
 
@@ -51,9 +51,7 @@ export default function NewsEditModal({ open, item, onClose, onUpdated, theme }:
           <NewsWizardForm
             isOpen={true}
             onClose={() => { onClose(); }}
-            initialData={item}
-            editingId={item._id || item.slug || null}
-            onUpdated={(news: NewsItem) => { onUpdated(news); onClose(); }}
+            onCreated={(news) => { onCreated(news as NewsItem); onClose(); }}
             theme={theme}
           />
         </div>

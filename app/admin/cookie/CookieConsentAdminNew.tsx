@@ -3,25 +3,11 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TranslateText } from "@/components/TranslateText";
-import { Cookie, RefreshCw, Table2, BarChart3, Box, Settings, Bell, HelpCircle, Activity, LineChart, AlertTriangle, CheckCircle } from "lucide-react";
-import dynamic from "next/dynamic";
+import { Cookie, RefreshCw, Table2, BarChart3, Settings, Bell, HelpCircle, Activity, LineChart, AlertTriangle, CheckCircle } from "lucide-react";
 import CookieStats from "./CookieStats";
 import CookieTable from "./CookieTable";
 import CookieCharts from "./CookieCharts";
 import { adminApi } from "../utils/admin-api";
-
-// Cargar componentes dinámicamente
-const Chart3D = dynamic(() => import("./CookieConsent3DChartNew"), { 
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-137.5 rounded-2xl bg-gray-800/20 animate-pulse flex items-center justify-center">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-        <p className="text-gray-400">Cargando visualización 3D...</p>
-      </div>
-    </div>
-  )
-});
 
 interface CookieConsent {
   accepted: boolean;
@@ -34,7 +20,7 @@ interface CookieConsentAdminProps {
   theme?: 'light' | 'dark';
 }
 
-type ActiveTab = 'table' | 'charts' | '3d';
+type ActiveTab = 'table' | 'charts';
 type ChartSubTab = 'distribution' | 'dailyActivity' | 'trend';
 
 function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProps) {
@@ -51,7 +37,7 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
   const tabParam = searchParams.get('tab') as ActiveTab;
   
   const [activeTab, setActiveTab] = useState<ActiveTab>(
-    ['table', 'charts', '3d'].includes(tabParam) ? tabParam : 'table'
+    ['table', 'charts'].includes(tabParam) ? tabParam : 'table'
   );
 
   const fetchData = useCallback(async (isRefresh = false) => {
@@ -113,12 +99,6 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
       icon: BarChart3, 
       label: 'Métricas',
       description: 'Gráficos y estadísticas avanzadas'
-    },
-    { 
-      id: '3d' as const, 
-      icon: Box, 
-      label: 'Vista 3D',
-      description: 'Visualización tridimensional interactiva'
     },
   ];
 
@@ -492,73 +472,6 @@ function CookieConsentAdminComponent({ theme = 'light' }: CookieConsentAdminProp
                         activeChart={chartSubTab}
                       />
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === '3d' && (
-                <div className="space-y-6">
-                  <div className={`p-4 rounded-xl ${
-                    theme === 'dark' 
-                      ? 'bg-linear-to-r from-gray-800/40 to-blue-900/20 border border-gray-700' 
-                      : 'bg-linear-to-r from-blue-50 to-cyan-50 border border-blue-200'
-                  }`}>
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-xl ${
-                        theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
-                      }`}>
-                        <Box className={`w-6 h-6 ${
-                          theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                        }`} />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className={`font-medium mb-2 ${
-                          theme === 'dark' ? 'text-blue-300' : 'text-blue-900'
-                        }`}>
-                          <TranslateText text="Visualización 3D Interactiva" />
-                        </h4>
-                        <p className={`text-sm mb-3 ${
-                          theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
-                        }`}>
-                          <TranslateText text="Explora los datos en una experiencia 3D inmersiva. Arrastra para rotar la vista, usa la rueda del mouse para hacer zoom y pasa el cursor sobre las barras para ver detalles." />
-                        </p>
-                        <div className={`flex flex-wrap gap-2 text-xs ${
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-600'
-                        }`}>
-                          <span className={`px-2 py-1 rounded ${
-                            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
-                          }`}>
-                            <TranslateText text="Arrastra para rotar" />
-                          </span>
-                          <span className={`px-2 py-1 rounded ${
-                            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
-                          }`}>
-                            <TranslateText text="Scroll para zoom" />
-                          </span>
-                          <span className={`px-2 py-1 rounded ${
-                            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
-                          }`}>
-                            <TranslateText text="Click en barras para detalles" />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="relative">
-                    <Chart3D data={data} theme={theme} />
-                    
-                    {/* Overlay de carga para 3D */}
-                    {refreshing && (
-                      <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm rounded-2xl flex items-center justify-center z-20">
-                        <div className="text-center">
-                          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mb-4"></div>
-                          <p className="text-white font-medium">
-                            <TranslateText text="Actualizando visualización 3D..." />
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}

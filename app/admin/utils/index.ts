@@ -35,7 +35,6 @@ export const ADMIN_ROUTES = {
   GALLERY: '/admin/galeria',
   SERVICES: '/admin/servicios',
   SETTINGS: '/admin/configuracion',
-  BRANDING: '/admin/branding',
   COOKIES: '/admin/cookies',
   TERMS: '/admin/terminos',
   AUDIT_LOG: '/admin/audit-log',

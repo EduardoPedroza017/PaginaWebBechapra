@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import QuickActions from '../../dashboard/QuickActions';
+import QuickActions from '../../dashboard/quickactions';
 import { WebVitalsWidget } from '@/lib/utils/web-vitals';
 import CookieConsentAdmin from '../../cookie/CookieConsentAdminNew';
 

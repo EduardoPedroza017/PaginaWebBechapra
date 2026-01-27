@@ -24,16 +24,13 @@ import {
   StepToggle
 } from "@/components/modals/WizardStep";
 import RichTextEditor from "./RichTextEditor";
+import { NewsItem } from './types';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-interface NewsApiResponse {
-  news?: Record<string, unknown>;
-  error?: string;
-  errors?: Record<string, unknown>;
-}
+// (removed unused NewsApiResponse)
 
 interface NewsWizardData {
   title: string;
@@ -57,7 +54,13 @@ interface NewsWizardFormProps {
   /** Callback to close the form */
   onClose: () => void;
   /** Callback when news is created successfully */
-  onCreated: (news: Record<string, unknown>) => void;
+  onCreated?: (news: NewsItem) => void;
+  /** Callback when news is updated successfully */
+  onUpdated?: (news: NewsItem) => void;
+  /** Optional initial data for editing */
+  initialData?: Partial<NewsWizardData> | NewsItem | null;
+  /** Optional editing identifier (slug or _id) */
+  editingId?: string | null;
   /** Current theme */
   theme: "light" | "dark";
 }
@@ -128,7 +131,7 @@ const NEWS_WIZARD_STEPS = [
 // NewsWizardForm Component
 // ============================================================================
 
-export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizardFormProps) {
+export function NewsWizardForm({ isOpen, onClose, onCreated, onUpdated, initialData, editingId, theme }: NewsWizardFormProps) {
   const [data, setData] = useState<NewsWizardData>({
     title: "",
     subtitle: "",
@@ -151,29 +154,72 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
   const [currentStepId, setCurrentStepId] = useState("basic");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Type guard for NewsItem
+  const isNewsItem = (obj: unknown): obj is NewsItem => {
+    return !!obj && typeof obj === 'object' && ("_id" in (obj as object) || "slug" in (obj as object));
+  };
+
+  // Support initialData when editing - populate fields
+  const isEditing = Boolean(editingId || (initialData && isNewsItem(initialData)));
+
+  React.useEffect(() => {
+    if (!initialData) return;
+    const idata = initialData as Partial<NewsWizardData> & Partial<NewsItem>;
+    setData(prev => {
+      const title = idata.title ?? (idata as Partial<NewsItem>).title ?? prev.title;
+      const subtitle = idata.subtitle ?? (idata as Partial<NewsItem>).subtitle ?? prev.subtitle;
+      const description = idata.description ?? ((idata as Partial<NewsItem>).content as string) ?? prev.description;
+      const category = idata.category ?? (idata as Partial<NewsItem>).category ?? prev.category;
+      const tags = idata.tags ?? (idata as Partial<NewsItem>).tags ?? prev.tags;
+      const featured = typeof idata.featured === 'boolean' ? idata.featured : (typeof (idata as Partial<NewsItem>).featured === 'boolean' ? (idata as Partial<NewsItem>).featured! : prev.featured);
+      const altText = idata.altText ?? (idata as Partial<NewsItem>).altText ?? prev.altText;
+      const seoDescription = idata.seoDescription ?? (idata as Partial<NewsItem>).seoDescription ?? prev.seoDescription;
+      const seoKeywords = idata.seoKeywords ?? (idata as Partial<NewsItem>).seoKeywords ?? prev.seoKeywords;
+      const publishDate = idata.publishDate ?? ((idata as Partial<NewsItem>).publishDate ? String((idata as Partial<NewsItem>).publishDate).split(' ')[0] : prev.publishDate);
+      const publishTime = idata.publishTime ?? (idata as Partial<NewsItem>).publishTime ?? prev.publishTime;
+      const preview: string | null = (idata as Partial<NewsItem>).image_url ? (((idata as Partial<NewsItem>).image_url as string).startsWith('http') ? (idata as Partial<NewsItem>).image_url as string : `${process.env.NEXT_PUBLIC_API_URL}${(idata as Partial<NewsItem>).image_url as string}`) : prev.preview;
+
+      return {
+        ...prev,
+        title,
+        subtitle,
+        description,
+        category,
+        tags,
+        featured,
+        altText,
+        seoDescription,
+        seoKeywords,
+        publishDate,
+        publishTime,
+        preview,
+      };
+    });
+  }, [initialData]);
+
   const showMessage = useCallback((type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 4000);
   }, []);
 
-  const updateData = (updates: Partial<NewsWizardData>) => {
+  const updateData = useCallback((updates: Partial<NewsWizardData>) => {
     setData(prev => ({ ...prev, ...updates }));
-  };
+  }, []);
 
   // Tag management
-  const addTag = () => {
+  const addTag = useCallback(() => {
     if (tagInput.trim() && !data.tags.includes(tagInput.trim()) && data.tags.length < 8) {
       updateData({ tags: [...data.tags, tagInput.trim()] });
       setTagInput("");
     }
-  };
+  }, [tagInput, data.tags, updateData]);
 
-  const removeTag = (tag: string) => {
+  const removeTag = useCallback((tag: string) => {
     updateData({ tags: data.tags.filter(t => t !== tag) });
-  };
+  }, [data.tags, updateData]);
 
   // Image handling
-  const handleImageChange = (file: File | null) => {
+  const handleImageChange = useCallback((file: File | null) => {
     if (!file) {
       updateData({ image: null, preview: null });
       return;
@@ -191,68 +237,19 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
 
     updateData({ image: file });
     const reader = new FileReader();
-    reader.onload = (e) => updateData({ preview: e.target?.result as string });
+    reader.onload = (e) => updateData({ preview: (e.target?.result as string) ?? null });
     reader.readAsDataURL(file);
-  };
+  }, [showMessage, updateData]);
 
   // Calculate reading time
-  const getReadingTime = () => {
+  const getReadingTime = useCallback(() => {
     const wordsPerMinute = 200;
     const plainText = data.description.replace(/<[^>]*>/g, '');
     const wordCount = plainText.split(/\s+/).filter(w => w.length > 0).length;
     return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
-  };
+  }, [data.description]);
 
-  // Validation by step
-  const validateStep = useCallback(async () => {
-    switch (currentStepId) {
-      case "basic":
-        if (!data.title.trim()) {
-          return { valid: false, error: "El título es requerido" };
-        }
-        if (data.title.length > MAX_TITLE_LENGTH) {
-          return { valid: false, error: `El título no puede exceder ${MAX_TITLE_LENGTH} caracteres` };
-        }
-        if (!data.subtitle.trim()) {
-          return { valid: false, error: "El subtítulo es requerido" };
-        }
-        if (data.subtitle.length > MAX_SUBTITLE_LENGTH) {
-          return { valid: false, error: `El subtítulo no puede exceder ${MAX_SUBTITLE_LENGTH} caracteres` };
-        }
-        return { valid: true };
-      
-      case "content":
-        const plainText = data.description.replace(/<[^>]*>/g, '');
-        if (plainText.length < 50) {
-          return { valid: false, error: "La descripción debe tener al menos 50 caracteres" };
-        }
-        if (plainText.length > MAX_DESCRIPTION_LENGTH) {
-          return { valid: false, error: `La descripción no puede exceder ${MAX_DESCRIPTION_LENGTH} caracteres` };
-        }
-        return { valid: true };
-      
-      case "media":
-        if (!data.image) {
-          return { valid: false, error: "La imagen principal es requerida" };
-        }
-        return { valid: true };
-      
-      case "meta":
-        return { valid: true };
-      
-      case "seo":
-        if (data.seoDescription.length > MAX_SEO_DESCRIPTION) {
-          return { valid: false, error: `La meta descripción no puede exceder ${MAX_SEO_DESCRIPTION} caracteres` };
-        }
-        return { valid: true };
-      
-      case "review":
-        return { valid: true };
-      
-      default:
-        return { valid: true };
-    }
-  }, [data, currentStepId]);
+  // Validation logic is performed in `handleSubmit`; removed unused validateStep to satisfy linter
 
   // Map frontend category to backend category
   const mapCategoryToBackend = (label: string) => {
@@ -285,30 +282,35 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
     if (data.image) form.append("image", data.image);
 
     try {
-      const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-      const API = process.env.NEXT_PUBLIC_API_URL || '';
-      const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
-      const baseHeaders: Record<string, string> = {
-        ...(userEmail ? { "X-User": userEmail } : {}),
-        "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
-      };
-      const bypassHeaders: Record<string, string> = {};
-      if (isLocal) {
-        bypassHeaders["X-Bypass-Login"] = 'true';
-        bypassHeaders["X-Role"] = 'superadmin';
-        bypassHeaders["X-Admin"] = 'true';
-      }
-
       // Use centralized admin API client
       const { adminApi } = await import('../utils/admin-api');
-      const res = await adminApi.createNews(form as FormData);
-      if (res && (res as any).news) {
-        showMessage('success', `Noticia creada exitosamente`);
-        onCreated((res as any).news);
+      if (isEditing) {
+        let id = editingId || '';
+        if (!id && initialData && isNewsItem(initialData)) {
+          id = initialData._id || initialData.slug || '';
+        }
+
+        const res = await adminApi.updateNews(String(id), form as FormData);
+        const resp = res as { news?: NewsItem } | undefined;
+        if (resp && resp.news) {
+          showMessage('success', 'Noticia actualizada exitosamente');
+          if (typeof onUpdated === 'function') onUpdated(resp.news);
+        } else {
+          showMessage('success', 'Noticia actualizada exitosamente');
+          if (typeof onUpdated === 'function' && initialData && isNewsItem(initialData)) onUpdated(initialData);
+        }
+        onClose();
       } else {
-        showMessage('success', 'Noticia creada exitosamente');
+        const res = await adminApi.createNews(form as FormData);
+        const resp = res as { news?: NewsItem } | undefined;
+        if (resp && resp.news) {
+          showMessage('success', `Noticia creada exitosamente`);
+          if (typeof onCreated === 'function') onCreated(resp.news);
+        } else {
+          showMessage('success', 'Noticia creada exitosamente');
+        }
+        onClose();
       }
-      onClose();
     } catch {
       showMessage('error', 'Error al crear la noticia');
     } finally {
@@ -317,7 +319,7 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
   };
 
   // Render step content
-  const renderStep = useCallback((step: WizardStep, _currentStep: number) => {
+  const renderStep = useCallback((step: WizardStep) => {
     setCurrentStepId(step.id);
     
     switch (step.id) {
@@ -679,7 +681,7 @@ export function NewsWizardForm({ isOpen, onClose, onCreated, theme }: NewsWizard
       default:
         return null;
     }
-  }, [data, theme, tagInput]);
+  }, [data, theme, tagInput, addTag, getReadingTime, handleImageChange, removeTag, updateData]);
 
   // Show toast message
   const ToastMessage = () => {

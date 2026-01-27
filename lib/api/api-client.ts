@@ -87,13 +87,23 @@ class ApiClient {
       data: data || undefined,
     };
 
+    // Serialize headers into a plain object to avoid opaque Headers printing
+    const headersObj: Record<string, string> = {};
+    try {
+      response.headers.forEach((value, key) => {
+        headersObj[key] = value;
+      });
+    } catch (e) {
+      // ignore
+    }
+
     errorLog('API Error:', {
       message: error.message,
       status: error.status,
       data: error.data,
       url: response.url,
-      method: response.headers.get('x-method-used') || 'Unknown', // Added method logging
-      headers: response.headers, // Log headers for debugging
+      method: headersObj['x-method-used'] || 'Unknown',
+      headers: headersObj,
     });
     return error;
   }
@@ -124,15 +134,18 @@ class ApiClient {
       // sessionStorage si están presentes para no forzar credenciales.
       const runtimeHeaders: Record<string, string> = {};
       try {
-        if (typeof window !== 'undefined' && this.useProxy) {
+        if (typeof window !== 'undefined') {
           const role = window.sessionStorage.getItem('role');
-          const user = window.sessionStorage.getItem('email') || window.sessionStorage.getItem('user') || window.sessionStorage.getItem('X-User');
+          const user = window.sessionStorage.getItem('email') || window.sessionStorage.getItem('user') || window.sessionStorage.getItem('user_email') || window.sessionStorage.getItem('X-User');
           const bypass = window.sessionStorage.getItem('X-Bypass-Login') || 'true';
           if (bypass) runtimeHeaders['X-Bypass-Login'] = bypass;
           if (role) runtimeHeaders['X-Role'] = role;
           if (user) runtimeHeaders['X-User'] = user;
           // Marcar admin si role indica admin/superadmin
           if (role && (role === 'admin' || role === 'superadmin')) runtimeHeaders['X-Admin'] = 'true';
+          // También permitir flag explícita en sessionStorage
+          const adminFlag = window.sessionStorage.getItem('admin');
+          if (adminFlag) runtimeHeaders['X-Admin'] = adminFlag;
         }
       } catch (e) {
         // No bloquear en caso de error de acceso a sessionStorage
@@ -215,10 +228,15 @@ class ApiClient {
    */
   async put<T = any>(path: string, data?: any, options: ApiOptions = {}): Promise<T> {
     const url = this.buildUrl(path);
+    const isFormData = data instanceof FormData;
     const response = await this.fetchWithRetry(url, {
       ...options,
       method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
+      body: isFormData ? data : (data ? JSON.stringify(data) : undefined),
+      headers: {
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        ...options.headers,
+      },
     }, options.retry);
 
     if (!response.ok) {
@@ -233,10 +251,15 @@ class ApiClient {
    */
   async patch<T = any>(path: string, data?: any, options: ApiOptions = {}): Promise<T> {
     const url = this.buildUrl(path);
+    const isFormData = data instanceof FormData;
     const response = await this.fetchWithRetry(url, {
       ...options,
       method: 'PATCH',
-      body: data ? JSON.stringify(data) : undefined,
+      body: isFormData ? data : (data ? JSON.stringify(data) : undefined),
+      headers: {
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        ...options.headers,
+      },
     }, options.retry);
 
     if (!response.ok) {
@@ -320,10 +343,10 @@ class ApiClient {
  * ```
  */
 // Decide whether to use the Next.js proxy or call backend directly.
-// Bypass proxy when NEXT_PUBLIC_BYPASS_PROXY=true OR when backend URL points to localhost:5000
+// By default in browser use the Next.js proxy to avoid CORS. Only bypass
+// the proxy when `NEXT_PUBLIC_BYPASS_PROXY=true` is explicitly set.
 const bypassProxyEnv = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_BYPASS_PROXY === 'true';
-const backendIsLocal5000 = config.api.url.includes('localhost:5000');
-const useProxyFlag = !(bypassProxyEnv || backendIsLocal5000);
+const useProxyFlag = !bypassProxyEnv;
 export const apiClient = new ApiClient(config.api.url, useProxyFlag);
 
 // ==============================================================================
