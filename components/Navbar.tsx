@@ -12,8 +12,8 @@ import { TranslateText } from "@/components/TranslateText";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const [logoUrl, setLogoUrl] = useState<string>("/image/logo/bausen-logo.png");
-  const defaultLogo = "/image/logo/bausen-logo.png";
+  const [logoUrl, setLogoUrl] = useState<string>("/web/image/logo/bausen-logo.png");
+  const defaultLogo = "/web/image/logo/bausen-logo.png";
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
@@ -23,7 +23,7 @@ export default function Navbar() {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    Promise.resolve().then(() => setLogoUrl("/image/logo/bausen-logo.png"));
+    Promise.resolve().then(() => setLogoUrl("/web/image/logo/bausen-logo.png"));
   }, []);
 
   return (

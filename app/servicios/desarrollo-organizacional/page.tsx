@@ -56,7 +56,7 @@ export default function DesarrolloOrganizacionalPage() {
         title="Creando una cultura de exito empresarial"
         subtitle="Desarrollo Organizacional"
         description="Potencia el crecimiento y la eficacia de tu empresa a traves de nuestros servicios de Desarrollo Organizacional!"
-        imageSrc="/image/servicios/desarrollorganizacional.jpg"
+        imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
         imageAlt="Desarrollo Organizacional BAUSEN"
         iconComponent={Users}
         backLink="/servicios"
@@ -73,14 +73,14 @@ export default function DesarrolloOrganizacionalPage() {
       <BenefitsStagger
         title="Beneficios Centro de Capacitacion"
         benefits={beneficios}
-        imageSrc="/image/servicios/tranning.webp"
+        imageSrc="/web/image/servicios/tranning.webp"
         imageAlt="Centro de Capacitacion"
       />
 
       <DarkCTA
         title="Transforma tu organizacion hoy"
         subtitle="Agenda una consulta y conoce nuestras soluciones personalizadas para cultura, clima y talento."
-        imageSrc="/image/servicios/desarrollorganizacional.jpg"
+        imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
         imageAlt="Transformacion Organizacional"
         primaryLink="#contacto"
         primaryLabel="Agenda una cita"

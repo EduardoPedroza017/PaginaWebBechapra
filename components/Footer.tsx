@@ -30,10 +30,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { iconPath: '/image/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bausen', label: 'Facebook' },
-  { iconPath: '/image/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bausen', label: 'LinkedIn' },
-  { iconPath: '/image/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bausen', label: 'YouTube' },
-  { iconPath: '/image/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bausen', label: 'Instagram' },
+  { iconPath: '/web/image/icon/Iconos_Redes/Facebook_NegativoStroke@2x.png', href: 'https://facebook.com/bausen', label: 'Facebook' },
+  { iconPath: '/web/image/icon/Iconos_Redes/Linkedin_NegativoStroke@2x.png', href: 'https://linkedin.com/company/bausen', label: 'LinkedIn' },
+  { iconPath: '/web/image/icon/Iconos_Redes/Youtube_NegativoStroke@2x.png', href: 'https://youtube.com/@bausen', label: 'YouTube' },
+  { iconPath: '/web/image/icon/Iconos_Redes/Instagram_NegativoStroke@2x.png', href: 'https://instagram.com/bausen', label: 'Instagram' },
 ];
 
 interface FooterLinkSectionProps {
@@ -51,7 +51,7 @@ function FooterLogo() {
     Promise.resolve().then(() => setIsDark(resolved));
   }, []);
 
-  const src = isDark ? '/image/logo/bausen-logo.png' : '/image/logo/Bausen.png';
+  const src = isDark ? '/web/image/logo/bausen-logo.png' : '/web/image/logo/Bausen.png';
   const alt = isDark ? 'Bausen Logo' : 'Bausen Logo';
 
   return (

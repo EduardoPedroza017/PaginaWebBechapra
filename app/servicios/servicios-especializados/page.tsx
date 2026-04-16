@@ -97,7 +97,7 @@ export default function ServiciosEspecializadosPage() {
       <ServiceHero
         title="Servicios Especializados"
         description="Soluciones modernas y seguras para el sector financiero: optimizamos procesos de talento, nomina y cumplimiento para que tu organizacion mantenga foco en el crecimiento."
-        imageSrc="/image/servicios/servicios-especializados.jpg"
+        imageSrc="/web/image/servicios/servicios-especializados.jpg"
         imageAlt="Servicios Especializados BAUSEN"
         backLink="/servicios"
         backLabel="Volver"

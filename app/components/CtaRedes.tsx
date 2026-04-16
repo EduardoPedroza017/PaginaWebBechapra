@@ -20,7 +20,7 @@ export default function CtaRedes() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/image/agenda/ahenda.avif"
+            src="/web/image/agenda/ahenda.avif"
             alt="BAUSEN Business Services"
             fill
             className="object-cover opacity-30"

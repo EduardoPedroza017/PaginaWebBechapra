@@ -56,7 +56,7 @@ export default function CapitalHumanoPage() {
         title="Capital Humano"
         highlight="Capital"
         description="Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!"
-        imageSrc="/image/servicios/capital-humano.webp"
+        imageSrc="/web/image/servicios/capital-humano.webp"
         imageAlt="Persona trabajando con laptop y documentos"
       />
 
@@ -70,7 +70,7 @@ export default function CapitalHumanoPage() {
       <BenefitsSection
         title="Beneficios de Capital Humano"
         benefits={benefits}
-        imageSrc="/image/servicios/capital-humano.webp"
+        imageSrc="/web/image/servicios/capital-humano.webp"
         imageAlt="Equipo colaborando en oficina"
       />
 

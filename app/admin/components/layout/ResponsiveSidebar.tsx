@@ -47,7 +47,7 @@ export default function ResponsiveSidebar({
         <div className="flex items-center gap-4">
           <div className={`relative ${expanded ? 'w-36 h-10' : 'w-10 h-10'} rounded-lg overflow-hidden shrink-0 transition-all duration-300`}>
             <NextImage
-              src={expanded ? '/image/logo/bausen-logo.png' : '/image/logo/Favicon_Bausen_01.png'}
+              src={expanded ? '/web/image/logo/bausen-logo.png' : '/web/image/logo/Favicon_Bausen_01.png'}
               alt={expanded ? 'Logo BAUSEN' : 'Bausen mark'}
               fill
               sizes="40px"

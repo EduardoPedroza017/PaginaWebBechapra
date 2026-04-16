@@ -51,7 +51,7 @@ export default function ManagementServicesPage() {
         title="Soluciones integrales para gestionar y hacer crecer tu"
         highlightWord="negocio"
         description="Desde el manejo de tus finanzas hasta la proteccion legal de tu empresa!"
-        imageSrc="/image/servicios/management-services.jpg"
+        imageSrc="/web/image/servicios/management-services.jpg"
         imageAlt="Management Services BAUSEN"
         backLink="/servicios"
         backLabel="Volver"
@@ -67,7 +67,7 @@ export default function ManagementServicesPage() {
       <BenefitsSection
         title="Beneficios Management Services"
         benefits={beneficios}
-        imageSrc="/image/servicios/management-services.jpg"
+        imageSrc="/web/image/servicios/management-services.jpg"
         imageAlt="Beneficios Management Services"
       />
 

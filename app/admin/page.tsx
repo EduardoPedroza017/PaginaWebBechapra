@@ -211,7 +211,7 @@ export default function AdminLogin() {
                 <div className="absolute -inset-2 bg-gradient-to-br from-blue-500/30 to-cyan-400/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative bg-white/10 rounded-2xl p-4 border border-white/20">
                   <Image
-                    src="/image/logo/Bausen.png"
+                    src="/web/image/logo/Bausen.png"
                     alt="Logo Bausen"
                     width={180}
                     height={72}

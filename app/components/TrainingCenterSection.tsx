@@ -8,9 +8,9 @@ import { TranslateText } from "@/components/TranslateText";
 import Link from "next/link";
 
 const imageMap: Record<string, string> = {
-  eventos: "/image/traniing/evento.jfif",
-  webinars: "/image/traniing/escuela.jfif",
-  becarios: "/image/traniing/escuela.jfif",
+  eventos: "/web/image/traniing/evento.jfif",
+  webinars: "/web/image/traniing/escuela.jfif",
+  becarios: "/web/image/traniing/escuela.jfif",
 };
 
 const iconMap = {
@@ -106,7 +106,7 @@ export default function TrainingCenterSection() {
 
               {/* Background image */}
               <img
-                src={imageMap[trainingFeatures[active].id] || "/image/traniing/evento.jfif"}
+                src={imageMap[trainingFeatures[active].id] || "/web/image/traniing/evento.jfif"}
                 alt={trainingFeatures[active].label}
                 className="absolute inset-0 w-full h-full object-cover z-0"
               />

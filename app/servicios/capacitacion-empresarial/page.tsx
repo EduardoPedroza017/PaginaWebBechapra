@@ -102,7 +102,7 @@ export default function CapacitacionEmpresarialPage() {
         title="Capacitación"
         highlightWord="Empresarial"
         description="Programas prácticos, con instructores certificados y seguimiento que asegura la transferencia de conocimiento a tu equipo."
-        imageSrc="/image/servicios/capacitacionempresarial.jpg"
+        imageSrc="/web/image/servicios/capacitacionempresarial.jpg"
         imageAlt="Capacitación Empresarial BAUSEN"
       />
 
@@ -112,7 +112,7 @@ export default function CapacitacionEmpresarialPage() {
         title="Cómo Trabajamos"
         description="Nuestro enfoque se centra en la participación activa y el aprendizaje vivencial. A través de ejercicios prácticos y dinámicos, nuestros especialistas guían a tu equipo en un viaje de descubrimiento y desarrollo personal y profesional."
         points={howWeWorkPoints}
-        imageSrc="/image/servicios/servicios-especializados.jpg"
+        imageSrc="/web/image/servicios/servicios-especializados.jpg"
         imageAlt="Cómo Trabajamos"
       />
 
@@ -124,7 +124,7 @@ export default function CapacitacionEmpresarialPage() {
         highlight="¡Convierte a tu equipo en un motor de éxito!"
         ctaLabel="COMIENZA AHORA"
         ctaLink="#contacto"
-        imageSrc="/image/servicios/Capital_Humano_FInal.jpg"
+        imageSrc="/web/image/servicios/Capital_Humano_FInal.jpg"
         imageAlt="Mejora el rendimiento"
       />
 

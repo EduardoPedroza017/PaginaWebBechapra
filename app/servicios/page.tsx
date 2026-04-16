@@ -182,7 +182,7 @@ export default function ServiciosIndex() {
 								{/* Image container */}
 								<div className="relative h-100 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
 									<Image
-										src="/image/servicios/service.png"
+										src="/web/image/servicios/service.png"
 										alt="Persona trabajando con laptop y documentos"
 										fill
 										className="object-cover"

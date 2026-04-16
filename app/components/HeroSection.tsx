@@ -110,7 +110,7 @@ export default function HeroSection() {
               
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/20">
                 <Image
-                  src="/image/hero/Flayers_Home_01100.jpg"
+                  src="/web/image/hero/Flayers_Home_01100.jpg"
                   width={600}
                   height={500}
                   alt="BAUSEN - Soluciones empresariales"
