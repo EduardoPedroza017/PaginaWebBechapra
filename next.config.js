@@ -8,7 +8,9 @@ if (!process.env.NEXT_PUBLIC_API_URL && !process.env.BACKEND_URL) {
   console.warn('Advertencia: ni NEXT_PUBLIC_API_URL ni BACKEND_URL están definidas — usando fallback', API_URL);
 }
 
+
 const nextConfig = {
+  basePath: '/web',
   experimental: {},
   images: {
     remotePatterns: [
