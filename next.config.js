@@ -1,17 +1,11 @@
 ﻿/** @type {import('next').NextConfig} */
 
-// Normalize backend/public URLs so rewrites always get a proper http(s) prefix
-const normalizeUrl = (u) => {
-  if (!u) return undefined;
-  const s = String(u).trim();
-  if (/^https?:\/\//i.test(s)) return s.replace(/\/$/, '');
-  return `http://${s.replace(/\/$/, '')}`;
-};
-
-const BACKEND_URL = normalizeUrl(process.env.BACKEND_URL) || 'http://127.0.0.1:9999';
-const NEXT_PUBLIC_API_URL = normalizeUrl(process.env.NEXT_PUBLIC_API_URL) || BACKEND_URL;
+// Prefer NEXT_PUBLIC_API_URL, fallback to BACKEND_URL, then to a safe localhost mock.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://127.0.0.1:9999';
 if (!process.env.NEXT_PUBLIC_API_URL && !process.env.BACKEND_URL) {
-  console.warn('Advertencia: ni NEXT_PUBLIC_API_URL ni BACKEND_URL están definidas — usando fallback', BACKEND_URL);
+  // During local builds we prefer not to fail hard — warn instead and use a mock URL.
+  // CI / production should still set proper env vars.
+  console.warn('Advertencia: ni NEXT_PUBLIC_API_URL ni BACKEND_URL están definidas — usando fallback', API_URL);
 }
 
 const nextConfig = {
@@ -42,21 +36,18 @@ const nextConfig = {
     unoptimized: true,
   },
   env: {
-    BACKEND_URL: BACKEND_URL,
-    NEXT_PUBLIC_API_URL: NEXT_PUBLIC_API_URL,
+    BACKEND_URL: process.env.BACKEND_URL || API_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || API_URL,
   },
-  // Serve the app under /web so generated asset paths include the prefix
-  basePath: '/web',
-  assetPrefix: '/web',
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `${BACKEND_URL}/api/:path*`,
+        destination: `${process.env.BACKEND_URL || API_URL}/api/:path*`,
       },
       {
         source: '/api/admin/:path*',
-        destination: `${BACKEND_URL}/api/admin/:path*`,
+        destination: `${process.env.BACKEND_URL || API_URL}/api/admin/:path*`,
       },
     ];
   },
