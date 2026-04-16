@@ -1,8 +1,11 @@
 ﻿/** @type {import('next').NextConfig} */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
-if (!API_URL) {
-  throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
+// Prefer NEXT_PUBLIC_API_URL, fallback to BACKEND_URL, then to a safe localhost mock.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://127.0.0.1:9999';
+if (!process.env.NEXT_PUBLIC_API_URL && !process.env.BACKEND_URL) {
+  // During local builds we prefer not to fail hard — warn instead and use a mock URL.
+  // CI / production should still set proper env vars.
+  console.warn('Advertencia: ni NEXT_PUBLIC_API_URL ni BACKEND_URL están definidas — usando fallback', API_URL);
 }
 
 const nextConfig = {
@@ -32,15 +35,19 @@ const nextConfig = {
     ].filter(Boolean),
     unoptimized: true,
   },
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL || API_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || API_URL,
+  },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `${API_URL}/api/:path*`,
+        destination: `${process.env.BACKEND_URL || API_URL}/api/:path*`,
       },
       {
         source: '/api/admin/:path*',
-        destination: `${API_URL}/api/admin/:path*`,
+        destination: `${process.env.BACKEND_URL || API_URL}/api/admin/:path*`,
       },
     ];
   },

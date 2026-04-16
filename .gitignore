@@ -45,3 +45,4 @@ next-env.d.ts
 local_artifacts/
 .git_env_backups/
 logs/
+docs/

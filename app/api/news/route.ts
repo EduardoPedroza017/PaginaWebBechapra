@@ -13,7 +13,8 @@ if (!BACKEND_URL) {
 export async function GET() {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json({ error: 'Backend URL not configured (BACKEND_URL or NEXT_PUBLIC_API_URL).' }, { status: 500 });
+      // Backend not configured — return empty list to allow static generation without backend.
+      return NextResponse.json([], { status: 200 });
     }
 
     const response = await fetch(`${BACKEND_URL}/api/news`, {

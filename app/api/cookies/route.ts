@@ -1,33 +1,31 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '';
 if (!BACKEND_URL) {
-  throw new Error('La variable de entorno BACKEND_URL no está definida. Configúrala en tu archivo .env');
+  // Don't throw during build — return friendly fallbacks at request time.
+  console.warn('Warning: BACKEND_URL not configured — /api/cookies will return fallback responses.');
 }
 
 export async function GET() {
   try {
+    if (!BACKEND_URL) {
+      // Return an empty list when backend is not available
+      return NextResponse.json({ items: [] }, { status: 200 });
+    }
+
     const response = await fetch(`${BACKEND_URL}/api/cookies/list?limit=200`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Failed to fetch cookies data' },
-        { status: response.status }
-      );
+      return NextResponse.json({ error: 'Failed to fetch cookies data' }, { status: response.status });
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching cookies:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
