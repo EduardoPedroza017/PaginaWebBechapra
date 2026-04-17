@@ -1,23 +1,21 @@
 "use client";
 
-
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, CheckCircle2, Sparkles } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
-import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 export default function HeroSection() {
   return (
-    <AnimatedHeroBackground gradientClass="bg-gradient-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-blue-950/50 dark:to-slate-900 min-h-[85vh] flex items-center" gridOpacity="opacity-0">
-      {/* Background decorations personalizados para HeroSection */}
+    <section className="relative w-full min-h-[85vh] flex items-center overflow-hidden transition-colors duration-300 bg-gradient-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-blue-950/50 dark:to-slate-900">
+      {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-150 h-150 rounded-full blur-3xl bg-blue-100/20 dark:bg-blue-600/10" />
-        <div className="absolute -bottom-40 -left-40 w-125 h-125 rounded-full blur-3xl bg-blue-50/30 dark:bg-blue-500/10" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-blue-900/20 dark:to-transparent" />
+        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-3xl bg-blue-100/20 dark:bg-blue-600/10" />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full blur-3xl bg-blue-50/30 dark:bg-blue-500/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-blue-100/20 to-transparent dark:from-blue-900/20 dark:to-transparent" />
       </div>
 
-      <div className="relative w-full max-w-7xl 2xl:max-w-400 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-12 sm:py-16 lg:py-20 2xl:py-24 z-10">
+      <div className="relative w-full max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-12 sm:py-16 lg:py-20 2xl:py-24 z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
           {/* Content */}
           <motion.div
@@ -41,7 +39,7 @@ export default function HeroSection() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white">
               <TranslateText text="Impulsamos" />
               <br />
-              <span className="bg-linear-to-r bg-clip-text text-transparent from-blue-600 via-blue-500 to-blue-700 dark:from-blue-500 dark:via-blue-600 dark:to-blue-700">
+              <span className="bg-gradient-to-r bg-clip-text text-transparent from-blue-600 via-blue-500 to-blue-700 dark:from-blue-500 dark:via-blue-600 dark:to-blue-700">
                 <TranslateText text="tu talento" />
               </span>
             </h1>
@@ -82,8 +80,8 @@ export default function HeroSection() {
               className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 dark:border-slate-700"
             >
               {[
-                { value: "15+", label: "Años de experiencia" },
-                { value: "500+", label: "Clientes" },
+                { value: "40+", label: "Años de experiencia" },
+                { value: "1,500+", label: "Clientes" },
                 { value: "98%", label: "Satisfacción" },
               ].map((stat, i) => (
                 <div key={i}>
@@ -119,7 +117,7 @@ export default function HeroSection() {
                   className="object-cover w-full h-auto"
                   priority
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-blue-900/20 to-transparent dark:from-blue-950/60 dark:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent dark:from-blue-950/60 dark:to-transparent" />
               </div>
 
               {/* Floating card */}
@@ -147,6 +145,6 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </div>
-    </AnimatedHeroBackground>
+    </section>
   );
 }
