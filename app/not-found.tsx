@@ -48,7 +48,7 @@ export default function NotFound() {
           {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <Link
-              href="/"
+              href="/web/"
               className="group px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
             >
               <svg

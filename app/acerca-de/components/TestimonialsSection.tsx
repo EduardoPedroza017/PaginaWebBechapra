@@ -12,7 +12,7 @@ const testimonials = [
     texto:
       "BAUSEN nos ayudó a transformar nuestra cultura organizacional y optimizar procesos clave. ¡Resultados tangibles en meses!",
     resultado: "Reducción del 40% en rotación anual.",
-    foto: "/image/icon/CapitalHumano_IconLight_Azul@2x.png",
+    foto: "/web/image/icon/CapitalHumano_IconLight_Azul@2x.png",
     rating: 5,
   },
   {
@@ -21,7 +21,7 @@ const testimonials = [
     texto:
       "El equipo de BAUSEN es profesional, cercano y siempre proactivo. Los recomendamos ampliamente.",
     resultado: "Ahorro de 120 horas/mes.",
-    foto: "/image/icon/Servicios Administrativos_IconLight_Azul@2x.png",
+    foto: "/web/image/icon/Servicios Administrativos_IconLight_Azul@2x.png",
     rating: 5,
   },
   {
@@ -30,7 +30,7 @@ const testimonials = [
     texto:
       "Gracias a su consultoría, logramos una integración exitosa tras una fusión compleja.",
     resultado: "Transición sin conflictos y aumento de satisfacción.",
-    foto: "/image/icon/ServiciosdeImpuestos_IconLight_Azul@2x.png",
+    foto: "/web/image/icon/ServiciosdeImpuestos_IconLight_Azul@2x.png",
     rating: 5,
   },
 ];

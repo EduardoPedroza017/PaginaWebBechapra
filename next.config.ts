@@ -26,6 +26,8 @@ function getRemotePattern(url: string, pathname: string) {
 }
 
 const nextConfig: NextConfig = {
+  basePath: '/web',
+  trailingSlash: true,
   async rewrites() {
     return [
       {

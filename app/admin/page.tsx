@@ -189,7 +189,7 @@ export default function AdminLogin() {
     <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden p-4">
       {/* Background layers */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900" />
-      <div className="absolute inset-0 bg-[url('/image/login/bg-login.jpg')] bg-cover bg-center opacity-20" />
+      <div className="absolute inset-0 bg-[url('/web/image/login/bg-login.jpg')] bg-cover bg-center opacity-20" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40" />
       
       {/* Decorative background elements */}

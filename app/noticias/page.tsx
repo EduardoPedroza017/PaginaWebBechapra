@@ -125,7 +125,7 @@ export default function NoticiasPage() {
               transition={{ delay: 0.3 }}
             >
               <Link
-                href="/#contacto"
+                href="/web/#contacto"
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-700 dark:text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
               >
                 <TranslateText text="Suscríbete al newsletter" />
@@ -480,3 +480,4 @@ function CategoryCard({
     </motion.div>
   );
 }
+

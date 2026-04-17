@@ -70,7 +70,7 @@ export default function AtraccionDeTalentoPage() {
         title="Atraccion de"
         highlightWord="Talento"
         description="Conectamos a tu empresa con el talento ideal. Nuestro proceso de reclutamiento y seleccion garantiza candidatos calificados, evaluados y alineados con tu cultura organizacional."
-        imageSrc="/image/atraccion-de-talento.webp"
+        imageSrc="/web/image/atraccion-de-talento.webp"
         imageAlt="Atraccion de Talento"
       />
 

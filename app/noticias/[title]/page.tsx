@@ -394,7 +394,7 @@ export default function NoticiaDetalle() {
             {error || "La noticia que buscas no existe o ha sido eliminada."}
           </p>
           <Link
-            href="/noticias"
+            href="/web/noticias/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
             <ArrowLeft size={18} />

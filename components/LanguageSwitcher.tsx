@@ -7,12 +7,12 @@ import { useLanguage } from "@/lib/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LANGUAGES = [
-  { code: "es", name: "Español", flag: "/flags/mx.svg", country: "México" },
-  { code: "en", name: "English", flag: "/flags/gb.svg", country: "UK" },
-  { code: "fr", name: "Français", flag: "/flags/fr.svg", country: "France" },
-  { code: "de", name: "Deutsch", flag: "/flags/de.svg", country: "Deutschland" },
-  { code: "it", name: "Italiano", flag: "/flags/it.svg", country: "Italia" },
-  { code: "pt", name: "Português", flag: "/flags/pt.svg", country: "Portugal" },
+  { code: "es", name: "Español", flag: "/web/flags/mx.svg", country: "México" },
+  { code: "en", name: "English", flag: "/web/flags/gb.svg", country: "UK" },
+  { code: "fr", name: "Français", flag: "/web/flags/fr.svg", country: "France" },
+  { code: "de", name: "Deutsch", flag: "/web/flags/de.svg", country: "Deutschland" },
+  { code: "it", name: "Italiano", flag: "/web/flags/it.svg", country: "Italia" },
+  { code: "pt", name: "Português", flag: "/web/flags/pt.svg", country: "Portugal" },
 ];
 
 export default function LanguageSwitcher() {

@@ -14,7 +14,7 @@ export const services: Service[] = [
     title: "Capital humano",
     description: "Aumenta la eficiencia y resultados de tu negocio.",
     image: "/web/image/servicios/Capital_Humano_FInal.jpg",
-    icon: "/image/icon/Capital Humano_Icon_Color@2x.png",
+    icon: "/web/image/icon/Capital Humano_Icon_Color@2x.png",
     href: "/servicios/capital-humano",
   },
   {
@@ -22,7 +22,7 @@ export const services: Service[] = [
     title: "Servicios especializados",
     description: "Aumenta la eficiencia y resultados de tu negocio.",
     image: "/web/image/servicios/servicios-especializados.jpg",
-    icon: "/image/icon/ServiciosEspecializados_Icon_Color@2x.png",
+    icon: "/web/image/icon/ServiciosEspecializados_Icon_Color@2x.png",
     href: "/servicios/desarrollo-organizacional",
   },
   {
@@ -30,7 +30,7 @@ export const services: Service[] = [
     title: "Servicios de Impuestos",
     description: "Optimiza tu carga fiscal con expertos certificados.",
     image: "/web/image/servicios/servicios-impuestos.jpg",
-    icon: "/image/icon/ServiciosdeImpuestos_Icon_Color@2x.png",
+    icon: "/web/image/icon/ServiciosdeImpuestos_Icon_Color@2x.png",
     href: "/servicios/management-services",
   },
 ];

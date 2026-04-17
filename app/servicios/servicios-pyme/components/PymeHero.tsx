@@ -58,7 +58,7 @@ export default function PymeHero() {
           transition={{ duration: 0.5 }}
         >
           <Link
-            href="/servicios"
+            href="/web/servicios/"
             className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 mb-10"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

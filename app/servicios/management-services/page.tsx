@@ -74,7 +74,7 @@ export default function ManagementServicesPage() {
       <DarkCTA
         title="Todos los servicios en un solo lugar"
         subtitle="Solicita una reunion para mas informacion."
-        imageSrc="/image/contacto/contacto-men.avif"
+        imageSrc="/web/image/contacto/contacto-men.avif"
         imageAlt="Management Services"
         primaryLink="#contacto"
         primaryLabel="Solicitar reunion"

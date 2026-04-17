@@ -236,7 +236,7 @@ export default function TrainingCenterPage() {
         </div>
         <div className="text-center">
           <a
-            href="/eventos"
+            href="/web/eventos/"
             className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all"
           >
             Explorar Eventos

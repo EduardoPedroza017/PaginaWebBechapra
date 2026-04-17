@@ -21,7 +21,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   const slugOrName = String(service.slug ?? service.name ?? '');
   return (
     <motion.a
-      href={`/servicios/${encodeURIComponent(slugOrName)}`}
+      href={`/web/servicios/${encodeURIComponent(slugOrName)}`}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}

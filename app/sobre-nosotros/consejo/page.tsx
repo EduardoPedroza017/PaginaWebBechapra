@@ -187,7 +187,7 @@ export default function BoardPage() {
 							const imageUrl = getImageUrl(member);
 							const fullName = getFullName(member);
 							const slug = getSlug(member);
-							const profileUrl = `/sobre-nosotros/consejo/${slug}`;
+							const profileUrl = `/web/sobre-nosotros/consejo/${slug}/`;
 
 							return (
 							<motion.div
