@@ -1,10 +1,12 @@
 "use client";
 
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Users, Sparkles } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 interface ServiceHeroProps {
   title: string;
@@ -26,29 +28,7 @@ export default function ServiceHero({
   backLabel = "Volver a Servicios",
 }: ServiceHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-blue-500/20 dark:from-blue-600/10 dark:to-blue-700/10 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 12, repeat: Infinity, delay: 1 }}
-          className="absolute -bottom-48 -left-32 w-[400px] h-[400px] bg-gradient-to-tr from-cyan-400/20 to-blue-500/20 dark:from-cyan-600/10 dark:to-blue-700/10 rounded-full blur-3xl"
-        />
-        {/* Grid Pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
+    <AnimatedHeroBackground>
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Back Link */}
         <motion.div
@@ -176,6 +156,6 @@ export default function ServiceHero({
           />
         </svg>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }

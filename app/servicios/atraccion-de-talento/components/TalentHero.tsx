@@ -1,10 +1,12 @@
 "use client";
 
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Sparkles, Users } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 interface TalentHeroProps {
   title: string;
@@ -30,58 +32,30 @@ export default function TalentHero({
   ctaLink = "#contacto",
 }: TalentHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[620px] bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <AnimatedHeroBackground gradientClass="bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
+      {/* Floating Icons personalizados para TalentHero */}
+      {[...Array(5)].map((_, i) => (
         <motion.div
+          key={i}
           animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, 90, 180],
-            opacity: [0.15, 0.25, 0.15],
+            y: [0, -25, 0],
+            rotate: [0, 10, 0],
+            opacity: [0.2, 0.5, 0.2],
           }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-blue-500/15 to-transparent rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.1, 0.2, 0.1],
+          transition={{
+            duration: 5 + i * 0.8,
+            repeat: Infinity,
+            delay: i * 0.7,
           }}
-          transition={{ duration: 18, repeat: Infinity, delay: 3 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
-        />
-        {/* Mesh Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute z-20"
           style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
+            left: `${10 + i * 18}%`,
+            top: `${15 + (i % 3) * 25}%`,
           }}
-        />
-        {/* Floating Icons */}
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -25, 0],
-              rotate: [0, 10, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 5 + i * 0.8,
-              repeat: Infinity,
-              delay: i * 0.7,
-            }}
-            className="absolute"
-            style={{
-              left: `${10 + i * 18}%`,
-              top: `${15 + (i % 3) * 25}%`,
-            }}
-          >
-            <Users size={20 + i * 4} className="text-white/20" />
-          </motion.div>
-        ))}
-      </div>
+        >
+          <Users size={20 + i * 4} className="text-white/20" />
+        </motion.div>
+      ))}
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
@@ -216,7 +190,6 @@ export default function TalentHero({
           </motion.div>
         </div>
       </div>
-
       {/* Wave */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
@@ -226,6 +199,6 @@ export default function TalentHero({
           />
         </svg>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }

@@ -1,54 +1,30 @@
-"use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, Rocket, Sparkles, TrendingUp, Building2 } from "lucide-react";
+import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { TranslateText } from '@/components/TranslateText';
-
+import { Rocket, TrendingUp, Building2, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 export default function PymeHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 dark:from-slate-950 dark:via-blue-950 dark:to-blue-900 pt-20 pb-32 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <AnimatedHeroBackground>
+      {/* Floating Icons personalizados para PymeHero */}
+      {[Rocket, TrendingUp, Building2].map((Icon, i) => (
         <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-white/20 via-blue-300/15 to-transparent rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-300/20 via-blue-400/10 to-transparent rounded-full blur-3xl"
-        />
-        
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px'
-          }} />
-        </div>
-
-        {/* Floating Icons */}
-        {[Rocket, TrendingUp, Building2].map((Icon, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, 10, -10, 0],
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{ duration: 5 + i * 2, repeat: Infinity, delay: i * 1.2 }}
-            className={`absolute ${
-              i === 0 ? 'top-1/4 right-1/4' : 
-              i === 1 ? 'bottom-1/3 left-1/5' : 
-              'top-1/3 left-1/3'
-            }`}
-          >
-            <Icon className="w-16 h-16 text-white/15" />
-          </motion.div>
-        ))}
-      </div>
+          key={i}
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 10, -10, 0],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 5 + i * 2, repeat: Infinity, delay: i }}
+          className={`absolute ${
+            i === 0 ? 'top-1/4 right-1/4' :
+            i === 1 ? 'bottom-1/3 left-1/5' :
+            'top-1/3 left-1/3'
+          } z-20`}
+        >
+          <Icon className="w-16 h-16 text-white/15" />
+        </motion.div>
+      ))}
 
       <div className="relative max-w-7xl mx-auto px-6 z-10">
         {/* Back Button */}
@@ -59,10 +35,10 @@ export default function PymeHero() {
         >
           <Link
             href="/web/servicios/"
-            className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-full border border-white/30 hover:bg-white/30 transition-all duration-300 mb-10"
+            className="group inline-flex items-center gap-2 px-5 py-2 bg-white/10 rounded-full text-white mb-8 hover:bg-white/20 transition"
           >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium"><TranslateText text="Volver a servicios" /></span>
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition" />
+            <span className="font-medium"><TranslateText text="Volver a Servicios" /></span>
           </Link>
         </motion.div>
 
@@ -78,27 +54,27 @@ export default function PymeHero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-white mb-6"
             >
               <Sparkles className="w-4 h-4 text-white" />
-              <span className="text-sm font-semibold text-white"><TranslateText text="Impulso Empresarial" /></span>
+              <span className="text-sm font-semibold text-white"><TranslateText text="PYME" /></span>
             </motion.div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
               <TranslateText text="Servicios" />{" "}
-              <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent drop-shadow-lg">
+              <span className="bg-linear-to-r from-white via-blue-100 to-blue-400 bg-clip-text text-transparent">
                 <TranslateText text="PYME" />
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-8 max-w-xl">
-              <TranslateText text="Paquetes pensados para empresas pequeñas: menos complejidad, más foco en crecimiento y escalabilidad." />
+            <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-8">
+              <TranslateText text="Paquetes pensados para empresas pequeñas y medianas que buscan crecer con soluciones a su medida." />
             </p>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/20 hover:shadow-blue-900/30 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-blue-500 text-white rounded-2xl font-bold text-lg shadow-xl hover:bg-blue-600 transition"
               >
                 <TranslateText text="Quiero una propuesta" />
                 <ArrowRight className="w-5 h-5" />
@@ -113,23 +89,22 @@ export default function PymeHero() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="relative hidden lg:block"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-cyan-300/20 dark:to-cyan-500/20 rounded-3xl blur-3xl" />
-            
-            <div className="relative h-[400px] bg-white/10 backdrop-blur-sm rounded-3xl border border-white/30 p-8 flex flex-col justify-center">
+            <div className="absolute inset-0 bg-linear-to-r from-white/10 to-blue-400/10 rounded-3xl blur-2xl" />
+            <div className="relative h-100 bg-white/10 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-8">
               {/* Top accent */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-white via-cyan-200 to-blue-300 dark:via-cyan-400 dark:to-blue-400 rounded-t-3xl" />
-              
+              <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-200 via-blue-400 to-blue-600 rounded-t-3xl" />
+
               {/* Central Icon */}
               <motion.div
                 animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="w-28 h-28 mx-auto mb-6 bg-white dark:bg-slate-800 rounded-3xl flex items-center justify-center shadow-2xl"
+                className="w-28 h-28 mx-auto mb-6 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-lg"
               >
                 <Rocket className="w-14 h-14 text-blue-500 dark:text-blue-400" />
               </motion.div>
 
-              <h3 className="text-2xl font-bold text-white text-center mb-3"><TranslateText text="Crece sin complicaciones" /></h3>
-              <p className="text-white/80 text-center text-lg mb-6"><TranslateText text="Soluciones a tu medida" /></p>
+              <h3 className="text-2xl font-bold text-white text-center mb-2">Impulsa tu PYME</h3>
+              <p className="text-white/80 text-center text-lg mb-6"><TranslateText text="Soluciones integrales para crecer sin límites." /></p>
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4">
@@ -143,7 +118,7 @@ export default function PymeHero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + i * 0.1 }}
-                    className="text-center p-3 bg-white/10 rounded-xl border border-white/20"
+                    className="text-center p-3 bg-white/10 rounded-xl"
                   >
                     <div className="text-2xl font-black text-white">{stat.value}</div>
                     <div className="text-xs text-white/70">{stat.label}</div>
@@ -154,6 +129,6 @@ export default function PymeHero() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }

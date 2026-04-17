@@ -1,52 +1,42 @@
 "use client";
 
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Newspaper, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 export default function PressHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] pt-24 pb-32 overflow-hidden transition-colors duration-300 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Gradient Orbs */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute -bottom-48 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"
-        />
-        
-        {/* Grid Pattern */}
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px'
-          }}
-        />
+    <AnimatedHeroBackground gradientClass="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900" gridOpacity="opacity-[0.03]">
+      {/* Orbes y Floating Icons personalizados para PressHero */}
 
-        {/* Floating Icons */}
-        <motion.div
-          animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-[15%] text-white/10"
-        >
-          <Newspaper size={80} strokeWidth={1} />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="absolute bottom-20 left-[10%] text-white/10"
-        >
-          <Newspaper size={60} strokeWidth={1} />
-        </motion.div>
-      </div>
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl z-20"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute -bottom-48 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl z-20"
+      />
+      {/* Floating Icons */}
+      <motion.div
+        animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 right-[15%] text-white/10 z-20"
+      >
+        <Newspaper size={80} strokeWidth={1} />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        className="absolute bottom-20 left-[10%] text-white/10 z-20"
+      >
+        <Newspaper size={60} strokeWidth={1} />
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -129,7 +119,6 @@ export default function PressHero() {
           ))}
         </motion.div>
       </div>
-
       {/* Wave Decoration */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
@@ -139,6 +128,6 @@ export default function PressHero() {
           />
         </svg>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }

@@ -1,50 +1,30 @@
 "use client";
 
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Scale, Sparkles, Shield } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 export default function LegalHero() {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[620px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <AnimatedHeroBackground>
+      {/* Floating Icons personalizados para LegalHero */}
+      {[Scale, Shield].map((Icon, i) => (
         <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-blue-400/10 via-blue-500/10 to-transparent dark:from-blue-600/5 dark:via-blue-700/5 dark:to-transparent rounded-full blur-3xl"
-        />
-        
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
-          }} />
-        </div>
-
-        {/* Floating Icons */}
-        {[Scale, Shield].map((Icon, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, 10, -10, 0],
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{ duration: 6 + i * 2, repeat: Infinity, delay: i * 1.5 }}
-            className={`absolute ${i === 0 ? 'top-1/4 right-1/4' : 'bottom-1/3 left-1/5'}`}
-          >
-            <Icon className="w-20 h-20 text-white/10" />
-          </motion.div>
-        ))}
-      </div>
+          key={i}
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 10, -10, 0],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 6 + i * 2, repeat: Infinity, delay: i * 1.5 }}
+          className={`absolute ${i === 0 ? 'top-1/4 right-1/4' : 'bottom-1/3 left-1/5'} z-20`}
+        >
+          <Icon className="w-20 h-20 text-white/10" />
+        </motion.div>
+      ))}
 
       <div className="relative max-w-7xl mx-auto px-6 z-10">
         {/* Back Button */}
@@ -171,6 +151,6 @@ export default function LegalHero() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }
