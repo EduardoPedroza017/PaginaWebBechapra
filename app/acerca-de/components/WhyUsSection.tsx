@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef, MouseEvent } from "react";
 import {
   Users,
   TrendingUp,
@@ -11,6 +12,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import Section from "@/app/components/Section";
 
 const reasons = [
   {
@@ -51,88 +53,99 @@ const reasons = [
   },
 ];
 
-const colorStyles: Record<string, { bg: string; icon: string; border: string }> = {
-  blue: {
-    bg: "from-blue-50 to-blue-100/50",
-    icon: "from-blue-600 to-blue-700",
-    border: "border-blue-200",
-  },
-  indigo: {
-    bg: "from-indigo-50 to-indigo-100/50",
-    icon: "from-indigo-600 to-indigo-700",
-    border: "border-indigo-200",
-  },
-  cyan: {
-    bg: "from-cyan-50 to-cyan-100/50",
-    icon: "from-cyan-500 to-blue-500",
-    border: "border-cyan-200",
-  },
-};
-
 export default function WhyUsSection() {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
+    <Section variant="blue" size="lg">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header Unificado */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
-            <CheckCircle size={16} />
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-blue-100 dark:border-blue-800/50">
+            <CheckCircle size={14} />
             <TranslateText text="Nuestras Fortalezas" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter">
             <TranslateText text="¿Por qué" />{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
               BAUSEN
             </span>
             ?
           </h2>
-          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-            <TranslateText text="Descubre las razones por las que cientos de empresas confían en nosotros." />
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+            <TranslateText text="Descubre las razones por las que cientos de empresas confían en nosotros para liderar su transformación." />
           </p>
         </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reasons.map((item, i) => {
-            const Icon = item.icon;
-            const colors = colorStyles[item.color];
-
-            return (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group"
-              >
-                <div
-                  className={`relative h-full bg-gradient-to-br ${colors.bg} dark:from-slate-800 dark:to-slate-800/50 rounded-2xl p-6 border ${colors.border} dark:border-slate-700 hover:shadow-lg hover:-translate-y-2 transition-all duration-300`}
-                >
-                  {/* Icon */}
-                  <div
-                    className={`w-14 h-14 bg-gradient-to-br ${colors.icon} rounded-xl flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <Icon size={24} className="text-white" />
-                  </div>
-
-                  {/* Content */}
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    <TranslateText text={item.title} />
-                  </h3>
-                  <p className="text-gray-600 dark:text-slate-400 leading-relaxed"><TranslateText text={item.desc} /></p>
-                </div>
-              </motion.div>
-            );
-          })}
+        {/* Grid de Fortalezas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {reasons.map((item, i) => (
+            <StrengthCard key={item.title} item={item} index={i} />
+          ))}
         </div>
       </div>
-    </section>
+    </Section>
+  );
+}
+
+function StrengthCard({ item, index }: { item: any; index: number }) {
+  const Icon = item.icon;
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+  const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      className="group relative"
+    >
+      <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] p-8 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden">
+        
+        {/* Interactive Glow Effect */}
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+          style={{
+            background: useTransform(
+              [glowX, glowY],
+              ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+            ),
+          }}
+        />
+
+        <div className="relative z-20 flex flex-col h-full">
+          {/* Icon con escala en hover */}
+          <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/40 flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg shadow-blue-500/10">
+            <Icon size={24} className="text-blue-600 dark:text-blue-400" />
+          </div>
+
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
+            <TranslateText text={item.title} />
+          </h3>
+          
+          <p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+            <TranslateText text={item.desc} />
+          </p>
+        </div>
+      </div>
+      
+      {/* Outer subtle glow */}
+      <div className="absolute inset-0 rounded-[2rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
+    </motion.div>
   );
 }

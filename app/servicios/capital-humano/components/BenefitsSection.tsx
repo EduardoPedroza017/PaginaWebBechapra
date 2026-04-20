@@ -1,9 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { CheckCircle } from "lucide-react";
+import { useRef, MouseEvent } from "react";
+import { CheckCircle, Sparkles } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import Section from "@/app/components/Section";
 
 interface Benefit {
   title: string;
@@ -24,18 +26,18 @@ export default function BenefitsSection({
   imageAlt,
 }: BenefitsSectionProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-slate-950 dark:to-blue-950/30">
+    <Section variant="blue" size="lg">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Image */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* Visual Side */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative aspect-[4/5] lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl shadow-blue-900/20 border border-slate-200 dark:border-slate-800">
               {imageSrc ? (
                 <Image
                   src={imageSrc}
@@ -45,79 +47,90 @@ export default function BenefitsSection({
                   unoptimized={String(imageSrc).startsWith('http')}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
-                  <svg className="w-16 h-16 text-slate-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
-                    <path d="M8 10h.01" stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" strokeLinecap="round" />
-                    <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
+                <div className="w-full h-full bg-slate-100 dark:bg-slate-900" />
               )}
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/20 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-tr from-blue-900/20 to-transparent" />
             </div>
+            
             {/* Decorative Elements */}
             <motion.div
-              animate={{ rotate: [0, 5, 0] }}
+              animate={{ rotate: [0, 5, 0], scale: [1, 1.05, 1] }}
               transition={{ duration: 6, repeat: Infinity }}
-              className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl -z-10"
-            />
-            <motion.div
-              animate={{ rotate: [0, -5, 0] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl -z-10"
+              className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-[80px]"
             />
           </motion.div>
 
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-6">
-              <CheckCircle size={16} />
-              <TranslateText text="Beneficios Exclusivos" />
-            </span>
-
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-8">
-              <TranslateText text={title.split(" ").slice(0, -2).join(" ")} />{" "}
-              <span className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
-                <TranslateText text={title.split(" ").slice(-2).join(" ")} />
+          {/* Content Side */}
+          <div className="space-y-12">
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800/50">
+                <Sparkles size={14} />
+                Ventajas Competitivas
               </span>
-            </h2>
 
-            {/* Benefits Cards */}
-            <div className="space-y-4">
+              <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.95]">
+                <TranslateText text={title} />
+              </h2>
+            </div>
+
+            <div className="grid gap-6">
               {benefits.map((benefit, i) => (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <CheckCircle size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                        <TranslateText text={benefit.title} />
-                      </h3>
-                      <p className="text-gray-600 dark:text-slate-400 text-sm leading-relaxed">
-                        <TranslateText text={benefit.desc} />
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
+                <BenefitCard key={benefit.title} benefit={benefit} index={i} />
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </section>
+    </Section>
+  );
+}
+
+function BenefitCard({ benefit, index }: { benefit: Benefit; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+  const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      className="group relative"
+    >
+      <div className="relative bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] p-8 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden flex items-start gap-6">
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+          style={{
+            background: useTransform(
+              [glowX, glowY],
+              ([x, y]) => `radial-gradient(400px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+            ),
+          }}
+        />
+        
+        <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-800 group-hover:scale-110 transition-transform duration-500">
+          <CheckCircle size={24} className="text-blue-600 dark:text-blue-400" />
+        </div>
+        
+        <div className="relative z-20">
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+            <TranslateText text={benefit.title} />
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+            <TranslateText text={benefit.desc} />
+          </p>
+        </div>
+      </div>
+    </motion.div>
   );
 }

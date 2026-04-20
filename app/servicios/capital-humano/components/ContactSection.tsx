@@ -1,74 +1,72 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MessageSquare } from "lucide-react";
+import { Mail, Phone, MapPin, Send, ArrowRight } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import Section from "@/app/components/Section";
 import ContactForm from "@/app/components/ContactForm";
 
 interface ContactSectionProps {
-  title?: string;
-  subtitle?: string;
+  title: string;
+  subtitle: string;
 }
 
 export default function ContactSection({
-  title = "Contáctanos",
-  subtitle = "Estamos listos para ayudarte a transformar tu empresa",
+  title,
+  subtitle,
 }: ContactSectionProps) {
   return (
-    <section id="contacto" className="py-24 px-6 bg-white dark:bg-slate-900">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold mb-4">
-            <MessageSquare size={16} />
-            <TranslateText text="Contacto" />
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
-            <TranslateText text={title.split(" ").slice(0, 1).join(" ")} />{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              <TranslateText text={title.split(" ").slice(1).join(" ") || "Contáctanos"} />
-            </span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-slate-400"><TranslateText text={subtitle} /></p>
-        </motion.div>
+    <Section id="contacto" variant="white" size="lg">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          
+          {/* Info Side */}
+          <div className="lg:col-span-5 space-y-12">
+            <div>
+               <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800/50">
+                Contacto Directo
+              </span>
+              <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight mb-6">
+                <TranslateText text={title} />
+              </h2>
+              <p className="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                <TranslateText text={subtitle} />
+              </p>
+            </div>
 
-        {/* Form Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-800 dark:to-blue-950/30 rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100 dark:border-slate-700"
-        >
-          <ContactForm />
-        </motion.div>
+            <div className="space-y-8">
+              {[
+                { icon: Phone, label: "Teléfono de Atención", value: "+52 (656) 524 5678", href: "tel:+526565245678" },
+                { icon: Mail, label: "Email Corporativo", value: "contacto@bausen.com.mx", href: "mailto:contacto@bausen.com.mx" },
+                { icon: MapPin, label: "Oficina Central", value: "Ciudad Juárez, Chihuahua, México", href: "#" }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-6 group">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                    <item.icon size={24} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{item.label}</div>
+                    <a href={item.href} className="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-600 transition-colors">
+                      {item.value}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        {/* Alternative Contact */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 text-center"
-        >
-          <p className="text-gray-500 dark:text-slate-400 mb-2">
-            <TranslateText text="¿Prefieres contactarnos directamente?" />
-          </p>
-          <a
-            href="mailto:contacto@bausen.com"
-            className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-          >
-            <Mail size={18} />
-            contacto@bausen.com
-          </a>
-        </motion.div>
+          {/* Form Side */}
+          <div className="lg:col-span-7">
+            <div className="bg-white dark:bg-slate-900/50 rounded-[3rem] p-8 lg:p-12 border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-[80px]" />
+               <div className="relative z-10">
+                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-8 tracking-tight">Envíenos un mensaje estratégico</h3>
+                 <ContactForm />
+               </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }

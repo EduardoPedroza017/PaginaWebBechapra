@@ -3,129 +3,112 @@
 import { motion } from "framer-motion";
 import { Search, Lightbulb, Rocket, LineChart, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import Section from "@/app/components/Section";
 
 const steps = [
   {
     step: "01",
     title: "Diagnóstico",
-    desc: "Conocemos tu operación, retos y objetivos en detalle.",
+    desc: "Análisis exhaustivo de su operación, retos y objetivos estratégicos.",
     icon: Search,
     color: "blue",
   },
   {
     step: "02",
     title: "Diseño",
-    desc: "Creamos una solución personalizada y adaptada a ti.",
+    desc: "Conceptualización de soluciones a medida alineadas a su visión.",
     icon: Lightbulb,
     color: "indigo",
   },
   {
     step: "03",
-    title: "Implementación",
-    desc: "Ejecutamos el plan con acompañamiento continuo.",
+    title: "Ejecución",
+    desc: "Implementación ágil con acompañamiento experto continuo.",
     icon: Rocket,
     color: "purple",
   },
   {
     step: "04",
-    title: "Seguimiento",
-    desc: "Monitoreamos resultados y optimizamos constantemente.",
+    title: "Optimización",
+    desc: "Monitoreo de KPIs y mejora continua para maximizar el ROI.",
     icon: LineChart,
     color: "green",
   },
 ];
 
-const colorStyles: Record<string, string> = {
-  blue: "from-blue-600 to-blue-700",
-  indigo: "from-indigo-600 to-indigo-700",
-  purple: "from-purple-600 to-purple-700",
-  green: "from-green-600 to-emerald-600",
-};
-
 export default function ProcessSection() {
   return (
-    <section className="py-24 px-6 bg-white dark:bg-slate-900">
+    <Section variant="white" size="lg">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header Unificado */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
-            <Rocket size={16} />
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-blue-100 dark:border-blue-800/50">
+            <Rocket size={14} />
             <TranslateText text="Metodología" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter">
             <TranslateText text="Nuestro" />{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              <TranslateText text="Proceso" />
+            <span className="bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Proceso
             </span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-            <TranslateText text="Un enfoque estructurado que garantiza resultados excepcionales." />
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+            <TranslateText text="Un enfoque estructurado y probado que garantiza resultados excepcionales en cada proyecto." />
           </p>
         </motion.div>
 
         {/* Process Steps */}
         <div className="relative">
           {/* Connection Line - Desktop */}
-          <div className="hidden lg:block absolute top-24 left-[10%] right-[10%] h-1 bg-gradient-to-r from-blue-200 via-purple-200 to-green-200 rounded-full" />
+          <div className="hidden lg:block absolute top-12 left-[10%] right-[10%] h-px bg-slate-100 dark:bg-slate-800" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {steps.map((item, i) => {
-              const Icon = item.icon;
-              const gradient = colorStyles[item.color];
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+            {steps.map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="relative text-center group"
+              >
+                {/* Step Number Badge */}
+                <div className="relative z-10 w-24 h-24 mx-auto mb-10">
+                  <div className="absolute inset-0 bg-blue-600 rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-10" />
+                  <div className="absolute inset-0 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-900/20 transition-all duration-500 group-hover:scale-110">
+                    <span className="text-3xl font-black text-white">{item.step}</span>
+                  </div>
+                </div>
 
-              return (
-                <motion.div
-                  key={item.step}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.15 }}
-                  className="relative"
-                >
-                  {/* Step Number Badge */}
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className={`relative z-10 w-20 h-20 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl`}
-                  >
-                    <span className="text-3xl font-black text-white">
-                      {item.step}
-                    </span>
-                  </motion.div>
+                {/* Content Card */}
+                <div className="bg-white dark:bg-slate-900/50 rounded-[2rem] p-8 border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-6">
+                    <item.icon size={24} className="text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                    <TranslateText text={item.title} />
+                  </h3>
+                  <p className="text-sm font-bold text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <TranslateText text={item.desc} />
+                  </p>
+                </div>
 
-                  {/* Arrow (between steps) */}
-                  {i < steps.length - 1 && (
-                    <div className="hidden lg:flex absolute top-10 -right-4 z-20">
-                      <ArrowRight size={24} className="text-gray-300" />
-                    </div>
-                  )}
-
-                  {/* Content Card */}
-                  <motion.div
-                    whileHover={{ y: -5 }}
-                    className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-                  >
-                    <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon size={24} className="text-gray-700 dark:text-slate-300" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                      <TranslateText text={item.title} />
-                    </h3>
-                    <p className="text-gray-600 dark:text-slate-400 text-sm leading-relaxed">
-                      <TranslateText text={item.desc} />
-                    </p>
-                  </motion.div>
-                </motion.div>
-              );
-            })}
+                {/* Desktop Arrow Indicator */}
+                {i < steps.length - 1 && (
+                  <div className="hidden lg:flex absolute top-12 -right-8 z-20">
+                    <div className="w-16 h-px bg-linear-to-r from-blue-600/50 to-transparent" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

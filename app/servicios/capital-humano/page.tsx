@@ -83,7 +83,10 @@ export default function CapitalHumanoPage() {
       />
 
       {/* Contact Section */}
-      <ContactSection />
+      <ContactSection 
+        title="Consulte con nuestros expertos" 
+        subtitle="Diseñamos la estrategia de talento que su organización necesita para escalar al siguiente nivel." 
+      />
 
       {/* Footer */}
       <Footer />

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef, MouseEvent } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { TranslateText } from "@/components/TranslateText";
 import Footer from "@/components/Footer";
-import { Phone, Mail, ArrowRight, Calendar, Users, Award, Building2, Search, Filter, X, ChevronDown, MapPin, Briefcase, GraduationCap } from "lucide-react";
+import Section from "@/app/components/Section";
+import SubpageHero from "@/components/SubpageHero";
+import { Phone, Mail, ArrowRight, Calendar, Users, Award, Linkedin } from "lucide-react";
 import axios from "axios";
 
 interface BoardMember {
@@ -45,273 +46,192 @@ export default function BoardPage() {
 				setLoading(false);
 			}
 		};
-
 		fetchBoardMembers();
 	}, []);
 
-	// Helper para construir la URL de la imagen
-	const getImageUrl = (member: BoardMember): string | null => {
-		if (member.foto_url) {
-			return `${process.env.NEXT_PUBLIC_API_URL}${member.foto_url}`;
-		}
-		if (member.foto) {
-			return `${process.env.NEXT_PUBLIC_API_URL}/uploads/${member.foto}`;
-		}
-		return null;
-	};
-
-	// Helper para obtener el nombre completo
-	const getFullName = (member: BoardMember): string => {
-		return `${member.nombre} ${member.apellido_paterno} ${member.apellido_materno || ''}`.trim();
-	};
-
-	// Helper para generar el slug del nombre (ej: "juan-ogona-rami")
-	const getSlug = (member: BoardMember): string => {
-		const fullName = getFullName(member);
-		return fullName
-			.toLowerCase()
-			.normalize('NFD')
-			.replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
-			.replace(/[^a-z0-9\s-]/g, '') // Eliminar caracteres especiales
-			.replace(/\s+/g, '-') // Reemplazar espacios con guiones
-			.replace(/-+/g, '-') // Eliminar guiones duplicados
-			.trim();
-	};
-
-	// Helper para obtener la descripción
-	const getDescription = (member: BoardMember): string => {
-		return member.descripcion || member.biografia || '';
-	};
-
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-			</div>
-		);
-	}
-
-	if (error) {
-		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-				<div className="text-red-500">{error}</div>
+			<div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
+				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-			{/* Hero Section */}
-			<section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-24 lg:py-32 overflow-hidden">
-				{/* Background Pattern */}
-				<div className="absolute inset-0 opacity-5">
-					<div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')]"></div>
-				</div>
+		<div className="min-h-screen bg-white dark:bg-slate-950">
+			<SubpageHero 
+				badge="Liderazgo Estratégico"
+				title="Consejo Directivo"
+				subtitle="Líderes visionarios comprometidos con la excelencia, la innovación y el éxito sostenible de nuestros clientes."
+			/>
 
-				{/* Decorative elements */}
-				<div className="absolute inset-0 overflow-hidden">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
-					<div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-				</div>
-
-				<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="text-center">
-						<motion.div
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8 }}
-							className="mb-8"
-						>
-							<div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6">
-								<Users className="w-4 h-4 text-blue-300" />
-								<span className="text-sm font-medium text-blue-200">Consejo Directivo</span>
-							</div>
-							<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-								Nuestro Equipo <span className="text-blue-300">Líder</span>
-							</h1>
-							<p className="text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-								Profesionales visionarios comprometidos con la excelencia, la innovación y el desarrollo sostenible de nuestra organización.
-							</p>
-						</motion.div>
-
-						{/* Stats */}
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, delay: 0.2 }}
-							className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto"
-						>
-							<div className="text-center">
-								<div className="text-3xl font-bold text-blue-300 mb-1">{boardMembers.length}</div>
-								<div className="text-sm text-blue-200">Miembros Activos</div>
-							</div>
-							<div className="text-center">
-								<div className="text-3xl font-bold text-blue-300 mb-1">15+</div>
-								<div className="text-sm text-blue-200">Años de Experiencia</div>
-							</div>
-							<div className="text-center">
-								<div className="text-3xl font-bold text-blue-300 mb-1">100%</div>
-								<div className="text-sm text-blue-200">Compromiso</div>
-							</div>
-						</motion.div>
-					</div>
-				</div>
-			</section>
-
-			{/* Board Members Section */}
-			<section className="py-20 bg-white dark:bg-gray-800">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					{/* Section Header */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="text-center mb-16"
-					>
-						<div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full border border-blue-200 dark:border-blue-800/50 mb-6">
-							<Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-							<span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Equipo Ejecutivo</span>
+			{/* Stats Overview */}
+			<Section variant="blue" className="-mt-20 relative z-20">
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-2xl">
+					{[
+						{ value: boardMembers.length, label: "Líderes Activos", icon: Users },
+						{ value: "15+", label: "Años de Trayectoria", icon: Award },
+						{ value: "100%", label: "Compromiso Ético", icon: CheckCircle }
+					].map((stat, i) => (
+						<div key={i} className="text-center space-y-2">
+							<div className="text-4xl font-black text-blue-700 dark:text-blue-500">{stat.value}</div>
+							<div className="text-xs font-black uppercase tracking-widest text-slate-500">{stat.label}</div>
 						</div>
-						<h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-							Profesionales de <span className="text-blue-600 dark:text-blue-400">Excelencia</span>
-						</h2>
-						<p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-							Nuestro equipo directivo está compuesto por líderes visionarios con amplia experiencia en el sector,
-							comprometidos con la innovación, la sostenibilidad y el desarrollo de soluciones de vanguardia.
-						</p>
-					</motion.div>
-
-					{/* Members Grid */}
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-						{boardMembers.map((member, index) => {
-							const imageUrl = getImageUrl(member);
-							const fullName = getFullName(member);
-							const slug = getSlug(member);
-							const profileUrl = `/web/sobre-nosotros/consejo/${slug}/`;
-
-							return (
-							<motion.div
-								key={member.id || index}
-								initial={{ opacity: 0, y: 30 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{ duration: 0.5, delay: index * 0.1 }}
-								className="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-800 cursor-pointer"
-								onClick={() => window.location.href = profileUrl}
-							>
-								{/* Gradient border on hover */}
-								<div
-									className="absolute inset-0 bg-linear-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
-									style={{ padding: "2px" }}
-								/>
-
-								<div className="relative bg-white dark:bg-gray-900 rounded-2xl p-8 m-0.5">
-									{/* Image Container */}
-									<div className="relative mb-6">
-										<div className="w-32 h-32 mx-auto rounded-full overflow-hidden ring-4 ring-blue-100 dark:ring-blue-900/50 group-hover:ring-blue-500 transition-all duration-300 shadow-xl">
-											{imageUrl ? (
-												<Image
-													src={imageUrl}
-													alt={fullName}
-													width={128}
-													height={128}
-													className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-												/>
-											) : (
-												<div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
-													{member.nombre?.charAt(0)}{member.apellido_paterno?.charAt(0)}
-												</div>
-											)}
-										</div>
-										{/* Status indicator */}
-										<div className="absolute bottom-2 right-1/2 translate-x-16 w-4 h-4 bg-green-500 rounded-full ring-4 ring-white dark:ring-gray-900 shadow-lg" />
-									</div>
-
-									{/* Info */}
-									<div className="text-center mb-6">
-										<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-											{fullName}
-										</h3>
-										<p className="text-blue-600 dark:text-blue-400 font-semibold text-sm mb-4">
-											{member.puesto}
-										</p>
-
-										{/* Información de contacto */}
-										<div className="space-y-2 text-left">
-											{member.edad && (
-												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-													<Calendar className="w-4 h-4 text-blue-500" />
-													<span>{member.edad} años</span>
-												</div>
-											)}
-											{member.telefono && (
-												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-													<Phone className="w-4 h-4 text-blue-500" />
-													<a href={`tel:${member.telefono}`} className="hover:text-blue-500 transition-colors">
-														{member.telefono}
-													</a>
-												</div>
-											)}
-											{member.email && (
-												<div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-													<Mail className="w-4 h-4 text-blue-500" />
-													<a href={`mailto:${member.email}`} className="hover:text-blue-500 transition-colors truncate">
-														{member.email}
-													</a>
-												</div>
-											)}
-										</div>
-									</div>
-
-									{/* Profile Link */}
-									<a
-										href={profileUrl}
-										onClick={(e) => e.stopPropagation()}
-										className="flex items-center justify-center gap-2 w-full py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group/btn"
-									>
-										<TranslateText text="View Full Profile" />
-										<ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-									</a>
-								</div>
-							</motion.div>
-						)})}
-					</div>
+					))}
 				</div>
-			</section>
+			</Section>
 
-			{/* CTA Section */}
-			<section className="py-20 bg-linear-to-r from-blue-800 via-blue-800 to-blue-900 dark:from-blue-900 dark:via-blue-950 dark:to-slate-950 relative overflow-hidden">
-				{/* Decorative elements */}
-				<div className="absolute inset-0 opacity-10">
-					<div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
-					<div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-300 rounded-full blur-3xl" />
+			<Section variant="white" size="lg">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+					{boardMembers.map((member, index) => (
+						<MemberCard key={member.id || index} member={member} index={index} />
+					))}
 				</div>
+			</Section>
 
-				<div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-					>
-						<h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-							¿Quieres saber más sobre nosotros?
+			{/* History Link CTA */}
+			<Section variant="blue" size="md">
+				<div className="bg-slate-900 rounded-[3rem] p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl shadow-blue-900/20">
+					<div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px]" />
+					<div className="relative z-10">
+						<h2 className="text-4xl lg:text-5xl font-black text-white mb-8 tracking-tighter">
+							<TranslateText text="Conozca nuestra trayectoria completa" />
 						</h2>
-						<p className="text-blue-50 mb-8 text-lg">
-							Conoce nuestra historia, valores y visión de futuro
-						</p>
 						<a
 							href="/acerca-de"
-							className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+							className="inline-flex items-center gap-3 px-10 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl hover:bg-blue-500 transition-all hover:-translate-y-1"
 						>
-							Conocer más
+							<TranslateText text="Nuestra Historia" />
 							<ArrowRight className="w-5 h-5" />
 						</a>
-					</motion.div>
+					</div>
 				</div>
-			</section>
+			</Section>
 
-			{/* Footer */}
 			<Footer />
 		</div>
 	);
+}
+
+function MemberCard({ member, index }: { member: BoardMember; index: number }) {
+	const cardRef = useRef<HTMLDivElement>(null);
+	const mouseX = useMotionValue(0);
+	const mouseY = useMotionValue(0);
+
+	const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+	const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+	function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+		const { left, top } = currentTarget.getBoundingClientRect();
+		mouseX.set(clientX - left);
+		mouseY.set(clientY - top);
+	}
+
+	const getImageUrl = (member: BoardMember): string | null => {
+		if (member.foto_url) return `${process.env.NEXT_PUBLIC_API_URL}${member.foto_url}`;
+		if (member.foto) return `${process.env.NEXT_PUBLIC_API_URL}/uploads/${member.foto}`;
+		return null;
+	};
+
+	const fullName = `${member.nombre} ${member.apellido_paterno} ${member.apellido_materno || ''}`.trim();
+	const imageUrl = getImageUrl(member);
+
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: 30 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true }}
+			transition={{ duration: 0.6, delay: index * 0.1 }}
+			onMouseMove={handleMouseMove}
+			className="group relative"
+		>
+			<div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-8 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden">
+				
+				{/* Interactive Glow */}
+				<motion.div
+					className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+					style={{
+						background: useTransform(
+							[glowX, glowY],
+							([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+						),
+					}}
+				/>
+
+				<div className="relative z-20 flex flex-col items-center text-center h-full">
+					{/* Profile Image */}
+					<div className="relative mb-8">
+						<div className="w-40 h-40 rounded-3xl overflow-hidden ring-8 ring-slate-50 dark:ring-slate-800/50 group-hover:ring-blue-600/10 transition-all duration-500 shadow-2xl">
+							{imageUrl ? (
+								<Image
+									src={imageUrl}
+									alt={fullName}
+									fill
+									className="object-cover group-hover:scale-110 transition-transform duration-700"
+								/>
+							) : (
+								<div className="w-full h-full bg-linear-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-4xl font-black">
+									{member.nombre?.charAt(0)}{member.apellido_paterno?.charAt(0)}
+								</div>
+							)}
+						</div>
+					</div>
+
+					<h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+						{fullName}
+					</h3>
+					<p className="text-blue-600 dark:text-blue-400 font-black uppercase tracking-[0.2em] text-[10px] mb-8 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+						{member.puesto}
+					</p>
+
+					{/* Contact Info */}
+					<div className="w-full space-y-4 text-left border-t border-slate-100 dark:border-slate-800 pt-6 mb-8 flex-1">
+						{member.email && (
+							<div className="flex items-center gap-3 text-slate-600 dark:text-slate-400 group/link">
+								<div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 group-hover/link:bg-blue-600 group-hover/link:text-white transition-colors">
+									<Mail className="w-4 h-4" />
+								</div>
+								<span className="text-sm font-bold truncate">{member.email}</span>
+							</div>
+						)}
+						{member.telefono && (
+							<div className="flex items-center gap-3 text-slate-600 dark:text-slate-400 group/link">
+								<div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 group-hover/link:bg-blue-600 group-hover/link:text-white transition-colors">
+									<Phone className="w-4 h-4" />
+								</div>
+								<span className="text-sm font-bold">{member.telefono}</span>
+							</div>
+						)}
+					</div>
+
+					{/* View Profile Button */}
+					<button className="w-full py-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-blue-600 hover:text-white transition-all duration-300">
+						Ver Perfil Completo
+					</button>
+				</div>
+			</div>
+			{/* Outer Glow */}
+			<div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
+		</motion.div>
+	);
+}
+
+function CheckCircle(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  )
 }

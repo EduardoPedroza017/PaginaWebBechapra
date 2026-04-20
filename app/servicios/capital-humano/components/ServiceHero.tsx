@@ -1,12 +1,11 @@
 "use client";
 
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Users, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Users, Sparkles, Newspaper } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
-import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
+import Section from "@/app/components/Section";
 
 interface ServiceHeroProps {
   title: string;
@@ -28,134 +27,132 @@ export default function ServiceHero({
   backLabel = "Volver a Servicios",
 }: ServiceHeroProps) {
   return (
-    <AnimatedHeroBackground>
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-950">
+      {/* Background Parallax Decorations */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/20 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl 2xl:max-w-[1440px] mx-auto px-6 lg:px-8">
         {/* Back Link */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-12"
         >
           <Link
             href={backLink}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-xl font-medium mb-8 border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+            className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/5 backdrop-blur-md text-white/70 hover:text-white rounded-2xl font-black uppercase tracking-widest text-[10px] border border-white/10 hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 group"
           >
-            <ArrowLeft
-              size={18}
-              className="group-hover:-translate-x-1 transition-transform duration-300"
-            />
-            {backLabel}
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            <TranslateText text={backLabel} />
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Badge */}
+          <div className="space-y-8">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-full border border-white/20 dark:border-white/10 mb-6"
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full"
             >
-              <Sparkles size={16} className="text-blue-400 dark:text-blue-300" />
-              <span className="text-white/90 dark:text-white/80 text-sm font-medium">
-                <TranslateText text="Servicio Premium" />
-              </span>
+              <Sparkles size={14} />
+              <TranslateText text="Solución Estratégica" />
             </motion.div>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-5xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter"
+            >
               {highlight ? (
                 <>
-                  <TranslateText text={typeof title === 'string' ? title.split(typeof highlight === 'string' ? highlight : '')[0] : ''} />
-                  <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 dark:from-blue-400 dark:via-blue-500 dark:to-blue-600 bg-clip-text text-transparent">
-                    <TranslateText text={typeof highlight === 'string' ? highlight : ''} />
+                  <TranslateText text={title.split(highlight)[0] || ''} />
+                  <span className="bg-linear-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent italic">
+                    <TranslateText text={highlight} />
                   </span>
-                  <TranslateText text={typeof title === 'string' && typeof highlight === 'string' ? title.split(highlight)[1] || '' : ''} />
+                  <TranslateText text={title.split(highlight)[1] || ''} />
                 </>
               ) : (
-                <TranslateText text={typeof title === 'string' ? title : ''} />
+                <TranslateText text={title} />
               )}
-            </h1>
+            </motion.h1>
 
-            {/* Description */}
-            <p className="text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-8 max-w-xl">
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl text-slate-400 leading-relaxed font-medium max-w-xl"
+            >
               <TranslateText text={description} />
-            </p>
+            </motion.p>
 
-            {/* CTA */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="pt-4"
+            >
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white font-bold text-lg rounded-2xl shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
+                className="inline-flex items-center gap-3 px-10 py-5 bg-blue-700 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-2xl shadow-blue-700/30 hover:bg-blue-600 hover:-translate-y-1 transition-all group"
               >
-                <TranslateText text="Contactar a BAUSEN" />
-                <ArrowRight size={20} />
+                <TranslateText text="Contactar Ahora" />
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
-          </motion.div>
+          </div>
 
-          {/* Image */}
+          {/* Image Visual */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="relative hidden lg:block"
           >
-            <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl shadow-black/30">
+            <div className="relative aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl shadow-black/50 border border-white/5 group">
               {imageSrc ? (
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
                   priority
                   unoptimized={String(imageSrc).startsWith('http')}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
-                  <svg className="w-20 h-20 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
-                    <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
-                    <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+                   <Newspaper size={64} className="text-white/10" />
                 </div>
               )}
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 dark:from-slate-900/60 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent" />
             </div>
-            {/* Decorative Elements */}
+            
+            {/* Floating Detail Card */}
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-2xl flex items-center justify-center shadow-xl"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-10 -left-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800"
             >
-              <Users size={40} className="text-white" />
+              <div className="flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-xl">
+                  <Users size={28} />
+                </div>
+                <div>
+                  <div className="text-lg font-black text-slate-900 dark:text-white leading-tight">Certificación</div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-widest mt-1">Garantía Bausen</div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </div>
-
-      {/* Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg
-          viewBox="0 0 1440 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-auto"
-        >
-          <path
-            d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="currentColor"
-            className="text-white dark:text-slate-900"
-          />
-        </svg>
-      </div>
-    </AnimatedHeroBackground>
+    </section>
   );
 }

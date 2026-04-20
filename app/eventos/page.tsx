@@ -1,15 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// Image import removed (using native <img> for simplicity)
-import { motion } from 'framer-motion';
-import { Calendar, MapPin, Tag } from 'lucide-react';
-import Section from '../components/Section';
-import AnimatedSection from '../components/AnimatedSection';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, MapPin, Tag, ArrowRight, X, Sparkles, Clock } from 'lucide-react';
+import Section from '@/app/components/Section';
+import SubpageHero from '@/components/SubpageHero';
 import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
-
-// Note: removed static example data so page shows real API events only
 
 interface Evento {
   id: number;
@@ -21,364 +18,254 @@ interface Evento {
   ubicacion: string;
 }
 
-// (framer-motion variants removed for clarity)
-
-const responsiveStyles = {
-  container: "relative flex items-center justify-center min-h-[700px] sm:min-h-[500px] md:min-h-[600px]",
-  card: "absolute w-[260px] sm:w-80 md:w-[420px] lg:w-[520px] h-[420px] sm:h-[480px] md:h-[520px] cursor-pointer",
-};
-
 export default function EventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const [isPaused, setIsPaused] = useState(false);
-
-  // Autoplay: advance every 4.5s unless paused by hover/focus
-  useEffect(() => {
-    if (isPaused) return;
-    const id = setInterval(() => {
-      setActiveIndex((prev) => (prev < eventos.length - 1 ? prev + 1 : 0));
-    }, 4500);
-    return () => clearInterval(id);
-  }, [isPaused, eventos.length]);
-
-  // derive sorted lists: most recent first
-  const sortedEventos = [...eventos].sort((a, b) => {
-    const ta = new Date(a.fecha).getTime() || 0;
-    const tb = new Date(b.fecha).getTime() || 0;
-    return tb - ta;
-  });
-  const carouselEventos = sortedEventos.slice(0, 6);
-
-  // Ensure activeIndex is within carousel bounds
-  useEffect(() => {
-    if (activeIndex >= carouselEventos.length) setActiveIndex(0);
-  }, [carouselEventos.length]);
-
-  // Modal state: show details in a modal when clicking any card
   const [modalOpen, setModalOpen] = useState(false);
   const [modalEvent, setModalEvent] = useState<Evento | null>(null);
 
-  const openModalForIndex = (index: number) => {
-    const ev = carouselEventos[index];
-    if (ev) {
-      setModalEvent(ev);
-      setModalOpen(true);
-    }
-  };
-
-  const openModalForEvent = (ev: Evento) => {
-    setModalEvent(ev);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setModalEvent(null);
-  };
-
-  // close modal with Escape
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
-    };
-    if (modalOpen) window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [modalOpen]);
-
-  // Mejora: Formateador de fechas más robusto
-  const formatFecha = (fechaStr: string, formato: 'corta' | 'larga' = 'corta') => {
-    const fecha = new Date(fechaStr);
-    const opciones: Intl.DateTimeFormatOptions = 
-      formato === 'larga' 
-        ? { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-        : { year: 'numeric', month: 'short', day: 'numeric' };
-    
-    return fecha.toLocaleDateString('es-ES', opciones);
-  };
-
-  // Cargar eventos publicados desde el backend público
-  useEffect(() => {
-    let mounted = true;
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
     const fetchEventos = async () => {
       try {
-        // use proxy endpoint on frontend; avoids relying on build-time env for base
         const res = await fetch(`/api/eventos`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        if (mounted && Array.isArray(data)) {
-          type Raw = Record<string, unknown>;
-          const mapped = data.map((it: Raw, idx: number) => {
+        if (Array.isArray(data)) {
+          const mapped = data.map((it: any, idx: number) => {
             const pickString = (...keys: string[]) => {
               for (const k of keys) {
                 const v = it[k];
                 if (typeof v === 'string' && v) return v;
-                if (typeof v === 'number') return String(v);
               }
               return '';
             };
-
             const rawImage = pickString('imagen', 'image', 'foto', 'file_url', 'image_url');
-            const imgStr = rawImage || '';
-            const resolvedImage = imgStr.startsWith('/uploads/') ? `${API}${imgStr}` : (imgStr || '');
-
-            const estadoVal = it['estado'];
-            const activeVal = it['active'];
-            const statusVal = it['status'];
+            const resolvedImage = rawImage.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${rawImage}` : rawImage;
 
             return {
-              id: (it['id'] || it['_id'] || idx) as any,
+              id: it.id || it._id || idx,
               titulo: pickString('titulo', 'title', 'nombre'),
               descripcion: pickString('descripcion', 'description'),
               fecha: pickString('fecha_hora', 'fecha', 'date'),
               imagen: resolvedImage,
-              categoria: pickString('categoria', 'category'),
-              ubicacion: pickString('ubicacion', 'location'),
-              estado: estadoVal,
-              active: activeVal,
-              status: statusVal,
-            } as unknown as Evento & { estado?: unknown; active?: unknown; status?: unknown };
+              categoria: pickString('categoria', 'category') || 'Corporativo',
+              ubicacion: pickString('ubicacion', 'location') || 'México',
+              status: it.status || it.active || it.estado,
+            };
           });
-
-          const activeOnly = mapped.filter((m: any) => (
-            m.status === 'active' ||
-            m.active === true ||
-            m.estado === true ||
-            String(m.estado) === 'true'
-          ));
-
-          console.debug('eventos fetched:', data.length, 'mapped:', mapped.length, 'active:', activeOnly.length);
+          const activeOnly = mapped.filter((m: any) => m.status === 'active' || m.status === true || String(m.status) === 'true');
           setEventos(activeOnly);
-          setActiveIndex(0);
         }
       } catch (err) {
-        console.error('Error cargando eventos públicos:', err);
+        console.error('Error cargando eventos:', err);
       }
     };
     fetchEventos();
-    return () => { mounted = false; };
   }, []);
 
+  const formatFecha = (fechaStr: string) => {
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const carouselEventos = eventos.slice(0, 6);
+
   return (
-    <>
-      {/* Hero Section */}
+    <div className="min-h-screen bg-white dark:bg-slate-950">
+      <SubpageHero 
+        badge="Nuestra Comunidad"
+        title="Eventos y Actividades"
+        subtitle="Conecte con expertos y participe en experiencias únicas diseñadas para inspirar el crecimiento empresarial."
+      />
+
+      {/* Featured Events Carousel */}
       <Section variant="blue" size="lg">
-        <div className="text-center">
-          <motion.h1
-            className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <TranslateText text="Eventos y Actividades" />
-          </motion.h1>
-          <motion.p
-            className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <TranslateText text="Descubre los próximos eventos y actividades organizadas por BAUSEN. Conecta con nuestra comunidad y participa en experiencias únicas diseñadas para inspirar y conectar." />
-          </motion.p>
-        </div>
-      </Section>
-
-      {/* Galería Interactiva de Eventos */}
-      <Section variant="white" size="lg">
-        <AnimatedSection>
-          <div
-            className={responsiveStyles.container}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onFocus={() => setIsPaused(true)}
-            onBlur={() => setIsPaused(false)}
-          >
-            <div className="relative w-full max-w-7xl h-[600px] flex items-center justify-center" style={{ perspective: 1200 }}>
-            {carouselEventos.map((evento, index) => {
+        <div className="relative h-[600px] flex items-center justify-center overflow-hidden" style={{ perspective: 1200 }}>
+          <AnimatePresence mode="wait">
+            {carouselEventos.length > 0 && carouselEventos.map((evento, index) => {
               const isActive = index === activeIndex;
-              const isPrev = index === activeIndex - 1 || (activeIndex === 0 && index === eventos.length - 1);
-              const isNext = index === activeIndex + 1 || (activeIndex === eventos.length - 1 && index === 0);
-              const isFar = Math.abs(index - activeIndex) > 1 && Math.abs(index - activeIndex) < eventos.length - 1;
-
-              // compute numeric transforms for smooth framer-motion animations
-              let x = 0;
-              let scale = 1;
-              let rotateY = 0;
-              let opacityNum = 0.3;
-              let zIndex = 0;
-
-              if (isActive) {
-                x = 0;
-                scale = 1;
-                rotateY = 0;
-                opacityNum = 1;
-                zIndex = 10;
-              } else if (isPrev) {
-                x = -350;
-                scale = 0.85;
-                rotateY = 12;
-                opacityNum = 0.75;
-                zIndex = 5;
-              } else if (isNext) {
-                x = 350;
-                scale = 0.85;
-                rotateY = -12;
-                opacityNum = 0.75;
-                zIndex = 5;
-              } else if (isFar) {
-                x = index < activeIndex ? -700 : 700;
-                scale = 0.7;
-                rotateY = index < activeIndex ? 25 : -25;
-                opacityNum = 0.5;
-                zIndex = 1;
-              }
+              if (!isActive) return null;
 
               return (
                 <motion.div
                   key={evento.id}
-                  className={responsiveStyles.card}
-                  style={{ zIndex }}
-                  animate={{ x, scale, rotateY, opacity: opacityNum }}
-                  transition={{ type: 'spring', stiffness: 120, damping: 22 }}
-                      onClick={() => openModalForIndex(index)}
-                  whileHover={{ scale: isActive ? 1.02 : 0.92 }}
-                  aria-label={`Ver detalles de ${evento.titulo}`}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && openModalForIndex(index)}
+                  initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -100, scale: 0.9 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-full max-w-5xl"
                 >
-                  <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl group bg-white dark:bg-slate-800">
-                    {/* Imagen del evento */}
-                    <div className="relative w-full h-3/5">
-                      <img
-                        src={evento.imagen || `https://via.placeholder.com/800x600?text=${encodeURIComponent(evento.titulo)}`}
-                        alt={evento.titulo}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        style={{ width: '100%', height: '100%' }}
-                        onError={(e) => { (e.target as HTMLImageElement).src = `https://via.placeholder.com/800x600?text=${encodeURIComponent(evento.titulo)}`; }}
-                      />
-                      {/* Overlay con gradiente */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row border border-slate-100 dark:border-slate-800">
+                    <div className="relative w-full md:w-1/2 h-[300px] md:h-[500px]">
+                      <img src={evento.imagen} alt={evento.titulo} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
                     </div>
-
-                    {/* Información del evento */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-slate-900 dark:text-white">
-                      <div className="mb-3">
-                        <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-xs font-semibold rounded-full text-white">
-                          <Tag className="w-3 h-3 mr-1" />
+                    <div className="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center">
+                      <div className="mb-6">
+                        <span className="px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800/50">
                           {evento.categoria}
                         </span>
                       </div>
-                        <h3 className="text-xl font-bold mb-2 line-clamp-2 text-slate-900 dark:text-white">
+                      <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-tight">
                         {evento.titulo}
-                      </h3>
-                        <p className="text-sm text-slate-700 dark:text-gray-200 line-clamp-2 mb-3">
+                      </h2>
+                      <p className="text-slate-600 dark:text-slate-400 font-medium mb-10 line-clamp-3 text-lg leading-relaxed">
                         {evento.descripcion}
                       </p>
-                        <div className="flex items-center text-sm text-slate-700 dark:text-gray-300">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {formatFecha(evento.fecha, 'corta')}
+                      <div className="space-y-4 mb-10">
+                        <div className="flex items-center gap-3 text-slate-500">
+                          <Calendar className="w-5 h-5 text-blue-600" />
+                          <span className="font-bold text-sm uppercase tracking-widest">{formatFecha(evento.fecha)}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-500">
+                          <MapPin className="w-5 h-5 text-blue-600" />
+                          <span className="font-bold text-sm uppercase tracking-widest">{evento.ubicacion}</span>
+                        </div>
                       </div>
+                      <button 
+                        onClick={() => { setModalEvent(evento); setModalOpen(true); }}
+                        className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-500 transition-all hover:-translate-y-1 group"
+                      >
+                        Ver Detalles
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </button>
                     </div>
-
-                    {/* Efecto de hover */}
-                    <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </motion.div>
               );
             })}
-          </div>
-
-          {/* Navigation buttons removed by request (use indicators or click to select) */}
-          {/* Indicadores de eventos */}
-          <div className="flex justify-center space-x-3 mt-8" role="tablist" aria-label="Seleccionar evento">
-            {carouselEventos.map((evento, index) => (
-              <motion.button
-                key={evento.id}
-                onClick={() => setActiveIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === activeIndex
-                    ? 'bg-blue-500 scale-125'
-                    : 'bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500'
-                }`}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label={`Evento ${index + 1}: ${evento.titulo}`}
-                aria-selected={index === activeIndex}
-                role="tab"
-                tabIndex={0}
-              />
-            ))}
-          </div>
+          </AnimatePresence>
         </div>
-        </AnimatedSection>
+
+        {/* Carousel Indicators */}
+        <div className="flex justify-center gap-4 mt-12">
+          {carouselEventos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-500 ${i === activeIndex ? "w-12 bg-blue-600" : "w-4 bg-slate-200 dark:bg-slate-800"}`}
+            />
+          ))}
+        </div>
       </Section>
 
-      {/* Todos los eventos: muestra cards con todos los eventos activos */}
+      {/* Grid of All Events */}
       <Section variant="white" size="lg">
-        <AnimatedSection>
-          <div className="max-w-7xl mx-auto">
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Todos los eventos</h3>
-            {sortedEventos.length === 0 ? (
-              <p className="text-slate-600 dark:text-slate-400">No hay eventos activos disponibles.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sortedEventos.map((ev) => (
-                  <article
-                    key={ev.id}
-                    className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => openModalForEvent(ev)}
-                    onKeyDown={(e) => e.key === 'Enter' && openModalForEvent(ev)}
-                  >
-                    <div className="relative h-40 w-full">
-                      <img src={ev.imagen || `https://via.placeholder.com/800x400?text=${encodeURIComponent(ev.titulo)}`} alt={ev.titulo} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-semibold text-lg text-slate-900 dark:text-white mb-2">{ev.titulo}</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-300 mb-2 line-clamp-2">{ev.descripcion}</p>
-                      <div className="text-sm text-slate-500 dark:text-slate-400">{formatFecha(ev.fecha, 'corta')}</div>
-                    </div>
-                  </article>
-                ))}
+        <div className="mb-16">
+          <h3 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Próximos Encuentros</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {eventos.map((ev) => (
+            <motion.div
+              key={ev.id}
+              whileHover={{ y: -10 }}
+              onClick={() => { setModalEvent(ev); setModalOpen(true); }}
+              className="group bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-slate-100 dark:border-slate-800 cursor-pointer transition-all duration-500 hover:shadow-2xl"
+            >
+              <div className="relative h-64">
+                <img src={ev.imagen} alt={ev.titulo} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent" />
+                <div className="absolute top-6 left-6">
+                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest border border-white/10">
+                    {ev.categoria}
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
-        </AnimatedSection>
+              <div className="p-10">
+                <div className="flex items-center gap-3 mb-4 text-blue-600">
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{new Date(ev.fecha).toLocaleDateString()}</span>
+                </div>
+                <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                  {ev.titulo}
+                </h4>
+                <p className="text-slate-500 dark:text-slate-400 font-medium text-sm line-clamp-2 mb-8 leading-relaxed">
+                  {ev.descripcion}
+                </p>
+                <div className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest">
+                  Explorar Evento <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </Section>
 
-      {/* Modal para mostrar detalles del evento (reemplaza la sección de detalles inline) */}
-      {modalOpen && modalEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/50" onClick={closeModal} />
-          <div role="dialog" aria-modal="true" className="relative z-60 max-w-4xl w-full mx-4">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-auto max-h-[90vh] shadow-xl">
-              <div className="p-4 flex justify-end">
-                <button onClick={closeModal} aria-label="Cerrar" className="text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full p-2 hover:bg-slate-200">✕</button>
-              </div>
-              <div className="px-6 pb-6">
-                <div className="w-full h-64 md:h-96 overflow-hidden rounded-lg mb-4">
-                  <img src={modalEvent.imagen || `https://via.placeholder.com/1200x800?text=${encodeURIComponent(modalEvent.titulo)}`} alt={modalEvent.titulo} className="w-full h-full object-cover" />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{modalEvent.titulo}</h2>
-                <div className="text-sm text-slate-600 dark:text-slate-300 mb-4">{formatFecha(modalEvent.fecha, 'larga')}</div>
-                <p className="text-slate-700 dark:text-slate-200 mb-4">{modalEvent.descripcion}</p>
-                {modalEvent.ubicacion && (
-                  <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span>{modalEvent.ubicacion}</span>
+      {/* Event Detail Modal */}
+      <AnimatePresence>
+        {modalOpen && modalEvent && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              onClick={() => setModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative z-10 w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden shadow-2xl"
+            >
+              <button 
+                onClick={() => setModalOpen(false)}
+                className="absolute top-8 right-8 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-all"
+              >
+                <X size={24} />
+              </button>
+              <div className="flex flex-col h-[85vh] overflow-y-auto">
+                <div className="relative h-96 shrink-0">
+                  <img src={modalEvent.imagen} alt={modalEvent.titulo} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                  <div className="absolute bottom-10 left-10 right-10">
+                    <span className="px-4 py-2 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-widest mb-4 inline-block">
+                      {modalEvent.categoria}
+                    </span>
+                    <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tighter leading-tight">{modalEvent.titulo}</h2>
                   </div>
-                )}
+                </div>
+                <div className="p-10 lg:p-16 space-y-10">
+                  <div className="flex flex-wrap gap-10">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                        <Calendar size={24} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha del Evento</div>
+                        <div className="text-slate-900 dark:text-white font-black">{formatFecha(modalEvent.fecha)}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                        <MapPin size={24} />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Ubicación</div>
+                        <div className="text-slate-900 dark:text-white font-black">{modalEvent.ubicacion}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-widest">Sobre el Evento</h3>
+                    <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                      {modalEvent.descripcion}
+                    </p>
+                  </div>
+                  <div className="pt-10 border-t border-slate-100 dark:border-slate-800">
+                     <button className="w-full py-6 bg-blue-600 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3">
+                      <Sparkles size={20} />
+                      Registrar mi Asistencia
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       <Footer />
-    </>
+    </div>
   );
 }

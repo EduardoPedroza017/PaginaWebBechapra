@@ -1,876 +1,378 @@
 "use client";
 
-import React, { useState } from 'react';
-import { BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Zap, Shield, Lightbulb, Gift, Send } from 'lucide-react';
+import React, { useState, useRef, MouseEvent } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Zap, Shield, Lightbulb, Gift, Send, Sparkles, MessageCircle } from 'lucide-react';
 import Footer from '@/components/Footer';
+import Section from "@/app/components/Section";
+import SubpageHero from "@/components/SubpageHero";
+import { TranslateText } from "@/components/TranslateText";
+
+const courses = [
+  {
+    title: "Gestión Empresarial",
+    description: "Aprende las bases de la gestión empresarial moderna con estrategias probadas",
+    duration: "8 semanas",
+    level: "Principiante",
+    icon: BookOpen,
+    students: 245,
+    rating: 4.8,
+    category: "gestion",
+    price: "$299",
+    modules: 12,
+    certificate: true,
+    features: ["Videos HD", "Ejercicios prácticos", "Mentoría 1:1"]
+  },
+  {
+    title: "Liderazgo y Equipos",
+    description: "Desarrolla habilidades de liderazgo efectivo y gestión de equipos de alto rendimiento",
+    duration: "6 semanas",
+    level: "Intermedio",
+    icon: Users,
+    students: 189,
+    rating: 4.9,
+    category: "liderazgo",
+    price: "$349",
+    modules: 10,
+    certificate: true,
+    features: ["Casos reales", "Networking", "Certificado"]
+  },
+  {
+    title: "Estrategia Empresarial",
+    description: "Domina la planificación estratégica y toma de decisiones ejecutivas",
+    duration: "10 semanas",
+    level: "Avanzado",
+    icon: Award,
+    students: 156,
+    rating: 4.7,
+    category: "estrategia",
+    price: "$449",
+    modules: 15,
+    certificate: true,
+    features: ["Proyecto final", "Simulaciones", "Acceso de por vida"]
+  },
+  {
+    title: "Finanzas Corporativas",
+    description: "Comprende los principios financieros y gestión económica de empresas",
+    duration: "12 semanas",
+    level: "Intermedio",
+    icon: Globe,
+    students: 203,
+    rating: 4.6,
+    category: "finanzas",
+    price: "$399",
+    modules: 14,
+    certificate: true,
+    features: ["Excel avanzado", "Análisis real", "Toolkit financiero"]
+  },
+  {
+    title: "Marketing Digital",
+    description: "Domina las estrategias de marketing en la era digital y redes sociales",
+    duration: "8 semanas",
+    level: "Principiante",
+    icon: TrendingUp,
+    students: 312,
+    rating: 4.9,
+    category: "marketing",
+    price: "$279",
+    modules: 11,
+    certificate: true,
+    features: ["Campañas reales", "SEO/SEM", "Analytics"]
+  },
+  {
+    title: "Innovación y Transformación",
+    description: "Aprende a liderar procesos de cambio e innovación en organizaciones",
+    duration: "7 semanas",
+    level: "Avanzado",
+    icon: Lightbulb,
+    students: 134,
+    rating: 4.8,
+    category: "innovacion",
+    price: "$429",
+    modules: 9,
+    certificate: true,
+    features: ["Design Thinking", "Metodologías ágiles", "Workshop"]
+  }
+];
+
+const stats = [
+  { number: "2,500+", label: "Estudiantes Activos", icon: Users },
+  { number: "45+", label: "Cursos Disponibles", icon: BookOpen },
+  { number: "98%", label: "Satisfacción", icon: Star },
+  { number: "150+", label: "Empresas Asociadas", icon: Briefcase }
+];
+
+const categories = [
+  { id: 'todos', label: 'Todos los Cursos', count: courses.length },
+  { id: 'gestion', label: 'Gestión', count: courses.filter(c => c.category === 'gestion').length },
+  { id: 'liderazgo', label: 'Liderazgo', count: courses.filter(c => c.category === 'liderazgo').length },
+  { id: 'finanzas', label: 'Finanzas', count: courses.filter(c => c.category === 'finanzas').length },
+  { id: 'marketing', label: 'Marketing', count: courses.filter(c => c.category === 'marketing').length }
+];
 
 export default function TrainingCenterPage() {
   const [activeTab, setActiveTab] = useState('todos');
-  
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [areaInteres, setAreaInteres] = useState('');
+  const [form, setForm] = useState({ nombre: '', correo: '', areaInteres: '' });
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const courses = [
-    {
-      title: "Gestión Empresarial",
-      description: "Aprende las bases de la gestión empresarial moderna con estrategias probadas",
-      duration: "8 semanas",
-      level: "Principiante",
-      icon: BookOpen,
-      students: 245,
-      rating: 4.8,
-      category: "gestion",
-      price: "$299",
-      modules: 12,
-      certificate: true,
-      features: ["Videos HD", "Ejercicios prácticos", "Mentoría 1:1"]
-    },
-    {
-      title: "Liderazgo y Equipos",
-      description: "Desarrolla habilidades de liderazgo efectivo y gestión de equipos de alto rendimiento",
-      duration: "6 semanas",
-      level: "Intermedio",
-      icon: Users,
-      students: 189,
-      rating: 4.9,
-      category: "liderazgo",
-      price: "$349",
-      modules: 10,
-      certificate: true,
-      features: ["Casos reales", "Networking", "Certificado"]
-    },
-    {
-      title: "Estrategia Empresarial",
-      description: "Domina la planificación estratégica y toma de decisiones ejecutivas",
-      duration: "10 semanas",
-      level: "Avanzado",
-      icon: Award,
-      students: 156,
-      rating: 4.7,
-      category: "estrategia",
-      price: "$449",
-      modules: 15,
-      certificate: true,
-      features: ["Proyecto final", "Simulaciones", "Acceso de por vida"]
-    },
-    {
-      title: "Finanzas Corporativas",
-      description: "Comprende los principios financieros y gestión económica de empresas",
-      duration: "12 semanas",
-      level: "Intermedio",
-      icon: Globe,
-      students: 203,
-      rating: 4.6,
-      category: "finanzas",
-      price: "$399",
-      modules: 14,
-      certificate: true,
-      features: ["Excel avanzado", "Análisis real", "Toolkit financiero"]
-    },
-    {
-      title: "Marketing Digital",
-      description: "Domina las estrategias de marketing en la era digital y redes sociales",
-      duration: "8 semanas",
-      level: "Principiante",
-      icon: TrendingUp,
-      students: 312,
-      rating: 4.9,
-      category: "marketing",
-      price: "$279",
-      modules: 11,
-      certificate: true,
-      features: ["Campañas reales", "SEO/SEM", "Analytics"]
-    },
-    {
-      title: "Innovación y Transformación",
-      description: "Aprende a liderar procesos de cambio e innovación en organizaciones",
-      duration: "7 semanas",
-      level: "Avanzado",
-      icon: Lightbulb,
-      students: 134,
-      rating: 4.8,
-      category: "innovacion",
-      price: "$429",
-      modules: 9,
-      certificate: true,
-      features: ["Design Thinking", "Metodologías ágiles", "Workshop"]
-    }
-  ];
-
-  const stats = [
-    { number: "2,500+", label: "Estudiantes Activos", icon: Users },
-    { number: "45+", label: "Cursos Disponibles", icon: BookOpen },
-    { number: "98%", label: "Satisfacción", icon: Star },
-    { number: "150+", label: "Empresas Asociadas", icon: Briefcase }
-  ];
-
-  const testimonials = [
-    {
-      name: "María González",
-      role: "Gerente de Operaciones",
-      company: "TechCorp",
-      content: "Los cursos me han ayudado a ascender profesionalmente. La calidad de enseñanza es excepcional y el contenido muy aplicable.",
-      rating: 5,
-      image: "MG"
-    },
-    {
-      name: "Carlos Rodríguez",
-      role: "Director Ejecutivo",
-      company: "Innovate Solutions",
-      content: "Excelente plataforma de formación. Los instructores son profesionales de primer nivel con experiencia real.",
-      rating: 5,
-      image: "CR"
-    },
-    {
-      name: "Ana López",
-      role: "Consultora Empresarial",
-      company: "Business Advisors",
-      content: "He tomado varios cursos y todos han superado mis expectativas. La metodología es práctica y efectiva.",
-      rating: 5,
-      image: "AL"
-    }
-  ];
-
-  const benefits = [
-    {
-      icon: Award,
-      title: "Certificación Reconocida",
-      description: "Obtén certificados avalados por instituciones reconocidas a nivel internacional",
-      color: "green"
-    },
-    {
-      icon: Users,
-      title: "Instructores Expertos",
-      description: "Aprende con profesionales con amplia experiencia en el sector empresarial",
-      color: "blue"
-    },
-    {
-      icon: BookOpen,
-      title: "Contenido Actualizado",
-      description: "Materiales y metodologías alineadas con las tendencias actuales del mercado",
-      color: "orange"
-    },
-    {
-      icon: Video,
-      title: "Clases en Vivo",
-      description: "Participa en sesiones interactivas con instructores y compañeros de clase",
-      color: "blue"
-    },
-    {
-      icon: Shield,
-      title: "Garantía de Calidad",
-      description: "30 días de garantía o te devolvemos tu dinero sin preguntas",
-      color: "red"
-    },
-    {
-      icon: Zap,
-      title: "Acceso Inmediato",
-      description: "Comienza a aprender desde el momento en que te inscribes",
-      color: "yellow"
-    }
-  ];
-
-  const learningPath = [
-    {
-      step: 1,
-      title: "Evaluación Inicial",
-      description: "Identificamos tu nivel actual y objetivos profesionales",
-      icon: Target
-    },
-    {
-      step: 2,
-      title: "Plan Personalizado",
-      description: "Creamos una ruta de aprendizaje adaptada a tus necesidades",
-      icon: FileText
-    },
-    {
-      step: 3,
-      title: "Formación Práctica",
-      description: "Aprende con casos reales y proyectos aplicables",
-      icon: Lightbulb
-    },
-    {
-      step: 4,
-      title: "Certificación",
-      description: "Obtén tu certificado y avanza en tu carrera profesional",
-      icon: Medal
-    }
-  ];
-
-  const categories = [
-    { id: 'todos', label: 'Todos los Cursos', count: courses.length },
-    { id: 'gestion', label: 'Gestión', count: courses.filter(c => c.category === 'gestion').length },
-    { id: 'liderazgo', label: 'Liderazgo', count: courses.filter(c => c.category === 'liderazgo').length },
-    { id: 'finanzas', label: 'Finanzas', count: courses.filter(c => c.category === 'finanzas').length },
-    { id: 'marketing', label: 'Marketing', count: courses.filter(c => c.category === 'marketing').length }
-  ];
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const filteredCourses = activeTab === 'todos' 
     ? courses 
     : courses.filter(course => course.category === activeTab);
 
-  const colorClasses: Record<string, string> = {
-    green: "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400",
-    purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400",
-    orange: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
-    blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
-    red: "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400",
-    yellow: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400"
-  };
+  return (
+    <div className="min-h-screen bg-white dark:bg-slate-950">
+      <SubpageHero 
+        badge="Centro de Capacitación"
+        title="Bausen Training Center"
+        subtitle="Formamos y conectamos el talento del futuro con las mejores oportunidades estratégicas."
+      />
 
-  const eventsSection = (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
-            Eventos Destacados
+      {/* Quick Stats Over Header */}
+      <Section variant="blue" className="-mt-20 relative z-20">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-2xl">
+          {stats.map((stat, i) => (
+            <div key={i} className="text-center space-y-2 group">
+              <div className="text-4xl lg:text-5xl font-black text-blue-700 dark:text-blue-500 transition-transform group-hover:-translate-y-1">{stat.number}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Info Blocks */}
+      <Section variant="white" size="lg">
+        <div className="text-center mb-20">
+           <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-blue-100 dark:border-blue-800/50">
+            <Shield size={14} />
+            Avalados por el CCPM
+          </span>
+          <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter">
+            Educación de Clase Mundial
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300">
-            Descubre los eventos más importantes y participa para aprender y conectar con expertos.
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-3xl mx-auto font-medium">
+            Nuestra plataforma de educación en línea está diseñada para profesionales que buscan excelencia y crecimiento real.
           </p>
         </div>
-        <div className="text-center">
-          <a
-            href="/web/eventos/"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all"
-          >
-            Explorar Eventos
-            <ArrowRight className="w-5 h-5" />
-          </a>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {[
+            { title: "Acceso Exclusivo BTC", desc: "Cursos gratuitos avalados por el Colegio de Contadores Públicos CDMX.", icon: Award, color: "blue" },
+            { title: "Mentoría de Expertos", desc: "Sesiones personalizadas con líderes en NOM-035 y Capital Humano.", icon: Users, color: "indigo" },
+            { title: "Plan Estratégico", desc: "Desarrollamos rutas de aprendizaje alineadas a los objetivos de su empresa.", icon: Target, color: "purple" }
+          ].map((item, i) => (
+            <InfoCard key={i} item={item} index={i} />
+          ))}
         </div>
-      </div>
-    </section>
-  );
+      </Section>
 
-  return (
-    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      {/* Hero Section con animación de gradiente */}
-      <section className="relative overflow-hidden bg-linear-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 text-white py-24 lg:py-36">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
-              Bausen Training Center
-            </h1>
-            <p className="text-lg sm:text-xl text-blue-100/90 dark:text-blue-200/80 max-w-2xl mx-auto mt-4">
-              Formamos y conectamos el talento del futuro con las mejores oportunidades.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Eventos Destacados Section */}
-      {eventsSection}
-
-      {/* BAUSEN Training Center Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Conoce Bausen Training Center
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Nuestra plataforma de educación en línea avalada por el Colegio de Contadores Públicos de México
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div className="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Award className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Acceso Exclusivo BTC
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos CDMX.
-              </p>
-            </div>
-
-            <div className="bg-linear-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Asesoramiento Personalizado
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Sesiones de asesoramiento personalizado con expertos en NOM035.
-              </p>
-            </div>
-
-            <div className="bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Planificación Estratégica
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Desarrollamos estrategias a largo plazo que impulsen el crecimiento y el éxito de tu empresa en el mercado actual.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section con diseño mejorado */}
-      <section className="py-12 bg-white dark:bg-gray-800 shadow-lg -mt-16 relative z-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div key={index} className="text-center group cursor-pointer">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                    <IconComponent className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="text-4xl lg:text-5xl font-bold bg-linear-to-r from-blue-600 to-blue-500 text-transparent bg-clip-text mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    {stat.label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Learning Path Section */}
-      <section className="py-20 bg-linear-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full mb-4">
-              <Target className="w-4 h-4" />
-              <span className="text-sm font-semibold">Tu Camino al Éxito</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Así funciona nuestro proceso
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Metodología probada para garantizar tu éxito profesional
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {learningPath.map((item, index) => {
-              const IconComponent = item.icon;
-              return (
-                <div key={index} className="relative">
-                  {index < learningPath.length - 1 && (
-                    <div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-linear-to-r from-blue-400 to-blue-500 -z-10"></div>
-                  )}
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
-                    <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4">
-                      <IconComponent className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">
-                      PASO {item.step}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Courses Section con filtros */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900" id="courses">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Catálogo de Cursos
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Encuentra el programa perfecto para ti
-            </p>
-          </div>
-
-          {/* Filtros de categorías */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+      {/* Courses Catalog */}
+      <Section variant="blue" size="lg" id="courses">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter">
+            Catálogo de Programas
+          </h2>
+          
+          <div className="flex flex-wrap justify-center gap-3">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
                   activeTab === cat.id
-                    ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-md'
+                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20 scale-105'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/50'
                 }`}
               >
-                {cat.label} <span className="text-sm opacity-70">({cat.count})</span>
+                {cat.label} <span className="opacity-50 ml-2">{cat.count}</span>
               </button>
             ))}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredCourses.map((course, index) => {
-              const IconComponent = course.icon;
-              return (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100 dark:border-gray-700 group">
-                  <div className="relative bg-linear-to-br from-blue-500 to-blue-600 p-8">
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-semibold">
-                        {course.level}
-                      </div>
-                    </div>
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
-                      <IconComponent className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="text-white">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Star className="w-4 h-4 fill-current text-yellow-300" />
-                        <span className="font-semibold">{course.rating}</span>
-                        <span className="text-sm opacity-80">({course.students} estudiantes)</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {course.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-                      {course.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {course.features.map((feature, i) => (
-                        <span key={i} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full">
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {course.duration}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="w-4 h-4" />
-                        {course.modules} módulos
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-center">
-                      <button className="bg-linear-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-xl hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2 font-semibold w-full justify-center">
-                        Ver Curso
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
-      </section>
 
-      {/* Prácticas Profesionales Section */}
-      <section className="py-20 bg-linear-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full mb-4">
-              <Briefcase className="w-4 h-4" />
-              <span className="text-sm font-semibold">Oportunidades Laborales</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Prácticas Profesionales
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <AnimatePresence mode="popLayout">
+            {filteredCourses.map((course, index) => (
+              <CourseCard key={course.title} course={course} index={index} />
+            ))}
+          </AnimatePresence>
+        </div>
+      </Section>
+
+      {/* Internships / CV Section */}
+      <Section variant="white" size="lg">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div>
+             <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800/50">
+              <Zap size={14} />
+              Career Boost
+            </span>
+            <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter leading-tight">
+              Prácticas Profesionales y Talento
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Envía tu CV y únete a nuestro programa de prácticas profesionales. 
-              Desarrolla experiencia real en empresas líderes del sector.
+            <p className="text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed mb-10">
+              Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial líder. Únase a nuestra red de talentos certificados.
             </p>
+            
+            <div className="space-y-6">
+              {[
+                { title: "Experiencia Real", desc: "Trabaje en proyectos estratégicos con empresas líderes." },
+                { title: "Mentoría de Lujo", desc: "Reciba guía de directivos con 15+ años de trayectoria." },
+                { title: "Posible Contratación", desc: "90% de nuestros practicantes reciben ofertas laborales." }
+              ].map((benefit, i) => (
+                <div key={i} className="flex gap-4 group">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                    <CheckCircle size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-slate-900 dark:text-white text-lg">{benefit.title}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{benefit.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
-            <div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-                ¿Qué ofrecemos?
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 mt-1">
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Experiencia Real</h4>
-                    <p className="text-gray-600 dark:text-gray-300">Trabaja en proyectos reales con impacto en el mundo empresarial</p>
-                  </div>
+          <div className="bg-slate-950 rounded-[3rem] p-10 lg:p-12 shadow-2xl shadow-blue-900/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]" />
+            <div className="relative z-10">
+              <h3 className="text-3xl font-black text-white mb-8">Postule su Talento</h3>
+              <form className="space-y-5">
+                <input 
+                  type="text" 
+                  placeholder="Nombre Completo" 
+                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                />
+                <input 
+                  type="email" 
+                  placeholder="Correo Electrónico" 
+                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                />
+                <select className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none">
+                  <option value="">Área de Interés</option>
+                  <option>Estrategia</option>
+                  <option>Nómina y Finanzas</option>
+                  <option>Recursos Humanos</option>
+                </select>
+                <div className="relative border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all cursor-pointer group">
+                  <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <FileText className="w-8 h-8 text-slate-500 mx-auto mb-2 group-hover:text-blue-400 transition-colors" />
+                  <p className="text-sm text-slate-500 font-bold">Subir CV (PDF, DOCX)</p>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 mt-1">
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Mentoría Personalizada</h4>
-                    <p className="text-gray-600 dark:text-gray-300">Recibe guía de profesionales experimentos en tu área de interés</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 mt-1">
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Certificación</h4>
-                    <p className="text-gray-600 dark:text-gray-300">Obtén certificados que validen tu experiencia laboral</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 mt-1">
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Posible Contratación</h4>
-                    <p className="text-gray-600 dark:text-gray-300">Oportunidad de ser contratado por empresas asociadas</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
-              <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                Envía tu CV
-              </h4>
-              <form className="space-y-6" onSubmit={async (e) => {
-                e.preventDefault();
-                setErrorMessage(null);
-                setSuccessMessage(null);
-                if (!nombre || !correo || !areaInteres) {
-                  setErrorMessage('Por favor completa los campos obligatorios.');
-                  return;
-                }
-                setSubmitting(true);
-                try {
-                  const formData = new FormData();
-                  formData.append('nombre_completo', nombre);
-                  formData.append('correo', correo);
-                  formData.append('area_interes', areaInteres);
-                  if (cvFile) formData.append('cv', cvFile, cvFile.name);
-
-                  const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-                  const res = await fetch(`${apiUrl}/api/formularios`, {
-                    method: 'POST',
-                    body: formData,
-                  });
-
-                  if (!res.ok) {
-                    const err = await res.json().catch(() => null);
-                    throw new Error(err?.message || 'Error al enviar el formulario');
-                  }
-
-                  setSuccessMessage('¡Listo! Hemos recibido tu CV y tus datos correctamente. Nos pondremos en contacto pronto.');
-                  setNombre(''); setCorreo(''); setAreaInteres(''); setCvFile(null);
-                } catch (err) {
-                  setErrorMessage(err instanceof Error ? err.message : 'Error al enviar');
-                } finally {
-                  setSubmitting(false);
-                }
-              }}>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nombre Completo
-                  </label>
-                  <input
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                    required
-                    type="text"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="Tu nombre completo"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Correo Electrónico
-                  </label>
-                  <input
-                    value={correo}
-                    onChange={(e) => setCorreo(e.target.value)}
-                    required
-                    type="email"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="tu@email.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Área de Interés
-                  </label>
-                  <select value={areaInteres} onChange={(e) => setAreaInteres(e.target.value)} required className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                    <option value="">Selecciona un área</option>
-                    <option>Contabilidad y Finanzas</option>
-                    <option>Recursos Humanos</option>
-                    <option>Marketing Digital</option>
-                    <option>Gestión Empresarial</option>
-                    <option>Tecnología</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Adjuntar CV
-                  </label>
-                  <input
-                    onChange={(e) => setCvFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)}
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
-                </div>
-
-                {errorMessage && <div className="text-sm text-rose-600">{errorMessage}</div>}
-                {successMessage && <div className="text-sm text-emerald-600">{successMessage}</div>}
-
-                <button
-                  disabled={submitting}
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Send className="w-4 h-4" />
-                  {submitting ? 'Enviando...' : 'Enviar CV'}
+                <button className="w-full py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-blue-600/20 hover:bg-blue-500 hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                  <Send size={16} />
+                  Enviar Aplicación
                 </button>
               </form>
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Benefits Grid */}
-      <section className="py-20 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              ¿Por qué elegirnos?
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Beneficios que marcan la diferencia
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.icon;
-              return (
-                <div key={index} className="bg-linear-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-200 dark:border-gray-600">
-                  <div className={`w-16 h-16 ${colorClasses[benefit.color]} rounded-2xl flex items-center justify-center mb-6`}>
-                    <IconComponent className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    {benefit.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials mejorados */}
-      <section className="py-20 bg-linear-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full mb-4">
-              <Star className="w-4 h-4 fill-current" />
-              <span className="text-sm font-semibold">Historias de Éxito</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Lo que dicen nuestros estudiantes
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Más de 2,500 profesionales han transformado sus carreras
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2">
-                <div className="flex items-center gap-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 mb-6 text-lg italic leading-relaxed">
-                  &quot;{testimonial.content}&quot;
-                </p>
-                <div className="flex items-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <div className="w-14 h-14 bg-linear-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {testimonial.image}
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900 dark:text-white text-lg">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {testimonial.role}
-                    </div>
-                    <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
-                      {testimonial.company}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Final potente */}
-      <section className="py-24 bg-linear-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-800 dark:via-blue-900 dark:to-blue-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="relative max-w-5xl mx-auto px-4 text-center text-white">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-            <Zap className="w-4 h-4" />
-            <span className="text-sm font-semibold">Oferta por Tiempo Limitado</span>
-          </div>
-          <h2 className="text-4xl lg:text-6xl font-bold mb-6">
-            ¡Comienza tu transformación<br />profesional hoy!
-          </h2>
-          <p className="text-xl lg:text-2xl mb-4 text-blue-100">
-            Únete a más de 2,500 profesionales que ya están avanzando en sus carreras
-          </p>
-          <p className="text-lg mb-10 text-blue-200">
-            <Gift className="w-5 h-5 inline mr-2" />
-            Inscríbete ahora y obtén <span className="font-bold text-yellow-300">30% de descuento</span> + acceso a 3 masterclasses exclusivas
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-10 py-5 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all shadow-2xl hover:scale-105 inline-flex items-center justify-center gap-2">
-              Inscribirme Ahora
-              <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="border-2 border-white text-white px-10 py-5 rounded-xl font-bold text-lg hover:bg-white hover:text-blue-600 transition-all backdrop-blur-sm inline-flex items-center justify-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Agendar Consultoría Gratis
-            </button>
-          </div>
-          
-          <div className="mt-12 flex items-center justify-center gap-8 text-sm">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-300" />
-              <span>Sin compromiso</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-300" />
-              <span>Garantía 30 días</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-300" />
-              <span>Certificado incluido</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Companies Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-gray-600 dark:text-gray-400 font-semibold mb-6">
-              Empresas que confían en nuestra formación
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-12 opacity-60">
-              <div className="text-2xl font-bold text-gray-400">TechCorp</div>
-              <div className="text-2xl font-bold text-gray-400">Innovate Solutions</div>
-              <div className="text-2xl font-bold text-gray-400">Business Advisors</div>
-              <div className="text-2xl font-bold text-gray-400">Global Ventures</div>
-              <div className="text-2xl font-bold text-gray-400">Future Labs</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Preguntas Frecuentes
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Todo lo que necesitas saber
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              {
-                q: "¿Necesito experiencia previa para tomar los cursos?",
-                a: "No necesariamente. Ofrecemos cursos para todos los niveles: principiante, intermedio y avanzado. Cada curso especifica claramente los requisitos previos."
-              },
-              {
-                q: "¿Los certificados son reconocidos internacionalmente?",
-                a: "Sí, nuestros certificados están avalados por instituciones reconocidas y son aceptados por empresas en todo el mundo. Incluyen un código de verificación único."
-              },
-              {
-                q: "¿Cuánto tiempo tengo acceso al contenido del curso?",
-                a: "Tienes acceso de por vida a todos los materiales del curso, incluyendo actualizaciones futuras. Aprende a tu propio ritmo sin presiones."
-              },
-              {
-                q: "¿Ofrecen planes de pago o financiamiento?",
-                a: "Sí, ofrecemos planes de pago flexibles en hasta 12 meses sin intereses. También tenemos descuentos por pago único y planes corporativos."
-              },
-              {
-                q: "¿Qué pasa si no estoy satisfecho con el curso?",
-                a: "Ofrecemos una garantía de satisfacción de 30 días. Si no estás satisfecho, te devolvemos el 100% de tu inversión sin preguntas."
-              },
-              {
-                q: "¿Puedo tomar varios cursos al mismo tiempo?",
-                a: "¡Por supuesto! Muchos estudiantes toman múltiples cursos. Te recomendamos nuestros paquetes con descuento para optimizar tu aprendizaje."
-              }
-            ].map((faq, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-200 dark:border-gray-700">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center shrink-0 mt-1">
-                    <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">{index + 1}</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                      {faq.q}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {faq.a}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              ¿Tienes más preguntas?
-            </p>
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all inline-flex items-center gap-2">
-              Contactar Soporte
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+function InfoCard({ item, index }: { item: any; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+  const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      className="group relative"
+    >
+      <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 text-center flex flex-col overflow-hidden">
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+          style={{
+            background: useTransform(
+              [glowX, glowY],
+              ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+            ),
+          }}
+        />
+        <div className="relative z-20">
+          <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform">
+            <item.icon size={32} />
+          </div>
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">{item.title}</h3>
+          <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{item.desc}</p>
+        </div>
+      </div>
+      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
+    </motion.div>
+  );
+}
+
+function CourseCard({ course, index }: { course: any; index: number }) {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4 }}
+      className="group"
+    >
+      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
+        <div className="relative p-10 bg-slate-950 overflow-hidden">
+          <div className="absolute top-6 right-6">
+             <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-blue-400 text-[10px] font-black uppercase tracking-widest border border-white/5">
+              {course.level}
+            </span>
+          </div>
+          <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-8 shadow-xl">
+            <course.icon size={32} className="text-blue-500" />
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <Star className="w-4 h-4 fill-blue-500 text-blue-500" />
+            <span className="text-white font-black">{course.rating}</span>
+            <span className="text-slate-500 text-xs font-bold uppercase tracking-widest ml-2">({course.students} Alumnos)</span>
+          </div>
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all" />
+        </div>
+
+        <div className="p-10 flex flex-col flex-1">
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+            {course.title}
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 flex-1">
+            {course.description}
+          </p>
+
+          <div className="flex items-center justify-between py-6 border-t border-slate-100 dark:border-slate-800 mb-8">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-blue-600" />
+              <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">{course.duration}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-blue-600" />
+              <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">{course.modules} Módulos</span>
+            </div>
+          </div>
+
+          <button className="w-full py-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-blue-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+            Inscribirme Ahora
+            <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }

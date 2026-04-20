@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef, MouseEvent } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper, TrendingUp, Calendar, Clock, ArrowRight, Search } from "lucide-react";
+import { Newspaper, TrendingUp, Calendar, Clock, ArrowRight, Search, Sparkles } from "lucide-react";
 import Footer from "@/components/Footer";
+import Section from "@/app/components/Section";
+import SubpageHero from "@/components/SubpageHero";
 import { TranslateText } from "@/components/TranslateText";
 
 interface NewsItem {
@@ -22,7 +24,6 @@ interface NewsItem {
   author?: string;
 }
 
-// Create URL-friendly slugs from titles
 const slugify = (s: string) =>
   s
     ? s
@@ -38,446 +39,175 @@ const slugify = (s: string) =>
 export default function NoticiasPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const externalApi = process.env.NEXT_PUBLIC_API_URL ? String(process.env.NEXT_PUBLIC_API_URL).replace(/\/$/, '') : '';
     const url = externalApi ? `${externalApi}/api/news` : '/api/backend/news';
 
-    const extractItems = (d: unknown): NewsItem[] => {
-      if (Array.isArray(d)) return d as NewsItem[];
-      if (d && typeof d === 'object') {
-        const obj = d as Record<string, unknown>;
-        if (Array.isArray(obj.news)) return obj.news as NewsItem[];
-        if (Array.isArray(obj.items)) return obj.items as NewsItem[];
-        const possible = ['results', 'data', 'rows'];
-        for (const key of possible) {
-          if (Array.isArray(obj[key])) return obj[key] as NewsItem[];
-        }
-      }
-      return [];
-    };
-
-    console.debug('Fetching noticias from:', url);
     fetch(url)
       .then((res) => {
-        console.debug('noticias fetch status:', res.status, res.statusText);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data) => {
-        console.debug('noticias raw response:', data);
+        const extractItems = (d: any): NewsItem[] => {
+          if (Array.isArray(d)) return d;
+          if (d && typeof d === 'object') {
+            return d.news || d.items || d.results || d.data || d.rows || [];
+          }
+          return [];
+        };
         const items = extractItems(data);
-        const sorted = items.sort(
-          (a: NewsItem, b: NewsItem) => new Date((b.date || b.published_date || '')).getTime() - new Date((a.date || a.published_date || '')).getTime()
-        );
+        const sorted = items.sort((a, b) => new Date((b.date || b.published_date || '')).getTime() - new Date((a.date || a.published_date || '')).getTime());
         setNews(sorted);
       })
-      .catch((err) => {
-        console.error('Error fetching news:', err);
-        setError('No se pudieron cargar las noticias');
-        setNews([]);
-      })
+      .catch(() => setNews([]))
       .finally(() => setLoading(false));
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900 py-16 sm:py-20 lg:py-28 2xl:py-32 px-4 sm:px-6">
-        {/* Background decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-400/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-3xl" />
-        </div>
+    <div className="min-h-screen bg-white dark:bg-slate-950">
+      <SubpageHero 
+        badge="Blog Corporativo"
+        title="Noticias y Actualidad"
+        subtitle="Manténgase al día con los cambios legislativos, eventos destacados y las últimas tendencias en capital humano."
+      />
 
-        <div className="relative max-w-6xl 2xl:max-w-7xl mx-auto text-center z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-blue-100 text-sm font-semibold mb-6"
-            >
-              <Newspaper className="w-4 h-4" />
-              <TranslateText text="Blog & Actualidad" />
-            </motion.div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-                <TranslateText text="Noticias" />
-              </span>{" "}
-              <TranslateText text="y Actualidad" />
-            </h1>
-
-            <p className="text-lg sm:text-xl text-blue-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
-              <TranslateText text="Blog corporativo, eventos destacados y actualizaciones sobre cambios legislativos que impactan tus operaciones empresariales." />
-            </p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Link
-                href="/web/#contacto"
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-700 dark:text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
-              >
-                <TranslateText text="Suscríbete al newsletter" />
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Wave decoration */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            viewBox="0 0 1440 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto"
-          >
-            <path
-              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-              className="fill-slate-50 dark:fill-slate-900"
+      {/* Featured News / Grid Section */}
+      <Section variant="white" size="lg">
+        <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
+          <div className="max-w-2xl">
+            <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight">
+              Información de <span className="text-blue-600">Alto Impacto</span>
+            </h2>
+          </div>
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar artículos..." 
+              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-sm font-bold outline-none focus:border-blue-500 transition-all"
             />
-          </svg>
-        </div>
-      </section>
-
-      {/* Search Section */}
-      <section className="py-12 bg-slate-50 dark:bg-slate-900">
-        <div className="max-w-2xl mx-auto px-6">
-          <div className="relative">
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar noticias, temas o palabras clave..."
-                  className="w-full pl-12 pr-4 py-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all"
-                  disabled
-                />
-              </div>
-              <button
-                className="px-6 py-4 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 opacity-50 cursor-not-allowed"
-                disabled
-              >
-                <TranslateText text="Buscar" />
-              </button>
-            </div>
-            <p className="text-center text-slate-400 dark:text-slate-500 text-sm mt-3">
-              <TranslateText text="Buscador próximamente disponible" />
-            </p>
           </div>
         </div>
-      </section>
 
-      {/* News Grid Section */}
-      <section className="py-16 sm:py-20 2xl:py-24 bg-white dark:bg-slate-900">
-        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4">
-              <TranslateText text="Noticias" />{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                <TranslateText text="Más Recientes" />
-              </span>
-            </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              <TranslateText text="Mantente informado con las últimas novedades del sector" />
-            </p>
-            <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full mx-auto mt-6" />
-          </motion.div>
-
-          {/* News Grid */}
-          {loading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="bg-slate-100 dark:bg-slate-800 rounded-2xl h-[420px] animate-pulse"
-                />
-              ))}
-            </div>
-          ) : news.length === 0 ? (
-            <div className="text-center py-16">
-              <Newspaper className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-              <p className="text-slate-500 dark:text-slate-400 text-lg">
-                <TranslateText text="No hay noticias disponibles" />
-              </p>
-            </div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {news.slice(0, 6).map((item, i) => (
-                <NewsCard key={i} item={item} index={i} />
-              ))}
-            </motion.div>
-          )}
-
-          {/* Load More Button */}
-          {news.length > 6 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mt-16"
-            >
-              <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:-translate-y-1 transition-all">
-                <TranslateText text="Ver más noticias" />
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-800">
-        <div className="max-w-5xl mx-auto px-6">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-4">
-              <TranslateText text="Explora por" />{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                <TranslateText text="Categoría" />
-              </span>
-            </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
-              <TranslateText text="Encuentra el contenido que más te interesa" />
-            </p>
-          </motion.div>
-
-          {/* Categories Grid (computed from real data) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {(() => {
-              type CategoryDisplay = {
-                icon: React.ComponentType<{ className?: string }>;
-                title: string;
-                count: string;
-                color: 'blue' | 'indigo' | 'cyan';
-                description: string;
-              };
-
-              const meta: Record<string, { icon: React.ComponentType<{ className?: string }>; color: 'blue' | 'indigo' | 'cyan'; description: string }> = {
-                general: { icon: Newspaper, color: 'blue', description: 'Noticias corporativas y artículos de interés' },
-                eventos: { icon: Calendar, color: 'indigo', description: 'Webinars, conferencias y capacitaciones' },
-                'cambios-legislativos': { icon: TrendingUp, color: 'cyan', description: 'Actualizaciones normativas y legales' }
-              };
-
-              const categoriesArray: CategoryDisplay[] = Object.entries(
-                news.reduce<Record<string, number>>((acc, it) => {
-                  const key = (it.category || it.subtitle || 'general').toString().toLowerCase();
-                  acc[key] = (acc[key] || 0) + 1;
-                  return acc;
-                }, {})
-              ).map(([key, count]) => {
-                const mapped = meta[key] || meta['general'];
-                // Friendly title
-                const title = key.replace(/[-_]/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase());
-                return {
-                  icon: mapped.icon,
-                  title,
-                  count: `${count} artículo${count !== 1 ? 's' : ''}`,
-                  color: mapped.color,
-                  description: mapped.description
-                };
-              });
-
-              if (categoriesArray.length === 0) {
-                return (
-                  <CategoryCard
-                    key="none"
-                    category={{ icon: Newspaper, title: 'Sin categoría', count: '0 artículos', color: 'blue', description: 'Aún no hay contenido' }}
-                    index={0}
-                  />
-                );
-              }
-
-              return categoriesArray.map((category, i) => <CategoryCard key={i} category={category} index={i} />);
-            })()}
-          </motion.div>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
-  );
-}
-
-// News Card Component
-function NewsCard({ item, index }: { item: NewsItem; index: number }) {
-  const isFeatured = item.featured || index < 2;
-
-  return (
-    <Link href={`/noticias/${slugify(item.title)}`}>
-      <motion.article
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
-        whileHover={{ y: -8 }}
-        className={`group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 h-full flex flex-col ${
-          isFeatured
-            ? "border-blue-600 dark:border-blue-500 shadow-xl shadow-blue-600/10 dark:shadow-blue-500/20"
-            : "border-slate-100 dark:border-slate-700 shadow-lg hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl"
-        }`}
-      >
-        {/* Featured Badge */}
-        {isFeatured && (
-          <div className="absolute top-4 right-4 z-10 bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide shadow-lg flex items-center gap-1">
-            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <TranslateText text="Destacado" />
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-[500px] rounded-[2.5rem] bg-slate-50 dark:bg-slate-900 animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {news.map((item, i) => (
+              <NewsCard key={i} item={item} index={i} />
+            ))}
           </div>
         )}
+      </Section>
 
-        {/* Image */}
-        <div className="relative h-52 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
-          {item.image_url ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`}
-              alt={item.altText || item.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              unoptimized
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Newspaper className="w-16 h-16 text-blue-200 dark:text-slate-600" />
+      {/* Categories / Topics */}
+      <Section variant="blue" size="md">
+        <div className="bg-slate-950 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden shadow-2xl shadow-blue-900/20">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px]" />
+          <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h3 className="text-4xl font-black text-white mb-6 tracking-tighter">Suscríbase a nuestro Newsletter</h3>
+              <p className="text-slate-400 text-lg font-medium leading-relaxed">Reciba mensualmente un resumen de las actualizaciones legislativas y consejos estratégicos para su empresa.</p>
             </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-          {/* Category Tag */}
-          <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">
-            {item.category || item.subtitle || "Noticia"}
+            <form className="flex flex-col sm:flex-row gap-4">
+              <input 
+                type="email" 
+                placeholder="su@correo.com" 
+                className="flex-1 px-8 py-5 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none focus:border-blue-500 transition-all"
+              />
+              <button className="px-10 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-500 transition-all">Suscribirse</button>
+            </form>
           </div>
         </div>
+      </Section>
 
-        {/* Content */}
-        <div className="p-6 flex flex-col flex-1">
-          {/* Date */}
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-3">
-            <Clock className="w-4 h-4" />
-            <span>
-              {new Date(item.date).toLocaleDateString("es-MX", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-            <TranslateText text={item.title} />
-          </h3>
-
-          {/* Description */}
-          <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed flex-1 line-clamp-3">
-            <TranslateText text={item.description} />
-          </p>
-
-          {/* Read More */}
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
-            <span className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:gap-3 transition-all">
-              <TranslateText text="Leer artículo completo" />
-              <ArrowRight className="w-4 h-4" />
-            </span>
-          </div>
-        </div>
-      </motion.article>
-    </Link>
+      <Footer />
+    </div>
   );
 }
 
-// Category Card Component
-function CategoryCard({
-  category,
-  index,
-}: {
-  category: {
-    icon: React.ComponentType<{ className?: string }>;
-    title: string;
-    count: string;
-    color: "blue" | "indigo" | "cyan";
-    description: string;
-  };
-  index: number;
-}) {
-  const IconComponent = category.icon;
+function NewsCard({ item, index }: { item: NewsItem; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+  const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  const dateStr = new Date(item.date).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      whileHover={{ y: -6 }}
-      className="group bg-white dark:bg-slate-800 rounded-2xl p-8 cursor-pointer border-2 border-slate-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      className="group relative h-full"
     >
-      {/* Icon */}
-      {category.color === "indigo" ? (
-        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
-          <IconComponent className="w-8 h-8 text-white" />
-        </div>
-      ) : category.color === "cyan" ? (
-        <div className="w-16 h-16 bg-cyan-600 dark:bg-cyan-700 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
-          <IconComponent className="w-8 h-8 text-white" />
-        </div>
-      ) : (
-        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform shadow-lg">
-          <IconComponent className="w-8 h-8 text-white" />
-        </div>
-      )}
+      <Link href={`/noticias/${slugify(item.title)}`} className="block h-full">
+        <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col">
+          <motion.div
+            className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+            style={{
+              background: useTransform(
+                [glowX, glowY],
+                ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+              ),
+            }}
+          />
+          
+          <div className="relative h-64 overflow-hidden">
+            {item.image_url ? (
+              <Image 
+                src={`${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`} 
+                alt={item.title} 
+                fill 
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                unoptimized
+              />
+            ) : (
+              <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <Newspaper className="w-12 h-12 text-slate-300" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
+            <div className="absolute top-6 left-6">
+              <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg">
+                {item.category || "General"}
+              </span>
+            </div>
+          </div>
 
-      {/* Title */}
-      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-        <TranslateText text={category.title} />
-      </h3>
-
-      {/* Description */}
-      <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
-        <TranslateText text={category.description} />
-      </p>
-
-      {/* Count */}
-      {category.color === "indigo" ? (
-        <p className="text-base font-bold text-indigo-600 dark:text-indigo-400">
-          <TranslateText text={category.count} />
-        </p>
-      ) : (
-        <p className="text-base font-bold text-blue-600 dark:text-blue-400">
-          <TranslateText text={category.count} />
-        </p>
-      )}
+          <div className="p-10 flex flex-col flex-1 relative z-20">
+            <div className="flex items-center gap-3 text-blue-600 mb-4">
+              <Clock className="w-4 h-4" />
+              <span className="text-[10px] font-black uppercase tracking-widest">{dateStr}</span>
+            </div>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors leading-tight line-clamp-2">
+              <TranslateText text={item.title} />
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 line-clamp-3 flex-1">
+              <TranslateText text={item.description} />
+            </p>
+            <div className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest pt-6 border-t border-slate-100 dark:border-slate-800">
+              Leer Artículo <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+      </Link>
+      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
     </motion.div>
   );
 }
-

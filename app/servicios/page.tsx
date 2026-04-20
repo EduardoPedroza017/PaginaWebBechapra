@@ -3,24 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, Users, Building2, Briefcase } from "lucide-react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, CheckCircle, Users, Building2, Briefcase, Sparkles } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
-
-
-import { useEffect, useState } from "react";
+import Section from "@/app/components/Section";
+import React, { useState, useRef, MouseEvent } from "react";
 
 const iconMap: Record<string, any> = {
 	"Capital Humano": Users,
 	"Desarrollo Organizacional": Building2,
 	"Management Services": Briefcase,
-};
-
-const colorMap: Record<string, string> = {
-	"Capital Humano": "blue",
-	"Desarrollo Organizacional": "cyan",
-	"Management Services": "indigo",
 };
 
 type Service = {
@@ -33,381 +26,243 @@ type Service = {
 	features: { name: string; slug: string }[];
 };
 
-
-
-const containerVariants = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-	},
-};
-
-const cardVariants = {
-	hidden: { opacity: 0, y: 30 },
-	visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
-// Example static data. Replace with API fetch if needed.
 const defaultServices: Service[] = [
 	{
 		id: "1",
 		name: "Capital Humano",
 		slug: "capital-humano",
-		description: "Soluciones para la gestión y desarrollo del talento humano.",
-		icon: undefined,
-		image: undefined,
+		description: "Soluciones estratégicas para la gestión, atracción y optimización del talento humano en su organización.",
 		features: [
-			{ name: "Reclutamiento", slug: "reclutamiento" },
-			{ name: "Capacitación", slug: "capacitacion" },
+			{ name: "Reclutamiento y Selección", slug: "atraccion-de-talento" },
+			{ name: "Administración de Nómina", slug: "payroll" },
+			{ name: "Servicios Especializados", slug: "servicios-especializados" },
 		],
 	},
 	{
 		id: "2",
 		name: "Desarrollo Organizacional",
 		slug: "desarrollo-organizacional",
-		description: "Impulsa la cultura y estructura de tu empresa.",
-		icon: undefined,
-		image: undefined,
+		description: "Impulsamos la cultura, estructura y eficiencia de su empresa a través de diagnósticos y planes de mejora.",
 		features: [
-			{ name: "Diagnóstico Organizacional", slug: "diagnostico" },
-			{ name: "Gestión del Cambio", slug: "gestion-cambio" },
+			{ name: "Capacitación Empresarial", slug: "capacitacion-empresarial" },
+			{ name: "NOM-035", slug: "nom-035" },
+			{ name: "Consultoría Organizacional", slug: "consultoria-organizacional" },
 		],
 	},
 	{
 		id: "3",
 		name: "Management Services",
 		slug: "management-services",
-		description: "Servicios de consultoría y gestión empresarial.",
-		icon: undefined,
-		image: undefined,
+		description: "Servicios integrales de consultoría y gestión empresarial para la toma de decisiones estratégicas.",
 		features: [
-			{ name: "Consultoría", slug: "consultoria" },
-			{ name: "Estrategia", slug: "estrategia" },
+			{ name: "Servicios Legales", slug: "servicios-legales" },
+			{ name: "Servicios Contables", slug: "servicios-contables" },
+			{ name: "Servicios PYME", slug: "servicios-pyme" },
 		],
 	},
 ];
 
-const darkBlueGradient = "bg-gradient-to-r from-blue-700 to-blue-900 dark:from-blue-500 dark:to-blue-700";
-const lightBlueGradient = "bg-gradient-to-r from-sky-300 to-sky-200";
-
 export default function ServiciosIndex() {
-	const [services, setServices] = useState<Service[]>(defaultServices);
-	// Si necesitas cargar desde una API, usa useEffect aquí
-	// useEffect(() => { ... }, []);
 	return (
-		<div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-			{/* Hero Section */}
-			<section className="relative overflow-hidden bg-linear-to-br from-blue-800 via-blue-900 to-blue-800 dark:from-slate-900 dark:via-blue-950 dark:to-slate-900">
-				{/* Background decorations */}
-				<div className="absolute inset-0">
-					<div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 dark:bg-white/3 rounded-full blur-3xl" />
-					<div className="absolute bottom-0 right-1/4 w-80 h-80 bg-cyan-400/10 dark:bg-cyan-400/5 rounded-full blur-3xl" />
-					<div className="absolute top-1/2 right-0 w-64 h-64 bg-blue-400/10 dark:bg-blue-400/5 rounded-full blur-2xl" />
+		<div className="min-h-screen bg-white dark:bg-slate-950">
+			{/* Subpage Hero */}
+			<section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-950">
+				{/* Background Parallax Decorations */}
+				<div className="absolute inset-0 pointer-events-none">
+					<div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
+					<div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/20 rounded-full blur-[100px]" />
+					<div className="absolute inset-0 bg-grid-pattern opacity-5" />
 				</div>
 
-				<div className="relative max-w-7xl 2xl:max-w-400 mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-16 sm:py-20 lg:py-28 2xl:py-32">
-					<div className="grid lg:grid-cols-2 gap-12 items-center">
-						{/* Content */}
+				<div className="relative z-10 max-w-7xl 2xl:max-w-[1440px] mx-auto px-6 lg:px-8">
+					<div className="max-w-3xl">
 						<motion.div
-							initial={{ opacity: 0, x: -30 }}
-							animate={{ opacity: 1, x: 0 }}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6 }}
-							className="space-y-6"
+							className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest mb-8"
 						>
-								<motion.div
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: 0.2 }}
-									className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-blue-100 dark:text-blue-200 text-sm font-semibold"
-								>
-									<Briefcase className="w-4 h-4" />
-									<TranslateText text="Soluciones Empresariales" />
-								</motion.div>
-
-								<h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
-									<TranslateText text="Nuestros" />{" "}
-									<span className={`bg-clip-text text-transparent ${lightBlueGradient} dark:${darkBlueGradient}`}>
-										<TranslateText text="Servicios" />
-									</span>
-								</h1>
-
-								<p className="text-lg sm:text-xl text-blue-100/90 dark:text-blue-200/80 max-w-xl leading-relaxed">
-									<TranslateText text="Descubre soluciones integrales en Capital Humano, Desarrollo Organizacional y Management Services diseñadas para impulsar el crecimiento de tu empresa." />
-								</p>							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.4 }}
-							>
-								<Link
-									href="#servicios-grid"
-									className="group inline-flex items-center gap-3 px-8 py-4 bg-blue-700 dark:bg-blue-500 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
-								>
-									<TranslateText text="Explorar Servicios" />
-									<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-								</Link>
-							</motion.div>
-
-							{/* Stats */}
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.5 }}
-								className="flex flex-wrap gap-8 pt-6"
-							>
-								{[
-									{ value: "9+", label: "Servicios" },
-									{ value: "500+", label: "Clientes" },
-									{ value: "15+", label: "Años" },
-								].map((stat) => (
-									<div key={stat.label} className="text-center">
-										<p className="text-3xl font-black text-white">{stat.value}</p>
-										<p className="text-sm text-blue-200">{stat.label}</p>
-									</div>
-								))}
-							</motion.div>
+							<Sparkles className="w-4 h-4" />
+							<TranslateText text="Excelencia Corporativa" />
 						</motion.div>
 
-						{/* Visual */}
-						<motion.div
-							initial={{ opacity: 0, x: 30 }}
-							animate={{ opacity: 1, x: 0 }}
+						<motion.h1 
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 0.1 }}
+							className="text-5xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8"
+						>
+							<TranslateText text="Nuestros" />
+							<br />
+							<span className="bg-linear-to-r bg-clip-text text-transparent from-blue-400 via-blue-500 to-blue-600">
+								<TranslateText text="Servicios" />
+							</span>
+						</motion.h1>
+
+						<motion.p 
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6, delay: 0.2 }}
-							className="relative hidden lg:block"
+							className="text-xl text-slate-400 leading-relaxed font-medium mb-10"
 						>
-							<div className="relative">
-								{/* Decorative background */}
-								<div className="absolute -inset-4 bg-linear-to-br from-white/10 to-white/5 rounded-3xl blur-xl" />
-								
-								{/* Image container */}
-								<div className="relative h-100 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-									<Image
-										src="/web/image/servicios/service.png"
-										alt="Persona trabajando con laptop y documentos"
-										fill
-										className="object-cover"
-										priority
-									/>
-									<div className="absolute inset-0 bg-linear-to-t from-blue-900/40 to-transparent" />
-								</div>
-
-								{/* Floating card */}
-								<motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: 0.8 }}
-									className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 flex items-center gap-3"
-								>
-									<div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-										<CheckCircle className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-									</div>
-									<div>
-										<p className="font-bold text-slate-900 dark:text-white">Soluciones Integrales</p>
-										<p className="text-sm text-slate-500 dark:text-slate-400">Para tu empresa</p>
-									</div>
-								</motion.div>
-							</div>
-						</motion.div>
+							<TranslateText text="Soluciones estratégicas diseñadas para cada etapa del ciclo de vida de su organización." />
+						</motion.p>
 					</div>
-				</div>
-
-				{/* Wave decoration */}
-				<div className="absolute bottom-0 left-0 right-0">
-					<svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-						<path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" className="fill-slate-50 dark:fill-slate-900" />
-					</svg>
 				</div>
 			</section>
 
 			{/* Services Grid Section */}
-			<section id="servicios-grid" className="py-20 lg:py-28 bg-slate-50 dark:bg-slate-900 relative">
-				{/* Subtle background pattern */}
-				<div className="absolute inset-0 opacity-30">
-					<div className="absolute top-20 left-10 w-72 h-72 bg-blue-100 dark:bg-blue-900/30 rounded-full blur-3xl" />
-					<div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-100 dark:bg-cyan-900/30 rounded-full blur-3xl" />
+			<Section variant="blue" className="relative -mt-16 z-20">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+					{defaultServices.map((service, index) => (
+						<GroupCard key={service.id} group={service} index={index} />
+					))}
 				</div>
+			</Section>
 
-				<div className="relative max-w-7xl 2xl:max-w-400 mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
-					{/* Header */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="text-center mb-16"
-					>
-						<h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4">
-							<TranslateText text="Nuestras" />{" "}
-							<span className={`bg-clip-text text-transparent ${lightBlueGradient} dark:${darkBlueGradient}`}>
-								<TranslateText text="Líneas de Servicio" />
-							</span>
+			{/* Specialized Solutions Info */}
+			<Section variant="white" size="lg">
+				<div className="grid lg:grid-cols-2 gap-16 items-center">
+					<div className="space-y-8">
+						<h2 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+							<TranslateText text="Enfoque en Resultados y Calidad Certificada" />
 						</h2>
-
-						<p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-							<TranslateText text="Soluciones especializadas diseñadas para cada necesidad de tu negocio" />
+						<p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+							<TranslateText text="Nuestro modelo de servicio se basa en la integración de tecnología avanzada con un profundo conocimiento del mercado local e internacional. Garantizamos cumplimiento normativo y eficiencia operativa en cada proceso." />
 						</p>
-
-						<div className="w-24 h-1.5 bg-linear-to-r from-blue-600 to-cyan-500 rounded-full mx-auto mt-6" />
-					</motion.div>
-
-					{/* Cards Grid */}
-					<motion.div
-						variants={containerVariants}
-						initial="hidden"
-						whileInView="visible"
-						viewport={{ once: true }}
-						className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-					>
-						{/* Render dinámico desde la API */}
-						{services.map((service) => (
-							<GroupCard key={service.id} group={service} />
-						))}
-					</motion.div>
+						<div className="grid sm:grid-cols-2 gap-6">
+							{[
+								"Atención personalizada 24/7",
+								"Cumplimiento legal total",
+								"Tecnología de vanguardia",
+								"Expertos certificados"
+							].map((item, i) => (
+								<div key={i} className="flex items-center gap-3">
+									<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+										<CheckCircle className="w-4 h-4 text-white" />
+									</div>
+									<span className="font-bold text-slate-700 dark:text-slate-300"><TranslateText text={item} /></span>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="relative">
+						<div className="absolute -inset-4 bg-blue-600/10 rounded-[3rem] blur-2xl" />
+						<div className="relative aspect-video lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+							<Image
+								src="/web/image/servicios/service.png"
+								alt="Estrategia Corporativa"
+								fill
+								className="object-cover"
+							/>
+						</div>
+					</div>
 				</div>
-			</section>
+			</Section>
 
-			{/* CTA Section */}
-			<section className="py-20 bg-linear-to-br from-slate-50 via-blue-50/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-                <div className="max-w-4xl mx-auto px-6 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="space-y-6"
-                    >
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
-                            ¿Listo para impulsar tu empresa?
-                        </h2>
-                        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                            Nuestro equipo de expertos está listo para ayudarte a encontrar la solución perfecta para tus necesidades.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                            <Link
-                                href="/#contacto"
-                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
-                            >
-                                Contáctanos
-                                <ArrowRight className="w-5 h-5" />
-                            </Link>
-                            <Link
-                                href="/acerca-de"
-                                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-100 text-blue-700 font-bold rounded-2xl border border-blue-200 hover:bg-blue-200 transition-all dark:bg-white/10 dark:backdrop-blur-sm dark:text-white dark:border-white/20 dark:hover:bg-white/20"
-                            >
-                                Conocer más
-                            </Link>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+			{/* Final CTA */}
+			<Section variant="blue" size="md">
+				<div className="bg-slate-950 rounded-[3rem] p-8 lg:p-20 text-center relative overflow-hidden shadow-2xl shadow-blue-900/20">
+					<div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[80px]" />
+					<div className="relative z-10 space-y-8">
+						<h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight">
+							<TranslateText text="¿Impulsamos su empresa hoy?" />
+						</h2>
+						<div className="flex flex-col sm:flex-row gap-6 justify-center">
+							<Link
+								href="/#contacto"
+								className="px-10 py-5 bg-blue-700 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl hover:bg-blue-600 hover:-translate-y-1 transition-all"
+							>
+								<TranslateText text="Solicitar Consultoría" />
+							</Link>
+							<Link
+								href="/acerca-de"
+								className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white font-black uppercase tracking-widest text-sm rounded-2xl hover:bg-white/10 transition-all"
+							>
+								<TranslateText text="Nuestra Trayectoria" />
+							</Link>
+						</div>
+					</div>
+				</div>
+			</Section>
 
 			<Footer />
 		</div>
 	);
 }
 
-
-function GroupCard({ group }: { group: Service }) {
+function GroupCard({ group, index }: { group: Service; index: number }) {
 	const router = useRouter();
 	const Icon = iconMap[group.name] || Briefcase;
-	const color = colorMap[group.name] || "blue";
-	const colorStyles = {
-		blue: {
-			gradient: "from-blue-600 to-blue-700",
-			iconBg: "bg-blue-600",
-			lightBg: "bg-blue-50 dark:bg-blue-950/50",
-			text: "text-blue-600 dark:text-blue-400",
-			border: "border-blue-200 hover:border-blue-400 dark:border-slate-700 dark:hover:border-blue-500",
-			shadow: "hover:shadow-blue-200/50 dark:hover:shadow-blue-900/30",
-		},
-		cyan: {
-			gradient: "from-cyan-600 to-cyan-700",
-			iconBg: "bg-cyan-600",
-			lightBg: "bg-cyan-50 dark:bg-cyan-950/50",
-			text: "text-cyan-600 dark:text-cyan-400",
-			border: "border-cyan-200 hover:border-cyan-400 dark:border-slate-700 dark:hover:border-cyan-500",
-			shadow: "hover:shadow-cyan-200/50 dark:hover:shadow-cyan-900/30",
-		},
-		indigo: {
-			gradient: "from-indigo-600 to-indigo-700",
-			iconBg: "bg-indigo-600",
-			lightBg: "bg-indigo-50 dark:bg-indigo-950/50",
-			text: "text-indigo-600 dark:text-indigo-400",
-			border: "border-indigo-200 hover:border-indigo-400 dark:border-slate-700 dark:hover:border-indigo-500",
-			shadow: "hover:shadow-indigo-200/50 dark:hover:shadow-indigo-900/30",
-		},
-	};
-	const colors = colorStyles[color as keyof typeof colorStyles];
+	const cardRef = useRef<HTMLDivElement>(null);
+	const mouseX = useMotionValue(0);
+	const mouseY = useMotionValue(0);
+
+	const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
+	const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+
+	function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+		const { left, top } = currentTarget.getBoundingClientRect();
+		mouseX.set(clientX - left);
+		mouseY.set(clientY - top);
+	}
 
 	return (
 		<motion.div
-			variants={cardVariants}
-			role="link"
-			tabIndex={0}
-			onClick={() => router.push(`/servicios/${group.slug}`)}
-			onKeyDown={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					router.push(`/servicios/${group.slug}`);
-				}
-			}}
-			aria-label={`${group.name} — ver subservicios`}
-			className={`group relative bg-white dark:bg-slate-800/90 rounded-2xl cursor-pointer border ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-300 hover:-translate-y-2 flex flex-col h-full overflow-hidden`}
+			initial={{ opacity: 0, y: 30 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true }}
+			transition={{ duration: 0.6, delay: index * 0.1 }}
+			onMouseMove={handleMouseMove}
+			className="group relative"
 		>
-			{/* Top gradient bar */}
-			<div className={`h-2 bg-linear-to-r ${colors.gradient}`} />
+			<div 
+				onClick={() => router.push(`/servicios/${group.slug}`)}
+				className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col overflow-hidden"
+			>
+				{/* Interactive Glow */}
+				<motion.div
+					className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+					style={{
+						background: useTransform(
+							[glowX, glowY],
+							([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
+						),
+					}}
+				/>
 
-			<div className="p-8 flex flex-col h-full">
-				{/* Header */}
-				<div className="mb-6">
-					<div className={`w-14 h-14 ${colors.iconBg} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg`}>
-						{group.icon ? (
-							<Image src={group.icon.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${group.icon}` : group.icon} alt={group.name} width={32} height={32} className="object-contain" unoptimized={group.icon.startsWith('/uploads/')} />
-						) : (
-							<Icon className="w-7 h-7 text-white" />
-						)}
+				<div className="relative z-20 flex flex-col h-full">
+					<div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+						<Icon className="w-8 h-8" />
 					</div>
-					<h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-						{group.name}
+
+					<h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">
+						<TranslateText text={group.name} />
 					</h2>
-					<p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-						{group.description}
+
+					<p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed mb-8 flex-1">
+						<TranslateText text={group.description || ""} />
 					</p>
-				</div>
 
-				{/* Sub-servicios List */}
-				<div className="flex-1">
-					<div className={`${colors.lightBg} rounded-xl p-5`}>
-						<h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
-							Servicios incluidos
-						</h3>
-						<ul className="space-y-3">
-							{group.features.map((item) => (
-								<li key={item.name}>
-									<Link
-										href={`/servicios/${item.slug}`}
-										onClick={(e) => e.stopPropagation()}
-										className={`flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:${colors.text} transition-colors group/link`}
-									>
-										<div className={`w-5 h-5 rounded-full ${colors.iconBg} flex items-center justify-center shrink-0`}>
-											<CheckCircle className="w-3 h-3 text-white" />
-										</div>
-										<span className="text-sm font-medium group-hover/link:translate-x-1 transition-transform">
-											{item.name}
-										</span>
-									</Link>
-								</li>
-							))}
-						</ul>
+					<div className="space-y-4">
+						{group.features.map((feature) => (
+							<Link
+								key={feature.name}
+								href={`/servicios/${feature.slug}`}
+								onClick={(e) => e.stopPropagation()}
+								className="flex items-center justify-between group/link p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800/50 transition-all"
+							>
+								<span className="text-sm font-black text-slate-700 dark:text-slate-300 group-hover/link:text-blue-700 dark:group-hover/link:text-blue-400 uppercase tracking-wider">
+									<TranslateText text={feature.name} />
+								</span>
+								<ArrowRight className="w-4 h-4 text-slate-400 group-hover/link:translate-x-1 group-hover/link:text-blue-600 transition-all" />
+							</Link>
+						))}
 					</div>
-				</div>
-
-				{/* Footer */}
-				<div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-700">
-					<span className={`inline-flex items-center gap-2 text-sm font-bold ${colors.text} group-hover:gap-3 transition-all`}>
-						Ver más detalles
-						<ArrowRight className="w-4 h-4" />
-					</span>
 				</div>
 			</div>
+			{/* Outer shadow glow */}
+			<div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
 		</motion.div>
 	);
 }

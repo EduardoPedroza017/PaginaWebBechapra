@@ -4,7 +4,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
+import Section from '@/app/components/Section';
 import { TranslateText } from '@/components/TranslateText';
+import { FileText, Info, Mail, Gavel } from 'lucide-react';
 
 export default function TerminosServicio() {
 	const sections = [
@@ -88,66 +90,75 @@ Fecha de última actualización: Noviembre 2026`
 	];
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
-			{/* Decorative background elements */}
-			<div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,74,183,0.08)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
-			<div className="absolute bottom-[20%] left-[-3%] w-[350px] h-[350px] bg-[radial-gradient(circle,rgba(0,172,183,0.06)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
-
-			{/* Hero Section */}
+		<div className="min-h-screen bg-white dark:bg-slate-950">
 			<SubpageHero
+        badge="Cumplimiento Legal"
 				title="Términos de Servicio"
-				subtitle="Condiciones de Uso del Sitio Web de BAUSEN"
+				subtitle="Condiciones de Uso del Sitio Web de BAUSEN - Transparencia y Seguridad"
 			/>
 
-			{/* Content Section */}
-			<section className="relative z-[1] max-w-[1200px] mx-auto px-6 py-12 md:py-16 lg:py-24">
-			{/* Introduction */}
-			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
-			>
-				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
-					<TranslateText text="Bienvenido a BAUSEN. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web y servicios. Al utilizar nuestro sitio, usted reconoce que ha leído, entendido y acepta estar sujeto a estos términos." />
-				</p>
-			</motion.div>
+			<Section variant="white" size="lg">
+        <div className="max-w-4xl mx-auto">
+          {/* Introduction Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-20 p-10 bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-blue-900/20 relative overflow-hidden text-white"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]" />
+            <div className="relative z-10 flex gap-6 items-start">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
+                <Gavel size={28} />
+              </div>
+              <p className="text-lg font-medium leading-relaxed">
+                <TranslateText text="Bienvenido a BAUSEN. Estos Términos de Servicio rigen su acceso y uso de nuestro sitio web. Al navegar, usted acepta estar sujeto a las condiciones establecidas en este documento legal." />
+              </p>
+            </div>
+          </motion.div>
 
-			{/* Sections */}
-			{sections.map((section, index) => (
-				<motion.div
-					key={index}
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6, delay: index * 0.1}}
-					className="mb-12 pl-6 border-l-[3px] border-blue-700 dark:border-blue-400"
-				>
-					<h2 className="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400 mb-5">
-						<TranslateText text={section.title} />
-					</h2>
-					<div className="text-base leading-relaxed text-gray-600 dark:text-slate-300 whitespace-pre-line">
-						<TranslateText text={section.content} />
-					</div>
-				</motion.div>
-			))}
+          {/* Legal Sections */}
+          <div className="space-y-16">
+            {sections.map((section, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="group"
+              >
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-4 group-hover:text-blue-600 transition-colors">
+                  <div className="w-1.5 h-8 bg-blue-600 rounded-full" />
+                  <TranslateText text={section.title} />
+                </h2>
+                <div className="text-lg leading-relaxed text-slate-500 dark:text-slate-400 font-medium whitespace-pre-line pl-6">
+                  <TranslateText text={section.content} />
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-			{/* Footer Note */}
-			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				className="mt-16 p-8 bg-blue-50 dark:bg-slate-800 rounded-xl text-center border border-blue-100 dark:border-slate-700"
-			>
-				<p className="text-sm text-gray-600 dark:text-slate-400 m-0">
-					<TranslateText text="El uso continuado de este sitio web constituye la aceptación de estos términos." />
-				</p>
-			</motion.div>
-			</section>
+          {/* Footer Note */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-20 p-10 rounded-[2.5rem] bg-blue-50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800 text-center"
+          >
+            <Info className="w-10 h-10 text-blue-600 mx-auto mb-6" />
+            <p className="text-slate-600 dark:text-slate-400 font-bold mb-8">
+              <TranslateText text="El uso continuado de este sitio web constituye la aceptación de estos términos." />
+            </p>
+            <a href="mailto:contacto@bausen.com" className="inline-flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-xs hover:text-blue-700 transition-colors">
+              <Mail size={16} />
+              Enviar consulta legal
+            </a>
+          </motion.div>
+        </div>
+			</Section>
 
 			<Footer />
-		</main>
+		</div>
 	);
 }

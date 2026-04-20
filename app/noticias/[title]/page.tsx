@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import DOMPurify from "dompurify";
 import Footer from "@/components/Footer";
+import Section from "@/app/components/Section";
 import {
   ArrowLeft,
   Share2,
@@ -13,20 +14,15 @@ import {
   Clock,
   Calendar,
   User,
-  ChevronDown,
-  ChevronUp,
   Twitter,
   Facebook,
   Linkedin,
   Eye,
   Check,
   Copy,
-  Tag
+  Tag,
+  Sparkles
 } from "lucide-react";
-
-// ============================================================================
-// INTERFACES Y TIPOS
-// ============================================================================
 
 interface NewsItem {
   id?: string;
@@ -37,30 +33,15 @@ interface NewsItem {
   date?: string;
   image_url?: string;
   altText?: string;
-  published?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
   author?: string;
   readTime?: number;
   category?: string;
   tags?: string[];
-  featured?: boolean;
   views?: number;
 }
 
-interface TableOfContentsItem {
-  id: string;
-  title: string;
-  level: number;
-}
-
-// ============================================================================
-// COMPONENTE READING PROGRESS
-// ============================================================================
-
 const ReadingProgress = () => {
   const [progress, setProgress] = useState(0);
-  
   const updateProgress = useCallback(() => {
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
     const currentProgress = (window.scrollY / totalHeight) * 100;
@@ -73,534 +54,163 @@ const ReadingProgress = () => {
   }, [updateProgress]);
 
   return (
-    <div 
-      className="fixed top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-800 z-50"
-      role="progressbar"
-      aria-valuenow={Math.round(progress)}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-label="Progreso de lectura"
-    >
-      <div 
-        className="h-full bg-blue-600 transition-all duration-300 ease-out"
-        style={{ width: `${progress}%` }}
-      />
+    <div className="fixed top-0 left-0 right-0 h-1.5 bg-slate-100 dark:bg-slate-900 z-100">
+      <div className="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(37,99,235,0.5)]" style={{ width: `${progress}%` }} />
     </div>
   );
 };
-
-// ============================================================================
-// COMPONENTE SHARE BAR
-// ============================================================================
-
-const ShareBar = ({ title, url }: { title: string; url: string }) => {
-  const [copied, setCopied] = useState(false);
-  
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Error al copiar:', err);
-    }
-  };
-
-  const shareLinks = [
-    {
-      platform: 'x (Twitter)',
-      icon: Twitter,
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
-      color: 'hover:text-blue-400'
-    },
-    {
-      platform: 'Facebook',
-      icon: Facebook,
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      color: 'hover:text-blue-600'
-    },
-    {
-      platform: 'LinkedIn',
-      icon: Linkedin,
-      url: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
-      color: 'hover:text-blue-700'
-    }
-  ];
-
-  return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={handleCopyLink}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm"
-      >
-        {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-        <span className="hidden sm:inline font-medium">
-          {copied ? "¡Copiado!" : "Copiar enlace"}
-        </span>
-      </button>
-      
-      {shareLinks.map(({ platform, icon: Icon, url, color }) => (
-        <a
-          key={platform}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ${color}`}
-          aria-label={`Compartir en ${platform}`}
-        >
-          <Icon size={18} />
-        </a>
-      ))}
-      
-      <button
-        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-        aria-label="Guardar en marcadores"
-      >
-        <Bookmark size={18} />
-      </button>
-    </div>
-  );
-};
-
-// ============================================================================
-// COMPONENTE TABLE OF CONTENTS
-// ============================================================================
-
-const TableOfContents = ({ items }: { items: TableOfContentsItem[] }) => {
-  const [activeId, setActiveId] = useState<string>("");
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-100px 0px -80% 0px" }
-    );
-
-    items.forEach(({ id }) => {
-      const element = document.getElementById(id);
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, [items]);
-
-  if (items.length === 0) return null;
-
-  return (
-    <nav 
-      className="sticky top-24 bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm"
-      aria-label="Tabla de contenidos"
-    >
-      <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Contenido</h3>
-      
-      <ul className="space-y-2">
-        {items.map((item) => (
-          <li key={item.id} style={{ marginLeft: `${(item.level - 2) * 1}rem` }}>
-            <a
-              href={`#${item.id}`}
-              className={`block py-1.5 text-sm transition-colors ${
-                activeId === item.id
-                  ? 'text-blue-600 dark:text-blue-400 font-medium'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            >
-              {item.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-};
-
-// ============================================================================
-// COMPONENTE CONTENT RENDERER
-// ============================================================================
-
-const ContentRenderer = ({ content }: { content: string }) => {
-  const clean = DOMPurify.sanitize(content || '', {
-    ALLOWED_TAGS: [
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'p', 'br', 'strong', 'em', 'u', 's', 'blockquote',
-      'ul', 'ol', 'li', 'hr',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td',
-      'img', 'video', 'audio', 'source', 'iframe',
-      'a', 'code', 'pre', 'span', 'div',
-      'sup', 'sub'
-    ],
-    ALLOWED_ATTR: [
-      'href', 'target', 'rel', 'src', 'alt', 'title', 'width', 'height',
-      'class', 'id', 'loading', 'decoding', 'srcset', 'sizes',
-      'frameborder', 'allow', 'allowfullscreen'
-    ]
-  });
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(clean, 'text/html');
-
-  const headings = doc.querySelectorAll('h2, h3, h4');
-  const toc: TableOfContentsItem[] = [];
-  headings.forEach((heading, index) => {
-    const id = (heading.textContent || `heading-${index}`)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-    heading.id = id;
-    toc.push({ id, title: heading.textContent || '', level: parseInt(heading.tagName.charAt(1)) });
-  });
-
-  doc.querySelectorAll('img').forEach(el => {
-    el.setAttribute('loading', 'lazy');
-    el.setAttribute('decoding', 'async');
-  });
-
-  return { sanitizedContent: doc.body.innerHTML, tocItems: toc };
-};
-
-// ============================================================================
-// COMPONENTE PRINCIPAL
-// ============================================================================
 
 export default function NoticiaDetalle() {
   const [article, setArticle] = useState<NewsItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
   const pathname = usePathname();
 
   useEffect(() => {
     const parts = pathname?.split("/").filter(Boolean) || [];
     const slug = parts[parts.length - 1];
     
-    if (!slug) {
-      setError("Slug no encontrado en la URL");
-      setLoading(false);
-      return;
-    }
-
     const fetchArticle = async () => {
       try {
-        const base = process.env.NEXT_PUBLIC_API_URL 
-          ? String(process.env.NEXT_PUBLIC_API_URL).replace(/\/$/, "") 
-          : "";
-        const url = base 
-          ? `${base}/api/news/${slug}` 
-          : `/api/backend/news/${slug}`;
-
-        const res = await fetch(url);
+        const base = process.env.NEXT_PUBLIC_API_URL || "";
+        const res = await fetch(`${base}/api/news/${slug}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         
-        if (!res.ok) {
-          throw new Error(`Error fetching detail: HTTP ${res.status}`);
-        }
-
-        const text = await res.text();
-        let data: unknown = null;
-
-        try {
-          data = JSON.parse(text);
-        } catch {
-          data = { _raw: text };
-        }
-
-        const asRecord = (val: unknown): Record<string, unknown> => (typeof val === 'object' && val !== null) ? val as Record<string, unknown> : {};
-        const record = asRecord(data);
-
-        if ('_raw' in record && typeof record._raw === 'string') {
-          setArticle({
-            title: slug,
-            description: "",
-            content: String(record._raw),
-            date: new Date().toISOString(),
-          });
-          return;
-        }
-
-        const contentHtml = String((record.content as string) || (record.body as string) || (record.html as string) || (record.description as string) || (record.excerpt as string) || '');
-
-        const estimateReadTimeFromHtml = (html: string, wordsPerMinute = 200): number => {
-          if (!html) return 0;
-          const imgCount = (html.match(/<img\b/gi) || []).length;
-          const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-          if (!text) return imgCount > 0 ? 1 : 0;
-          const words = text.split(' ').length;
-          const baseMinutes = Math.ceil(words / wordsPerMinute);
-          const extraSeconds = imgCount * 12;
-          const extraMinutes = Math.ceil(extraSeconds / 60);
-          return Math.max(1, baseMinutes + extraMinutes);
-        };
-
-        const computedReadTime = (typeof record.readTime === 'number' && !isNaN(record.readTime as number))
-          ? (record.readTime as number)
-          : estimateReadTimeFromHtml(contentHtml, 200);
-
+        const contentHtml = data.content || data.body || data.html || "";
         const item: NewsItem = {
-          id: (record.id as string) || (record._id as string) || slug,
-          title: (record.title as string) || slug,
-          description: (record.description as string) || (record.excerpt as string) || "",
+          id: data.id || slug,
+          title: data.title || slug,
+          description: data.description || data.excerpt || "",
           content: contentHtml,
-          date: (record.published_date as string) || (record.date as string) || (record.createdAt as string) || new Date().toISOString(),
-          image_url: (record.image_url as string) || (record.image as string) || undefined,
-          altText: (record.altText as string) || (record.alt as string) || (record.title as string) || undefined,
-          author: (record.author as string) || (record.byline as string) || "",
-          readTime: computedReadTime,
-          category: (record.category as string) || (record.section as string) || undefined,
-          tags: (record.tags as string[]) || (record.keywords as string[]) || [],
-          featured: (record.featured as boolean) || undefined,
-          views: (record.views as number) || (record.viewCount as number) || undefined
+          date: data.published_date || data.date || new Date().toISOString(),
+          image_url: data.image_url || data.image,
+          author: data.author || "Bausen Editorial",
+          readTime: data.readTime || 5,
+          category: data.category || "General",
+          tags: data.tags || []
         };
-
         setArticle(item);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : String(err) || "Error al cargar la noticia");
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchArticle();
   }, [pathname]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Cargando noticia...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+    </div>
+  );
 
-  if (error || !article) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
-        <div className="text-center max-w-md p-8">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Eye className="text-red-600" size={24} />
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            {error ? "Error" : "Noticia no encontrada"}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {error || "La noticia que buscas no existe o ha sido eliminada."}
-          </p>
-          <Link
-            href="/web/noticias/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            Volver a noticias
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const hasContent = article.content && String(article.content).trim().length > 0;
-  const { sanitizedContent, tocItems } = ContentRenderer({ content: String(article.content || '') });
+  if (!article) return null;
 
   return (
-    <>
+    <div className="min-h-screen bg-white dark:bg-slate-950">
       <ReadingProgress />
-
-      <main className="min-h-screen bg-white dark:bg-gray-950">
-        {/* (Header removed) Share controls are moved into the hero for a cleaner layout */}
-
-        {/* Hero mejorado */}
-        {article.image_url && (
-          <div className="relative w-full h-100 md:h-125 lg:h-150 bg-gray-900">
-            {/* Back link inside hero (top-left) */}
-            <div className="absolute top-4 left-4 z-50">
-              <Link
-                href="/noticias"
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm"
-              >
-                <ArrowLeft size={16} />
-                <span className="text-sm font-medium">Noticias</span>
-              </Link>
-            </div>
-
-            {/* Share controls inside hero (top-right) */}
-            <div className="absolute top-4 right-4 z-50 hidden md:flex">
-              <ShareBar title={article.title} url={currentUrl} />
-            </div>
-            <Image
-              src={article.image_url.startsWith("http")
-                ? article.image_url
-                : `${process.env.NEXT_PUBLIC_API_URL || ""}${article.image_url}`}
-              alt={article.altText || article.title}
-              fill
-              className="object-cover opacity-80"
-              sizes="100vw"
-              priority
-            />
-            
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
-            
-            <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-8 pb-12">
-              <div className="max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  {article.category && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white text-sm font-medium">
-                      <Tag size={14} />
-                      {article.category}
-                    </span>
-                  )}
-                </div>
-                
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                  {article.title}
-                </h1>
-                
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
-                  {article.date && (
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={16} />
-                      {new Date(article.date).toLocaleDateString('es-ES', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      })}
-                    </span>
-                  )}
-                  
-                  {article.readTime && (
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={16} />
-                      {article.readTime} min
-                    </span>
-                  )}
-                  
-                  {article.views && (
-                    <span className="flex items-center gap-1.5">
-                      <Eye size={16} />
-                      {article.views.toLocaleString()} vistas
-                    </span>
-                  )}
-                  
-                  {article.author && (
-                    <span className="flex items-center gap-1.5">
-                      <User size={16} />
-                      {article.author}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+      
+      {/* Article Hero */}
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden bg-slate-950">
+        {article.image_url ? (
+          <Image
+            src={article.image_url.startsWith("http") ? article.image_url : `${process.env.NEXT_PUBLIC_API_URL}${article.image_url}`}
+            alt={article.title}
+            fill
+            className="object-cover opacity-60"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-linear-to-br from-blue-900 to-slate-950" />
         )}
-
-        {/* Contenido principal con layout optimizado */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid lg:grid-cols-12 gap-8">
-            {/* Contenido del artículo */}
-            <article className="lg:col-span-9">
-              {/* Descripción/Lead */}
-              {article.description && (
-                <div className="mb-8 pb-8 border-b border-gray-200 dark:border-gray-800">
-                  <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                    {article.description}
-                  </p>
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent" />
+        
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8 flex flex-col justify-end pb-20">
+          <Link href="/noticias" className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors group">
+            <div className="p-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 group-hover:bg-blue-600 transition-all">
+              <ArrowLeft size={16} />
+            </div>
+            <span className="text-xs font-black uppercase tracking-widest">Volver a Noticias</span>
+          </Link>
+          
+          <div className="max-w-4xl">
+            <span className="px-4 py-2 rounded-full bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest mb-6 inline-block">
+              {article.category}
+            </span>
+            <h1 className="text-4xl lg:text-7xl font-black text-white leading-[1.05] tracking-tighter mb-8 italic">
+              {article.title}
+            </h1>
+            
+            <div className="flex flex-wrap items-center gap-8 text-white/60">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <User size={18} className="text-blue-400" />
                 </div>
-              )}
-
-              {/* Tags */}
-              {article.tags && article.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {article.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Contenido */}
-              {hasContent ? (
-                <div
-                  className="prose prose-lg dark:prose-invert max-w-none
-                    prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
-                    prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4
-                    prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3
-                    prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
-                    prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-                    prose-blockquote:border-l-4 prose-blockquote:border-blue-600 prose-blockquote:pl-6 prose-blockquote:italic
-                    prose-img:rounded-xl prose-img:shadow-lg
-                    prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded"
-                  dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                />
-              ) : (
-                <div className="py-12 text-center bg-gray-50 dark:bg-gray-900 rounded-xl">
-                  <Calendar className="mx-auto mb-4 text-gray-400" size={48} />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Contenido no disponible
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Este artículo aún no tiene contenido disponible.
-                  </p>
-                </div>
-              )}
-
-              {/* Compartir en mobile */}
-              <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 md:hidden">
-                <ShareBar title={article.title} url={currentUrl} />
+                <div className="text-xs font-black uppercase tracking-widest">{article.author}</div>
               </div>
-            </article>
-
-            {/* Sidebar */}
-            <aside className="lg:col-span-3 space-y-6">
-              {tocItems.length > 0 && <TableOfContents items={tocItems} />}
-              
-              <div className="sticky top-24 bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Información</h3>
-                <div className="space-y-4 text-sm">
-                  {article.date && (
-                    <div>
-                      <p className="text-gray-500 dark:text-gray-400 mb-1">Publicado</p>
-                      <p className="text-gray-900 dark:text-white font-medium">
-                        {new Date(article.date).toLocaleDateString('es-ES', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {article.category && (
-                    <div>
-                      <p className="text-gray-500 dark:text-gray-400 mb-1">Categoría</p>
-                      <p className="text-gray-900 dark:text-white font-medium">{article.category}</p>
-                    </div>
-                  )}
-                  
-                  {article.readTime && (
-                    <div>
-                      <p className="text-gray-500 dark:text-gray-400 mb-1">Tiempo de lectura</p>
-                      <p className="text-gray-900 dark:text-white font-medium">{article.readTime} minutos</p>
-                    </div>
-                  )}
-                </div>
+              <div className="flex items-center gap-3">
+                <Calendar size={18} className="text-blue-400" />
+                <div className="text-xs font-black uppercase tracking-widest">{new Date(article.date!).toLocaleDateString()}</div>
               </div>
-            </aside>
+              <div className="flex items-center gap-3">
+                <Clock size={18} className="text-blue-400" />
+                <div className="text-xs font-black uppercase tracking-widest">{article.readTime} min lectura</div>
+              </div>
+            </div>
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* Main Content */}
+      <Section variant="white" size="lg">
+        <div className="max-w-4xl mx-auto">
+          {article.description && (
+            <p className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-16 leading-tight border-l-4 border-blue-600 pl-8 italic">
+              {article.description}
+            </p>
+          )}
+
+          <div 
+            className="prose prose-xl dark:prose-invert max-w-none 
+              prose-headings:font-black prose-headings:tracking-tighter prose-headings:text-slate-900 dark:prose-headings:text-white
+              prose-p:text-slate-600 dark:prose-p:text-slate-400 prose-p:leading-relaxed prose-p:mb-8
+              prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:font-black prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-[2.5rem] prose-img:shadow-2xl
+              prose-blockquote:border-l-0 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-slate-900 prose-blockquote:p-10 prose-blockquote:rounded-[2rem] prose-blockquote:text-slate-900 dark:prose-blockquote:text-white prose-blockquote:font-bold prose-blockquote:italic"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content || "") }}
+          />
+
+          {/* Tags Footer */}
+          {article.tags && article.tags.length > 0 && (
+            <div className="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-3">
+              {article.tags.map(tag => (
+                <span key={tag} className="px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-500 text-[10px] font-black uppercase tracking-widest hover:text-blue-600 transition-colors cursor-pointer">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Social Share Section */}
+          <div className="mt-16 p-10 rounded-[2.5rem] bg-blue-50 dark:bg-slate-900/50 border border-blue-100 dark:border-blue-800 flex flex-col md:flex-row items-center justify-between gap-8">
+            <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-3">
+              <Share2 size={20} className="text-blue-600" />
+              Compartir este artículo
+            </h4>
+            <div className="flex gap-4">
+              {[Twitter, Facebook, Linkedin].map((Icon, i) => (
+                <button key={i} className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all shadow-lg shadow-blue-900/5">
+                  <Icon size={20} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
 
       <Footer />
-    </>
+    </div>
   );
 }

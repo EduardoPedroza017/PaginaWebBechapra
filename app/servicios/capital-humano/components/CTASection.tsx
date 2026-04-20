@@ -1,20 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Trophy } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
+import Section from "@/app/components/Section";
 
 interface CTASectionProps {
   title: string;
   subtitle: string;
   imageSrc: string;
   imageAlt: string;
-  primaryLink?: string;
-  primaryLabel?: string;
-  secondaryLink?: string;
-  secondaryLabel?: string;
 }
 
 export default function CTASection({
@@ -22,119 +19,62 @@ export default function CTASection({
   subtitle,
   imageSrc,
   imageAlt,
-  primaryLink = "#contacto",
-  primaryLabel = "Agenda una cita",
-  secondaryLink = "#",
-  secondaryLabel = "Ver casos de éxito",
 }: CTASectionProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 relative overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -left-1/4 w-full h-full bg-gradient-to-br from-white/5 to-transparent rounded-full"
-        />
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -right-1/4 w-full h-full bg-gradient-to-tl from-cyan-400/10 dark:from-cyan-500/10 to-transparent rounded-full"
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+    <Section variant="blue" size="md">
+      <div className="bg-slate-950 rounded-[3rem] p-10 lg:p-20 relative overflow-hidden shadow-2xl shadow-blue-900/20">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px]" />
+        
+        <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center text-left">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full">
+              <Sparkles size={14} />
+              <TranslateText text="Próximo Paso" />
+            </div>
+            
+            <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tighter leading-tight">
               <TranslateText text={title} />
             </h2>
-            <p className="text-xl text-blue-100/90 dark:text-blue-200/80 mb-10 leading-relaxed">
+            
+            <p className="text-xl text-slate-400 font-medium leading-relaxed">
               <TranslateText text={subtitle} />
             </p>
-
-            <div className="flex flex-wrap gap-4">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            
+            <div className="flex flex-col sm:flex-row gap-6 pt-6">
+              <Link
+                href="#contacto"
+                className="px-10 py-5 bg-blue-700 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-600 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
               >
-                <Link
-                  href={primaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
-                >
-                  <Calendar size={20} />
-                  <TranslateText text={primaryLabel} />
-                </Link>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                <TranslateText text="Comenzar Ahora" />
+                <ArrowRight size={18} />
+              </Link>
+              <Link
+                href="/acerca-de"
+                className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center"
               >
-                <Link
-                  href={secondaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300"
-                >
-                  <Trophy size={20} />
-                  <TranslateText text={secondaryLabel} />
-                </Link>
-              </motion.div>
+                <TranslateText text="Nuestra Filosofía" />
+              </Link>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl shadow-black/30">
+          <div className="relative hidden lg:block">
+            <div className="relative aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10">
               {imageSrc ? (
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
                   fill
-                  className="object-cover"
+                  className="object-cover opacity-60"
                   unoptimized={String(imageSrc).startsWith('http')}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
-                  <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
-                    <path d="M8 10h.01" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeLinecap="round" />
-                    <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
+                <div className="w-full h-full bg-slate-900" />
               )}
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent" />
             </div>
-            {/* Floating Badge */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                  <Trophy size={24} className="text-white" />
-                </div>
-                <div>
-                  <div className="text-2xl font-black text-gray-900 dark:text-white">500+</div>
-                  <div className="text-sm text-gray-500 dark:text-slate-400">Empresas</div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

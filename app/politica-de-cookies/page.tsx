@@ -4,7 +4,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
+import Section from '@/app/components/Section';
 import { TranslateText } from '@/components/TranslateText';
+import { Cookie, Info, Mail, Settings } from 'lucide-react';
 
 export default function PoliticaCookies() {
 	const cookieTypes = [
@@ -111,126 +113,117 @@ Correo electrónico: contacto@bausen.com
 Teléfono: (55) 8548 2311
 Ubicación: Ciudad de México, México
 
-También puede consultar nuestra Política de Privacidad para obtener información detallada sobre cómo protegemos sus datos personales.
-
 Última actualización: Noviembre 2026`
 		}
 	];
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
-			{/* Decorative background elements */}
-			<div className="absolute top-[10%] right-[-5%] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,74,183,0.08)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
-			<div className="absolute bottom-[20%] left-[-3%] w-[350px] h-[350px] bg-[radial-gradient(circle,rgba(0,172,183,0.06)_0%,transparent_70%)] rounded-full pointer-events-none z-0" />
-
-			{/* Hero Section */}
+		<div className="min-h-screen bg-white dark:bg-slate-950">
 			<SubpageHero
+        badge="Legal & Transparencia"
 				title="Política de Cookies"
-				subtitle="Información sobre el uso de cookies en el sitio web de BAUSEN"
+				subtitle="Información Transparente sobre el Uso de Tecnologías de Seguimiento en BAUSEN"
 			/>
 
-			{/* Content Section */}
-			<section className="relative z-[1] max-w-[1200px] mx-auto px-6 py-12 md:py-16 lg:py-24">
-			{/* Introduction */}
-			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				className="mb-16 p-10 bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 rounded-2xl shadow-xl relative overflow-hidden"
-			>
-				<p className="text-base md:text-lg leading-relaxed text-white m-0 relative z-[1]">
-					<TranslateText text="Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en nuestro sitio web, y cómo puede controlarlas. Al continuar navegando por nuestro sitio, usted acepta el uso de cookies de acuerdo con esta política." />
-				</p>
-			</motion.div>
+			<Section variant="white" size="lg">
+        <div className="max-w-4xl mx-auto">
+          {/* Introduction Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-20 p-10 bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-blue-900/20 relative overflow-hidden text-white"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]" />
+            <div className="relative z-10 flex gap-6 items-start">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
+                <Cookie size={28} />
+              </div>
+              <p className="text-lg font-medium leading-relaxed">
+                <TranslateText text="Esta Política de Cookies explica qué son, cómo las utilizamos y cómo puede controlarlas. Nuestra prioridad es garantizar una navegación fluida respetando siempre sus preferencias de privacidad." />
+              </p>
+            </div>
+          </motion.div>
 
-			{/* Cookie Types */}
-			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				className="mb-16"
-			>
-				<h2 className="text-2xl md:text-3xl font-bold text-blue-700 dark:text-blue-400 mb-8">
-					<TranslateText text="Tipos de Cookies que Utilizamos" />
-				</h2>
+          {/* Cookie Types Cards */}
+          <div className="space-y-8 mb-24">
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 tracking-tight flex items-center gap-4">
+              <div className="w-1.5 h-8 bg-blue-600 rounded-full" />
+              Tipos de Cookies Utilizadas
+            </h2>
+            <div className="grid gap-6">
+              {cookieTypes.map((cookie, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="p-8 rounded-[2rem] bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-xl transition-all group"
+                >
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                      <TranslateText text={cookie.type} />
+                    </h3>
+                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${cookie.required ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
+                      <TranslateText text={cookie.required ? "Obligatoria" : "Opcional"} />
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 font-medium mb-6 leading-relaxed">
+                    <TranslateText text={cookie.description} />
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {cookie.examples.map(ex => (
+                      <span key={ex} className="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-400 dark:text-slate-500 border border-slate-200/50 dark:border-slate-700/50">
+                        {ex}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
-				<div className="grid gap-6">
-					{cookieTypes.map((cookie, index) => (
-						<motion.div
-							key={index}
-							initial={{opacity: 0, y: 20}}
-							whileInView={{opacity: 1, y: 0}}
-							viewport={{once: true}}
-							transition={{duration: 0.6, delay: index * 0.1}}
-							className="p-8 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300"
-						>
-							<div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-								<h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white m-0">
-									<TranslateText text={cookie.type} />
-								</h3>
-								<span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${cookie.required ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'}`}>
-									<TranslateText text={cookie.required ? "Necesarias" : "Opcionales"} />
-								</span>
-							</div>
+          {/* Legal Sections */}
+          <div className="space-y-16">
+            {sections.map((section, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-4 group-hover:text-blue-600 transition-colors">
+                  <div className="w-1.5 h-8 bg-blue-600 rounded-full" />
+                  <TranslateText text={section.title} />
+                </h2>
+                <div className="text-lg leading-relaxed text-slate-500 dark:text-slate-400 font-medium whitespace-pre-line pl-6">
+                  <TranslateText text={section.content} />
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-							<p className="text-base leading-relaxed text-gray-600 dark:text-slate-300 mb-4">
-								<TranslateText text={cookie.description} />
-							</p>
+          {/* Footer Note */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-20 p-10 rounded-[2.5rem] bg-blue-50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800 text-center"
+          >
+            <Settings className="w-10 h-10 text-blue-600 mx-auto mb-6" />
+            <p className="text-slate-600 dark:text-slate-400 font-bold mb-8">
+              <TranslateText text="Usted puede gestionar sus preferencias de cookies en cualquier momento desde la configuración de su navegador." />
+            </p>
+            <a href="mailto:contacto@bausen.com" className="inline-flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-xs hover:text-blue-700 transition-colors">
+              <Mail size={16} />
+              Solicitar más información
+            </a>
+          </motion.div>
+        </div>
+			</Section>
 
-							<div className="mt-4 pt-4 border-t border-gray-200 dark:border-slate-600">
-								<p className="text-sm font-semibold text-gray-500 dark:text-slate-400 mb-2">
-									<TranslateText text="Ejemplos:" />
-								</p>
-								<ul className="m-0 pl-6 flex flex-col gap-1.5">
-									{cookie.examples.map((example, i) => (
-										<li key={i} className="text-sm text-gray-500 dark:text-slate-400">
-											<TranslateText text={example} />
-										</li>
-									))}
-								</ul>
-							</div>
-						</motion.div>
-					))}
-				</div>
-			</motion.div>
-
-			{/* Sections */}
-			{sections.map((section, index) => (
-				<motion.div
-					key={index}
-					initial={{opacity: 0, y: 20}}
-					whileInView={{opacity: 1, y: 0}}
-					viewport={{once: true}}
-					transition={{duration: 0.6, delay: index * 0.1}}
-					className="mb-12 pl-6 border-l-[3px] border-blue-700 dark:border-blue-400"
-				>
-					<h2 className="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400 mb-5">
-						<TranslateText text={section.title} />
-					</h2>
-					<div className="text-base leading-relaxed text-gray-600 dark:text-slate-300 whitespace-pre-line">
-						<TranslateText text={section.content} />
-					</div>
-				</motion.div>
-			))}
-
-			{/* Footer Note */}
-			<motion.div
-				initial={{opacity: 0, y: 20}}
-				whileInView={{opacity: 1, y: 0}}
-				viewport={{once: true}}
-				transition={{duration: 0.6}}
-				className="mt-16 p-8 bg-blue-50 dark:bg-slate-800 rounded-xl text-center border border-blue-100 dark:border-slate-700"
-			>
-				<p className="text-sm text-gray-600 dark:text-slate-400 m-0">
-					<TranslateText text="Su privacidad es importante para nosotros. Utilizamos cookies para mejorar su experiencia mientras respetamos sus elecciones." />
-				</p>
-			</motion.div>
-			</section>
-            
-            <Footer />
-
-		</main>
+			<Footer />
+		</div>
 	);
 }
