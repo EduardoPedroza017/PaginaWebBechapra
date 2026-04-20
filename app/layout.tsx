@@ -1,4 +1,6 @@
-import type { Metadata, Viewport } from "next";
+"use client";
+
+import React from "react";
 import { Montserrat } from 'next/font/google';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -7,15 +9,14 @@ import "./globals.css";
 import { LanguageProvider } from "@/lib/contexts/LanguageContext";
 import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 
+// Hooks
+import useLenis from "@/hooks/useLenis";
+
 // Components
 import NavbarConditional from "@/components/NavbarConditional";
 import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
 import ScrollRestorer from "@/components/ScrollRestorer";
-
-// ============================================================================
-// FONT CONFIGURATION
-// ============================================================================
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,65 +32,30 @@ const geistMono = Geist_Mono({
 
 const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '900'],
   variable: '--font-montserrat',
   display: 'swap',
 });
 
 const fontVariables = `${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`;
 
-// ============================================================================
-// METADATA & VIEWPORT CONFIGURATION
-// ============================================================================
-
-export const metadata: Metadata = {
-  title: {
-    default: "Bausen — Soluciones Empresariales Integrales",
-    template: "%s | Bausen"
-  },
-  description: "Capital Humano, Desarrollo Organizacional y Management Services para empresas modernas",
-  keywords: [
-    "capital humano",
-    "desarrollo organizacional", 
-    "consultoría empresarial",
-    "management services",
-    "recursos humanos",
-    "transformación digital"
-  ],
-};
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#0057D9' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a1627' },
-  ],
-  colorScheme: 'light dark',
-};
-
-// ============================================================================
-// ROOT LAYOUT COMPONENT
-// ============================================================================
-
 export default function RootLayout({ 
   children,
 }: { 
   children: React.ReactNode;
 }) {
+  // Activate global smooth scroll
+  useLenis();
+
   return (
     <html 
       lang="es" 
       suppressHydrationWarning 
-      className={`${fontVariables}`}
+      className={`${fontVariables} scroll-smooth`}
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-        {/* Prevent FOUC: set initial theme class before React hydrates */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
@@ -106,29 +72,19 @@ export default function RootLayout({
         ` }} />
       </head>
       
-      <body className="antialiased bg-background text-foreground min-h-screen">
+      <body className="antialiased bg-background text-foreground min-h-screen selection:bg-blue-600/20 selection:text-blue-700 dark:selection:bg-blue-500/30 dark:selection:text-blue-400">
         <ThemeProvider>
           <LanguageProvider>            
-            {/* Navigation - Wrapped to ensure proper positioning */}
             <div className="fixed top-0 left-0 right-0 z-50">
               <NavbarConditional />
             </div>
             
-            {/* Main content with proper spacing */}
-            <main 
-              id="main-content"
-              className="min-h-screen pt-0"  /* Reduced top padding to remove excessive space above admin header */
-            >
+            <main id="main-content" className="min-h-screen pt-0">
               {children}
             </main>
 
-            {/* Persist & restore scroll per-path */}
             <ScrollRestorer />
-            
-            {/* Analytics */}
             <Analytics />
-            
-            {/* Cookie Consent */}
             <CookieConsent />
           </LanguageProvider>
         </ThemeProvider>

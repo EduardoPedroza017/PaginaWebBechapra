@@ -246,82 +246,71 @@
    ========================================================================== */
 
 :root {
-    /* Typography */
+    /* Typography - Refined spacing */
     --font-body: "Mundial", var(--font-geist-sans), "Helvetica Neue", system-ui, sans-serif;
     --font-heading: "Montserrat", var(--font-geist-sans), "Helvetica Neue", system-ui, sans-serif;
     --font-mono: var(--font-geist-mono);
-    /* Core colors */
+    --tracking-tight: -0.02em;
+    --tracking-tighter: -0.05em;
+
+    /* Core colors - More vibrant & professional */
     --background: #ffffff;
-    --foreground: #171717;
+    --foreground: #0f172a; /* Slate 900 */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    /* Brand palette (actualizada) */
-    --brand-primary: #2346dd; /* Principal */
-    --brand-primary-hover: #2d5cf3; /* Variante principal */
-    --brand-secondary: #1e3fab; /* Oscuro */
-    --brand-accent: #2f82ff; /* Resaltar textos */
-    --brand-dark: #1b398e; /* Oscuro variante */
-    --brand-light: #dbe9ff; /* Fondo claro */
-    /* Extended blues (actualizada) */
-    --blue-50: #f8fafd;
-    --blue-100: #dbe9ff;
-    --blue-200: #b5e5ff;
-    --blue-300: #74d4ff;
-    --blue-400: #8ac3ff;
-    --blue-500: #2346dd;
-    --blue-600: #2b80ff;
-    --blue-700: #1660fc;
-    --blue-800: #134ae8;
-    --blue-900: #1e3fab;
-    /* Grayscale (sin cambios) */
-    --gray-50: #f8f9fa;
-    --gray-100: #f1f3f5;
-    --gray-200: #eff6ff;
-    --gray-300: #dee2e6;
-    --gray-400: #ced4da;
-    --gray-500: #adb5bd;
-    --gray-600: #6c757d;
-    --gray-700: #495057;
-    --gray-800: #343a40;
-    --gray-900: #212529;
+
+    /* Brand palette (Premium Blue & Electric accents) */
+    --brand-primary: #1e40af; /* Blue 800 - Deep & Trustworthy */
+    --brand-primary-hover: #2563eb; /* Blue 600 - Vibrant */
+    --brand-secondary: #0f172a; /* Deep Slate */
+    --brand-accent: #3b82f6; /* Blue 500 - Interactive */
+    --brand-glow: #60a5fa; /* Blue 400 - For highlights */
+    --brand-dark: #1e3a8a; 
+    --brand-light: #eff6ff;
+
     /* Semantic surfaces */
-    --surface-muted: #f8fafd;
+    --surface-muted: #f8fafc; /* Slate 50 */
     --surface-card: var(--background);
-    --surface-overlay: rgba(0, 0, 0, 0.05);
-    /* Borders & shadows */
-    --border-radius-card: 1rem;
-    --border-radius-button: 0.5rem;
-    --shadow-card: 0 4px 6px -1px rgba(35, 70, 221, 0.08), 0 2px 4px -1px rgba(35, 70, 221, 0.06);
-    --shadow-elevated: 0 10px 15px -3px rgba(35, 70, 221, 0.10), 0 4px 6px -2px rgba(35, 70, 221, 0.05);
-    --shadow-brand: 0 4px 6px -1px rgba(35, 70, 221, 0.10), 0 2px 4px -2px rgba(35, 70, 221, 0.10);
+    --surface-overlay: rgba(15, 23, 42, 0.04);
+    
+    /* Borders & Shadows - Ambient & Brand-tinted */
+    --border-radius-card: 1.25rem;
+    --border-radius-button: 0.75rem;
+    --shadow-sm: 0 1px 2px 0 rgba(30, 64, 175, 0.05);
+    --shadow-card: 0 10px 25px -5px rgba(30, 64, 175, 0.05), 0 8px 10px -6px rgba(30, 64, 175, 0.05);
+    --shadow-elevated: 0 20px 40px -10px rgba(30, 64, 175, 0.08), 0 10px 20px -5px rgba(30, 64, 175, 0.04);
+    --shadow-brand: 0 4px 14px 0 rgba(37, 99, 235, 0.15);
+    
     /* Transitions */
-    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
 /* ==========================================================================
-   DARK MODE
+   DARK MODE - Obsidian Deep
    ========================================================================== */
 
 .dark {
-    --background: #0e172b; /* Modo oscuro fondo */
-    --foreground: #f1f5f9;
-    /* Dark mode brand colors (actualizada) */
-    --brand-primary: #152353; /* Modo oscuro principal */
-    --brand-primary-hover: #003eaa; /* Variante modo oscuro */
-    --brand-secondary: #0e172b; /* Fondo modo oscuro */
-    --brand-light: #1b398e; /* Variante azul oscuro */
-    --brand-dark: #003eaa; /* Variante azul oscuro */
-    --brand-accent: #2f82ff; /* Resaltar textos */
+    --background: #020617; /* Obsidian - Slate 950 */
+    --foreground: #f8fafc;
+    
+    /* Dark mode brand colors - Higher Vibrancy */
+    --brand-primary: #3b82f6; 
+    --brand-primary-hover: #60a5fa;
+    --brand-secondary: #0f172a;
+    --brand-light: #1e293b;
+    --brand-dark: #172554;
+    --brand-accent: #2563eb;
+    
     /* Dark mode surfaces */
-    --surface-card: #152353;
-    --surface-muted: #0e172b;
-    --surface-overlay: rgba(0, 0, 0, 0.7);
-    /* Dark mode shadows */
-    --shadow-card: 0 4px 6px -1px rgba(21, 35, 83, 0.3), 0 2px 4px -1px rgba(21, 35, 83, 0.2);
-    --shadow-elevated: 0 10px 15px -3px rgba(21, 35, 83, 0.3), 0 4px 6px -2px rgba(21, 35, 83, 0.2);
-    --shadow-brand: 0 4px 6px -1px rgba(47, 130, 255, 0.3), 0 2px 4px -2px rgba(47, 130, 255, 0.2);
+    --surface-card: #0f172a; /* Slate 900 */
+    --surface-muted: #1e293b; /* Slate 800 */
+    --surface-overlay: rgba(255, 255, 255, 0.03);
+    
+    /* Dark mode shadows - Deep Ambient Glow */
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    --shadow-elevated: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    --shadow-brand: 0 0 15px rgba(59, 130, 246, 0.15);
 }
 
 
@@ -813,55 +802,84 @@ a:where(:not([class*="text-"])):hover {
 
 
 /* ==========================================================================
-   SCROLLBAR & SELECTION
+   SCROLLBAR & SELECTION - Minimalist Premium
    ========================================================================== */
 
-
-/* Custom scrollbar */
-
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--surface-muted);
-    border-radius: 5px;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--brand-primary);
-    border-radius: 5px;
+    background: rgba(30, 64, 175, 0.2); /* Blue 800 subtle */
+    border-radius: 20px;
+    transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-primary-hover);
+    background: rgba(37, 99, 235, 0.4); /* Blue 600 */
 }
 
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--brand-primary) var(--surface-muted);
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-
-/* Text selection */
-
-::selection {
-    background-color: rgba(0, 87, 217, 0.3);
-    color: var(--foreground);
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.3);
 }
 
-::-moz-selection {
-    background-color: rgba(0, 87, 217, 0.3);
-    color: var(--foreground);
+/* Smooth Scrolling Support for Lenis */
+html.lenis {
+    height: auto;
 }
 
-.dark ::selection {
-    background-color: rgba(59, 130, 246, 0.3);
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
 }
 
-.dark ::-moz-selection {
-    background-color: rgba(59, 130, 246, 0.3);
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================================================== */
+
+.gpu-accelerated {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+.optimize-text {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   EDITORIAL TYPOGRAPHY
+   ========================================================================== */
+
+p {
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    font-weight: 450; /* Slightly more weight for premium feel */
+}
+
+.text-editorial {
+    font-family: var(--font-heading);
+    letter-spacing: var(--tracking-tight);
 }
 
 

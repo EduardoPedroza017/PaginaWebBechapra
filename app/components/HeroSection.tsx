@@ -1,141 +1,190 @@
 "use client";
 
+import React, { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowRight, Mail, CheckCircle2, Sparkles } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 export default function HeroSection() {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+
+  const springY1 = useSpring(y1, { stiffness: 100, damping: 30 });
+  const springY2 = useSpring(y2, { stiffness: 100, damping: 30 });
+
   return (
-    <section className="relative w-full min-h-[85vh] flex items-center overflow-hidden transition-colors duration-300 bg-gradient-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-blue-950/50 dark:to-slate-900">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-3xl bg-blue-100/20 dark:bg-blue-600/10" />
-        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full blur-3xl bg-blue-50/30 dark:bg-blue-500/10" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-blue-100/20 to-transparent dark:from-blue-900/20 dark:to-transparent" />
+    <section 
+      ref={containerRef}
+      className="relative w-full min-h-screen flex items-center overflow-hidden transition-colors duration-500 bg-linear-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+    >
+      {/* Dynamic Background Decorations (Parallax) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div 
+          style={{ y: springY1 }}
+          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-[120px] bg-blue-100/30 dark:bg-blue-600/10" 
+        />
+        <motion.div 
+          style={{ y: springY2 }}
+          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full blur-[100px] bg-blue-50/40 dark:bg-blue-500/10" 
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-blue-900/10 dark:to-transparent" />
       </div>
 
-      <div className="relative w-full max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-12 sm:py-16 lg:py-20 2xl:py-24 z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
+      <motion.div 
+        style={{ opacity, scale }}
+        className="relative w-full max-w-7xl 2xl:max-w-[1440px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 z-10"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-7"
-          >
+          <div className="space-y-8">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-500 dark:border dark:border-blue-800/50"
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-blue-100/80 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 dark:border dark:border-blue-800/40 backdrop-blur-md"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span><TranslateText text="Soluciones empresariales integrales" /></span>
             </motion.div>
-              
-            {/* Main Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white">
-              <TranslateText text="Impulsamos" />
-              <br />
-              <span className="bg-gradient-to-r bg-clip-text text-transparent from-blue-600 via-blue-500 to-blue-700 dark:from-blue-500 dark:via-blue-600 dark:to-blue-700">
-                <TranslateText text="tu talento" />
-              </span>
-            </h1>
-            
-            {/* Description */}
-            <p className="text-lg sm:text-xl leading-relaxed max-w-xl text-slate-600 dark:text-slate-300">
-              <TranslateText text="Capital Humano, Desarrollo Organizacional y Management Services para cada etapa de tu crecimiento." />
-            </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            {/* Main Heading with Mask Reveal */}
+            <div className="overflow-hidden">
+              <motion.h1 
+                initial={{ y: 100 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl sm:text-6xl lg:text-8xl font-black leading-[1.05] tracking-tighter text-slate-900 dark:text-white"
+              >
+                <TranslateText text="Impulsamos" />
+                <br />
+                <span className="bg-linear-to-r bg-clip-text text-transparent from-blue-700 via-blue-500 to-blue-800 dark:from-blue-400 dark:via-blue-500 dark:to-blue-600">
+                  <TranslateText text="tu talento" />
+                </span>
+              </motion.h1>
+            </div>
+
+            {/* Description */}
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-lg sm:text-xl leading-relaxed max-w-xl text-slate-600 dark:text-slate-400"
+            >
+              <TranslateText text="Capital Humano, Desarrollo Organizacional y Management Services para cada etapa de tu crecimiento." />
+            </motion.p>
+
+            {/* CTAs with Advanced Magnetic Interaction */}
+            <div className="flex flex-col sm:flex-row gap-5 pt-4">
               <motion.a
                 href="#servicios"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="group inline-flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl shadow-xl transition-all duration-300 bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/30 dark:shadow-blue-600/20"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="group inline-flex items-center justify-center gap-3 font-bold px-10 py-5 rounded-2xl shadow-2xl transition-all duration-300 bg-blue-700 text-white hover:bg-blue-600 shadow-blue-700/30 dark:shadow-blue-500/20"
               >
                 <TranslateText text="Ver Servicios" />
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
               </motion.a>
-              
+
               <motion.a
                 href="#contacto"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl shadow-lg border-2 transition-all duration-300 bg-white text-slate-700 border-slate-100 hover:border-blue-200 hover:bg-blue-50 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-blue-600"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center justify-center gap-3 font-bold px-10 py-5 rounded-2xl transition-all duration-300 bg-white text-slate-900 border border-slate-200 hover:border-blue-400 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-800 dark:hover:border-blue-500 shadow-xl"
               >
-                <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <Mail className="w-5 h-5 text-blue-700 dark:text-blue-500" />
                 <TranslateText text="Contactar" />
               </motion.a>
             </div>
 
             {/* Stats */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 dark:border-slate-700"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="grid grid-cols-3 gap-8 pt-10 border-t border-slate-200 dark:border-slate-800"
             >
               {[
                 { value: "40+", label: "Años de experiencia" },
                 { value: "1,500+", label: "Clientes" },
                 { value: "98%", label: "Satisfacción" },
               ].map((stat, i) => (
-                <div key={i}>
-                  <div className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-black text-blue-600 dark:text-blue-400">
+                <div key={i} className="group cursor-default">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-blue-700 dark:text-blue-500 transition-transform group-hover:-translate-y-1">
                     {stat.value}
                   </div>
-                  <div className="text-[10px] sm:text-xs md:text-sm 2xl:text-base font-medium text-slate-500 dark:text-slate-400">
+                  <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-500 mt-1">
                     <TranslateText text={stat.label} />
                   </div>
                 </div>
               ))}
             </motion.div>
-          </motion.div>
+          </div>
 
-          {/* Image */}
+          {/* Image Side with Parallax Elements */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="hidden md:block relative"
           >
-            <div className="relative">
-              {/* Decorative elements */}
-              <div className="absolute -top-6 -left-6 w-24 h-24 rounded-3xl -z-10 bg-blue-200 dark:bg-blue-800/30" />
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 rounded-3xl -z-10 bg-blue-100 dark:bg-blue-700/20" />
-              
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/20">
+            <div className="relative group">
+              {/* Animated Floating Shapes */}
+              <motion.div 
+                animate={{ 
+                  y: [0, -20, 0],
+                  rotate: [0, 5, 0]
+                }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-12 -left-12 w-32 h-32 rounded-3xl -z-10 bg-blue-500/10 dark:bg-blue-500/20 blur-xl" 
+              />
+              <motion.div 
+                animate={{ 
+                  y: [0, 20, 0],
+                  rotate: [0, -5, 0]
+                }}
+                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-16 -right-16 w-40 h-40 rounded-full -z-10 bg-indigo-500/10 dark:bg-indigo-500/20 blur-2xl" 
+              />
+
+              <div className="relative rounded-[40px] overflow-hidden shadow-2xl shadow-blue-900/40 group-hover:shadow-blue-600/50 transition-shadow duration-500">
                 <Image
                   src="/web/image/hero/Flayers_Home_01100.jpg"
-                  width={600}
-                  height={500}
+                  width={800}
+                  height={1000}
                   alt="BAUSEN - Soluciones empresariales"
-                  className="object-cover w-full h-auto"
+                  className="object-cover w-full h-auto scale-105 group-hover:scale-100 transition-transform duration-700"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent dark:from-blue-950/60 dark:to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-blue-900/40 via-transparent to-transparent dark:from-slate-950/80 dark:via-transparent dark:to-transparent" />
               </div>
 
-              {/* Floating card */}
+              {/* Advanced Floating Card */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-                className="absolute -bottom-8 -left-8 rounded-2xl p-6 shadow-2xl backdrop-blur-sm bg-white/95 dark:bg-slate-900/95 dark:border dark:border-slate-700"
+                initial={{ x: 50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1, duration: 0.8 }}
+                className="absolute -bottom-10 -left-10 rounded-3xl p-8 shadow-2xl backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 transition-transform duration-300 hover:scale-105"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-green-100 dark:bg-green-900/40">
-                    <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-blue-600 text-white shadow-xl shadow-blue-600/30">
+                    <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 dark:text-white">
-                      <TranslateText text="Certificados" />
+                    <div className="text-xl font-black text-slate-900 dark:text-white leading-tight">
+                      <TranslateText text="Líderes Certificados" />
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                    <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1 uppercase tracking-widest">
                       REPSE · ISO · NOM
                     </div>
                   </div>
@@ -144,7 +193,7 @@ export default function HeroSection() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

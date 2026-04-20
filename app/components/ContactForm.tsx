@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare } from "lucide-react";
+import { Send, CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -60,16 +60,18 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} aria-live="polite" className="space-y-5">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid gap-6 sm:grid-cols-2">
         {fields.map((field) => (
-          <div key={field.name} className="relative">
-            <div className={`relative rounded-xl transition-all duration-200 ${
-              focused === field.name ? "ring-2 ring-blue-500/20" : ""
+          <div key={field.name} className="relative group">
+            <div className={`relative transition-all duration-500 ${
+              focused === field.name ? "scale-[1.02]" : "scale-100"
             }`}>
-              <field.icon className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${
-                focused === field.name ? "text-blue-600" : "text-slate-400"
-              }`} />
+              <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-lg transition-all duration-300 ${
+                focused === field.name ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-transparent text-slate-400"
+              }`}>
+                <field.icon className="w-4 h-4" />
+              </div>
               <input
                 name={field.name}
                 type={field.type}
@@ -78,25 +80,24 @@ export default function ContactForm() {
                 onFocus={() => setFocused(field.name)}
                 onBlur={() => setFocused(null)}
                 placeholder={field.placeholder}
-                className={`w-full pl-12 pr-4 py-4 rounded-xl border outline-none transition-all bg-slate-50 text-slate-900 placeholder-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500
+                className={`w-full pl-14 pr-4 py-4.5 rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
                   ${errors[field.name] 
-                    ? "border-red-400 bg-red-50/50 dark:bg-red-900/20 dark:border-red-500" 
+                    ? "border-rose-400 dark:border-rose-500/50 ring-4 ring-rose-500/5" 
                     : focused === field.name 
-                      ? "border-blue-500 bg-white dark:bg-slate-700 dark:border-blue-400" 
-                      : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600"
+                      ? "border-blue-600 dark:border-blue-500 ring-8 ring-blue-500/5 bg-white dark:bg-slate-800 shadow-xl shadow-blue-500/5" 
+                      : "border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
                   }`}
-                aria-invalid={!!errors[field.name]}
               />
             </div>
             <AnimatePresence>
               {errors[field.name] && (
                 <motion.p
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="mt-2 text-sm text-red-500 flex items-center gap-1"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="mt-2 pl-2 text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5"
                 >
-                  <AlertCircle className="w-4 h-4" />
+                  <AlertCircle className="w-3.5 h-3.5" />
                   {errors[field.name]}
                 </motion.p>
               )}
@@ -104,13 +105,15 @@ export default function ContactForm() {
           </div>
         ))}
 
-        <div className="sm:col-span-2 relative">
-          <div className={`relative rounded-xl transition-all duration-200 ${
-            focused === "message" ? "ring-2 ring-blue-500/20" : ""
+        <div className="sm:col-span-2 relative group">
+          <div className={`relative transition-all duration-500 ${
+            focused === "message" ? "scale-[1.01]" : "scale-100"
           }`}>
-            <MessageSquare className={`absolute left-4 top-4 w-5 h-5 transition-colors ${
-              focused === "message" ? "text-blue-600" : "text-slate-400"
-            }`} />
+            <div className={`absolute left-4 top-4 z-10 p-2 rounded-lg transition-all duration-300 ${
+              focused === "message" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-transparent text-slate-400"
+            }`}>
+              <MessageSquare className="w-4 h-4" />
+            </div>
             <textarea
               name="message"
               rows={5}
@@ -119,25 +122,24 @@ export default function ContactForm() {
               onFocus={() => setFocused("message")}
               onBlur={() => setFocused(null)}
               placeholder="¿En qué podemos ayudarte?"
-              className={`w-full pl-12 pr-4 py-4 rounded-xl border outline-none transition-all resize-y min-h-[140px] bg-slate-50 text-slate-900 placeholder-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500
+              className={`w-full pl-14 pr-4 py-4.5 rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-[160px] bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
                 ${errors.message 
-                  ? "border-red-400 bg-red-50/50 dark:bg-red-900/20 dark:border-red-500" 
+                  ? "border-rose-400 dark:border-rose-500/50 ring-4 ring-rose-500/5" 
                   : focused === "message" 
-                    ? "border-blue-500 bg-white dark:bg-slate-700 dark:border-blue-400" 
-                    : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600"
+                    ? "border-blue-600 dark:border-blue-500 ring-8 ring-blue-500/5 bg-white dark:bg-slate-800 shadow-xl shadow-blue-500/5" 
+                    : "border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
                 }`}
-              aria-invalid={!!errors.message}
             />
           </div>
           <AnimatePresence>
             {errors.message && (
               <motion.p
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="mt-2 text-sm text-red-500 flex items-center gap-1"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className="mt-2 pl-2 text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5"
               >
-                <AlertCircle className="w-4 h-4" />
+                <AlertCircle className="w-3.5 h-3.5" />
                 {errors.message}
               </motion.p>
             )}
@@ -145,17 +147,16 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* Submit and Status */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+      {/* Action Area */}
+      <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
         <motion.button
           type="submit"
           disabled={status === "sending"}
-          whileHover={{ scale: status === "sending" ? 1 : 1.02 }}
-          whileTap={{ scale: status === "sending" ? 1 : 0.98 }}
-          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
+          whileHover={{ scale: status === "sending" ? 1 : 1.05 }}
+          whileTap={{ scale: status === "sending" ? 1 : 0.95 }}
+          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-700 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-blue-700/30 hover:shadow-blue-600/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
         >
-          <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <span className="relative flex items-center gap-2">
+          <span className="relative flex items-center gap-3">
             {status === "sending" ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -163,8 +164,8 @@ export default function ContactForm() {
               </>
             ) : (
               <>
-                <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 <TranslateText text="Enviar mensaje" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
               </>
             )}
           </span>
@@ -176,10 +177,10 @@ export default function ContactForm() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-50 text-green-600 font-medium dark:bg-green-900/20 dark:text-green-400"
+              className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-100 dark:border-emerald-500/20"
             >
               <CheckCircle className="w-5 h-5" />
-              <TranslateText text="¡Mensaje enviado! Te contactaremos pronto." />
+              <TranslateText text="¡Mensaje enviado con éxito!" />
             </motion.div>
           )}
 
@@ -188,10 +189,10 @@ export default function ContactForm() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-500 font-medium dark:bg-red-900/20 dark:text-red-400"
+              className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-100 dark:border-rose-500/20"
             >
               <AlertCircle className="w-5 h-5" />
-              <TranslateText text="Ocurrió un error. Intenta de nuevo." />
+              <TranslateText text="Error al enviar. Intenta de nuevo." />
             </motion.div>
           )}
         </AnimatePresence>

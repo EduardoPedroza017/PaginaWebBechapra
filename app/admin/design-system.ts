@@ -10,65 +10,57 @@
 
 export const ADMIN_COLORS = {
   light: {
-    // Backgrounds más limpios y profesionales
-    background: 'bg-gradient-to-br from-white via-slate-50 to-slate-100',
-    cardBg: 'bg-white shadow-xl shadow-slate-200/70',
-    cardBorder: 'border-slate-200',
-    // Textos con mejor contraste
+    background: 'bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30',
+    cardBg: 'bg-white shadow-card border-slate-200/60',
+    cardBorder: 'border-slate-200/60',
     text: {
       primary: 'text-slate-900',
       secondary: 'text-slate-600',
       tertiary: 'text-slate-400',
       muted: 'text-slate-500'
     },
-    // Acentos más vibrantes y modernos
     accent: {
-      blue: 'text-blue-600',
-      purple: 'text-purple-600',
+      blue: 'text-blue-700',
+      purple: 'text-indigo-600',
       green: 'text-emerald-600',
-      orange: 'text-orange-600',
+      orange: 'text-amber-600',
       red: 'text-rose-600',
-      yellow: 'text-amber-600'
+      yellow: 'text-yellow-600'
     },
-    // Backgrounds para acentos
     accentBg: {
-      blue: 'bg-blue-50',
-      purple: 'bg-purple-50',
-      green: 'bg-emerald-50',
-      orange: 'bg-orange-50',
-      red: 'bg-rose-50',
-      yellow: 'bg-amber-50'
+      blue: 'bg-blue-50/50',
+      purple: 'bg-indigo-50/50',
+      green: 'bg-emerald-50/50',
+      orange: 'bg-amber-50/50',
+      red: 'bg-rose-50/50',
+      yellow: 'bg-yellow-50/50'
     }
   },
   dark: {
-    // Dark mode más suave y elegante
     background: 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950',
-    cardBg: 'bg-slate-900/90 backdrop-blur-xl',
-    cardBorder: 'border-slate-700/50',
-    // Textos optimizados para dark mode
+    cardBg: 'bg-slate-900/80 backdrop-blur-xl border-slate-800/50 shadow-elevated',
+    cardBorder: 'border-slate-800/50',
     text: {
       primary: 'text-slate-50',
       secondary: 'text-slate-300',
       tertiary: 'text-slate-500',
       muted: 'text-slate-400'
     },
-    // Acentos más brillantes en dark mode
     accent: {
       blue: 'text-blue-400',
-      purple: 'text-purple-400',
+      purple: 'text-indigo-400',
       green: 'text-emerald-400',
-      orange: 'text-orange-400',
+      orange: 'text-amber-400',
       red: 'text-rose-400',
-      yellow: 'text-amber-400'
+      yellow: 'text-yellow-400'
     },
-    // Backgrounds sutiles para dark mode
     accentBg: {
-      blue: 'bg-blue-950/40',
-      purple: 'bg-purple-950/40',
-      green: 'bg-emerald-950/40',
-      orange: 'bg-orange-950/40',
-      red: 'bg-rose-950/40',
-      yellow: 'bg-amber-950/40'
+      blue: 'bg-blue-900/20',
+      purple: 'bg-indigo-900/20',
+      green: 'bg-emerald-900/20',
+      orange: 'bg-amber-900/20',
+      red: 'bg-rose-900/20',
+      yellow: 'bg-yellow-900/20'
     }
   }
 };
@@ -78,8 +70,8 @@ export const ADMIN_COLORS = {
 // ============================================================================
 
 export const CARD_STYLES = {
-  light: 'bg-white border-slate-200 rounded-2xl shadow-xl shadow-slate-200/70 p-6 border transition-all duration-300 hover:shadow-2xl hover:shadow-slate-300/70 hover:-translate-y-0.5',
-  dark: 'bg-slate-900/90 backdrop-blur-xl border-slate-700/50 rounded-2xl shadow-xl shadow-slate-950/50 p-6 border transition-all duration-300 hover:shadow-2xl hover:shadow-slate-950/70'
+  light: 'bg-white border-slate-200/60 rounded-2xl shadow-card p-6 border transition-all duration-300 hover:shadow-elevated hover:-translate-y-0.5',
+  dark: 'bg-slate-900/80 backdrop-blur-xl border-slate-800/50 rounded-2xl shadow-elevated p-6 border transition-all duration-300 hover:shadow-blue-900/20'
 };
 
 export const STAT_CARD_GRADIENTS = {
@@ -119,24 +111,24 @@ export const STAT_CARD_GRADIENTS = {
 
 export const BUTTON_STYLES = {
   primary: {
-    light: 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-600/40 border border-blue-700/50',
-    dark: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-600/30 border border-blue-600/50'
+    light: 'bg-blue-700 hover:bg-blue-600 text-white shadow-brand hover:shadow-lg transition-all duration-200 active:scale-95',
+    dark: 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20 hover:shadow-blue-500/20 transition-all duration-200 active:scale-95'
   },
   secondary: {
-    light: 'bg-white hover:bg-slate-50 text-slate-700 shadow-md hover:shadow-lg border border-slate-200',
-    dark: 'bg-slate-800 hover:bg-slate-700 text-slate-100 shadow-md hover:shadow-lg border border-slate-700'
+    light: 'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200',
+    dark: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700'
   },
   success: {
-    light: 'bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-600/40 border border-emerald-700/50',
-    dark: 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-600/30 border border-emerald-600/50'
+    light: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all duration-200 active:scale-95',
+    dark: 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/20 transition-all duration-200 active:scale-95'
   },
   danger: {
-    light: 'bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white shadow-lg shadow-rose-500/30 hover:shadow-xl hover:shadow-rose-600/40 border border-rose-700/50',
-    dark: 'bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-lg shadow-rose-500/20 hover:shadow-xl hover:shadow-rose-600/30 border border-rose-600/50'
+    light: 'bg-rose-600 hover:bg-rose-500 text-white shadow-sm transition-all duration-200 active:scale-95',
+    dark: 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/20 transition-all duration-200 active:scale-95'
   },
   ghost: {
-    light: 'bg-transparent hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200',
-    dark: 'bg-transparent hover:bg-slate-800 text-slate-300 hover:text-slate-100 border border-transparent hover:border-slate-700'
+    light: 'bg-transparent hover:bg-slate-100 text-slate-600 transition-all duration-200',
+    dark: 'bg-transparent hover:bg-slate-800 text-slate-400 transition-all duration-200'
   }
 };
 

@@ -3,208 +3,181 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Home, Newspaper, Mic2, Info, UserCheck } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Home, Newspaper, Mic2, Info, UserCheck, Menu, X, ArrowRight } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import { TranslateText } from "@/components/TranslateText";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+  const [scrolled, setScrolled] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string>("/web/image/logo/bausen-logo.png");
   const defaultLogo = "/web/image/logo/bausen-logo.png";
 
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
     };
-  }, [mobileMenuOpen]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
-    Promise.resolve().then(() => setLogoUrl("/web/image/logo/bausen-logo.png"));
-  }, []);
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
+  }, [mobileMenuOpen]);
 
   return (
     <>
-      <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 bg-white/95 backdrop-blur-md border-gray-100 dark:bg-slate-950/95 dark:border-slate-800`}>
-        <div className="max-w-[1400px] mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 2xl:max-w-[1600px] 2xl:h-20">
-          <Link href="/" className="flex items-center z-40">
-            <Image
-              src={logoUrl}
-              alt="BAUSEN"
-              width={100}
-              height={28}
-              priority
-              className="h-7 w-auto block 2xl:h-9 object-contain"
-              onError={() => setLogoUrl(defaultLogo)}
-            />
+      <header 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled 
+            ? "py-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-blue-900/5 border-b border-slate-200/50 dark:border-slate-800/50" 
+            : "py-5 bg-transparent border-b border-transparent"
+        }`}
+      >
+        <div className="max-w-7xl 2xl:max-w-[1440px] 3xl:max-w-[1600px] mx-auto flex items-center justify-between px-6 lg:px-8">
+          <Link href="/" className="relative z-50 group">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="transition-transform duration-300"
+            >
+              <Image
+                src={logoUrl}
+                alt="BAUSEN"
+                width={120}
+                height={32}
+                priority
+                className={`h-8 w-auto transition-all duration-500 ${scrolled ? "scale-90" : "scale-100"}`}
+                onError={() => setLogoUrl(defaultLogo)}
+              />
+            </motion.div>
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-            <Link href="/" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
-              <TranslateText text="Inicio" />
-            </Link>
-            
-            <Link href="/eventos" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
-              <TranslateText text="Eventos" />
-            </Link>
-            
-            <Link href="/training-center" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
-              <TranslateText text="Centro de Formación" />
-            </Link>
-            
-            <Link href="/servicios" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-500">
-              <TranslateText text="Servicios" />
-            </Link>
-            
-            <Link href="/noticias" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
-              <TranslateText text="Noticias" />
-            </Link>
-            <Link href="/prensa" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
-              <TranslateText text="Prensa" />
-            </Link>
-            <Link href="/acerca-de" className="font-medium text-sm relative pb-1 transition-colors after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400">
-              <TranslateText text="Acerca de" />
-            </Link>
-            <a href="https://bausen.mx" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2 text-white font-semibold text-sm shadow transition-all hover:bg-blue-700 hover:-translate-y-0.5 active:bg-blue-800 whitespace-nowrap">
-              <TranslateText text="¿Eres colaborador?" />
-            </a>
-            <div className="flex items-center gap-2 ml-2">
-              <ThemeToggle />
-              <LanguageSwitcher />
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+            {[
+              { name: "Inicio", href: "/" },
+              { name: "Eventos", href: "/eventos" },
+              { name: "Centro de Formación", href: "/training-center" },
+              { name: "Servicios", href: "/servicios" },
+              { name: "Noticias", href: "/noticias" },
+              { name: "Prensa", href: "/prensa" },
+              { name: "Acerca de", href: "/acerca-de" },
+            ].map((link) => (
+              <Link 
+                key={link.name}
+                href={link.href} 
+                className="px-4 py-2 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300 relative group"
+              >
+                <TranslateText text={link.name} />
+                <span className="absolute bottom-1.5 left-4 right-4 h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              </Link>
+            ))}
+
+            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-4" />
+
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 bg-slate-100/50 dark:bg-slate-900/50 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-800/50">
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </div>
+              
+              <motion.a 
+                href="https://bausen.mx" 
+                target="_blank" 
+                rel="noreferrer" 
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-blue-700 hover:bg-blue-600 text-white font-black text-xs uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-blue-700/20 transition-all"
+              >
+                <TranslateText text="Colaboradores" />
+              </motion.a>
             </div>
           </nav>
 
-          {/* Theme toggle - always visible on mobile */}
-          <div className="md:hidden mr-2">
-            <ThemeToggle />
-          </div>
-
           {/* Mobile menu button */}
-          <button
-            className="flex items-center justify-center p-2 rounded-lg transition-colors z-40 md:hidden text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <ThemeToggle />
+            <button
+              className={`p-3 rounded-2xl transition-all duration-300 ${
+                mobileMenuOpen 
+                  ? "bg-blue-700 text-white" 
+                  : "bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white"
+              }`}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Mobile menu overlay */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-60 overflow-y-auto md:hidden bg-white dark:bg-slate-950"
-        >
-          <div className="flex items-center justify-between p-4 border-b sticky top-0 z-10 border-slate-100 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
-            <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-              <Image src={logoUrl} alt="BAUSEN" width={100} height={28} className="h-7 w-auto block" onError={() => setLogoUrl(defaultLogo)} />
-            </Link>
-            <button
-              className="bg-slate-100 p-2 rounded-full transition-colors text-slate-500 hover:bg-slate-200 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-blue-400"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Cerrar menú"
-            >
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 md:hidden bg-white dark:bg-slate-950 pt-24 px-6"
+          >
+            <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+            
+            <nav className="flex flex-col gap-3">
+              {[
+                { name: "Inicio", icon: <Home size={20} />, href: "/" },
+                { name: "Eventos", icon: <ArrowRight size={20} />, href: "/eventos" },
+                { name: "Centro de Formación", icon: <Mic2 size={20} />, href: "/training-center" },
+                { name: "Servicios", icon: <Newspaper size={20} />, href: "/servicios" },
+                { name: "Noticias", icon: <Newspaper size={20} />, href: "/noticias" },
+                { name: "Prensa", icon: <Mic2 size={20} />, href: "/prensa" },
+                { name: "Acerca de", icon: <Info size={20} />, href: "/acerca-de" },
+              ].map((link, i) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Link 
+                    href={link.href} 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 transition-all"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                      {link.icon}
+                    </div>
+                    <span className="font-black text-lg tracking-tight"><TranslateText text={link.name} /></span>
+                  </Link>
+                </motion.div>
+              ))}
 
-          <nav className="flex flex-col p-4 pb-20 space-y-2">
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-              <Link href="/" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Home className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Inicio" /></span>
-              </Link>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="pt-6"
+              >
+                <a 
+                  href="https://bausen.mx" 
+                  className="flex items-center justify-center gap-3 w-full p-6 rounded-[2rem] bg-blue-700 text-white font-black text-lg shadow-2xl shadow-blue-700/30 active:scale-95 transition-all"
+                >
+                  <UserCheck size={24} />
+                  <TranslateText text="Acceso Colaboradores" />
+                </a>
+              </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
-              <Link href="/eventos" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Image src="/image/icon/ServiciosEspecializados_Icon_Color@2x.png" width={24} height={24} alt="" className="w-5 h-5 object-contain" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Eventos" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-              <Link href="/training-center" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Mic2 className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Centro de Formación" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
-              <Link href="/servicios" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Newspaper className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Servicios" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-              <Link href="/noticias" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Newspaper className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Noticias" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}>
-              <Link href="/prensa" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Mic2 className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Prensa" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-              <Link href="/acerca-de" className="flex items-center gap-4 p-4 rounded-2xl transition-all bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-400" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm dark:bg-slate-800">
-                  <Info className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-lg"><TranslateText text="Acerca de" /></span>
-              </Link>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="pt-4">
-              <a href="https://bausen.com.mx" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/30 active:scale-95 transition-all">
-                <UserCheck className="w-5 h-5" />
-                <TranslateText text="¿Eres colaborador?" />
-              </a>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex justify-center gap-6 pt-6">
-              <ThemeToggle />
-              <LanguageSwitcher />
-            </motion.div>
-          </nav>
-        </motion.div>
-      )}
+              <div className="flex justify-center gap-6 pt-10">
+                <LanguageSwitcher />
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
