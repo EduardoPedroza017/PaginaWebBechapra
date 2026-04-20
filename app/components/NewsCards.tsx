@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
 import { OptimizedImage } from '@/lib/images/image-utils';
+import { Calendar, ArrowRight } from 'lucide-react';
+import { CardFlat } from '@/components/ui/CardFlat';
 
 interface NewsItem {
   title: string;
-  subtitle: string;
   description: string;
   date: string;
   image_url?: string;
@@ -16,154 +17,47 @@ interface NewsItem {
   active?: boolean;
 }
 
-// Create URL-friendly slugs from titles
 const slugify = (s: string) =>
   s
-    ? s
-        .toString()
-        .toLowerCase()
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036F]/g, "")
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-")
+    ? s.toString().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036F]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-")
     : "";
-
-const NewsSkeleton = () => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700"
-        >
-          <div className="w-full h-48 bg-slate-200 dark:bg-slate-800 animate-pulse" />
-          <div className="p-6 space-y-4">
-            <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-1/4" />
-            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-3/4" />
-            <div className="space-y-2">
-              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
-              <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-5/6" />
-            </div>
-            <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-32" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 export default function NewsCards() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        setError(null);
-        const apiBase = process.env.NEXT_PUBLIC_API_URL ? String(process.env.NEXT_PUBLIC_API_URL).replace(/\/$/, '') : '';
-        const endpoint = apiBase ? `${apiBase}/api/news` : '/api/news';
-        console.debug('Fetching news from endpoint:', endpoint);
-        const response = await fetch(endpoint);
-        console.debug('news fetch status:', response.status, response.statusText);
-        if (!response.ok) {
-          const text = await response.text().catch(() => '');
-          throw new Error(`HTTP ${response.status} ${response.statusText} ${text}`);
-        }
+        const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
+        const response = await fetch(`${apiBase}/api/news`);
         const data = await response.json();
-        console.debug('news raw response:', data);
-
-        // API may return: raw array OR { news: [...] } OR { items: [...] } OR paginated result
-        const extractItems = (d: unknown): NewsItem[] => {
-          if (Array.isArray(d)) return d as NewsItem[];
-          if (d && typeof d === 'object') {
-            const obj = d as Record<string, unknown>;
-            if (Array.isArray(obj.news)) return obj.news as NewsItem[];
-            if (Array.isArray(obj.items)) return obj.items as NewsItem[];
-            // Some paginated responses may place results under other keys
-            // attempt common keys without using `any`
-            const possible = ['results', 'data', 'rows'];
-            for (const key of possible) {
-              if (Array.isArray(obj[key])) return obj[key] as NewsItem[];
-            }
-          }
-          return [];
-        };
-
-        const items: NewsItem[] = extractItems(data);
-
-        // Filter only active/published news and sort by date desc, then take first 3
-        const activeItems = items.filter((it: NewsItem) => {
-          // support backend using `status: 'active'` or boolean `active: true`
-          if (typeof it.status === 'string') return it.status === 'active';
-          if (typeof it.active === 'boolean') return it.active === true;
-          // fallback: include if no status/active field
-          return true;
-        });
-
-        type RawNews = Record<string, unknown>;
-
-        const getDateStr = (it: NewsItem | RawNews) => {
-          if (typeof (it as NewsItem).date === 'string' && (it as NewsItem).date) return (it as NewsItem).date;
-          const raw = it as RawNews;
-          if (typeof raw.published_date === 'string') return raw.published_date as string;
-          if (typeof raw.publishedAt === 'string') return raw.publishedAt as string;
-          if (typeof raw.createdAt === 'string') return raw.createdAt as string;
-          return '';
-        };
-
-        const sorted = activeItems.sort((a: NewsItem, b: NewsItem) => {
-          const da = getDateStr(a);
-          const db = getDateStr(b);
-          return new Date(db).getTime() - new Date(da).getTime();
-        });
+        const items = Array.isArray(data) ? data : (data.news || data.items || []);
+        
+        const sorted = items.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setNews(sorted.slice(0, 3));
       } catch (err) {
         console.error('Error fetching news:', err);
-        setError(String((err as Error).message || 'Error fetching news'));
       } finally {
         setLoading(false);
       }
     };
-
     fetchNews();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full">
-              <TranslateText text="Blog y noticias" />
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              <TranslateText text="Últimas Noticias" />
-            </h2>
-          </motion.div>
+    <div className="py-20">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white italic tracking-tighter">
+            <TranslateText text="Últimas Noticias" />
+          </h2>
         </div>
 
         {loading ? (
-          <NewsSkeleton />
-        ) : error ? (
-          <div className="text-center text-red-400">{error}</div>
-        ) : news.length === 0 ? (
-          <div className="text-center text-slate-400">No hay noticias disponibles.</div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => <div key={i} className="h-96 rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse" />)}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {news.map((item, index) => (
@@ -172,84 +66,41 @@ export default function NewsCards() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group"
+                transition={{ delay: index * 0.1 }}
               >
-                <div className="bg-white dark:bg-slate-800/90 rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-900/20 transition-all duration-300">
-                  {item.image_url && (
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <OptimizedImage
-                        src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
-                        alt={item.title}
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        priority={index === 0}
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                      {formatDate(item.date)}
-                    </p>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
-                      {item.description}
-                    </p>
-                    <Link
-                      href={`/noticias/${slugify(item.title)}`}
-                      className="inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:gap-2 transition-all"
-                    >
-                      <TranslateText text="Leer más" />
-                      <svg
-                        className="w-4 h-4 ml-2 group-hover:ml-3 transition-all"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
+                <CardFlat>
+                  <Link href={`/noticias/${slugify(item.title)}`} className="h-full flex flex-col">
+                    <div className="relative h-56 overflow-hidden bg-slate-50 dark:bg-slate-800">
+                      {item.image_url && (
+                        <OptimizedImage
+                          src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
+                          alt={item.title}
+                          className="object-cover w-full h-full"
                         />
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
+                      )}
+                    </div>
+                    <div className="p-8 flex flex-col flex-1">
+                      <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4 font-black text-[10px] uppercase tracking-widest">
+                        <Calendar size={12} />
+                        {new Date(item.date).toLocaleDateString()}
+                      </div>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 leading-tight">
+                        {item.title}
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-8 flex-1 text-justify">
+                        {item.description}
+                      </p>
+                      <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">
+                        Leer más <ArrowRight size={14} />
+                      </div>
+                    </div>
+                  </Link>
+                </CardFlat>
               </motion.div>
             ))}
           </div>
         )}
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center mt-12"
-        >
-          <Link
-            href="/noticias"
-            className="inline-flex items-center px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-lg hover:shadow-xl"
-          >
-            <TranslateText text="Ver todas las noticias" />
-            <svg
-              className="w-5 h-5 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </Link>
-        </motion.div>
       </div>
-    </section>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
 import { OptimizedImage } from '@/lib/images/image-utils';
 import { FileText, ArrowRight, Calendar } from 'lucide-react';
+import { CardFlat } from '@/components/ui/CardFlat';
 
 interface PressItem {
   id: string;
@@ -87,39 +88,38 @@ export default function PressCards() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group"
               >
-                <Link
-                  href={item.link || '/prensa'}
-                  className="block h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-                >
-                  <div className="relative h-48 overflow-hidden bg-slate-50 dark:bg-slate-800">
-                    {item.image_url && (
+                <CardFlat>
+                  <Link href={item.link || '/prensa'} className="h-full flex flex-col">
+                    <div className="relative h-48 overflow-hidden bg-slate-50 dark:bg-slate-800">
+                      {item.image_url && (
                         <OptimizedImage
                             src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
                             alt={item.title}
-                            className="object-cover transition-transform duration-500 group-hover:scale-105 w-full h-full"
+                            className="object-cover w-full h-full"
                         />
-                    )}
-                    <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-md flex items-center justify-center text-blue-700 shadow-sm">
-                      <FileText size={16} />
+                      )}
+                      <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-md flex items-center justify-center text-blue-700 shadow-sm">
+                        <FileText size={16} />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="p-8 flex flex-col h-full">
-                    <div className="flex items-center gap-3 text-blue-700 dark:text-blue-400 mb-4 font-black text-[10px] uppercase tracking-widest">
-                      <Calendar size={14} />
-                      {new Date(item.date).toLocaleDateString()}
+                    <div className="p-8 flex flex-col flex-1">
+                      <div className="flex items-center gap-3 text-blue-700 dark:text-blue-400 mb-4 font-black text-[10px] uppercase tracking-widest">
+                        <Calendar size={14} />
+                        {new Date(item.date).toLocaleDateString()}
+                      </div>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 line-clamp-2 italic">
+                          {item.title}
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-8 flex-1 text-justify">
+                          {item.excerpt}
+                      </p>
+                      <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">
+                          Leer más <ArrowRight size={14} />
+                      </div>
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 line-clamp-2 italic">
-                        {item.title}
-                    </h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-8 flex-1 text-justify">
-                        {item.excerpt}
-                    </p>
-                    <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">
-                        Leer más <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                </CardFlat>
               </motion.div>
             ))}
           </div>
