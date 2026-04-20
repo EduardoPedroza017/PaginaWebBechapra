@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { trainingFeatures } from "./data/homeData";
 import { TranslateText } from "@/components/TranslateText";
 import Link from "next/link";
+import Section from "./Section";
 
 const imageMap: Record<string, string> = {
   eventos: "/web/image/traniing/evento.jfif",
@@ -39,72 +40,50 @@ export default function TrainingCenterSection() {
     return stopAutoplay;
   }, []);
 
-  const ActiveIcon = iconMap[trainingFeatures[active].icon];
+  const ActiveIcon = iconMap[trainingFeatures[active].icon as keyof typeof iconMap];
 
   return (
-    <section id="training-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="text-center max-w-3xl mx-auto mb-12"
-      >
-        <span className="inline-flex items-center gap-2 font-semibold text-sm px-4 py-2 rounded-full mb-4 text-blue-700 bg-blue-100 dark:bg-blue-900/40 dark:text-blue-500">
+    <Section variant="white" size="lg">
+      <div className="text-center max-w-4xl mx-auto mb-20">
+        <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4 border border-blue-100 dark:border-blue-800/50">
           <GraduationCap className="w-4 h-4" />
-          <TranslateText text="Formación de talento" />
+          <TranslateText text="Formación de Talento" />
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
+        <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter italic">
           Bausen Training Center
         </h2>
-        <p className="text-lg max-w-xl mx-auto text-slate-600 dark:text-slate-300">
-          <TranslateText text="Formamos y conectamos el talento del futuro con las mejores oportunidades" />
+        <p className="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed text-justify md:text-center max-w-2xl mx-auto">
+          <TranslateText text="Formamos y conectamos el talento del futuro con las mejores oportunidades estratégicas de crecimiento." />
         </p>
-      </motion.div>
+      </div>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div
-          className="relative rounded-3xl overflow-hidden shadow-xl bg-white dark:bg-slate-800/80 dark:border dark:border-slate-700"
+          className="relative rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
           onMouseEnter={stopAutoplay}
           onMouseLeave={startAutoplay}
         >
           <div className="grid lg:grid-cols-2">
-            {/* Left: Image/Visual (clickable card) */}
             <Link
-              href="http://localhost:3000/training-center"
-              className="relative min-h-[300px] lg:min-h-[500px] bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden block"
+              href="/training-center"
+              className="relative min-h-[300px] lg:min-h-[500px] bg-blue-700 overflow-hidden block"
             >
-              {/* <div className="absolute inset-0 bg-[url('/image/pattern.svg')] opacity-10" /> */}
-
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 z-10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 z-10 bg-blue-700"
                 >
-                  <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6">
-                    <ActiveIcon className="w-12 h-12" />
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-center">
+                  <ActiveIcon className="w-16 h-16 mb-6 opacity-80" />
+                  <h3 className="text-2xl font-black tracking-tight italic text-center">
                     {trainingFeatures[active].label}
                   </h3>
                 </motion.div>
               </AnimatePresence>
-              {/* Progress bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-20">
-                <motion.div
-                  key={active}
-                  className="h-full bg-white"
-                  initial={{ width: "0%" }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 5, ease: "linear" }}
-                />
-              </div>
-
-              {/* Background image */}
+              
               <img
                 src={imageMap[trainingFeatures[active].id] || "/web/image/traniing/evento.jfif"}
                 alt={trainingFeatures[active].label}
@@ -112,68 +91,53 @@ export default function TrainingCenterSection() {
               />
             </Link>
 
-            {/* Right: Content */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-800/80">
-              {/* Tabs */}
-              <div className="flex flex-wrap gap-2 mb-8">
+            <div className="p-12 lg:p-16 flex flex-col justify-center">
+              <div className="flex flex-wrap gap-2 mb-10">
                 {trainingFeatures.map((feature, i) => {
-                  const Icon = iconMap[feature.icon];
+                  const Icon = iconMap[feature.icon as keyof typeof iconMap];
                   return (
                     <button
                       key={feature.id}
                       onClick={() => setActive(i)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${active === i
-                          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
-                          : "text-slate-600 hover:bg-slate-200 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                      className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${active === i
+                          ? "bg-blue-700 text-white"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-800"
                         }`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-3 h-3" />
                       <TranslateText text={feature.label} />
                     </button>
                   );
                 })}
               </div>
 
-              {/* Content */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
+                  <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-6 tracking-tight italic">
                     <TranslateText text={trainingFeatures[active].label} />
                   </h3>
-                  <p className="text-lg mb-8 leading-relaxed text-slate-600 dark:text-slate-300">
+                  <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed mb-10 text-justify">
                     <TranslateText text={trainingFeatures[active].description} />
                   </p>
                   <Link
-                    href="http://localhost:3000/training-center"
-                    className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+                    href="/training-center"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-blue-800 transition-all group"
                   >
                     <TranslateText text="Más información" />
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </motion.div>
               </AnimatePresence>
-
-              {/* Dots */}
-              <div className="flex gap-2 mt-8">
-                {trainingFeatures.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActive(i)}
-                    className={`h-2 rounded-full transition-all ${active === i ? "bg-blue-600 w-8" : "w-2 hover:bg-slate-300 bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-                      }`}
-                  />
-                ))}
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
