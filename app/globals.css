@@ -44,12 +44,19 @@ body {
     min-height: 100vh;
     /* Ajuste responsivo base */
     font-size: clamp(0.9rem, 0.8vw + 0.5rem, 1rem);
+    /* Tipografía global: cuerpo */
+    font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);
 }
 
 /* Tipografía Fluida */
 h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; line-height: 1.1; }
 h2 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.2; }
 h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 700; color: var(--brand-accent); }
+
+/* Headings use the heading variable (Montserrat) */
+h1,h2,h3,h4,h5,h6 {
+    font-family: var(--font-heading, 'Montserrat', ui-sans-serif, system-ui, sans-serif);
+}
 
 p {
     line-height: 1.7;
