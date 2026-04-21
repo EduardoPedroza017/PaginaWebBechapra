@@ -35,6 +35,12 @@
     --surface-muted: #1e293b;
 }
 
+/* When a Section intentionally overlaps a Hero, hide small decorative accent lines
+   used by filters/cards to avoid visible seams. Sections set data-overlap="true" */
+[data-overlap="true"] .accent-line {
+    display: none !important;
+}
+
 html { scroll-behavior: smooth; }
 
 body {

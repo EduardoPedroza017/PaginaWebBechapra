@@ -71,7 +71,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
         className="relative bg-gradient-to-br from-white to-slate-50 dark:from-slate-800/80 dark:to-slate-900/50 border border-gray-200 dark:border-slate-700/50 rounded-3xl p-6 md:p-8 shadow-lg shadow-blue-900/5 backdrop-blur-sm transition-all duration-300"
       >
         {/* Accent Gradient */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 rounded-t-3xl" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 rounded-t-3xl accent-line" />
 
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center relative z-10">
           {/* Search Input */}
@@ -193,7 +193,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
 
         {/* Decorative Elements */}
         <motion.div
-          className="absolute top-0 right-0 w-1 h-12 bg-gradient-to-b from-blue-400 to-transparent rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"
+          className="absolute top-0 right-0 w-1 h-12 bg-gradient-to-b from-blue-400 to-transparent rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 accent-line"
           animate={{ opacity: [0, 0.5, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         />

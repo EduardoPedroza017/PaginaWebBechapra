@@ -34,13 +34,21 @@ export default function Section({
     lg: "py-24 sm:py-32 lg:py-48",
   };
   
+  const isOverlap = /-mt-/.test(className);
+  const effectiveBg = isOverlap ? "bg-transparent" : bgStyles[variant];
+
   return (
     <section
       id={id}
-      className={`relative w-full overflow-hidden transition-colors duration-500 ${bgStyles[variant]} ${className}`}
+      data-overlap={isOverlap}
+      className={`relative w-full overflow-hidden transition-colors duration-500 ${effectiveBg} ${className}`}
     >
-      {/* Decorative Gradient Overlays for smooth transitions */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-inherit to-transparent pointer-events-none z-10 opacity-60" />
+      {/* Decorative Gradient Overlays for smooth transitions
+          If the section is intentionally pulled up with a negative top margin (e.g. -mt-16)
+          we skip the top overlay to avoid a visible seam when overlapping a Hero. */}
+      { !isOverlap && (
+        <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-inherit to-transparent pointer-events-none z-10 opacity-60" />
+      ) }
       <div className="absolute bottom-0 left-0 w-full h-32 bg-linear-to-t from-inherit to-transparent pointer-events-none z-10 opacity-60" />
 
       <motion.div 
