@@ -71,7 +71,7 @@ export default function SolutionsGrid({
                 onMouseLeave={() => setHoveredCard(null)}
                 className={`relative p-8 rounded-3xl border-[2.5px] cursor-pointer overflow-hidden transition-all duration-400 ${
                   isHovered
-                    ? "border-blue-600 dark:border-blue-500 shadow-xl shadow-blue-600/20 dark:shadow-blue-900/30 -translate-y-4 scale-[1.025]"
+                    ? "border-blue-600 dark:border-slate-700 shadow-xl shadow-blue-600/20 dark:shadow-slate-900/30 -translate-y-4 scale-[1.025]"
                     : "border-blue-200 dark:border-slate-700 shadow-md"
                 } bg-gradient-to-br ${cardBgColors[i % cardBgColors.length]}`}
               >

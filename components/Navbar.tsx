@@ -29,11 +29,11 @@ export default function Navbar() {
 
   return (
     <>
-      <header 
+      <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled 
-            ? "py-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-blue-900/5 border-b border-slate-200/50 dark:border-slate-800/50" 
-            : "py-5 bg-transparent border-b border-transparent"
+          scrolled
+            ? "py-3 bg-white dark:bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-blue-900/5 border-b border-slate-200/50 dark:border-slate-800/50"
+            : "py-5 bg-white dark:bg-transparent border-b border-transparent"
         }`}
       >
         <div className="max-w-7xl 2xl:max-w-[1440px] 3xl:max-w-[1600px] mx-auto flex items-center justify-between px-6 lg:px-8">
@@ -66,9 +66,9 @@ export default function Navbar() {
               { name: "Prensa", href: "/prensa" },
               { name: "Acerca de", href: "/acerca-de" },
             ].map((link) => (
-              <Link 
+              <Link
                 key={link.name}
-                href={link.href} 
+                href={link.href}
                 className="px-4 py-2 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300 relative group"
               >
                 <TranslateText text={link.name} />

@@ -32,14 +32,14 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
+            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-slate-900/30"
           >
             <HelpCircle className="w-8 h-8 text-white" />
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Preguntas" />{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="frecuentes" />
             </span>
           </h2>
@@ -64,7 +64,7 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
                 <motion.div
                   animate={{ rotate: openFaq === i ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50 rounded-full flex items-center justify-center"
+                  className="shrink-0 w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-100 dark:from-slate-900/50 dark:to-slate-800/50 rounded-full flex items-center justify-center"
                 >
                   <ChevronDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </motion.div>

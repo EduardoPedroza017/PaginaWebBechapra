@@ -32,7 +32,7 @@ export default function TalentHero({
   ctaLink = "#contacto",
 }: TalentHeroProps) {
   return (
-    <AnimatedHeroBackground gradientClass="bg-gradient-to-br from-indigo-950 via-blue-900 to-purple-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
+    <AnimatedHeroBackground gradientClass="bg-linear-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
       {/* Floating Icons personalizados para TalentHero */}
       {[...Array(5)].map((_, i) => (
         <motion.div
@@ -57,9 +57,10 @@ export default function TalentHero({
         </motion.div>
       ))}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-30 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
           {/* Content */}
+          <div className="absolute inset-0 bg-black/10 dark:hidden pointer-events-none z-10" />
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,7 +89,7 @@ export default function TalentHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 dark:from-blue-400/20 dark:to-blue-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 dark:border-blue-500/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-500/20 to-blue-600/20 dark:from-slate-700/20 dark:to-slate-600/20 backdrop-blur-sm rounded-full border border-blue-400/30 dark:border-slate-700/30 mb-6"
             >
               <Sparkles size={16} className="text-blue-400 dark:text-blue-300" />
               <span className="text-blue-200 dark:text-blue-300 text-sm font-medium">
@@ -140,7 +141,7 @@ export default function TalentHero({
           >
             <div className="relative">
               {/* Glow Effect */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/25 to-cyan-500/25 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-linear-to-r from-blue-500/25 to-cyan-500/25 rounded-3xl blur-2xl" />
 
               <div className="relative w-full max-w-[550px] h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 <Image
@@ -151,7 +152,7 @@ export default function TalentHero({
                   priority
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-indigo-900/40 to-transparent" />
               </div>
 
               {/* Floating Stats */}
@@ -161,7 +162,7 @@ export default function TalentHero({
                 className="absolute -bottom-4 -left-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-linear-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-sm">85%</span>
                   </div>
                   <div>

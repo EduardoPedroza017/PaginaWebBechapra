@@ -35,7 +35,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Qué" />{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="incluimos" />
             </span>
           </h2>
@@ -53,11 +53,11 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="group relative bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-50/30 dark:from-slate-800 dark:via-blue-950/30 dark:to-slate-800 rounded-3xl p-8 border border-blue-100 dark:border-slate-700 shadow-lg hover:shadow-2xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-500 cursor-pointer overflow-hidden"
+                className="group relative bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-50/30 dark:from-slate-800 dark:via-slate-950/30 dark:to-slate-800 rounded-3xl p-8 border border-blue-100 dark:border-slate-700 shadow-lg hover:shadow-2xl hover:border-blue-300 dark:hover:border-slate-600 transition-all duration-500 cursor-pointer overflow-hidden"
               >
                 {/* Top Accent */}
                 <motion.div
-                  className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 dark:from-blue-600 dark:via-blue-500 dark:to-blue-600 rounded-t-3xl"
+                  className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-t-3xl"
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
@@ -69,7 +69,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0] }}
                     transition={{ duration: 0.5 }}
-                    className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20 group-hover:shadow-blue-500/40 dark:group-hover:shadow-blue-900/40 transition-shadow duration-300"
+                    className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-600 dark:to-slate-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 dark:shadow-slate-900/20 group-hover:shadow-blue-500/40 dark:group-hover:shadow-slate-900/40 transition-shadow duration-300"
                   >
                     <Icon className="w-8 h-8 text-white" />
                   </motion.div>

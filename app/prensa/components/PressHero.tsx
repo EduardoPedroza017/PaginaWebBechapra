@@ -9,7 +9,7 @@ import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
 
 export default function PressHero() {
   return (
-    <AnimatedHeroBackground gradientClass="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900" gridOpacity="opacity-[0.03]">
+    <AnimatedHeroBackground gradientClass="bg-linear-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900" gridOpacity="opacity-[0.03]">
       {/* Orbes y Floating Icons personalizados para PressHero */}
 
       <motion.div
@@ -38,8 +38,11 @@ export default function PressHero() {
         <Newspaper size={60} strokeWidth={1} />
       </motion.div>
 
+      {/* Overlay for contrast */}
+      <div className="absolute inset-0 bg-black/10 dark:hidden pointer-events-none z-10" />
+
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-30 max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

@@ -105,7 +105,7 @@ export default function ServiceHero({
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative hidden lg:block"
           >
-            <div className="relative w-full max-w-[520px] aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl shadow-black/30">
+            <div className="relative w-full max-w-130 aspect-4/3 rounded-3xl overflow-hidden shadow-2xl shadow-black/30">
               {imageSrc ? (
                 <Image
                   src={imageSrc}
@@ -116,7 +116,7 @@ export default function ServiceHero({
                   unoptimized={String(imageSrc).startsWith('http')}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
+                <div className="w-full h-full bg-linear-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
                   <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
                     <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
@@ -125,14 +125,14 @@ export default function ServiceHero({
                 </div>
               )}
               {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-blue-900/30 to-transparent" />
             </div>
             {/* Decorative Element */}
             {IconComponent && (
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl flex items-center justify-center shadow-xl"
+                className="absolute -top-6 -right-6 w-20 h-20 bg-linear-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl flex items-center justify-center shadow-xl"
               >
                 <IconComponent size={36} className="text-white" />
               </motion.div>

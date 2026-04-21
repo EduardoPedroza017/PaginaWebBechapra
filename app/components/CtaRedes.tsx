@@ -11,7 +11,7 @@ export default function CtaRedes() {
     <div className="relative">
       {/* Main Card - Flat Colors */}
       <motion.div
-        className="relative rounded-3xl overflow-hidden bg-slate-900 dark:bg-slate-950 border border-slate-800"
+        className="relative rounded-3xl overflow-hidden bg-[--brand-primary] dark:bg-slate-950 border border-[--surface-border]"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -23,9 +23,9 @@ export default function CtaRedes() {
             src="/web/image/agenda/ahenda.avif"
             alt="BAUSEN Business Services"
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-slate-900/90" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
         {/* Content */}
@@ -37,7 +37,7 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] bg-blue-700/20 text-blue-400"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] bg-[--brand-accent]/20 text-[--brand-accent]"
             >
               <MessageCircle className="w-4 h-4" />
               <TranslateText text="Conecta con nosotros" />
@@ -52,7 +52,7 @@ export default function CtaRedes() {
             >
               <TranslateText text="Juntos trazamos" />
               <br />
-              <span className="text-blue-500">
+              <span className="text-[--brand-accent] dark:text-white">
                 <TranslateText text="tu camino al éxito" />
               </span>
             </motion.h3>
@@ -62,7 +62,7 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="text-lg max-w-lg text-slate-300 font-medium text-justify"
+              className="text-lg max-w-lg text-white/90 font-medium text-justify"
             >
               <TranslateText text="¿Listo para llevar tu negocio al siguiente nivel? Agenda una reunión con nuestros especialistas y descubre cómo podemos ayudarte." />
             </motion.p>
@@ -73,7 +73,7 @@ export default function CtaRedes() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
               href="#contacto"
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-white text-slate-900 hover:bg-slate-100"
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-[--brand-primary] text-white hover:bg-[--brand-accent] hover:text-[--brand-primary]"
             >
               <TranslateText text="¡Agenda ahora!" />
               <ArrowRight className="w-4 h-4" />
@@ -105,7 +105,7 @@ export default function CtaRedes() {
                   aria-label={`Visitar ${link.name}`}
                 >
                   <div className="w-10 h-10 flex items-center justify-center">
-                    <Image src={link.icon} alt="" width={32} height={32} className="object-contain invert" />
+                    <Image src={link.icon} alt="" width={32} height={32} className="object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
                   </div>
                   <span className="text-[10px] text-white/70 font-black uppercase tracking-widest">{link.label}</span>
                 </motion.a>

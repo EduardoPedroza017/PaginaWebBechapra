@@ -99,7 +99,7 @@ export default function ProfilePage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-900/10">
+			<div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-slate-900/10">
 				<div className="relative">
 					<div className="w-20 h-20 rounded-full border-4 border-blue-100 dark:border-blue-800/50 border-t-blue-600 dark:border-t-blue-500 animate-spin mb-6"></div>
 					<div className="absolute inset-0 flex items-center justify-center">
@@ -113,7 +113,7 @@ export default function ProfilePage() {
 
 	if (error || !member) {
 		return (
-			<div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-900/10 px-4">
+			<div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-slate-900/10 px-4">
 				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full border border-blue-100 dark:border-blue-800/30">
 					<div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
 						<User className="w-8 h-8 text-blue-600 dark:text-blue-400" />
@@ -140,11 +140,11 @@ export default function ProfilePage() {
 	const fullName = getFullName();
 
 	return (
-		<div className="min-h-screen bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-900/10">
+		<div className="min-h-screen bg-linear-to-b from-white to-blue-50 dark:from-gray-900 dark:to-slate-900/10">
 			{/* Hero Section */}
 			<section className="relative overflow-hidden">
 				{/* Fondo corporativo */}
-				<div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-blue-100 dark:from-blue-900/20 dark:via-gray-900 dark:to-blue-900/10" />
+				<div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-blue-100 dark:from-slate-900/20 dark:via-gray-900 dark:to-slate-900/10" />
 				
 				{/* Elementos decorativos abstractos */}
 				<div className="absolute inset-0 overflow-hidden">
@@ -276,7 +276,7 @@ export default function ProfilePage() {
 
 			{/* Sección de detalles */}
 			<section className="py-16 relative">
-				<div className="absolute inset-0 bg-linear-to-b from-transparent via-blue-50/50 to-blue-100/30 dark:from-transparent dark:via-blue-900/5 dark:to-blue-900/10" />
+				<div className="absolute inset-0 bg-linear-to-b from-transparent via-blue-50/50 to-blue-100/30 dark:from-transparent dark:via-slate-900/5 dark:to-slate-900/10" />
 				
 				<div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -1,3 +1,12 @@
+/* Selección de texto personalizada */
+::selection {
+    background: #c7e0ff;
+    color: #0f172a;
+}
+.dark ::selection {
+    background: #2346dd;
+    color: #fff;
+}
 @import "tailwindcss";
 
 @variant dark (&:is(:where(.dark) *));
@@ -6,10 +15,11 @@
     --font-body: "Mundial", var(--font-geist-sans), sans-serif;
     --font-heading: "Montserrat", var(--font-geist-sans), sans-serif;
     
-    /* Escala fluida: se ajusta de móvil a desktop sin saltos */
-    --background: #ffffff;
+    /* Paleta personalizada modo claro */
+    --background: #dbe9ff;
     --foreground: #0f172a;
-    --brand-primary: #2346dd;
+    --brand-primary: #2346dd; /* Botones, acentos, links */
+    --brand-accent: #2182ff; /* Títulos, subtítulos */
     --surface-card: #ffffff;
     --surface-border: #e2e8f0;
     --surface-muted: #f8fafc;
@@ -19,6 +29,7 @@
     --background: #020617;
     --foreground: #f8fafc;
     --brand-primary: #3b82f6;
+    --brand-accent: #ffffff;
     --surface-card: #0f172a;
     --surface-border: #1e293b;
     --surface-muted: #1e293b;
@@ -38,7 +49,7 @@ body {
 /* Tipografía Fluida */
 h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; line-height: 1.1; }
 h2 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.2; }
-h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 700; color: var(--brand-primary); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 700; color: var(--brand-accent); }
 
 p {
     line-height: 1.7;

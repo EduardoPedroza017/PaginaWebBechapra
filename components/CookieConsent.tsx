@@ -136,7 +136,7 @@ export default function CookieConsent() {
 							{/* Contenido del mensaje */}
 							<div className="flex items-start gap-6 flex-wrap">
 								{/* Icono */}
-								<div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-600 dark:to-blue-500 flex items-center justify-center shrink-0 shadow-lg shadow-blue-700/30 dark:shadow-blue-500/30">
+								<div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-700 to-blue-600 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center shrink-0 shadow-lg shadow-blue-700/30 dark:shadow-slate-700/30">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
 										<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
 									</svg>
@@ -178,7 +178,7 @@ export default function CookieConsent() {
 
 								<button
 									onClick={handleAccept}
-									className="px-8 py-3 text-sm md:text-base font-semibold text-white bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-600 dark:to-blue-500 border-none rounded-lg cursor-pointer transition-all duration-300 shadow-lg shadow-blue-700/30 dark:shadow-blue-500/30 hover:-translate-y-0.5 hover:shadow-xl"
+									className="px-8 py-3 text-sm md:text-base font-semibold text-white bg-gradient-to-br from-blue-700 to-blue-600 dark:from-slate-700 dark:to-slate-600 border-none rounded-lg cursor-pointer transition-all duration-300 shadow-lg shadow-blue-700/30 dark:shadow-slate-700/30 hover:-translate-y-0.5 hover:shadow-xl"
 								>
 									<TranslateText text="Aceptar" />
 								</button>

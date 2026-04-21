@@ -68,7 +68,7 @@ export default function ContactForm() {
               focused === field.name ? "scale-[1.02]" : "scale-100"
             }`}>
               <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-lg transition-all duration-300 ${
-                focused === field.name ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-transparent text-slate-400"
+                focused === field.name ? "bg-[--brand-primary] text-white shadow-lg shadow-[--brand-primary]/30" : "bg-transparent text-[--foreground]"
               }`}>
                 <field.icon className="w-4 h-4" />
               </div>
@@ -80,12 +80,12 @@ export default function ContactForm() {
                 onFocus={() => setFocused(field.name)}
                 onBlur={() => setFocused(null)}
                 placeholder={field.placeholder}
-                className={`w-full pl-14 pr-4 py-4.5 rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
+                className={`w-full pl-14 pr-4 py-4.5 rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base bg-[--background]/50 dark:bg-slate-900/50 text-[--foreground] dark:text-white placeholder-[--foreground] dark:placeholder-slate-500
                   ${errors[field.name] 
                     ? "border-rose-400 dark:border-rose-500/50 ring-4 ring-rose-500/5" 
                     : focused === field.name 
-                      ? "border-blue-600 dark:border-blue-500 ring-8 ring-blue-500/5 bg-white dark:bg-slate-800 shadow-xl shadow-blue-500/5" 
-                      : "border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
+                      ? "border-[--brand-primary] dark:border-blue-500 ring-8 ring-[--brand-primary]/5 bg-white dark:bg-slate-800 shadow-xl shadow-[--brand-primary]/5" 
+                      : "border-[--surface-border] dark:border-slate-800 hover:border-[--brand-accent] dark:hover:border-slate-700"
                   }`}
               />
             </div>
@@ -110,7 +110,7 @@ export default function ContactForm() {
             focused === "message" ? "scale-[1.01]" : "scale-100"
           }`}>
             <div className={`absolute left-4 top-4 z-10 p-2 rounded-lg transition-all duration-300 ${
-              focused === "message" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-transparent text-slate-400"
+              focused === "message" ? "bg-[--brand-primary] text-white shadow-lg shadow-[--brand-primary]/30" : "bg-transparent text-[--foreground]"
             }`}>
               <MessageSquare className="w-4 h-4" />
             </div>
@@ -122,12 +122,12 @@ export default function ContactForm() {
               onFocus={() => setFocused("message")}
               onBlur={() => setFocused(null)}
               placeholder="¿En qué podemos ayudarte?"
-              className={`w-full pl-14 pr-4 py-4.5 rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-[160px] bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
+              className={`w-full pl-14 pr-4 py-4.5 rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-40 bg-[--background]/50 dark:bg-slate-900/50 text-[--foreground] dark:text-white placeholder-[--foreground] dark:placeholder-slate-500
                 ${errors.message 
                   ? "border-rose-400 dark:border-rose-500/50 ring-4 ring-rose-500/5" 
                   : focused === "message" 
-                    ? "border-blue-600 dark:border-blue-500 ring-8 ring-blue-500/5 bg-white dark:bg-slate-800 shadow-xl shadow-blue-500/5" 
-                    : "border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700"
+                    ? "border-[--brand-primary] dark:border-blue-500 ring-8 ring-[--brand-primary]/5 bg-white dark:bg-slate-800 shadow-xl shadow-[--brand-primary]/5" 
+                    : "border-[--surface-border] dark:border-slate-800 hover:border-[--brand-accent] dark:hover:border-slate-700"
                 }`}
             />
           </div>
@@ -154,7 +154,7 @@ export default function ContactForm() {
           disabled={status === "sending"}
           whileHover={{ scale: status === "sending" ? 1 : 1.05 }}
           whileTap={{ scale: status === "sending" ? 1 : 0.95 }}
-          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-700 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-blue-700/30 hover:shadow-blue-600/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
+          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 bg-[--brand-primary] text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-[--brand-primary]/30 hover:shadow-[--brand-accent]/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
         >
           <span className="relative flex items-center gap-3">
             {status === "sending" ? (

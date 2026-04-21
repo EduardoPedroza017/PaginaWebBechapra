@@ -34,7 +34,7 @@ export default function ProcessTimeline({ steps }: ProcessTimelineProps) {
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Cómo" />{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="trabajamos" />
             </span>
           </h2>

@@ -20,8 +20,8 @@ export default function WhyChooseUs({ title, benefits }: WhyChooseUsProps) {
   return (
     <section className="py-24 px-6 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-slate-900/30 dark:to-slate-900/30 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-gradient-to-tl from-blue-100 to-blue-200 dark:from-slate-900/30 dark:to-slate-800/30 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -33,7 +33,7 @@ export default function WhyChooseUs({ title, benefits }: WhyChooseUsProps) {
           className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight"
         >
           <span className="text-gray-900 dark:text-white">{title.split(' ').slice(0, -1).join(' ')} </span>
-          <span className="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-400 dark:to-blue-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
             {title.split(' ').slice(-1)}
           </span>
         </motion.h2>

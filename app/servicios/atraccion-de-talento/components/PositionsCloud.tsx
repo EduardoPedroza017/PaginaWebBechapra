@@ -10,7 +10,7 @@ interface PositionsCloudProps {
 
 export default function PositionsCloud({ title, positions }: PositionsCloudProps) {
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/50 dark:to-slate-900">
+    <section className="py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-slate-950/50 dark:to-slate-900">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <motion.h2
@@ -44,7 +44,7 @@ export default function PositionsCloud({ title, positions }: PositionsCloudProps
                   ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/40"
                   : i % 3 === 1
                   ? "bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border-2 border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400"
-                  : "bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 text-blue-700 dark:text-blue-300 hover:from-blue-200 hover:to-indigo-200 dark:hover:from-blue-800/60 dark:hover:to-indigo-800/60"
+                  : "bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-slate-900/40 dark:to-slate-900/40 text-blue-700 dark:text-slate-300 hover:from-blue-200 hover:to-indigo-200 dark:hover:from-slate-800/60 dark:hover:to-slate-800/60"
               }`}
             >
               <TranslateText text={position} />

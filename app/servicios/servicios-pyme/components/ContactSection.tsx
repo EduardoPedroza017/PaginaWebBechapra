@@ -20,14 +20,14 @@ export default function ContactSection() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30"
+            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-slate-900/30"
           >
             <Rocket className="w-8 h-8 text-white" />
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
             <TranslateText text="¿Listo para profesionalizar" />{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="tu PYME?" />
             </span>
           </h2>
@@ -58,7 +58,7 @@ export default function ContactSection() {
                 whileHover={{ x: 8 }}
                 className="flex items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-blue-100 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 rounded-xl flex items-center justify-center">
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -74,7 +74,7 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="p-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-2xl text-white"
+              className="p-6 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 rounded-2xl text-white"
             >
               <h4 className="font-bold mb-2"><TranslateText text="Más de 200+ PYMEs confían en nosotros" /></h4>
               <p className="text-sm text-blue-100 dark:text-blue-200"><TranslateText text="Soluciones adaptadas al tamaño de tu negocio." /></p>
@@ -153,7 +153,7 @@ export default function ContactSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30 hover:shadow-blue-500/50 dark:hover:shadow-blue-900/50 transition-all flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 dark:shadow-slate-900/30 hover:shadow-blue-500/50 dark:hover:shadow-slate-900/50 transition-all flex items-center justify-center gap-3"
                 >
                   <Send className="w-5 h-5" />
                   <TranslateText text="Enviar solicitud" />

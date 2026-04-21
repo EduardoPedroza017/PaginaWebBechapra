@@ -17,7 +17,7 @@ const Loading = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-slate-950 transition-colors duration-300">
       {/* Efecto sutil de fondo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-50/30 to-transparent dark:via-blue-950/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-50/30 to-transparent dark:via-slate-950/20 pointer-events-none" />
       
       {/* Animación principal */}
       <div className="relative">

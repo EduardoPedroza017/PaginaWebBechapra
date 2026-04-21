@@ -122,7 +122,7 @@ export default function TrainingCenterPage() {
     : courses.filter(course => course.category === activeTab);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-[--background] dark:bg-slate-950">
       <SubpageHero 
         badge="Centro de Capacitación"
         title="Bausen Training Center"
@@ -131,11 +131,11 @@ export default function TrainingCenterPage() {
 
       {/* Quick Stats Over Header */}
       <Section variant="blue" className="-mt-20 relative z-20">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-2xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto bg-[--background]/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-[--surface-border] dark:border-slate-800/50 shadow-2xl">
           {stats.map((stat, i) => (
             <div key={i} className="text-center space-y-2 group">
-              <div className="text-4xl lg:text-5xl font-black text-blue-700 dark:text-blue-500 transition-transform group-hover:-translate-y-1">{stat.number}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{stat.label}</div>
+              <div className="text-4xl lg:text-5xl font-black text-[--brand-primary] dark:text-blue-500 transition-transform group-hover:-translate-y-1">{stat.number}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[--foreground]">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -144,14 +144,14 @@ export default function TrainingCenterPage() {
       {/* Info Blocks */}
       <Section variant="white" size="lg">
         <div className="text-center mb-20">
-           <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-blue-100 dark:border-blue-800/50">
+           <span className="inline-flex items-center gap-2 px-4 py-2 bg-[--background] dark:bg-blue-900/20 text-[--brand-primary] dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-[--surface-border] dark:border-blue-800/50">
             <Shield size={14} />
             Avalados por el CCPM
           </span>
-          <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter">
+          <h2 className="text-4xl lg:text-6xl font-black text-[--brand-accent] dark:text-white mb-6 tracking-tighter">
             Educación de Clase Mundial
           </h2>
-          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-3xl mx-auto font-medium">
+          <p className="text-lg text-[--foreground] dark:text-slate-400 max-w-3xl mx-auto font-medium">
             Nuestra plataforma de educación en línea está diseñada para profesionales que buscan excelencia y crecimiento real.
           </p>
         </div>
@@ -181,8 +181,8 @@ export default function TrainingCenterPage() {
                 onClick={() => setActiveTab(cat.id)}
                 className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
                   activeTab === cat.id
-                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20 scale-105'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/50'
+                    ? 'bg-[--brand-primary] text-white shadow-xl shadow-[--brand-primary]/20 scale-105'
+                    : 'bg-white dark:bg-slate-900 text-[--foreground] dark:text-slate-400 hover:bg-[--background] dark:hover:bg-blue-950/50'
                 }`}
               >
                 {cat.label} <span className="opacity-50 ml-2">{cat.count}</span>
@@ -204,14 +204,14 @@ export default function TrainingCenterPage() {
       <Section variant="white" size="lg">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <div>
-             <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800/50">
+             <span className="inline-flex items-center gap-2 px-4 py-2 bg-[--background] dark:bg-blue-900/20 text-[--brand-primary] dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-[--surface-border] dark:border-blue-800/50">
               <Zap size={14} />
               Career Boost
             </span>
-            <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter leading-tight">
+            <h2 className="text-4xl lg:text-6xl font-black text-[--brand-accent] dark:text-white mb-8 tracking-tighter leading-tight">
               Prácticas Profesionales y Talento
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed mb-10">
+            <p className="text-lg text-[--foreground] dark:text-slate-400 font-medium leading-relaxed mb-10">
               Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial líder. Únase a nuestra red de talentos certificados.
             </p>
             
@@ -222,45 +222,45 @@ export default function TrainingCenterPage() {
                 { title: "Posible Contratación", desc: "90% de nuestros practicantes reciben ofertas laborales." }
               ].map((benefit, i) => (
                 <div key={i} className="flex gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-[--background] dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:bg-[--brand-primary] group-hover:text-white transition-all">
                     <CheckCircle size={20} />
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-900 dark:text-white text-lg">{benefit.title}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{benefit.desc}</p>
+                    <h4 className="font-black text-[--brand-accent] dark:text-white text-lg">{benefit.title}</h4>
+                    <p className="text-[--foreground] dark:text-slate-400 text-sm font-medium">{benefit.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-slate-950 rounded-[3rem] p-10 lg:p-12 shadow-2xl shadow-blue-900/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]" />
+          <div className="bg-slate-950 rounded-[3rem] p-10 lg:p-12 shadow-2xl shadow-[--brand-primary]/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[--brand-primary]/10 rounded-full blur-[80px]" />
             <div className="relative z-10">
               <h3 className="text-3xl font-black text-white mb-8">Postule su Talento</h3>
               <form className="space-y-5">
                 <input 
                   type="text" 
                   placeholder="Nombre Completo" 
-                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none"
                 />
                 <input 
                   type="email" 
                   placeholder="Correo Electrónico" 
-                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none"
                 />
-                <select className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none appearance-none">
+                <select className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none appearance-none">
                   <option value="">Área de Interés</option>
                   <option>Estrategia</option>
                   <option>Nómina y Finanzas</option>
                   <option>Recursos Humanos</option>
                 </select>
-                <div className="relative border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all cursor-pointer group">
+                <div className="relative border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-[--brand-primary]/50 transition-all cursor-pointer group">
                   <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
-                  <FileText className="w-8 h-8 text-slate-500 mx-auto mb-2 group-hover:text-blue-400 transition-colors" />
-                  <p className="text-sm text-slate-500 font-bold">Subir CV (PDF, DOCX)</p>
+                  <FileText className="w-8 h-8 text-[--foreground] mx-auto mb-2 group-hover:text-[--brand-accent] transition-colors" />
+                  <p className="text-sm text-[--foreground] font-bold">Subir CV (PDF, DOCX)</p>
                 </div>
-                <button className="w-full py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-blue-600/20 hover:bg-blue-500 hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                <button className="w-full py-5 bg-[--brand-primary] text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-[--brand-primary]/20 hover:bg-[--brand-accent] hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
                   <Send size={16} />
                   Enviar Aplicación
                 </button>
@@ -297,7 +297,7 @@ function InfoCard({ item, index }: { item: any; index: number }) {
       onMouseMove={handleMouseMove}
       className="group relative"
     >
-      <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 text-center flex flex-col overflow-hidden">
+      <div className="relative h-full bg-[--surface-card] dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-[--surface-border] dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 text-center flex flex-col overflow-hidden">
         <motion.div
           className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
           style={{
@@ -308,14 +308,14 @@ function InfoCard({ item, index }: { item: any; index: number }) {
           }}
         />
         <div className="relative z-20">
-          <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform">
+          <div className="w-16 h-16 rounded-2xl bg-[--brand-primary] text-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-[--brand-primary]/20 group-hover:scale-110 transition-transform">
             <item.icon size={32} />
           </div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">{item.title}</h3>
-          <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{item.desc}</p>
+          <h3 className="text-2xl font-black text-[--brand-accent] dark:text-white mb-4 tracking-tight leading-tight">{item.title}</h3>
+          <p className="text-[--foreground] dark:text-slate-400 font-medium leading-relaxed">{item.desc}</p>
         </div>
       </div>
-      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
+      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-[--brand-primary]/5 -z-10 transition-opacity duration-500" />
     </motion.div>
   );
 }
@@ -330,44 +330,44 @@ function CourseCard({ course, index }: { course: any; index: number }) {
       transition={{ duration: 0.4 }}
       className="group"
     >
-      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
+      <div className="bg-[--surface-card] dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-[--surface-border] dark:border-slate-800 hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
         <div className="relative p-10 bg-slate-950 overflow-hidden">
           <div className="absolute top-6 right-6">
-             <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-blue-400 text-[10px] font-black uppercase tracking-widest border border-white/5">
+             <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[--brand-accent] text-[10px] font-black uppercase tracking-widest border border-white/5">
               {course.level}
             </span>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-8 shadow-xl">
-            <course.icon size={32} className="text-blue-500" />
+            <course.icon size={32} className="text-[--brand-primary]" />
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <Star className="w-4 h-4 fill-blue-500 text-blue-500" />
+            <Star className="w-4 h-4 fill-[--brand-primary] text-[--brand-primary]" />
             <span className="text-white font-black">{course.rating}</span>
-            <span className="text-slate-500 text-xs font-bold uppercase tracking-widest ml-2">({course.students} Alumnos)</span>
+            <span className="text-[--foreground] text-xs font-bold uppercase tracking-widest ml-2">({course.students} Alumnos)</span>
           </div>
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all" />
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[--brand-primary]/10 rounded-full blur-3xl group-hover:bg-[--brand-primary]/20 transition-all" />
         </div>
 
         <div className="p-10 flex flex-col flex-1">
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+          <h3 className="text-2xl font-black text-[--brand-accent] dark:text-white mb-4 group-hover:text-[--brand-primary] dark:group-hover:text-blue-400 transition-colors">
             {course.title}
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 flex-1">
+          <p className="text-[--foreground] dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 flex-1">
             {course.description}
           </p>
 
-          <div className="flex items-center justify-between py-6 border-t border-slate-100 dark:border-slate-800 mb-8">
+          <div className="flex items-center justify-between py-6 border-t border-[--surface-border] dark:border-slate-800 mb-8">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">{course.duration}</span>
+              <Clock className="w-4 h-4 text-[--brand-primary]" />
+              <span className="text-xs font-black text-[--brand-accent] dark:text-white uppercase tracking-widest">{course.duration}</span>
             </div>
             <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">{course.modules} Módulos</span>
+              <BookOpen className="w-4 h-4 text-[--brand-primary]" />
+              <span className="text-xs font-black text-[--brand-accent] dark:text-white uppercase tracking-widest">{course.modules} Módulos</span>
             </div>
           </div>
 
-          <button className="w-full py-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-blue-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+          <button className="w-full py-4 bg-[--background] dark:bg-slate-800 text-[--brand-primary] dark:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-[--brand-primary] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
             Inscribirme Ahora
             <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
           </button>

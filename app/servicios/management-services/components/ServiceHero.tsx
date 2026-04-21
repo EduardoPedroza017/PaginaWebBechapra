@@ -33,7 +33,7 @@ export default function ServiceHero({
     <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 dark:from-slate-950 dark:via-blue-950 dark:to-blue-900 pt-24 pb-32 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
+          <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
           transition={{ duration: 10, repeat: Infinity }}
           className="absolute -top-24 -right-24 w-[300px] h-[300px] bg-white/10 dark:bg-white/5 rounded-full blur-3xl"
@@ -44,6 +44,7 @@ export default function ServiceHero({
           className="absolute -bottom-12 -left-12 w-[250px] h-[250px] bg-blue-400/15 dark:bg-blue-600/10 rounded-full blur-3xl"
         />
       </div>
+      <section className="relative w-screen -ml-[calc(50vw-50%)] bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 pt-16 pb-20 overflow-hidden">
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
@@ -69,7 +70,7 @@ export default function ServiceHero({
             <h1 className="text-4xl md:text-5xl lg:text-[3.8rem] font-black text-white mb-6 leading-[1.1] tracking-tight">
               <TranslateText text={title} />{" "}
               {highlightWord && (
-                <span className="bg-gradient-to-r from-blue-400 to-blue-500 dark:from-blue-300 dark:to-blue-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-400 to-blue-500 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
                   <TranslateText text={highlightWord} />
                 </span>
               )}
@@ -122,6 +123,7 @@ export default function ServiceHero({
           </motion.div>
         </div>
       </div>
+    </section>
     </section>
   );
 }

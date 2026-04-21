@@ -66,7 +66,7 @@ export default function ServiciosIndex() {
 	return (
 		<div className="min-h-screen bg-white dark:bg-slate-950">
 			{/* Subpage Hero */}
-			<section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-950">
+			<section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
 				{/* Background Parallax Decorations */}
 				<div className="absolute inset-0 pointer-events-none">
 					<div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -74,7 +74,9 @@ export default function ServiciosIndex() {
 					<div className="absolute inset-0 bg-grid-pattern opacity-5" />
 				</div>
 
-				<div className="relative z-10 max-w-7xl 2xl:max-w-[1440px] mx-auto px-6 lg:px-8">
+				<div className="absolute inset-0 bg-black/10 dark:hidden pointer-events-none z-10" />
+
+				<div className="relative z-30 max-w-7xl 2xl:max-w-[1440px] mx-auto px-6 lg:px-8 gradient-dark">
 					<div className="max-w-3xl">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}

@@ -13,7 +13,7 @@ export default function PymeCTA() {
   ];
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -24,7 +24,7 @@ export default function PymeCTA() {
         <motion.div
           animate={{ scale: [1, 1.3, 1], rotate: [360, 180, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-blue-300/30 dark:from-blue-600/20 to-transparent rounded-full"
+          className="absolute -bottom-1/2 -left-1/4 w-3/4 h-full bg-gradient-to-tr from-blue-300/30 dark:from-slate-700/20 to-transparent rounded-full"
         />
         
         {/* Floating rockets */}

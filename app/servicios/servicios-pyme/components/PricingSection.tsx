@@ -37,7 +37,7 @@ export default function PricingSection({ packages }: PricingSectionProps) {
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Elige tu" />{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="paquete" />
             </span>
           </h2>
@@ -55,7 +55,7 @@ export default function PricingSection({ packages }: PricingSectionProps) {
               whileHover={{ y: -10 }}
               className={`relative rounded-3xl p-8 transition-all duration-500 ${
                 pkg.popular 
-                  ? 'bg-gradient-to-br from-blue-500 via-blue-400 to-blue-500 dark:from-blue-600 dark:via-blue-500 dark:to-blue-600 text-white shadow-2xl shadow-blue-500/30 dark:shadow-blue-900/30 scale-105' 
+                  ? 'bg-gradient-to-br from-blue-500 via-blue-400 to-blue-500 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 text-white shadow-2xl shadow-blue-500/30 dark:shadow-slate-900/30 scale-105' 
                   : 'bg-gradient-to-br from-blue-50 via-blue-50/50 to-white dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 border-2 border-blue-100 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 shadow-xl'
               }`}
             >
@@ -75,7 +75,7 @@ export default function PricingSection({ packages }: PricingSectionProps) {
               </h3>
 
               {/* Price */}
-              <div className={`text-3xl font-black mb-6 ${pkg.popular ? 'text-white' : 'bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent'}`}>
+              <div className={`text-3xl font-black mb-6 ${pkg.popular ? 'text-white' : 'bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent'}`}>
                 <TranslateText text={pkg.price} />
               </div>
 

@@ -17,10 +17,10 @@ const icons = [ShoppingCart, Briefcase, Store, TrendingUp];
 
 export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-50/30 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-blue-50/30 dark:from-slate-950 dark:via-slate-950/30 dark:to-slate-900 overflow-hidden">
       {/* Decorative */}
-      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-200 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/20 rounded-full blur-3xl opacity-50" />
-      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-200 to-blue-200 dark:from-blue-900/25 dark:to-blue-800/15 rounded-full blur-3xl opacity-40" />
+      <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-200 to-blue-200 dark:from-slate-900/30 dark:to-slate-800/20 rounded-full blur-3xl opacity-50" />
+      <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-200 to-blue-200 dark:from-slate-900/25 dark:to-slate-800/15 rounded-full blur-3xl opacity-40" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
@@ -40,7 +40,7 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Casos de" />{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-400 dark:to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 to-blue-400 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="uso" />
             </span>
           </h2>
@@ -63,7 +63,7 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                 {/* Icon */}
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 dark:shadow-blue-900/20"
+                  className="w-12 h-12 mb-4 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-slate-700 dark:to-slate-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 dark:shadow-slate-900/20"
                 >
                   <Icon className="w-6 h-6 text-white" />
                 </motion.div>
@@ -76,7 +76,7 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                 </p>
 
                 {/* Bottom accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 dark:from-blue-500 dark:via-blue-400 dark:to-blue-500 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.div>
             );
           })}

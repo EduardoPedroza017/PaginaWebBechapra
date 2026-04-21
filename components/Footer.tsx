@@ -69,12 +69,16 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-slate-950 text-white relative overflow-hidden border-t border-slate-900">
+    <footer
+      className="w-full text-white relative overflow-hidden border-t border-slate-900 bg-linear-to-br from-blue-950 via-blue-900 to-indigo-900 dark:bg-linear-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-900"
+      style={{}}
+      data-footer
+    >
       {/* Background Glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-125 h-125 bg-blue-600/5 rounded-full blur-[120px] pointer-events-none dark:hidden" />
+      <div className="absolute bottom-0 right-0 w-100 h-100 bg-blue-900/10 rounded-full blur-[100px] pointer-events-none dark:hidden" />
 
-      <div className="relative z-10 max-w-7xl 2xl:max-w-[1440px] 3xl:max-w-[1600px] mx-auto px-6 lg:px-8 py-20 lg:py-32">
+      <div className="relative z-10 max-w-7xl 2xl:max-w-360 3xl:max-w-400 mx-auto px-6 lg:px-8 py-20 lg:py-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-20">
           
           {/* Brand & Mission */}

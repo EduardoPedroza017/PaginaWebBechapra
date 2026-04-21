@@ -14,8 +14,8 @@ interface AnimatedHeroBackgroundProps {
  * Permite personalizar gradiente, orbes y grid pattern.
  */
 export const AnimatedHeroBackground: React.FC<AnimatedHeroBackgroundProps> = ({
-  gradientClass = "bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900",
-  orbClass = "absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl",
+  gradientClass = "bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900",
+  orbClass = "absolute -top-1/3 -right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-blue-400/20 via-indigo-500/15 to-transparent dark:from-slate-900/12 dark:via-slate-800/10 dark:to-transparent rounded-full blur-3xl",
   orbAnimation = { scale: [1, 1.2, 1], rotate: [0, 90, 0] },
   gridOpacity = "opacity-5",
   children,

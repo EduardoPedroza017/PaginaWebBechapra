@@ -41,7 +41,7 @@ export default function PackagesSection({ packages }: PackagesSectionProps) {
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
             <TranslateText text="Paquetes y" />{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">
               <TranslateText text="modalidades" />
             </span>
           </h2>
@@ -66,7 +66,7 @@ export default function PackagesSection({ packages }: PackagesSectionProps) {
               {/* Popular Badge */}
               {pkg.popular && (
                 <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-600 dark:to-indigo-600 rounded-full">
+                  <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-slate-600 dark:to-slate-600 rounded-full">
                     <Sparkles className="w-3 h-3 text-white" />
                     <span className="text-xs font-bold text-white"><TranslateText text="Popular" /></span>
                   </div>

@@ -34,7 +34,7 @@ export default function ProcessTimeline({ title, steps }: ProcessTimelineProps) 
         {/* Timeline */}
         <div className="relative">
           {/* Vertical Line - Desktop */}
-          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-blue-600 to-blue-400 dark:from-blue-500 dark:via-blue-400 dark:to-blue-500 -translate-x-1/2 rounded-full" />
+          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-blue-600 to-blue-400 dark:from-slate-600 dark:via-slate-600 dark:to-slate-600 -translate-x-1/2 rounded-full" />
 
           <div className="space-y-8 lg:space-y-0">
             {steps.map((step, i) => {

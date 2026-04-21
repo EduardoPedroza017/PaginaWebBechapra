@@ -138,14 +138,14 @@ export default function ServicesSection() {
         transition={{ duration: 0.6 }}
         className="text-center max-w-3xl mx-auto mb-16"
       >
-        <span className="inline-block font-semibold text-sm px-4 py-2 rounded-full mb-4 text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/30 dark:border dark:border-blue-800/50">
+        <span className="inline-block font-semibold text-sm px-4 py-2 rounded-full mb-4 text-[--brand-primary] bg-[--background] dark:text-blue-400 dark:bg-blue-900/30 dark:border dark:border-blue-800/50">
           <TranslateText text="Lo que hacemos" />
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-[--brand-accent] dark:text-white">
           <TranslateText text="Nuestros Servicios" />
         </h2>
-        <div className="w-24 h-1.5 rounded-full mx-auto mb-6 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-400" />
-        <p className="text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
+        <div className="w-24 h-1.5 rounded-full mx-auto mb-6 bg-gradient-to-r from-[--brand-primary] to-[--brand-accent] dark:from-slate-600 dark:to-slate-500" />
+        <p className="text-lg max-w-2xl mx-auto text-[--foreground] dark:text-slate-300">
           <TranslateText text="Soluciones integrales diseñadas para optimizar cada aspecto de tu organización" />
         </p>
       </motion.div>

@@ -37,7 +37,7 @@ export default function ServiceCard({
   }
 
   const renderIcon = () => {
-    const iconClass = "w-8 h-8 transition-transform duration-500 group-hover:scale-110";
+    const iconClass = "w-8 h-8 transition-transform duration-500 group-hover:scale-110 text-[color:var(--brand-primary)] dark:text-blue-400";
     if (title.toLowerCase().includes("capital") || title.toLowerCase().includes("human")) {
       return <Users className={iconClass} />;
     }
@@ -48,7 +48,7 @@ export default function ServiceCard({
   };
 
   const colors = {
-    blue: "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/40",
+    blue: "text-[color:var(--brand-primary)] dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 border-[color:var(--surface-border)] dark:border-blue-800/40",
     slate: "text-slate-600 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/20 border-slate-100 dark:border-slate-700/40",
     indigo: "text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/40",
   };
@@ -113,7 +113,7 @@ export default function ServiceCard({
           </div>
 
           <div className="mt-10">
-            <span className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-blue-700 dark:text-blue-400 group-hover:text-blue-600 transition-colors">
+            <span className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-[--brand-primary] dark:text-blue-400 group-hover:text-[--brand-accent] transition-colors">
               <TranslateText text="Descubrir más" />
               <div className="w-8 h-px bg-blue-700 dark:bg-blue-400 group-hover:w-12 transition-all duration-500" />
             </span>

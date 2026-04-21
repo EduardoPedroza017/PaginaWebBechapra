@@ -30,18 +30,18 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div 
           style={{ y: springY1 }}
-          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-[120px] bg-blue-100/30 dark:bg-blue-600/10" 
+          className="absolute -top-40 -right-40 w-150 h-150 rounded-full blur-[120px] bg-blue-100/30 dark:bg-blue-600/10" 
         />
         <motion.div 
           style={{ y: springY2 }}
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full blur-[100px] bg-blue-50/40 dark:bg-blue-500/10" 
+          className="absolute -bottom-40 -left-40 w-125 h-125 rounded-full blur-[100px] bg-blue-50/40 dark:bg-blue-500/10" 
         />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-blue-900/10 dark:to-transparent" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-slate-900/12 dark:to-transparent" />
       </div>
 
       <motion.div 
         style={{ opacity, scale }}
-        className="relative w-full max-w-7xl 2xl:max-w-[1440px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 z-10"
+        className="relative w-full max-w-7xl 2xl:max-w-360 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 z-10"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Content */}
@@ -67,7 +67,7 @@ export default function HeroSection() {
               >
                 <TranslateText text="Impulsamos" />
                 <br />
-                <span className="bg-linear-to-r bg-clip-text text-transparent from-blue-700 via-blue-500 to-blue-800 dark:from-blue-400 dark:via-blue-500 dark:to-blue-600">
+                <span className="bg-linear-to-r bg-clip-text text-transparent from-blue-700 via-blue-500 to-blue-800 dark:from-slate-300 dark:via-slate-400 dark:to-slate-500">
                   <TranslateText text="tu talento" />
                 </span>
               </motion.h1>

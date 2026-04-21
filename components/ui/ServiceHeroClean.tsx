@@ -20,7 +20,7 @@ export default function ServiceHeroClean({
 }: ServiceHeroCleanProps) {
   return (
     <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-24 bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-900">
-      <div className="relative z-10 max-w-7xl 2xl:max-w-[1440px] mx-auto px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl 2xl:max-w-360 mx-auto px-6 lg:px-8">
         <Link
           href={backLink}
           className="inline-flex items-center gap-2 mb-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-blue-700 dark:hover:text-blue-400 transition-colors group"

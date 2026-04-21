@@ -28,7 +28,7 @@ export default function PayrollHero({
   ctaLink = "#contacto",
 }: PayrollHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] bg-gradient-to-br from-blue-950 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-150 bg-linear-to-br from-blue-950 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -38,7 +38,7 @@ export default function PayrollHero({
             rotate: [0, 180, 360]
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-blue-400/20 via-blue-500/15 to-transparent dark:from-blue-600/10 dark:via-indigo-700/8 dark:to-transparent rounded-full blur-3xl"
+          className="absolute -top-1/2 -right-1/4 w-200 h-200 bg-linear-to-br from-blue-400/20 via-blue-500/15 to-transparent dark:from-slate-700/10 dark:via-slate-700/8 dark:to-transparent rounded-full blur-3xl"
         />
         <motion.div
           animate={{ 
@@ -46,7 +46,7 @@ export default function PayrollHero({
             opacity: [0.1, 0.2, 0.1]
           }}
           transition={{ duration: 15, repeat: Infinity, delay: 2 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/15 via-indigo-500/10 to-transparent dark:from-blue-600/8 dark:via-indigo-700/5 dark:to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-1/4 -left-1/4 w-150 h-150 bg-linear-to-tr from-blue-400/15 via-indigo-500/10 to-transparent dark:from-slate-700/8 dark:via-slate-700/5 dark:to-transparent rounded-full blur-3xl"
         />
         {/* Grid Pattern */}
         <div 
@@ -109,7 +109,7 @@ export default function PayrollHero({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-full border border-cyan-400/30 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-full border border-cyan-400/30 mb-6"
             >
               <Sparkles size={16} className="text-cyan-400" />
               <span className="text-cyan-200 text-sm font-medium"><TranslateText text="Servicio Premium" /></span>
@@ -119,14 +119,14 @@ export default function PayrollHero({
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
               {title.split('&').map((part, i) => (
                 <span key={i}>
-                  {i > 0 && <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">&</span>}
+                  {i > 0 && <span className="bg-linear-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">&</span>}
                   <TranslateText text={part} />
                 </span>
               ))}
             </h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-10 max-w-[540px]">
+            <p className="text-lg md:text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-10 max-w-135">
               <TranslateText text={description} />
             </p>
 
@@ -135,7 +135,7 @@ export default function PayrollHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-white to-blue-50 text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-white to-blue-50 text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
                 >
                   <TranslateText text={ctaLabel} />
                   <ArrowRight size={20} />
@@ -161,9 +161,9 @@ export default function PayrollHero({
           >
             <div className="relative">
               {/* Glow Effect */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-linear-to-r from-cyan-500/30 to-blue-500/30 rounded-3xl blur-2xl" />
               
-              <div className="relative w-full max-w-[550px] h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
+              <div className="relative w-full max-w-137.5 h-95 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 {imageSrc ? (
                   <Image
                     src={imageSrc}
@@ -174,7 +174,7 @@ export default function PayrollHero({
                     unoptimized={String(imageSrc).startsWith('http')}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
+                  <div className="w-full h-full bg-linear-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
                     <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
                       <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
@@ -183,7 +183,7 @@ export default function PayrollHero({
                   </div>
                 )}
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-blue-900/40 to-transparent" />
               </div>
 
               {/* Floating Card */}
@@ -193,7 +193,7 @@ export default function PayrollHero({
                 className="absolute -bottom-6 -left-6 px-6 py-4 bg-white dark:bg-slate-800 rounded-2xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 dark:from-slate-600 dark:to-slate-700 rounded-xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
