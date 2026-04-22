@@ -23,6 +23,11 @@
     --surface-card: #ffffff;
     --surface-border: #e2e8f0;
     --surface-muted: #f8fafc;
+    --hero-services-from: #1e3a8a;
+    --hero-services-via: #1d4ed8;
+    --hero-services-to: #2563eb;
+    --hero-services-glow-primary: rgba(255, 255, 255, 0.12);
+    --hero-services-glow-secondary: rgba(255, 255, 255, 0.08);
 }
 
 .dark {
@@ -33,6 +38,11 @@
     --surface-card: #0f172a;
     --surface-border: #1e293b;
     --surface-muted: #1e293b;
+    --hero-services-from: #020617;
+    --hero-services-via: #172554;
+    --hero-services-to: #0f172a;
+    --hero-services-glow-primary: rgba(255, 255, 255, 0.12);
+    --hero-services-glow-secondary: rgba(255, 255, 255, 0.08);
 }
 
 /* When a Section intentionally overlaps a Hero, hide small decorative accent lines

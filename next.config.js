@@ -1,7 +1,7 @@
 ﻿/** @type {import('next').NextConfig} */
 
 // Prefer NEXT_PUBLIC_API_URL, fallback to BACKEND_URL, then to a safe localhost mock.
-const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://127.0.0.1:9999';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:5000';
 if (!process.env.NEXT_PUBLIC_API_URL && !process.env.BACKEND_URL) {
   // During local builds we prefer not to fail hard — warn instead and use a mock URL.
   // CI / production should still set proper env vars.

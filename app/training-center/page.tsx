@@ -126,6 +126,7 @@ export default function TrainingCenterPage() {
       <SubpageHero 
         badge="Centro de Capacitación"
         title="Bausen Training Center"
+        variant="servicesBlue"
         subtitle="Formamos y conectamos el talento del futuro con las mejores oportunidades estratégicas."
       />
 

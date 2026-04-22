@@ -95,6 +95,7 @@ export default function PrensaPage() {
       <SubpageHero 
         badge="Comunicación Oficial"
         title="Sala de Prensa"
+        variant="servicesBlue"
         subtitle="Mantenemos a los medios y al público informados sobre nuestras iniciativas corporativas y logros estratégicos."
       />
 

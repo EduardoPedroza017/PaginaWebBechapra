@@ -75,6 +75,7 @@ export default function EventosPage() {
       <SubpageHero 
         badge="Nuestra Comunidad"
         title="Eventos y Actividades"
+        variant="servicesBlue"
         subtitle="Conecte con expertos y participe en experiencias únicas diseñadas para inspirar el crecimiento empresarial."
       />
 

@@ -41,6 +41,7 @@ export default function NoticiasPage() {
       <SubpageHero 
         badge="Actualidad"
         title="Noticias Bausen"
+        variant="servicesBlue"
         subtitle="Manténgase informado sobre las últimas tendencias en capital humano, cambios legislativos y eventos corporativos de alto impacto."
       />
 

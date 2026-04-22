@@ -22,6 +22,7 @@ export default function AcercaDePage() {
       <SubpageHero 
         badge="Nuestra Esencia"
         title="Transformamos Organizaciones"
+        variant="servicesBlue"
         subtitle="Más de 15 años impulsando el crecimiento estratégico a través de soluciones integrales en capital humano y gestión empresarial."
       />
 

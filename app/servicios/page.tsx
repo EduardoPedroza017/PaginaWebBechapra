@@ -63,14 +63,30 @@ const defaultServices: Service[] = [
 ];
 
 export default function ServiciosIndex() {
+	const servicesBlueGradient = "linear-gradient(90deg, var(--hero-services-from), var(--hero-services-via), var(--hero-services-to))";
+	const servicesBlueGlow =
+		"radial-gradient(circle at 30% 40%, var(--hero-services-glow-primary) 0%, transparent 40%), radial-gradient(circle at 70% 60%, var(--hero-services-glow-secondary) 0%, transparent 40%)";
+	const servicesBlueStyle = {
+		backgroundColor: "var(--hero-services-from)",
+		background: servicesBlueGradient,
+	};
+
 	return (
 		<div className="min-h-screen bg-white dark:bg-slate-950">
 			{/* Subpage Hero */}
-			<section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
+			<section
+				className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden"
+				style={servicesBlueStyle}
+			>
 				{/* Background Parallax Decorations */}
 				<div className="absolute inset-0 pointer-events-none">
-					<div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
-					<div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/20 rounded-full blur-[100px]" />
+					<div
+						className="absolute inset-0"
+						style={{
+							backgroundColor: "transparent",
+							backgroundImage: servicesBlueGlow,
+						}}
+					/>
 					<div className="absolute inset-0 bg-grid-pattern opacity-5" />
 				</div>
 
@@ -82,7 +98,7 @@ export default function ServiciosIndex() {
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6 }}
-							className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest mb-8"
+							className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-black uppercase tracking-widest mb-8"
 						>
 							<Sparkles className="w-4 h-4" />
 							<TranslateText text="Excelencia Corporativa" />
@@ -105,7 +121,7 @@ export default function ServiciosIndex() {
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6, delay: 0.2 }}
-							className="text-xl text-slate-400 leading-relaxed font-medium mb-10"
+							className="text-xl text-white/85 leading-relaxed font-medium mb-10"
 						>
 							<TranslateText text="Soluciones estratégicas diseñadas para cada etapa del ciclo de vida de su organización." />
 						</motion.p>
