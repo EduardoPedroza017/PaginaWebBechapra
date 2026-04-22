@@ -19,6 +19,7 @@ type Service = {
 
 function ServiceCard({ service, index }: { service: Service; index: number }) {
   const slugOrName = String(service.slug ?? service.name ?? '');
+  const featured = index === 0;
   return (
     <motion.a
       href={`/web/servicios/${encodeURIComponent(slugOrName)}`}
@@ -26,24 +27,29 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
-      className="group relative flex flex-col rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white dark:bg-slate-800/90 dark:border dark:border-slate-700 dark:hover:border-slate-600"
+      className={`group relative flex flex-col overflow-hidden rounded-3xl transition-all duration-500 ${
+        featured
+          ? "bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/80 md:col-span-2 lg:col-span-2 dark:border dark:border-blue-800/40 dark:bg-slate-800/90"
+          : "bg-white shadow-lg hover:shadow-2xl dark:border dark:border-slate-700 dark:bg-slate-800/90 dark:hover:border-slate-600"
+      }`}
     >
       {/* Image Container */}
-      <div className="relative h-56 overflow-hidden">
+      <div className={`relative overflow-hidden ${featured ? "h-72 lg:h-80" : "h-56"}`}>
         {service.image ? (
           <Image
             src={service.image}
             alt={service.name || 'Servicio'}
             fill
             sizes="(max-width: 1024px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className={`object-cover transition-transform duration-700 ${featured ? "scale-105 group-hover:scale-110" : "group-hover:scale-110"}`}
           />
         ) : (
           <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
             <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent dark:from-slate-950/80 dark:via-slate-900/40 dark:to-transparent" />
+        <div className={`absolute inset-0 ${featured ? "bg-gradient-to-t from-slate-950/75 via-slate-950/15 to-blue-500/10 dark:from-slate-950/85 dark:via-slate-950/30 dark:to-blue-500/15" : "bg-gradient-to-t from-slate-900/60 via-slate-900/20 to-transparent dark:from-slate-950/80 dark:via-slate-900/40 dark:to-transparent"}`} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_32%)]" />
         
         {/* Icon Badge */}
         <div className="absolute top-4 left-4 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-white/95 backdrop-blur-sm dark:bg-slate-800/95 dark:border dark:border-slate-700">
@@ -51,6 +57,11 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
             <Image src={service.icon} alt="" width={36} height={36} className="object-contain" />
           ) : null}
         </div>
+        {featured && (
+          <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-slate-950/40 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+            Servicio destacado
+          </div>
+        )}
         
         {/* Arrow */}
         <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-blue-600/90 backdrop-blur-sm dark:bg-blue-600/80">
@@ -59,11 +70,14 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       </div>
 
       {/* Content */}
-        <div className="flex-1 p-6 flex flex-col">
-        <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors text-slate-900 dark:text-white">
+        <div className={`flex flex-1 flex-col ${featured ? "p-8 lg:p-10" : "p-6"}`}>
+        <div className="mb-3 inline-flex w-fit items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-blue-700 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-300">
+          Solucion empresarial
+        </div>
+        <h3 className={`${featured ? "text-2xl lg:text-3xl" : "text-xl"} font-bold mb-2 group-hover:text-blue-600 transition-colors text-slate-900 dark:text-white`}>
           {service.name}
         </h3>
-        <p className="text-sm leading-relaxed flex-1 text-slate-500 dark:text-slate-400">
+        <p className={`${featured ? "max-w-2xl text-base" : "text-sm"} leading-relaxed flex-1 text-slate-500 dark:text-slate-400`}>
           {service.description}
         </p>
         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">

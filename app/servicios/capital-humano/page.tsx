@@ -2,15 +2,9 @@
 
 import { Users, DollarSign, UserCheck } from "lucide-react";
 import Footer from "@/components/Footer";
-import {
-  ServiceHero,
-  ServiceCards,
-  BenefitsSection,
-  CTASection,
-  ContactSection,
-} from "./components";
+import SpotlightCTA from "@/app/components/SpotlightCTA";
+import { ServiceHero, ServiceCards, BenefitsSection, ContactSection } from "./components";
 
-// Services data
 const services = [
   {
     icon: Users,
@@ -21,26 +15,25 @@ const services = [
   {
     icon: DollarSign,
     title: "Payrolling",
-    desc: "Desde el alta hasta la desvinculación, incluyendo pagos de cuotas patronales, IMSS, Infonavit, e impuestos.",
+    desc: "Desde el alta hasta la desvinculacion, incluyendo pagos de cuotas patronales, IMSS, Infonavit e impuestos.",
     link: "/servicios/payroll",
   },
   {
     icon: UserCheck,
-    title: "Atracción de Talento",
+    title: "Atraccion de Talento",
     desc: "Utilizamos estrategias selectivas y entrevistas exhaustivas para presentarte a los candidatos correctos.",
     link: "/servicios/atraccion-de-talento",
   },
 ];
 
-// Benefits data
 const benefits = [
   {
     title: "Acceso Exclusivo BTC",
-    desc: "Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Públicos de la Ciudad de México.",
+    desc: "Accede a nuestra agenda de cursos gratuitos, avalados por el Colegio de Contadores Publicos de la Ciudad de Mexico.",
   },
   {
-    title: "Reducción de Costos",
-    desc: "Optimiza los procesos de reclutamiento, selección y gestión de nómina con nuestras soluciones integrales.",
+    title: "Reduccion de Costos",
+    desc: "Optimiza los procesos de reclutamiento, seleccion y gestion de nomina con nuestras soluciones integrales.",
   },
   {
     title: "Asesoramiento Personalizado",
@@ -50,23 +43,17 @@ const benefits = [
 
 export default function CapitalHumanoPage() {
   return (
-    <main className="bg-white dark:bg-slate-900 min-h-screen">
-      {/* Hero Section */}
+    <main className="min-h-screen bg-white dark:bg-slate-900">
       <ServiceHero
         title="Capital Humano"
         highlight="Capital"
-        description="Potencia el crecimiento y éxito de tu empresa con nuestros servicios de capital humano. ¡Transforma tu empresa con nuestro enfoque estratégico!"
+        description="Potencia el crecimiento y exito de tu empresa con nuestros servicios de capital humano. Transforma tu empresa con nuestro enfoque estrategico."
         imageSrc="/web/image/servicios/capital-humano.webp"
         imageAlt="Persona trabajando con laptop y documentos"
       />
 
-      {/* Services Cards */}
-      <ServiceCards
-        title="Servicios Capital Humano"
-        services={services}
-      />
+      <ServiceCards title="Servicios Capital Humano" services={services} />
 
-      {/* Benefits Section */}
       <BenefitsSection
         title="Beneficios de Capital Humano"
         benefits={benefits}
@@ -74,21 +61,23 @@ export default function CapitalHumanoPage() {
         imageAlt="Equipo colaborando en oficina"
       />
 
-      {/* CTA Section */}
-      <CTASection
-        title="Todos los servicios en un solo lugar"
-        subtitle="Solicita una reunión para más información sobre cómo podemos ayudarte a optimizar tu gestión de capital humano."
-        imageSrc="/web/image/contacto/contacto-men.avif"
-        imageAlt="Reunión de negocios BAUSEN"
+      <SpotlightCTA
+        eyebrow="Talento en accion"
+        title="Integre talento, nomina y atraccion en una sola estrategia"
+        subtitle="Unificamos las soluciones de capital humano en una experiencia mas clara, mas ejecutiva y lista para conversion."
+        imageSrc="/web/image/servicios/capital-humano.webp"
+        imageAlt="Capital Humano Bausen"
+        primaryLink="#contacto"
+        primaryLabel="Solicitar reunion"
+        secondaryLink="/servicios"
+        secondaryLabel="Ver servicios"
       />
 
-      {/* Contact Section */}
-      <ContactSection 
-        title="Consulte con nuestros expertos" 
-        subtitle="Diseñamos la estrategia de talento que su organización necesita para escalar al siguiente nivel." 
+      <ContactSection
+        title="Consulte con nuestros expertos"
+        subtitle="Disenamos la estrategia de talento que su organizacion necesita para escalar al siguiente nivel."
       />
 
-      {/* Footer */}
       <Footer />
     </main>
   );

@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
-import { useRef, MouseEvent } from "react";
+import { MouseEvent } from "react";
 import { ArrowRight, LucideIcon, Sparkles } from "lucide-react";
 import { TranslateText } from '@/components/TranslateText';
 import Section from "@/app/components/Section";
@@ -52,11 +52,11 @@ export default function ServiceCards({ title, services }: ServiceCardsProps) {
 
 function ServiceDetailCard({ service, index }: { service: Service; index: number }) {
   const Icon = service.icon;
-  const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
   const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+  const featured = index === 0;
 
   function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -71,10 +71,10 @@ function ServiceDetailCard({ service, index }: { service: Service; index: number
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseMove={handleMouseMove}
-      className="group relative h-full"
+      className={`group relative h-full ${featured ? "md:col-span-2 lg:col-span-2" : ""}`}
     >
       <Link href={service.link} className="block h-full">
-        <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
+        <div className={`relative flex h-full flex-col overflow-hidden rounded-[2.5rem] p-10 backdrop-blur-xl transition-all duration-500 ${featured ? "border border-blue-200/80 bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900" : "border border-slate-200/60 bg-white shadow-xl hover:shadow-2xl dark:border-slate-800/50 dark:bg-slate-900/80"}`}>
           <motion.div
             className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
             style={{
@@ -86,15 +86,20 @@ function ServiceDetailCard({ service, index }: { service: Service; index: number
           />
           
           <div className="relative z-20 flex flex-col h-full">
+            {featured && (
+              <div className="mb-5 inline-flex w-fit rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">
+                Solucion principal
+              </div>
+            )}
             <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
               <Icon size={32} />
             </div>
 
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">
+            <h3 className={`${featured ? "text-3xl lg:text-4xl" : "text-2xl"} font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight`}>
               <TranslateText text={service.title} />
             </h3>
 
-            <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8 flex-1">
+            <p className={`${featured ? "max-w-2xl text-base" : ""} text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8 flex-1`}>
               <TranslateText text={service.desc} />
             </p>
 

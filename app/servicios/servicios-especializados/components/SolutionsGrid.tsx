@@ -36,7 +36,7 @@ export default function SolutionsGrid({
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-white dark:bg-slate-900 overflow-hidden">
+    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 overflow-hidden" style={{ background: "var(--surface-section-white)" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -46,6 +46,9 @@ export default function SolutionsGrid({
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
+          <span className="inline-flex items-center rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] mb-5" style={{ color: "var(--brand-primary)", borderColor: "var(--surface-border)", backgroundColor: "var(--background)" }}>
+            Soluciones destacadas
+          </span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
             <TranslateText text={title} />
           </h2>
@@ -59,6 +62,7 @@ export default function SolutionsGrid({
           {services.map((service, i) => {
             const Icon = service.icon;
             const isHovered = hoveredCard === i;
+            const isFeatured = i === 0;
 
             return (
               <motion.div
@@ -69,12 +73,18 @@ export default function SolutionsGrid({
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 onMouseEnter={() => setHoveredCard(i)}
                 onMouseLeave={() => setHoveredCard(null)}
-                className={`relative p-8 rounded-3xl border-[2.5px] cursor-pointer overflow-hidden transition-all duration-400 ${
+                className={`relative p-8 rounded-[2rem] border cursor-pointer overflow-hidden transition-all duration-400 ${
                   isHovered
                     ? "border-blue-600 dark:border-slate-700 shadow-xl shadow-blue-600/20 dark:shadow-slate-900/30 -translate-y-4 scale-[1.025]"
-                    : "border-blue-200 dark:border-slate-700 shadow-md"
-                } bg-gradient-to-br ${cardBgColors[i % cardBgColors.length]}`}
+                    : "shadow-md"
+                } bg-gradient-to-br ${cardBgColors[i % cardBgColors.length]} ${isFeatured ? "lg:col-span-2" : ""}`}
+                style={{ borderColor: isFeatured ? "rgba(37,99,235,0.25)" : "var(--surface-border)" }}
               >
+                {isFeatured && (
+                  <div className="relative z-10 mb-5 inline-flex rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">
+                    Solucion recomendada
+                  </div>
+                )}
                 {/* Background Glow */}
                 <div
                   className={`absolute -top-1/2 -right-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(0,87,217,0.1)_0%,transparent_70%)] transition-all duration-400 ${
@@ -101,14 +111,14 @@ export default function SolutionsGrid({
 
                 {/* Content */}
                 <h3
-                  className={`relative z-10 text-xl font-extrabold mb-3 tracking-tight transition-colors duration-300 ${
+                  className={`relative z-10 ${isFeatured ? "text-2xl md:text-3xl" : "text-xl"} font-extrabold mb-3 tracking-tight transition-colors duration-300 ${
                     isHovered ? "text-blue-700 dark:text-blue-400" : "text-gray-900 dark:text-white"
                   }`}
                 >
                   <TranslateText text={service.title} />
                 </h3>
                 <p
-                  className={`relative z-10 text-base leading-relaxed transition-opacity duration-300 ${
+                  className={`relative z-10 ${isFeatured ? "max-w-2xl" : ""} text-base leading-relaxed transition-opacity duration-300 ${
                     isHovered ? "text-gray-800 dark:text-slate-300 opacity-95" : "text-gray-700 dark:text-slate-400 opacity-75"
                   }`}
                 >

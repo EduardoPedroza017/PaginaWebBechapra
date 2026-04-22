@@ -2,13 +2,8 @@
 
 import { Briefcase, Settings, Users } from "lucide-react";
 import Footer from "@/components/Footer";
-import {
-  ServiceHero,
-  ServiceCards,
-  BenefitsSection,
-  DarkCTA,
-  ContactSection,
-} from "./components";
+import SpotlightCTA from "@/app/components/SpotlightCTA";
+import { ServiceHero, ServiceCards, BenefitsSection, ContactSection } from "./components";
 
 const servicios = [
   {
@@ -48,9 +43,9 @@ export default function ManagementServicesPage() {
   return (
     <main className="overflow-x-hidden bg-white dark:bg-slate-900">
       <ServiceHero
-        title="Soluciones integrales para gestionar y hacer crecer tu"
+        title="Soluciones integrales para gestionar y hacer crecer tu negocio"
         highlightWord="negocio"
-        description="Desde el manejo de tus finanzas hasta la proteccion legal de tu empresa!"
+        description="Desde el manejo de tus finanzas hasta la proteccion legal de tu empresa."
         imageSrc="/web/image/servicios/management-services.jpg"
         imageAlt="Management Services BAUSEN"
         backLink="/servicios"
@@ -59,10 +54,7 @@ export default function ManagementServicesPage() {
         ctaLink="#contacto"
       />
 
-      <ServiceCards
-        title="Servicios Management Services"
-        services={servicios}
-      />
+      <ServiceCards title="Servicios Management Services" services={servicios} />
 
       <BenefitsSection
         title="Beneficios Management Services"
@@ -71,10 +63,11 @@ export default function ManagementServicesPage() {
         imageAlt="Beneficios Management Services"
       />
 
-      <DarkCTA
-        title="Todos los servicios en un solo lugar"
-        subtitle="Solicita una reunion para mas informacion."
-        imageSrc="/web/image/contacto/contacto-men.avif"
+      <SpotlightCTA
+        eyebrow="Gestion integral"
+        title="Conecte finanzas, legal y crecimiento en una sola ruta"
+        subtitle="Ordenamos la experiencia de management services para que se sienta parte del mismo sistema visual de servicios."
+        imageSrc="/web/image/servicios/management-services.jpg"
         imageAlt="Management Services"
         primaryLink="#contacto"
         primaryLabel="Solicitar reunion"

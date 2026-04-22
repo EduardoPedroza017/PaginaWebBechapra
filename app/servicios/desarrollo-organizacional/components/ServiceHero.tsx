@@ -1,12 +1,11 @@
 "use client";
 
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Sparkles, LucideIcon } from "lucide-react";
-import { TranslateText } from '@/components/TranslateText';
-import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
+import { TranslateText } from "@/components/TranslateText";
+import { AnimatedHeroBackground } from "@/components/ui/AnimatedHeroBackground";
 
 interface ServiceHeroProps {
   title: string;
@@ -30,67 +29,62 @@ export default function ServiceHero({
   iconComponent: IconComponent,
   backLink = "/servicios",
   backLabel = "Volver",
-  ctaLabel = "Solicitar consultoría",
+  ctaLabel = "Solicitar consultoria",
   ctaLink = "#contacto",
 }: ServiceHeroProps) {
+  const servicesBlueGradient = "linear-gradient(90deg, var(--hero-services-from), var(--hero-services-via), var(--hero-services-to))";
+  const servicesBlueGlow =
+    "radial-gradient(circle at 30% 40%, var(--hero-services-glow-primary) 0%, transparent 40%), radial-gradient(circle at 70% 60%, var(--hero-services-glow-secondary) 0%, transparent 40%)";
+
   return (
-    <AnimatedHeroBackground>
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        {/* Back Link */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+    <AnimatedHeroBackground
+      gradientClass=""
+      style={{
+        backgroundColor: "var(--hero-services-from)",
+        backgroundImage: `${servicesBlueGlow}, ${servicesBlueGradient}`,
+      }}
+      overlayClassName="bg-black/10"
+      orbClass="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] rounded-full bg-white/10 blur-3xl"
+    >
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
           <Link
             href={backLink}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-full font-bold mb-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
+            className="group mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 font-bold text-white/80 shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white"
           >
-            <ArrowLeft
-              size={18}
-              className="group-hover:-translate-x-1 transition-transform duration-300"
-            />
+            <ArrowLeft size={18} className="transition-transform duration-300 group-hover:-translate-x-1" />
             <TranslateText text={backLabel} />
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Badge */}
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             {subtitle && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-full border border-white/20 dark:border-white/10 mb-6"
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
               >
-                <Sparkles size={16} className="text-blue-400" />
-                <span className="text-white/90 text-sm font-medium">
+                <Sparkles size={16} className="text-white" />
+                <span className="text-sm font-medium text-white">
                   <TranslateText text={subtitle} />
                 </span>
               </motion.div>
             )}
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-[1.1]">
+            <h1 className="mb-6 text-4xl font-black leading-[1.1] tracking-tight text-white md:text-5xl lg:text-6xl">
               <TranslateText text={title} />
             </h1>
 
-            {/* Description */}
-            <p className="text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-8 max-w-xl">
+            <p className="mb-8 max-w-xl text-xl leading-relaxed text-white/85">
               <TranslateText text={description} />
             </p>
 
-            {/* CTA */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={ctaLink}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-800 text-blue-900 dark:text-white rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
+                className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-[var(--hero-services-to)] shadow-xl shadow-black/20 transition-all duration-300 hover:shadow-2xl"
               >
                 <TranslateText text={ctaLabel} />
                 <ArrowRight size={20} />
@@ -98,41 +92,31 @@ export default function ServiceHero({
             </motion.div>
           </motion.div>
 
-          {/* Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -3 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative hidden lg:block"
           >
-            <div className="relative w-full max-w-130 aspect-4/3 rounded-3xl overflow-hidden shadow-2xl shadow-black/30">
+            <div className="relative aspect-4/3 w-full max-w-130 overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/30">
               {imageSrc ? (
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt}
-                  fill
-                  className="object-cover"
-                  priority
-                  unoptimized={String(imageSrc).startsWith('http')}
-                />
+                <Image src={imageSrc} alt={imageAlt} fill className="object-cover" priority unoptimized={String(imageSrc).startsWith("http")} />
               ) : (
-                <div className="w-full h-full bg-linear-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
-                  <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className="flex h-full w-full items-center justify-center bg-blue-900/40">
+                  <svg className="h-16 w-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
                     <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
                     <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               )}
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-linear-to-t from-blue-900/30 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-blue-950/45 to-transparent" />
             </div>
-            {/* Decorative Element */}
             {IconComponent && (
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-6 -right-6 w-20 h-20 bg-linear-to-br from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600 rounded-2xl flex items-center justify-center shadow-xl"
+                className="absolute -top-6 -right-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br from-cyan-400 to-blue-500 shadow-xl"
               >
                 <IconComponent size={36} className="text-white" />
               </motion.div>
@@ -141,14 +125,8 @@ export default function ServiceHero({
         </div>
       </div>
 
-      {/* Wave */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg
-          viewBox="0 0 1440 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-auto"
-        >
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full">
           <path
             d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
             className="fill-white dark:fill-slate-900"

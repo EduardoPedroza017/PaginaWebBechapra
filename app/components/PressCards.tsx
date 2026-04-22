@@ -123,13 +123,17 @@ export default function PressCards() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="group"
+                    className={`group ${index === 0 ? "md:col-span-2 lg:col-span-2" : ""}`}
                   >
                     <a
                       href={item.link || '/prensa'}
-                      className="block bg-white dark:bg-slate-800/90 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+                      className={`block overflow-hidden rounded-3xl transition-all duration-500 ${
+                        index === 0
+                          ? "bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/80 dark:border dark:border-blue-800/40 dark:bg-slate-800/90"
+                          : "bg-white shadow-lg hover:shadow-2xl dark:bg-slate-800/90"
+                      }`}
                     >
-                      <div className="relative h-48 overflow-hidden">
+                      <div className={`relative overflow-hidden ${index === 0 ? "h-72 lg:h-80" : "h-48"}`}>
                         {item.image_url ? (
                           <img src={String(item.image_url)} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                         ) : (
@@ -141,12 +145,17 @@ export default function PressCards() {
                         <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-white/95 backdrop-blur-sm dark:bg-slate-800/95 dark:border dark:border-slate-700">
                           <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1"/></svg>
                         </div>
+                        {index === 0 && (
+                          <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-slate-950/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+                            Comunicado clave
+                          </div>
+                        )}
                       </div>
 
                       <div className="p-6 flex flex-col">
                         <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{formatDate(item.date)}</p>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">{item.title}</h3>
-                        <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3 flex-grow">{item.excerpt}</p>
+                        <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-xl"} font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors`}>{item.title}</h3>
+                        <p className={`${index === 0 ? "max-w-2xl text-base line-clamp-4" : "line-clamp-3"} text-slate-600 dark:text-slate-300 mb-4 flex-grow`}>{item.excerpt}</p>
                         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                           <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">Leer más
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>

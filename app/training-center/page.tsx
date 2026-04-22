@@ -1,69 +1,57 @@
 "use client";
 
-import React, { useState, useRef, MouseEvent } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
-import { BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, Video, FileText, Briefcase, ChevronRight, Calendar, Medal, Zap, Shield, Lightbulb, Gift, Send, Sparkles, MessageCircle } from 'lucide-react';
-import Footer from '@/components/Footer';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BookOpen, Users, Award, ArrowRight, Star, CheckCircle, Clock, Globe, Target, TrendingUp, FileText, Zap, Shield, Lightbulb, Send } from "lucide-react";
+import Footer from "@/components/Footer";
+import SpotlightCTA from "@/app/components/SpotlightCTA";
 import Section from "@/app/components/Section";
 import SubpageHero from "@/components/SubpageHero";
-import { TranslateText } from "@/components/TranslateText";
 
 const courses = [
   {
-    title: "Gestión Empresarial",
-    description: "Aprende las bases de la gestión empresarial moderna con estrategias probadas",
+    title: "Gestion Empresarial",
+    description: "Aprende las bases de la gestion empresarial moderna con estrategias probadas",
     duration: "8 semanas",
     level: "Principiante",
     icon: BookOpen,
     students: 245,
     rating: 4.8,
     category: "gestion",
-    price: "$299",
     modules: 12,
-    certificate: true,
-    features: ["Videos HD", "Ejercicios prácticos", "Mentoría 1:1"]
   },
   {
     title: "Liderazgo y Equipos",
-    description: "Desarrolla habilidades de liderazgo efectivo y gestión de equipos de alto rendimiento",
+    description: "Desarrolla habilidades de liderazgo efectivo y gestion de equipos de alto rendimiento",
     duration: "6 semanas",
     level: "Intermedio",
     icon: Users,
     students: 189,
     rating: 4.9,
     category: "liderazgo",
-    price: "$349",
     modules: 10,
-    certificate: true,
-    features: ["Casos reales", "Networking", "Certificado"]
   },
   {
     title: "Estrategia Empresarial",
-    description: "Domina la planificación estratégica y toma de decisiones ejecutivas",
+    description: "Domina la planificacion estrategica y toma de decisiones ejecutivas",
     duration: "10 semanas",
     level: "Avanzado",
     icon: Award,
     students: 156,
     rating: 4.7,
     category: "estrategia",
-    price: "$449",
     modules: 15,
-    certificate: true,
-    features: ["Proyecto final", "Simulaciones", "Acceso de por vida"]
   },
   {
     title: "Finanzas Corporativas",
-    description: "Comprende los principios financieros y gestión económica de empresas",
+    description: "Comprende los principios financieros y gestion economica de empresas",
     duration: "12 semanas",
     level: "Intermedio",
     icon: Globe,
     students: 203,
     rating: 4.6,
     category: "finanzas",
-    price: "$399",
     modules: 14,
-    certificate: true,
-    features: ["Excel avanzado", "Análisis real", "Toolkit financiero"]
   },
   {
     title: "Marketing Digital",
@@ -74,125 +62,119 @@ const courses = [
     students: 312,
     rating: 4.9,
     category: "marketing",
-    price: "$279",
     modules: 11,
-    certificate: true,
-    features: ["Campañas reales", "SEO/SEM", "Analytics"]
   },
   {
-    title: "Innovación y Transformación",
-    description: "Aprende a liderar procesos de cambio e innovación en organizaciones",
+    title: "Innovacion y Transformacion",
+    description: "Aprende a liderar procesos de cambio e innovacion en organizaciones",
     duration: "7 semanas",
     level: "Avanzado",
     icon: Lightbulb,
     students: 134,
     rating: 4.8,
     category: "innovacion",
-    price: "$429",
     modules: 9,
-    certificate: true,
-    features: ["Design Thinking", "Metodologías ágiles", "Workshop"]
-  }
+  },
 ];
 
 const stats = [
-  { number: "2,500+", label: "Estudiantes Activos", icon: Users },
-  { number: "45+", label: "Cursos Disponibles", icon: BookOpen },
-  { number: "98%", label: "Satisfacción", icon: Star },
-  { number: "150+", label: "Empresas Asociadas", icon: Briefcase }
+  { number: "2,500+", label: "Estudiantes Activos" },
+  { number: "45+", label: "Cursos Disponibles" },
+  { number: "98%", label: "Satisfaccion" },
+  { number: "150+", label: "Empresas Asociadas" },
 ];
 
 const categories = [
-  { id: 'todos', label: 'Todos los Cursos', count: courses.length },
-  { id: 'gestion', label: 'Gestión', count: courses.filter(c => c.category === 'gestion').length },
-  { id: 'liderazgo', label: 'Liderazgo', count: courses.filter(c => c.category === 'liderazgo').length },
-  { id: 'finanzas', label: 'Finanzas', count: courses.filter(c => c.category === 'finanzas').length },
-  { id: 'marketing', label: 'Marketing', count: courses.filter(c => c.category === 'marketing').length }
+  { id: "todos", label: "Todos los Cursos", count: courses.length },
+  { id: "gestion", label: "Gestion", count: courses.filter((c) => c.category === "gestion").length },
+  { id: "liderazgo", label: "Liderazgo", count: courses.filter((c) => c.category === "liderazgo").length },
+  { id: "finanzas", label: "Finanzas", count: courses.filter((c) => c.category === "finanzas").length },
+  { id: "marketing", label: "Marketing", count: courses.filter((c) => c.category === "marketing").length },
 ];
 
-export default function TrainingCenterPage() {
-  const [activeTab, setActiveTab] = useState('todos');
-  const [form, setForm] = useState({ nombre: '', correo: '', areaInteres: '' });
-  const [cvFile, setCvFile] = useState<File | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+const categoryAccent: Record<string, string> = {
+  gestion: "linear-gradient(135deg, #0f4fff 0%, #2563eb 100%)",
+  liderazgo: "linear-gradient(135deg, #3342d6 0%, #5b21b6 100%)",
+  estrategia: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%)",
+  finanzas: "linear-gradient(135deg, #0284c7 0%, #2563eb 100%)",
+  marketing: "linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%)",
+  innovacion: "linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)",
+};
 
-  const filteredCourses = activeTab === 'todos' 
-    ? courses 
-    : courses.filter(course => course.category === activeTab);
+export default function TrainingCenterPage() {
+  const [activeTab, setActiveTab] = useState("todos");
+  const filteredCourses = activeTab === "todos" ? courses : courses.filter((course) => course.category === activeTab);
 
   return (
     <div className="min-h-screen bg-[--background] dark:bg-slate-950">
-      <SubpageHero 
-        badge="Centro de Capacitación"
+      <SubpageHero
+        badge="Centro de Capacitacion"
         title="Bausen Training Center"
         variant="servicesBlue"
-        subtitle="Formamos y conectamos el talento del futuro con las mejores oportunidades estratégicas."
+        subtitle="Formamos y conectamos el talento del futuro con las mejores oportunidades estrategicas."
       />
 
-      {/* Quick Stats Over Header */}
       <Section variant="blue" className="-mt-20 relative z-20">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto bg-[--background]/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-[--surface-border] dark:border-slate-800/50 shadow-2xl">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 rounded-[2.5rem] border border-[--surface-border] bg-[--background]/80 p-10 shadow-2xl backdrop-blur-xl dark:border-slate-800/50 dark:bg-slate-900/80 lg:grid-cols-4">
           {stats.map((stat, i) => (
-            <div key={i} className="text-center space-y-2 group">
-              <div className="text-4xl lg:text-5xl font-black text-[--brand-primary] dark:text-blue-500 transition-transform group-hover:-translate-y-1">{stat.number}</div>
+            <div key={i} className="space-y-2 text-center group">
+              <div className="text-4xl font-black text-[--brand-primary] transition-transform group-hover:-translate-y-1 dark:text-blue-500 lg:text-5xl">{stat.number}</div>
               <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[--foreground]">{stat.label}</div>
             </div>
           ))}
         </div>
       </Section>
 
-      {/* Info Blocks */}
       <Section variant="white" size="lg">
-        <div className="text-center mb-20">
-           <span className="inline-flex items-center gap-2 px-4 py-2 bg-[--background] dark:bg-blue-900/20 text-[--brand-primary] dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-4 border border-[--surface-border] dark:border-blue-800/50">
+        <div className="mb-20 text-center">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-[--background] px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary] dark:border-blue-800/50 dark:bg-blue-900/20 dark:text-blue-400">
             <Shield size={14} />
             Avalados por el CCPM
           </span>
-          <h2 className="text-4xl lg:text-6xl font-black text-[--brand-accent] dark:text-white mb-6 tracking-tighter">
-            Educación de Clase Mundial
-          </h2>
-          <p className="text-lg text-[--foreground] dark:text-slate-400 max-w-3xl mx-auto font-medium">
-            Nuestra plataforma de educación en línea está diseñada para profesionales que buscan excelencia y crecimiento real.
+          <h2 className="mb-6 text-4xl font-black tracking-tighter text-[--brand-accent] dark:text-white lg:text-6xl">Educacion de Clase Mundial</h2>
+          <p className="mx-auto max-w-3xl text-lg font-medium text-[--foreground] dark:text-slate-400">
+            Nuestra plataforma de educacion en linea esta disenada para profesionales que buscan excelencia y crecimiento real.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           {[
-            { title: "Acceso Exclusivo BTC", desc: "Cursos gratuitos avalados por el Colegio de Contadores Públicos CDMX.", icon: Award, color: "blue" },
-            { title: "Mentoría de Expertos", desc: "Sesiones personalizadas con líderes en NOM-035 y Capital Humano.", icon: Users, color: "indigo" },
-            { title: "Plan Estratégico", desc: "Desarrollamos rutas de aprendizaje alineadas a los objetivos de su empresa.", icon: Target, color: "purple" }
+            { title: "Acceso Exclusivo BTC", desc: "Cursos gratuitos avalados por el Colegio de Contadores Publicos CDMX.", icon: Award },
+            { title: "Mentoria de Expertos", desc: "Sesiones personalizadas con lideres en NOM-035 y Capital Humano.", icon: Users },
+            { title: "Plan Estrategico", desc: "Desarrollamos rutas de aprendizaje alineadas a los objetivos de su empresa.", icon: Target },
           ].map((item, i) => (
             <InfoCard key={i} item={item} index={i} />
           ))}
         </div>
       </Section>
 
-      {/* Courses Catalog */}
       <Section variant="blue" size="lg" id="courses">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter">
-            Catálogo de Programas
-          </h2>
-          
+        <div className="mb-16 text-center">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
+            <Zap size={14} />
+            Programas en foco
+          </span>
+          <h2 className="mb-8 text-4xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Catalogo de Programas</h2>
+
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
+                className={`rounded-2xl border px-6 py-3 text-xs font-black uppercase tracking-widest transition-all ${
                   activeTab === cat.id
-                    ? 'bg-[--brand-primary] text-white shadow-xl shadow-[--brand-primary]/20 scale-105'
-                    : 'bg-white dark:bg-slate-900 text-[--foreground] dark:text-slate-400 hover:bg-[--background] dark:hover:bg-blue-950/50'
+                    ? "scale-105 border-blue-200 text-white shadow-xl shadow-blue-500/20 dark:border-blue-700/50"
+                    : "border-[--surface-border] bg-white text-[--foreground] hover:border-blue-200 hover:bg-[--background] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-blue-950/50"
                 }`}
+                style={activeTab === cat.id ? { backgroundImage: "linear-gradient(135deg, var(--hero-services-from), var(--hero-services-to))" } : undefined}
               >
-                {cat.label} <span className="opacity-50 ml-2">{cat.count}</span>
+                {cat.label} <span className="ml-2 opacity-50">{cat.count}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {filteredCourses.map((course, index) => (
               <CourseCard key={course.title} course={course} index={index} />
@@ -201,69 +183,70 @@ export default function TrainingCenterPage() {
         </div>
       </Section>
 
-      {/* Internships / CV Section */}
+      <SpotlightCTA
+        eyebrow="Impulsa tu crecimiento"
+        title="Transforma tu talento en ventaja competitiva"
+        subtitle="Integra aprendizaje, practica profesional y acompanamiento experto en una experiencia de formacion mas atractiva y memorable."
+        imageSrc="/web/image/traniing/escuela.jfif"
+        imageAlt="Bausen Training Center"
+        primaryLink="#contacto"
+        primaryLabel="Solicitar informacion"
+        secondaryLink="#courses"
+        secondaryLabel="Ver programas"
+      />
+
       <Section variant="white" size="lg">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+        <div className="grid items-center gap-20 lg:grid-cols-2">
           <div>
-             <span className="inline-flex items-center gap-2 px-4 py-2 bg-[--background] dark:bg-blue-900/20 text-[--brand-primary] dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-[--surface-border] dark:border-blue-800/50">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-[--background] px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary] dark:border-blue-800/50 dark:bg-blue-900/20 dark:text-blue-400">
               <Zap size={14} />
               Career Boost
             </span>
-            <h2 className="text-4xl lg:text-6xl font-black text-[--brand-accent] dark:text-white mb-8 tracking-tighter leading-tight">
-              Prácticas Profesionales y Talento
-            </h2>
-            <p className="text-lg text-[--foreground] dark:text-slate-400 font-medium leading-relaxed mb-10">
-              Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial líder. Únase a nuestra red de talentos certificados.
+            <h2 className="mb-8 text-4xl font-black leading-tight tracking-tighter text-[--brand-accent] dark:text-white lg:text-6xl">Practicas Profesionales y Talento</h2>
+            <p className="mb-10 text-lg font-medium leading-relaxed text-[--foreground] dark:text-slate-400">
+              Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial lider. Unase a nuestra red de talentos certificados.
             </p>
-            
+
             <div className="space-y-6">
               {[
-                { title: "Experiencia Real", desc: "Trabaje en proyectos estratégicos con empresas líderes." },
-                { title: "Mentoría de Lujo", desc: "Reciba guía de directivos con 15+ años de trayectoria." },
-                { title: "Posible Contratación", desc: "90% de nuestros practicantes reciben ofertas laborales." }
+                { title: "Experiencia Real", desc: "Trabaje en proyectos estrategicos con empresas lideres." },
+                { title: "Mentoria de Lujo", desc: "Reciba guia de directivos con 15+ anos de trayectoria." },
+                { title: "Posible Contratacion", desc: "90% de nuestros practicantes reciben ofertas laborales." },
               ].map((benefit, i) => (
-                <div key={i} className="flex gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-[--background] dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:bg-[--brand-primary] group-hover:text-white transition-all">
+                <div key={i} className="group flex gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[--background] transition-all group-hover:bg-[--brand-primary] group-hover:text-white dark:bg-blue-900/30">
                     <CheckCircle size={20} />
                   </div>
                   <div>
-                    <h4 className="font-black text-[--brand-accent] dark:text-white text-lg">{benefit.title}</h4>
-                    <p className="text-[--foreground] dark:text-slate-400 text-sm font-medium">{benefit.desc}</p>
+                    <h4 className="text-lg font-black text-[--brand-accent] dark:text-white">{benefit.title}</h4>
+                    <p className="text-sm font-medium text-[--foreground] dark:text-slate-400">{benefit.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-slate-950 rounded-[3rem] p-10 lg:p-12 shadow-2xl shadow-[--brand-primary]/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[--brand-primary]/10 rounded-full blur-[80px]" />
+          <div className="relative overflow-hidden rounded-[3rem] bg-slate-950 p-10 shadow-2xl shadow-[--brand-primary]/40 lg:p-12">
+            <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[--brand-primary]/10 blur-[80px]" />
             <div className="relative z-10">
-              <h3 className="text-3xl font-black text-white mb-8">Postule su Talento</h3>
+              <h3 className="mb-8 text-3xl font-black text-white">Postule su Talento</h3>
               <form className="space-y-5">
-                <input 
-                  type="text" 
-                  placeholder="Nombre Completo" 
-                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none"
-                />
-                <input 
-                  type="email" 
-                  placeholder="Correo Electrónico" 
-                  className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none"
-                />
-                <select className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-[--foreground] focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10 transition-all outline-none appearance-none">
-                  <option value="">Área de Interés</option>
+                <input type="text" placeholder="Nombre Completo" className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
+                <input type="email" placeholder="Correo Electronico" className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
+                <select className="w-full appearance-none rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-slate-300 outline-none transition-all focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10">
+                  <option value="">Area de Interes</option>
                   <option>Estrategia</option>
-                  <option>Nómina y Finanzas</option>
+                  <option>Nomina y Finanzas</option>
                   <option>Recursos Humanos</option>
                 </select>
-                <div className="relative border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-[--brand-primary]/50 transition-all cursor-pointer group">
-                  <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
-                  <FileText className="w-8 h-8 text-[--foreground] mx-auto mb-2 group-hover:text-[--brand-accent] transition-colors" />
-                  <p className="text-sm text-[--foreground] font-bold">Subir CV (PDF, DOCX)</p>
+                <div className="group relative cursor-pointer rounded-2xl border-2 border-dashed border-white/10 p-8 text-center transition-all hover:border-[--brand-primary]/50">
+                  <input type="file" className="absolute inset-0 cursor-pointer opacity-0" />
+                  <FileText className="mx-auto mb-2 h-8 w-8 text-slate-400 transition-colors group-hover:text-[--brand-accent]" />
+                  <p className="text-sm font-bold text-slate-300">Subir CV (PDF, DOCX)</p>
                 </div>
-                <button className="w-full py-5 bg-[--brand-primary] text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-[--brand-primary]/20 hover:bg-[--brand-accent] hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[--brand-primary] py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-[--brand-primary]/20 transition-all hover:-translate-y-1 hover:bg-[--brand-accent]">
                   <Send size={16} />
-                  Enviar Aplicación
+                  Enviar Aplicacion
                 </button>
               </form>
             </div>
@@ -277,51 +260,26 @@ export default function TrainingCenterPage() {
 }
 
 function InfoCard({ item, index }: { item: any; index: number }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
-  const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
-
-  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  }
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      onMouseMove={handleMouseMove}
-      className="group relative"
-    >
-      <div className="relative h-full bg-[--surface-card] dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-[--surface-border] dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 text-center flex flex-col overflow-hidden">
-        <motion.div
-          className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
-          style={{
-            background: useTransform(
-              [glowX, glowY],
-              ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`
-            ),
-          }}
-        />
+    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.1 }} className="group relative">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-[--surface-border] bg-[--surface-card] p-10 text-center shadow-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/80">
         <div className="relative z-20">
-          <div className="w-16 h-16 rounded-2xl bg-[--brand-primary] text-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-[--brand-primary]/20 group-hover:scale-110 transition-transform">
+          <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-[--brand-primary] text-white shadow-xl shadow-[--brand-primary]/20 transition-transform group-hover:scale-110">
             <item.icon size={32} />
           </div>
-          <h3 className="text-2xl font-black text-[--brand-accent] dark:text-white mb-4 tracking-tight leading-tight">{item.title}</h3>
-          <p className="text-[--foreground] dark:text-slate-400 font-medium leading-relaxed">{item.desc}</p>
+          <h3 className="mb-4 text-2xl font-black leading-tight tracking-tight text-[--brand-accent] dark:text-white">{item.title}</h3>
+          <p className="font-medium leading-relaxed text-[--foreground] dark:text-slate-400">{item.desc}</p>
         </div>
       </div>
-      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-[--brand-primary]/5 -z-10 transition-opacity duration-500" />
+      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-[--brand-primary]/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
     </motion.div>
   );
 }
 
 function CourseCard({ course, index }: { course: any; index: number }) {
+  const featured = index === 0;
+  const accent = categoryAccent[course.category] || "linear-gradient(135deg, #0f4fff 0%, #2563eb 100%)";
+
   return (
     <motion.div
       layout
@@ -329,48 +287,57 @@ function CourseCard({ course, index }: { course: any; index: number }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.4 }}
-      className="group"
+      className={featured ? "group md:col-span-2 lg:col-span-2" : "group"}
     >
-      <div className="bg-[--surface-card] dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-[--surface-border] dark:border-slate-800 hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
-        <div className="relative p-10 bg-slate-950 overflow-hidden">
-          <div className="absolute top-6 right-6">
-             <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[--brand-accent] text-[10px] font-black uppercase tracking-widest border border-white/5">
+      <div
+        className={`flex h-full flex-col overflow-hidden rounded-[2.5rem] border transition-all duration-500 hover:shadow-2xl ${
+          featured
+            ? "border-blue-200/80 bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900 dark:shadow-blue-950/30"
+            : "border-[--surface-border] bg-[--surface-card] shadow-xl dark:border-slate-800 dark:bg-slate-900"
+        }`}
+      >
+        <div className={`relative overflow-hidden p-10 ${featured ? "" : "bg-slate-950"}`} style={featured ? { backgroundImage: accent } : undefined}>
+          <div className="absolute right-6 top-6">
+            <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${featured ? "border border-white/20 bg-slate-950/30 text-white backdrop-blur-md" : "border border-white/5 bg-white/10 text-[--brand-accent] backdrop-blur-md"}`}>
               {course.level}
             </span>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-8 shadow-xl">
-            <course.icon size={32} className="text-[--brand-primary]" />
+          {featured && (
+            <div className="mb-6 inline-flex w-fit items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white">
+              Programa destacado
+            </div>
+          )}
+          <div className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl shadow-xl ${featured ? "bg-white/15" : "bg-white/10"}`}>
+            <course.icon size={32} className={featured ? "text-white" : "text-[--brand-primary]"} />
           </div>
-          <div className="flex items-center gap-2 mb-2">
-            <Star className="w-4 h-4 fill-[--brand-primary] text-[--brand-primary]" />
-            <span className="text-white font-black">{course.rating}</span>
-            <span className="text-[--foreground] text-xs font-bold uppercase tracking-widest ml-2">({course.students} Alumnos)</span>
+          <div className="mb-2 flex items-center gap-2">
+            <Star className={`h-4 w-4 ${featured ? "fill-white text-white" : "fill-[--brand-primary] text-[--brand-primary]"}`} />
+            <span className="font-black text-white">{course.rating}</span>
+            <span className={`ml-2 text-xs font-bold uppercase tracking-widest ${featured ? "text-white/75" : "text-slate-400"}`}>({course.students} Alumnos)</span>
           </div>
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[--brand-primary]/10 rounded-full blur-3xl group-hover:bg-[--brand-primary]/20 transition-all" />
+          <div className={`absolute -bottom-10 -right-10 h-40 w-40 rounded-full blur-3xl transition-all ${featured ? "bg-white/20 group-hover:bg-white/30" : "bg-[--brand-primary]/10 group-hover:bg-[--brand-primary]/20"}`} />
         </div>
 
-        <div className="p-10 flex flex-col flex-1">
-          <h3 className="text-2xl font-black text-[--brand-accent] dark:text-white mb-4 group-hover:text-[--brand-primary] dark:group-hover:text-blue-400 transition-colors">
+        <div className="flex flex-1 flex-col p-10">
+          <h3 className={`mb-4 font-black transition-colors group-hover:text-[--brand-primary] dark:text-white dark:group-hover:text-blue-400 ${featured ? "text-3xl text-[--brand-accent] lg:text-4xl" : "text-2xl text-[--brand-accent]"}`}>
             {course.title}
           </h3>
-          <p className="text-[--foreground] dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 flex-1">
-            {course.description}
-          </p>
+          <p className={`mb-8 flex-1 font-medium leading-relaxed text-[--foreground] dark:text-slate-400 ${featured ? "max-w-2xl text-base" : "text-sm"}`}>{course.description}</p>
 
-          <div className="flex items-center justify-between py-6 border-t border-[--surface-border] dark:border-slate-800 mb-8">
+          <div className="mb-8 flex items-center justify-between border-t border-[--surface-border] py-6 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[--brand-primary]" />
-              <span className="text-xs font-black text-[--brand-accent] dark:text-white uppercase tracking-widest">{course.duration}</span>
+              <Clock className="h-4 w-4 text-[--brand-primary]" />
+              <span className="text-xs font-black uppercase tracking-widest text-[--brand-accent] dark:text-white">{course.duration}</span>
             </div>
             <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[--brand-primary]" />
-              <span className="text-xs font-black text-[--brand-accent] dark:text-white uppercase tracking-widest">{course.modules} Módulos</span>
+              <BookOpen className="h-4 w-4 text-[--brand-primary]" />
+              <span className="text-xs font-black uppercase tracking-widest text-[--brand-accent] dark:text-white">{course.modules} Modulos</span>
             </div>
           </div>
 
-          <button className="w-full py-4 bg-[--background] dark:bg-slate-800 text-[--brand-primary] dark:text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-[--brand-primary] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+          <button className={`flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-[10px] font-black uppercase tracking-widest transition-all duration-300 group/btn ${featured ? "bg-[--brand-primary] text-white hover:bg-[--brand-accent]" : "bg-[--background] text-[--brand-primary] hover:bg-[--brand-primary] hover:text-white dark:bg-slate-800 dark:text-white"}`}>
             Inscribirme Ahora
-            <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+            <ArrowRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
           </button>
         </div>
       </div>

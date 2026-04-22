@@ -67,16 +67,23 @@ export default function NewsCards() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                className={index === 0 ? "md:col-span-2 lg:col-span-2" : ""}
               >
                 <CardFlat>
-                  <Link href={`/noticias/${slugify(item.title)}`} className="h-full flex flex-col">
-                    <div className="relative h-56 overflow-hidden bg-slate-50 dark:bg-slate-800">
+                  <Link href={`/noticias/${slugify(item.title)}`} className="group h-full flex flex-col">
+                    <div className={`relative overflow-hidden bg-slate-50 dark:bg-slate-800 ${index === 0 ? "h-72 lg:h-80" : "h-56"}`}>
                       {item.image_url && (
                         <OptimizedImage
                           src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
                           alt={item.title}
-                          className="object-cover w-full h-full"
+                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
                         />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent" />
+                      {index === 0 && (
+                        <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-slate-950/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+                          Nota destacada
+                        </div>
                       )}
                     </div>
                     <div className="p-8 flex flex-col flex-1">
@@ -84,10 +91,10 @@ export default function NewsCards() {
                         <Calendar size={12} />
                         {new Date(item.date).toLocaleDateString()}
                       </div>
-                      <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 leading-tight">
+                      <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-lg"} font-black text-slate-900 dark:text-white mb-4 leading-tight`}>
                         {item.title}
                       </h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-8 flex-1 text-justify">
+                      <p className={`${index === 0 ? "max-w-2xl text-base" : "text-sm"} text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8 flex-1 text-justify`}>
                         {item.description}
                       </p>
                       <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">

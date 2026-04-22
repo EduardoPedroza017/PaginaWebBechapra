@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback, useRef, MouseEvent } from 'react';
-import Link from 'next/link';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { Clock, ArrowRight, Newspaper, Search, Sparkles, Filter, FileText } from "lucide-react";
+import { useEffect, useState, useMemo, useCallback, useRef, MouseEvent } from "react";
+import Link from "next/link";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Clock, ArrowRight, Newspaper, Search, Sparkles, FileText } from "lucide-react";
 import Footer from "@/components/Footer";
 import Section from "@/app/components/Section";
 import SubpageHero from "@/components/SubpageHero";
-import { TranslateText } from "@/components/TranslateText";
 import PressFilter from "./components/PressFilter";
-import { OptimizedImage } from '@/lib/images/image-utils';
+import SpotlightCTA from "@/app/components/SpotlightCTA";
+import { OptimizedImage } from "@/lib/images/image-utils";
 
 interface PressItem {
   title: string;
@@ -34,9 +34,9 @@ const slugify = (s: string) =>
     : "";
 
 const formatDate = (dateString?: string) => {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const d = new Date(dateString);
-  return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  return d.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 };
 
 export default function PrensaPage() {
@@ -62,7 +62,7 @@ export default function PrensaPage() {
           slug: it.slug || slugify(it.title),
           file_url: it.file_url || it.image_url || "",
           link: it.link || it.file_url || "",
-          __fid: String(it.slug ?? it.id ?? i)
+          __fid: String(it.slug ?? it.id ?? i),
         }));
         setItems(withId);
         setVisible(withId);
@@ -75,66 +75,69 @@ export default function PrensaPage() {
   }, []);
 
   const pressForFilter = useMemo(
-    () => items.map((it) => ({
-      id: it.__fid || it.slug || "",
-      title: it.title,
-      date: it.date || "",
-      excerpt: it.excerpt || "",
-      link: it.link || it.file_url || ""
-    })),
+    () =>
+      items.map((it) => ({
+        id: it.__fid || it.slug || "",
+        title: it.title,
+        date: it.date || "",
+        excerpt: it.excerpt || "",
+        link: it.link || it.file_url || "",
+      })),
     [items]
   );
 
-  const handleFilter = useCallback((filtered: any[]) => {
-    const ids = new Set(filtered.map((f) => f.id));
-    setVisible(items.filter((it) => ids.has(it.__fid || it.slug || "")));
-  }, [items]);
+  const handleFilter = useCallback(
+    (filtered: any[]) => {
+      const ids = new Set(filtered.map((f) => f.id));
+      setVisible(items.filter((it) => ids.has(it.__fid || it.slug || "")));
+    },
+    [items]
+  );
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
-      <SubpageHero 
-        badge="Comunicación Oficial"
+      <SubpageHero
+        badge="Comunicacion Oficial"
         title="Sala de Prensa"
         variant="servicesBlue"
-        subtitle="Mantenemos a los medios y al público informados sobre nuestras iniciativas corporativas y logros estratégicos."
+        subtitle="Mantenemos a los medios y al publico informados sobre nuestras iniciativas corporativas y logros estrategicos."
       />
 
-      {/* Filter & Stats Section */}
       <Section variant="blue" className="-mt-20 relative z-20">
-        <PressFilter 
-          press={pressForFilter} 
-          onFilter={handleFilter} 
-          totalCount={items.length} 
-          filteredCount={visible.length} 
-        />
+        <PressFilter press={pressForFilter} onFilter={handleFilter} totalCount={items.length} filteredCount={visible.length} />
       </Section>
 
-      {/* Press Grid */}
       <Section variant="white" size="lg">
-        <div className="flex items-center gap-4 mb-16">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-            <Newspaper size={24} />
-          </div>
-          <div>
-            <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Últimos Comunicados</h2>
-            <p className="text-slate-500 font-medium">Información oficial actualizada para prensa y asociados.</p>
+        <div className="mb-16 space-y-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
+            <Sparkles size={14} />
+            Radar editorial
+          </span>
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/30">
+              <Newspaper size={24} />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Ultimos Comunicados</h2>
+              <p className="font-medium text-slate-500">Informacion oficial actualizada para prensa y asociados.</p>
+            </div>
           </div>
         </div>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-96 rounded-[2.5rem] bg-slate-50 dark:bg-slate-900 animate-pulse" />
+              <div key={i} className="h-96 rounded-[2.5rem] bg-slate-50 animate-pulse dark:bg-slate-900" />
             ))}
           </div>
         ) : visible.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[3rem]">
-            <Search className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+          <div className="rounded-[3rem] bg-slate-50 py-20 text-center dark:bg-slate-900">
+            <Search className="mx-auto mb-6 h-16 w-16 text-slate-300" />
             <h3 className="text-2xl font-black text-slate-900 dark:text-white">No se encontraron resultados</h3>
-            <p className="text-slate-500 mt-2">Intente ajustar los filtros de búsqueda.</p>
+            <p className="mt-2 text-slate-500">Intente ajustar los filtros de busqueda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
             {visible.map((it, i) => (
               <PressCard key={it.__fid || i} item={it} index={i} />
             ))}
@@ -142,30 +145,17 @@ export default function PrensaPage() {
         )}
       </Section>
 
-      {/* Media Contact CTA */}
-      <Section variant="blue" size="md">
-        <div className="bg-slate-950 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden shadow-2xl shadow-blue-900/20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px]" />
-          <div className="relative z-10 text-center space-y-8">
-            <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tighter">¿Requiere información de prensa?</h2>
-            <p className="text-slate-400 text-xl max-w-2xl mx-auto font-medium">Nuestro equipo de comunicación está disponible para atender solicitudes de entrevistas, materiales gráficos y datos institucionales.</p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center pt-6">
-              <Link
-                href="/#contacto"
-                className="px-10 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-500 transition-all hover:-translate-y-1"
-              >
-                Solicitar Media Kit
-              </Link>
-              <Link
-                href="mailto:prensa@bausen.com.mx"
-                className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/10 transition-all"
-              >
-                Contactar Comunicación
-              </Link>
-            </div>
-          </div>
-        </div>
-      </Section>
+      <SpotlightCTA
+        eyebrow="Enlace institucional"
+        title="Requiere informacion de prensa?"
+        subtitle="Nuestro equipo de comunicacion esta listo para compartir materiales, entrevistas y contexto institucional con una experiencia mas clara y profesional."
+        imageSrc="/web/image/servicios/service.png"
+        imageAlt="Atencion institucional para prensa"
+        primaryLink="/#contacto"
+        primaryLabel="Solicitar media kit"
+        secondaryLink="mailto:prensa@bausen.com.mx"
+        secondaryLabel="Contactar comunicacion"
+      />
 
       <Footer />
     </div>
@@ -173,11 +163,11 @@ export default function PrensaPage() {
 }
 
 function PressCard({ item, index }: { item: PressItem; index: number }) {
-  const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const glowX = useSpring(mouseX, { damping: 20, stiffness: 150 });
   const glowY = useSpring(mouseY, { damping: 20, stiffness: 150 });
+  const featured = index === 0;
 
   function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -186,6 +176,10 @@ function PressCard({ item, index }: { item: PressItem; index: number }) {
   }
 
   const profileUrl = `/prensa/${item.slug || slugify(item.title)}`;
+  const imageSrc =
+    item.file_url && item.file_url.startsWith("/uploads/")
+      ? `${process.env.NEXT_PUBLIC_API_URL || ""}${item.file_url}`
+      : item.file_url;
 
   return (
     <motion.div
@@ -194,12 +188,18 @@ function PressCard({ item, index }: { item: PressItem; index: number }) {
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
       onMouseMove={handleMouseMove}
-      className="group relative h-full"
+      className={`group relative h-full ${featured ? "md:col-span-2" : ""}`}
     >
       <Link href={profileUrl} className="block h-full">
-        <div className="relative h-full bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-slate-200/60 dark:border-slate-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col">
+        <div
+          className={`relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border backdrop-blur-xl transition-all duration-500 ${
+            featured
+              ? "border-blue-200/80 bg-gradient-to-br from-white via-blue-50/40 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900/90 dark:shadow-blue-950/30"
+              : "border-slate-200/60 bg-white shadow-xl hover:shadow-2xl dark:border-slate-800/50 dark:bg-slate-900/80"
+          }`}
+        >
           <motion.div
-            className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+            className="pointer-events-none absolute -inset-px z-10 rounded-[2.5rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             style={{
               background: useTransform(
                 [glowX, glowY],
@@ -207,41 +207,53 @@ function PressCard({ item, index }: { item: PressItem; index: number }) {
               ),
             }}
           />
-          
-          {item.file_url && (
-            <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
-              <OptimizedImage
-                src={item.file_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || ''}${item.file_url}` : item.file_url}
-                alt={item.title}
-                className="object-cover transition-transform duration-700 group-hover:scale-110 w-full h-full"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
-              <div className="absolute top-6 left-6">
-                <div className="w-10 h-10 rounded-xl bg-blue-600/80 backdrop-blur-md flex items-center justify-center text-white">
-                  <FileText size={20} />
-                </div>
-              </div>
-            </div>
-          )}
 
-          <div className="p-10 flex flex-col flex-1 relative z-20">
-            <div className="flex items-center gap-3 text-blue-600 mb-4">
-              <Clock className="w-4 h-4" />
+          {imageSrc ? (
+            <div className={`relative overflow-hidden bg-slate-100 dark:bg-slate-800 ${featured ? "h-72 lg:h-80" : "h-56"}`}>
+              <OptimizedImage src={imageSrc} alt={item.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
+              <div className="absolute left-6 top-6 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/80 text-white backdrop-blur-md">
+                <FileText size={20} />
+              </div>
+              {featured && (
+                <div className="absolute right-6 top-6 rounded-full border border-white/20 bg-slate-950/55 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+                  Destacado
+                </div>
+              )}
+            </div>
+          ) : null}
+
+          <div className="relative z-20 flex flex-1 flex-col p-10">
+            <div className="mb-4 flex items-center gap-3 text-blue-600">
+              <Clock className="h-4 w-4" />
               <span className="text-[10px] font-black uppercase tracking-widest">{formatDate(item.date)}</span>
             </div>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors leading-tight line-clamp-2">
+            <h3
+              className={`mb-4 font-black leading-tight text-slate-900 transition-colors group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400 ${
+                featured ? "line-clamp-3 text-3xl lg:text-4xl" : "line-clamp-2 text-2xl"
+              }`}
+            >
               {item.title}
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed mb-8 line-clamp-3 flex-1">
+            <p
+              className={`mb-8 flex-1 font-medium leading-relaxed text-slate-500 dark:text-slate-400 ${
+                featured ? "line-clamp-4 max-w-3xl text-base" : "line-clamp-3 text-sm"
+              }`}
+            >
               {item.excerpt}
             </p>
-            <div className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest pt-6 border-t border-slate-100 dark:border-slate-800">
-              Leer Comunicado <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <div
+              className={`flex items-center gap-2 border-t pt-6 text-[10px] font-black uppercase tracking-widest text-blue-600 ${
+                featured ? "border-blue-100 dark:border-blue-900/40" : "border-slate-100 dark:border-slate-800"
+              }`}
+            >
+              Leer Comunicado
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </div>
           </div>
         </div>
       </Link>
-      <div className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur-2xl bg-blue-600/5 -z-10 transition-opacity duration-500" />
+      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-blue-600/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
     </motion.div>
   );
 }

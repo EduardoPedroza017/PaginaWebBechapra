@@ -73,7 +73,7 @@ const benefits = [
 
 export default function NOM035Page() {
   return (
-    <main className="min-h-screen bg-linear-to-b from-blue-950 via-blue-900 to-blue-950 dark:bg-slate-900 overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-white dark:bg-slate-900">
       <NomHero
         title="Cumplimiento"
         highlightWord="NOM-035"

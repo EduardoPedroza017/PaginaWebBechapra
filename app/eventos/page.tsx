@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, Tag, ArrowRight, X, Sparkles, Clock } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, X, Sparkles } from 'lucide-react';
 import Section from '@/app/components/Section';
 import SubpageHero from '@/components/SubpageHero';
-import { TranslateText } from '@/components/TranslateText';
 import Footer from '@/components/Footer';
+import SpotlightCTA from '@/app/components/SpotlightCTA';
 
 interface Evento {
   id: number;
@@ -49,7 +49,7 @@ export default function EventosPage() {
               fecha: pickString('fecha_hora', 'fecha', 'date'),
               imagen: resolvedImage,
               categoria: pickString('categoria', 'category') || 'Corporativo',
-              ubicacion: pickString('ubicacion', 'location') || 'México',
+              ubicacion: pickString('ubicacion', 'location') || 'Mexico',
               status: it.status || it.active || it.estado,
             };
           });
@@ -72,119 +72,135 @@ export default function EventosPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
-      <SubpageHero 
+      <SubpageHero
         badge="Nuestra Comunidad"
         title="Eventos y Actividades"
         variant="servicesBlue"
-        subtitle="Conecte con expertos y participe en experiencias únicas diseñadas para inspirar el crecimiento empresarial."
+        subtitle="Conecte con expertos y participe en experiencias unicas disenadas para inspirar el crecimiento empresarial."
       />
 
-      {/* Featured Events Carousel */}
       <Section variant="blue" size="lg">
-        <div className="relative h-[600px] flex items-center justify-center overflow-hidden" style={{ perspective: 1200 }}>
+        <div className="relative flex h-[600px] items-center justify-center overflow-hidden" style={{ perspective: 1200 }}>
           <AnimatePresence mode="wait">
-            {carouselEventos.length > 0 && carouselEventos.map((evento, index) => {
-              const isActive = index === activeIndex;
-              if (!isActive) return null;
+            {carouselEventos.length > 0 &&
+              carouselEventos.map((evento, index) => {
+                const isActive = index === activeIndex;
+                if (!isActive) return null;
 
-              return (
-                <motion.div
-                  key={evento.id}
-                  initial={{ opacity: 0, x: 100, scale: 0.9 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: -100, scale: 0.9 }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute w-full max-w-5xl"
-                >
-                  <div className="bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row border border-slate-100 dark:border-slate-800">
-                    <div className="relative w-full md:w-1/2 h-[300px] md:h-[500px]">
-                      <img src={evento.imagen} alt={evento.titulo} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
-                    </div>
-                    <div className="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center">
-                      <div className="mb-6">
-                        <span className="px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800/50">
-                          {evento.categoria}
-                        </span>
+                return (
+                  <motion.div
+                    key={evento.id}
+                    initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -100, scale: 0.9 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute w-full max-w-5xl"
+                  >
+                    <div className="flex flex-col overflow-hidden rounded-[3rem] border border-slate-100 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 md:flex-row">
+                      <div className="relative h-[300px] w-full md:h-[500px] md:w-1/2">
+                        <img src={evento.imagen} alt={evento.titulo} className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
                       </div>
-                      <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-tight">
-                        {evento.titulo}
-                      </h2>
-                      <p className="text-slate-600 dark:text-slate-400 font-medium mb-10 line-clamp-3 text-lg leading-relaxed">
-                        {evento.descripcion}
-                      </p>
-                      <div className="space-y-4 mb-10">
-                        <div className="flex items-center gap-3 text-slate-500">
-                          <Calendar className="w-5 h-5 text-blue-600" />
-                          <span className="font-bold text-sm uppercase tracking-widest">{formatFecha(evento.fecha)}</span>
+                      <div className="flex w-full flex-col justify-center p-10 md:w-1/2 md:p-16">
+                        <div className="mb-6">
+                          <span className="rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-widest text-blue-600 dark:border-blue-800/50 dark:bg-blue-900/30 dark:text-blue-400">
+                            {evento.categoria}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-3 text-slate-500">
-                          <MapPin className="w-5 h-5 text-blue-600" />
-                          <span className="font-bold text-sm uppercase tracking-widest">{evento.ubicacion}</span>
+                        <h2 className="mb-6 text-3xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white lg:text-5xl">{evento.titulo}</h2>
+                        <p className="mb-10 line-clamp-3 text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-400">{evento.descripcion}</p>
+                        <div className="mb-10 space-y-4">
+                          <div className="flex items-center gap-3 text-slate-500">
+                            <Calendar className="h-5 w-5 text-blue-600" />
+                            <span className="text-sm font-bold uppercase tracking-widest">{formatFecha(evento.fecha)}</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-slate-500">
+                            <MapPin className="h-5 w-5 text-blue-600" />
+                            <span className="text-sm font-bold uppercase tracking-widest">{evento.ubicacion}</span>
+                          </div>
                         </div>
+                        <button
+                          onClick={() => {
+                            setModalEvent(evento);
+                            setModalOpen(true);
+                          }}
+                          className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-1 hover:bg-blue-500"
+                        >
+                          Ver Detalles
+                          <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                        </button>
                       </div>
-                      <button 
-                        onClick={() => { setModalEvent(evento); setModalOpen(true); }}
-                        className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-500 transition-all hover:-translate-y-1 group"
-                      >
-                        Ver Detalles
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                      </button>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  </motion.div>
+                );
+              })}
           </AnimatePresence>
         </div>
 
-        {/* Carousel Indicators */}
-        <div className="flex justify-center gap-4 mt-12">
+        <div className="mt-12 flex justify-center gap-4">
           {carouselEventos.map((_, i) => (
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className={`h-1.5 rounded-full transition-all duration-500 ${i === activeIndex ? "w-12 bg-blue-600" : "w-4 bg-slate-200 dark:bg-slate-800"}`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${i === activeIndex ? 'w-12 bg-blue-600' : 'w-4 bg-slate-200 dark:bg-slate-800'}`}
             />
           ))}
         </div>
       </Section>
 
-      {/* Grid of All Events */}
       <Section variant="white" size="lg">
-        <div className="mb-16">
-          <h3 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Próximos Encuentros</h3>
+        <div className="mb-16 space-y-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
+            <Sparkles size={14} />
+            Calendario activo
+          </span>
+          <h3 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Proximos Encuentros</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {eventos.map((ev) => (
+
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+          {eventos.map((ev, index) => (
             <motion.div
               key={ev.id}
               whileHover={{ y: -10 }}
-              onClick={() => { setModalEvent(ev); setModalOpen(true); }}
-              className="group bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-slate-100 dark:border-slate-800 cursor-pointer transition-all duration-500 hover:shadow-2xl"
+              onClick={() => {
+                setModalEvent(ev);
+                setModalOpen(true);
+              }}
+              className={`group cursor-pointer overflow-hidden rounded-[2.5rem] border transition-all duration-500 hover:shadow-2xl ${
+                index === 0
+                  ? 'bg-gradient-to-br from-white via-blue-50/40 to-white shadow-2xl shadow-blue-100/70 md:col-span-2 dark:border-blue-800/40 dark:bg-slate-900 dark:shadow-blue-950/30'
+                  : 'bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900'
+              }`}
             >
-              <div className="relative h-64">
-                <img src={ev.imagen} alt={ev.titulo} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className={`relative ${index === 0 ? 'h-80 lg:h-96' : 'h-64'}`}>
+                <img src={ev.imagen} alt={ev.titulo} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent" />
-                <div className="absolute top-6 left-6">
-                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest border border-white/10">
+                <div className="absolute left-6 top-6">
+                  <span className="rounded-full border border-white/10 bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">
                     {ev.categoria}
                   </span>
                 </div>
+                {index === 0 && (
+                  <div className="absolute right-6 top-6 rounded-full border border-white/20 bg-slate-950/55 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+                    Evento principal
+                  </div>
+                )}
               </div>
+
               <div className="p-10">
-                <div className="flex items-center gap-3 mb-4 text-blue-600">
-                  <Calendar className="w-4 h-4" />
+                <div className="mb-4 flex items-center gap-3 text-blue-600">
+                  <Calendar className="h-4 w-4" />
                   <span className="text-[10px] font-black uppercase tracking-[0.2em]">{new Date(ev.fecha).toLocaleDateString()}</span>
                 </div>
-                <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                <h4 className={`mb-4 font-black leading-tight text-slate-900 transition-colors group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400 ${index === 0 ? 'text-3xl lg:text-4xl' : 'text-2xl'}`}>
                   {ev.titulo}
                 </h4>
-                <p className="text-slate-500 dark:text-slate-400 font-medium text-sm line-clamp-2 mb-8 leading-relaxed">
+                <p className={`mb-8 font-medium leading-relaxed text-slate-500 dark:text-slate-400 ${index === 0 ? 'line-clamp-3 max-w-2xl text-base' : 'line-clamp-2 text-sm'}`}>
                   {ev.descripcion}
                 </p>
-                <div className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest">
-                  Explorar Evento <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600">
+                  Explorar Evento
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
             </motion.div>
@@ -192,69 +208,70 @@ export default function EventosPage() {
         </div>
       </Section>
 
-      {/* Event Detail Modal */}
+      <SpotlightCTA
+        eyebrow="Reserva tu espacio"
+        title="Conecta con las experiencias mas relevantes de Bausen"
+        subtitle="Activa tu participacion en encuentros que mezclan comunidad, aprendizaje y oportunidades reales de crecimiento empresarial."
+        imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
+        imageAlt="Encuentros y experiencias Bausen"
+        primaryLink="/#contacto"
+        primaryLabel="Solicitar informacion"
+        secondaryLink="/training-center"
+        secondaryLabel="Explorar training center"
+        theme="blue"
+      />
+
       <AnimatePresence>
         {modalOpen && modalEvent && (
           <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }}
-              onClick={() => setModalOpen(false)}
-              className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" 
-            />
-            <motion.div 
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative z-10 w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden shadow-2xl"
+              className="relative z-10 w-full max-w-4xl overflow-hidden rounded-[3rem] bg-white shadow-2xl dark:bg-slate-900"
             >
-              <button 
-                onClick={() => setModalOpen(false)}
-                className="absolute top-8 right-8 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-all"
-              >
+              <button onClick={() => setModalOpen(false)} className="absolute right-8 top-8 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-all hover:bg-blue-600">
                 <X size={24} />
               </button>
-              <div className="flex flex-col h-[85vh] overflow-y-auto">
+              <div className="flex h-[85vh] flex-col overflow-y-auto">
                 <div className="relative h-96 shrink-0">
-                  <img src={modalEvent.imagen} alt={modalEvent.titulo} className="w-full h-full object-cover" />
+                  <img src={modalEvent.imagen} alt={modalEvent.titulo} className="h-full w-full object-cover" />
                   <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent" />
                   <div className="absolute bottom-10 left-10 right-10">
-                    <span className="px-4 py-2 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-widest mb-4 inline-block">
+                    <span className="mb-4 inline-block rounded-full bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-white">
                       {modalEvent.categoria}
                     </span>
-                    <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tighter leading-tight">{modalEvent.titulo}</h2>
+                    <h2 className="text-4xl font-black leading-tight tracking-tighter text-white lg:text-6xl">{modalEvent.titulo}</h2>
                   </div>
                 </div>
-                <div className="p-10 lg:p-16 space-y-10">
+                <div className="space-y-10 p-10 lg:p-16">
                   <div className="flex flex-wrap gap-10">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/30">
                         <Calendar size={24} />
                       </div>
                       <div>
                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha del Evento</div>
-                        <div className="text-slate-900 dark:text-white font-black">{formatFecha(modalEvent.fecha)}</div>
+                        <div className="font-black text-slate-900 dark:text-white">{formatFecha(modalEvent.fecha)}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/30">
                         <MapPin size={24} />
                       </div>
                       <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Ubicación</div>
-                        <div className="text-slate-900 dark:text-white font-black">{modalEvent.ubicacion}</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Ubicacion</div>
+                        <div className="font-black text-slate-900 dark:text-white">{modalEvent.ubicacion}</div>
                       </div>
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-widest">Sobre el Evento</h3>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                      {modalEvent.descripcion}
-                    </p>
+                    <h3 className="text-xl font-black uppercase tracking-widest text-slate-900 dark:text-white">Sobre el Evento</h3>
+                    <p className="text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-400">{modalEvent.descripcion}</p>
                   </div>
-                  <div className="pt-10 border-t border-slate-100 dark:border-slate-800">
-                     <button className="w-full py-6 bg-blue-600 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3">
+                  <div className="border-t border-slate-100 pt-10 dark:border-slate-800">
+                    <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-6 text-sm font-black uppercase tracking-widest text-white shadow-xl transition-all hover:bg-blue-500">
                       <Sparkles size={20} />
                       Registrar mi Asistencia
                     </button>

@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import { TranslateText } from '@/components/TranslateText';
+import { TranslateText } from "@/components/TranslateText";
+import { AnimatedHeroBackground } from "@/components/ui/AnimatedHeroBackground";
 
 interface PayrollHeroProps {
   title: string;
@@ -17,6 +18,11 @@ interface PayrollHeroProps {
   ctaLink?: string;
 }
 
+const servicesBlueGradient =
+  "linear-gradient(90deg, var(--hero-services-from) 0%, var(--hero-services-via) 52%, var(--hero-services-to) 100%)";
+const servicesBlueGlow =
+  "radial-gradient(circle at 18% 26%, var(--hero-services-glow-primary) 0%, transparent 38%), radial-gradient(circle at 82% 24%, var(--hero-services-glow-secondary) 0%, transparent 32%)";
+
 export default function PayrollHero({
   title,
   description,
@@ -28,65 +34,43 @@ export default function PayrollHero({
   ctaLink = "#contacto",
 }: PayrollHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-150 bg-linear-to-br from-blue-950 via-blue-800 to-indigo-900 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <AnimatedHeroBackground
+      gradientClass=""
+      style={{
+        backgroundColor: "var(--hero-services-from)",
+        backgroundImage: `${servicesBlueGlow}, ${servicesBlueGradient}`,
+      }}
+      overlayClassName="bg-black/10"
+      orbClass="from-white/20 via-white/10 to-transparent"
+      orbAnimation={{ scale: [1, 1.2, 1], opacity: [0.18, 0.3, 0.18] }}
+    >
+      {[...Array(6)].map((_, i) => (
         <motion.div
-          animate={{ 
-            scale: [1, 1.3, 1],
-            opacity: [0.15, 0.25, 0.15],
-            rotate: [0, 180, 360]
+          key={i}
+          animate={{
+            y: [0, -28, 0],
+            opacity: [0.22, 0.45, 0.22],
           }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-200 h-200 bg-linear-to-br from-blue-400/20 via-blue-500/15 to-transparent dark:from-slate-700/10 dark:via-slate-700/8 dark:to-transparent rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1]
+          transition={{
+            duration: 4 + i,
+            repeat: Infinity,
+            delay: i * 0.45,
           }}
-          transition={{ duration: 15, repeat: Infinity, delay: 2 }}
-          className="absolute -bottom-1/4 -left-1/4 w-150 h-150 bg-linear-to-tr from-blue-400/15 via-indigo-500/10 to-transparent dark:from-slate-700/8 dark:via-slate-700/5 dark:to-transparent rounded-full blur-3xl"
-        />
-        {/* Grid Pattern */}
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute z-20 h-2 w-2 rounded-full bg-white/35"
           style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
+            left: `${15 + i * 13}%`,
+            top: `${18 + (i % 3) * 24}%`,
           }}
         />
-        {/* Floating Particles */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              delay: i * 0.5,
-            }}
-            className="absolute w-2 h-2 bg-white/30 rounded-full"
-            style={{
-              left: `${15 + i * 15}%`,
-              top: `${20 + (i % 3) * 25}%`,
-            }}
-          />
-        ))}
-      </div>
+      ))}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
-          {/* Content */}
+      <div className="relative z-30 mx-auto max-w-7xl px-6">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Back Link */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -94,48 +78,50 @@ export default function PayrollHero({
             >
               <Link
                 href={backLink}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-full font-semibold text-sm mb-8 border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 group"
+                className="group mb-8 inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/16 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/24"
               >
                 <ArrowLeft
                   size={16}
-                  className="group-hover:-translate-x-1 transition-transform duration-300"
+                  className="transition-transform duration-300 group-hover:-translate-x-1"
                 />
                 <TranslateText text={backLabel} />
               </Link>
             </motion.div>
 
-            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm rounded-full border border-cyan-400/30 mb-6"
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/14 px-4 py-2 backdrop-blur-sm"
             >
-              <Sparkles size={16} className="text-cyan-400" />
-              <span className="text-cyan-200 text-sm font-medium"><TranslateText text="Servicio Premium" /></span>
+              <Sparkles size={16} className="text-blue-100" />
+              <span className="text-sm font-medium text-white">
+                <TranslateText text="Servicio Premium" />
+              </span>
             </motion.div>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-              {title.split('&').map((part, i) => (
+            <h1 className="mb-6 text-4xl font-black leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">
+              {title.split("&").map((part, i) => (
                 <span key={i}>
-                  {i > 0 && <span className="bg-linear-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">&</span>}
+                  {i > 0 && (
+                    <span className="bg-gradient-to-r from-blue-100 via-cyan-100 to-white bg-clip-text text-transparent">
+                      &
+                    </span>
+                  )}
                   <TranslateText text={part} />
                 </span>
               ))}
             </h1>
 
-            {/* Description */}
-            <p className="text-lg md:text-xl text-blue-100/90 dark:text-blue-200/80 leading-relaxed mb-10 max-w-135">
+            <p className="mb-10 max-w-[540px] text-lg leading-relaxed text-white/88 md:text-xl">
               <TranslateText text={description} />
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-white to-blue-50 text-blue-900 rounded-2xl font-bold text-lg shadow-xl shadow-black/20 hover:shadow-2xl transition-all duration-300"
+                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-blue-700 shadow-xl shadow-blue-950/20 transition-all duration-300 hover:shadow-2xl"
                 >
                   <TranslateText text={ctaLabel} />
                   <ArrowRight size={20} />
@@ -144,7 +130,7 @@ export default function PayrollHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="#proceso"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+                  className="inline-flex items-center gap-3 rounded-2xl border border-white/28 bg-white/12 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/18"
                 >
                   <TranslateText text="Ver proceso" />
                 </Link>
@@ -152,7 +138,6 @@ export default function PayrollHero({
             </div>
           </motion.div>
 
-          {/* Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85, rotate: 3 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -160,10 +145,9 @@ export default function PayrollHero({
             className="relative hidden lg:block"
           >
             <div className="relative">
-              {/* Glow Effect */}
-              <div className="absolute -inset-4 bg-linear-to-r from-cyan-500/30 to-blue-500/30 rounded-3xl blur-2xl" />
-              
-              <div className="relative w-full max-w-137.5 h-95 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
+              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-white/25 via-white/10 to-transparent blur-2xl" />
+
+              <div className="relative h-95 w-full max-w-[550px] overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
                 {imageSrc ? (
                   <Image
                     src={imageSrc}
@@ -171,36 +155,62 @@ export default function PayrollHero({
                     fill
                     className="object-cover"
                     priority
-                    unoptimized={String(imageSrc).startsWith('http')}
+                    unoptimized={String(imageSrc).startsWith("http")}
                   />
                 ) : (
-                  <div className="w-full h-full bg-linear-to-br from-slate-800/40 to-slate-900 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white/60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
-                      <path d="M8 10h.01" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
-                      <path d="M3 19l4-4 3 3 5-5 6 6" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <div className="flex h-full w-full items-center justify-center bg-white/10">
+                    <svg
+                      className="h-16 w-16 text-white/60"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="3"
+                        y="5"
+                        width="18"
+                        height="14"
+                        rx="2"
+                        stroke="rgba(255,255,255,0.35)"
+                        strokeWidth="1.5"
+                      />
+                      <path
+                        d="M8 10h.01"
+                        stroke="rgba(255,255,255,0.35)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M3 19l4-4 3 3 5-5 6 6"
+                        stroke="rgba(255,255,255,0.35)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                 )}
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-linear-to-t from-blue-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 via-transparent to-transparent" />
               </div>
 
-              {/* Floating Card */}
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -bottom-6 -left-6 px-6 py-4 bg-white dark:bg-slate-800 rounded-2xl shadow-xl"
+                className="absolute -bottom-6 -left-6 rounded-2xl bg-white px-6 py-4 shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 dark:from-slate-600 dark:to-slate-700 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white">
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500 dark:text-slate-400"><TranslateText text="Cumplimiento" /></div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white"><TranslateText text="100% Legal" /></div>
+                    <div className="text-sm text-slate-500">
+                      <TranslateText text="Cumplimiento" />
+                    </div>
+                    <div className="text-lg font-bold text-slate-900">
+                      <TranslateText text="100% Legal" />
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -209,15 +219,14 @@ export default function PayrollHero({
         </div>
       </div>
 
-      {/* Wave */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
+        <svg viewBox="0 0 1440 120" fill="none" className="h-auto w-full">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
             className="fill-white dark:fill-slate-900"
           />
         </svg>
       </div>
-    </section>
+    </AnimatedHeroBackground>
   );
 }

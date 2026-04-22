@@ -13,6 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import SpotlightCTA from "@/app/components/SpotlightCTA";
 import {
   ServiceHero,
   StatsSection,
@@ -116,6 +117,18 @@ export default function ServiciosEspecializadosPage() {
       <WhyUsSection
         title="Por que elegir BAUSEN?"
         reasons={razones}
+      />
+
+      <SpotlightCTA
+        eyebrow="Momentum Ejecutivo"
+        title="Transforma tu operacion con una solucion especializada"
+        subtitle="Integramos talento, cumplimiento y procesos en una experiencia mas clara, mas rapida y mas confiable para tu empresa."
+        imageSrc="/web/image/servicios/service.png"
+        imageAlt="Consultoria especializada BAUSEN"
+        primaryLink="#contacto"
+        primaryLabel="Agendar consultoria"
+        secondaryLink="/servicios"
+        secondaryLabel="Explorar servicios"
       />
 
       <ContactSection

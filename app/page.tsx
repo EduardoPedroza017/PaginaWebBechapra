@@ -1,11 +1,11 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
 import Section from "./components/Section";
 import AnimatedSection from "./components/AnimatedSection";
 import HeroSection from "./components/HeroSection";
 import ServicesSection from "./components/ServicesSection";
+import SpotlightCTA from "./components/SpotlightCTA";
 import Footer from "@/components/Footer";
 
 // Lazy load componentes debajo del fold
@@ -58,6 +58,19 @@ export default function Home() {
           <NewsCards />
         </AnimatedSection>
       </Section>
+
+      <SpotlightCTA
+        eyebrow="Momento de accion"
+        title="Transforme su operacion con una estrategia que si conecta"
+        subtitle="Integramos talento, contenido, formacion y acompanamiento consultivo en una experiencia mas clara, mas elegante y mejor jerarquizada."
+        imageSrc="/web/image/servicios/service.png"
+        imageAlt="Transformacion empresarial Bausen"
+        primaryLink="/#contacto"
+        primaryLabel="Hablemos de su proyecto"
+        secondaryLink="/servicios"
+        secondaryLabel="Explorar servicios"
+        theme="blue"
+      />
 
       {/* CTA Social Media */}
       <Section>

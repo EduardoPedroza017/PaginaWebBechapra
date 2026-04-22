@@ -2,13 +2,8 @@
 
 import { BookOpen, BarChart3, ShieldCheck, Award, Users } from "lucide-react";
 import Footer from "@/components/Footer";
-import {
-  ServiceHero,
-  ServiceGrid,
-  BenefitsStagger,
-  DarkCTA,
-  ContactSection,
-} from "./components";
+import SpotlightCTA from "@/app/components/SpotlightCTA";
+import { ServiceHero, ServiceGrid, BenefitsStagger, ContactSection } from "./components";
 
 const servicios = [
   {
@@ -55,7 +50,7 @@ export default function DesarrolloOrganizacionalPage() {
       <ServiceHero
         title="Creando una cultura de exito empresarial"
         subtitle="Desarrollo Organizacional"
-        description="Potencia el crecimiento y la eficacia de tu empresa a traves de nuestros servicios de Desarrollo Organizacional!"
+        description="Potencia el crecimiento y la eficacia de tu empresa a traves de nuestros servicios de Desarrollo Organizacional."
         imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
         imageAlt="Desarrollo Organizacional BAUSEN"
         iconComponent={Users}
@@ -65,10 +60,7 @@ export default function DesarrolloOrganizacionalPage() {
         ctaLink="#contacto"
       />
 
-      <ServiceGrid
-        title="Soluciones para tu organizacion"
-        services={servicios}
-      />
+      <ServiceGrid title="Soluciones para tu organizacion" services={servicios} />
 
       <BenefitsStagger
         title="Beneficios Centro de Capacitacion"
@@ -77,9 +69,10 @@ export default function DesarrolloOrganizacionalPage() {
         imageAlt="Centro de Capacitacion"
       />
 
-      <DarkCTA
-        title="Transforma tu organizacion hoy"
-        subtitle="Agenda una consulta y conoce nuestras soluciones personalizadas para cultura, clima y talento."
+      <SpotlightCTA
+        eyebrow="Cambio organizacional"
+        title="Transforma tu organizacion con una experiencia mas clara y consistente"
+        subtitle="Llevamos esta ruta al mismo sistema visual de servicios para que el valor, la jerarquia y la conversion se sientan alineados."
         imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
         imageAlt="Transformacion Organizacional"
         primaryLink="#contacto"

@@ -20,11 +20,16 @@ export default function Section({
   size = "md",
   animate = true
 }: SectionProps) {
-  
-  const bgStyles = {
-    white: "bg-white dark:bg-slate-950",
-    blue: "bg-blue-50/50 dark:bg-slate-900/40",
-    transparent: "bg-transparent"
+  const variantStyles = {
+    white: {
+      background: "var(--surface-section-white)",
+    },
+    blue: {
+      background: "var(--surface-section-blue)",
+    },
+    transparent: {
+      background: "transparent",
+    },
   };
   
   const paddingY = {
@@ -35,13 +40,14 @@ export default function Section({
   };
   
   const isOverlap = /-mt-/.test(className);
-  const effectiveBg = isOverlap ? "bg-transparent" : bgStyles[variant];
+  const effectiveStyle = isOverlap ? variantStyles.transparent : variantStyles[variant];
 
   return (
     <section
       id={id}
       data-overlap={isOverlap}
-      className={`relative w-full overflow-hidden transition-colors duration-500 ${effectiveBg} ${className}`}
+      style={effectiveStyle}
+      className={`relative w-full overflow-hidden transition-colors duration-500 ${className}`}
     >
       {/* Decorative Gradient Overlays for smooth transitions
           If the section is intentionally pulled up with a negative top margin (e.g. -mt-16)

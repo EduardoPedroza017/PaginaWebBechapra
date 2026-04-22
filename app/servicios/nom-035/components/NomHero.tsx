@@ -1,11 +1,9 @@
 "use client";
 
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
-import { TranslateText } from '@/components/TranslateText';
-import { AnimatedHeroBackground } from '@/components/ui/AnimatedHeroBackground';
+import { AnimatedHeroBackground } from "@/components/ui/AnimatedHeroBackground";
 
 interface NomHeroProps {
   title: string;
@@ -23,93 +21,70 @@ export default function NomHero({
   description,
   backLink = "/servicios",
   backLabel = "Volver",
-  ctaLabel = "Solicitar asesoría",
+  ctaLabel = "Solicitar asesoria",
   ctaLink = "#contacto",
 }: NomHeroProps) {
+  const servicesBlueGradient = "linear-gradient(90deg, var(--hero-services-from), var(--hero-services-via), var(--hero-services-to))";
+  const servicesBlueGlow =
+    "radial-gradient(circle at 30% 40%, var(--hero-services-glow-primary) 0%, transparent 40%), radial-gradient(circle at 70% 60%, var(--hero-services-glow-secondary) 0%, transparent 40%)";
+
   return (
-    <AnimatedHeroBackground>
-      {/* Floating Icons personalizados para NomHero */}
+    <AnimatedHeroBackground
+      gradientClass=""
+      style={{
+        backgroundColor: "var(--hero-services-from)",
+        backgroundImage: `${servicesBlueGlow}, ${servicesBlueGradient}`,
+      }}
+      overlayClassName="bg-black/10"
+      orbClass="absolute -top-1/3 -right-1/4 w-[700px] h-[700px] rounded-full bg-white/10 blur-3xl"
+    >
       {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
-          animate={{
-            y: [0, -25, 0],
-            rotate: [0, 10, 0],
-            opacity: [0.2, 0.5, 0.2],
-          }}
-          transition={{
-            duration: 5 + i * 0.8,
-            repeat: Infinity,
-            delay: i * 0.7,
-          }}
+          animate={{ y: [0, -25, 0], rotate: [0, 10, 0], opacity: [0.16, 0.32, 0.16] }}
+          transition={{ duration: 5 + i * 0.8, repeat: Infinity, delay: i * 0.7 }}
           className="absolute z-20"
-          style={{
-            left: `${10 + i * 18}%`,
-            top: `${15 + (i % 3) * 25}%`,
-          }}
+          style={{ left: `${10 + i * 18}%`, top: `${15 + (i % 3) * 25}%` }}
         >
-          <ShieldCheck size={20 + i * 4} className="text-white/20" />
+          <ShieldCheck size={20 + i * 4} className="text-white/18" />
         </motion.div>
       ))}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            {/* Back Link */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
               <Link
                 href={backLink}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-full font-semibold text-sm mb-8 border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 group"
+                className="group mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:border-white/40"
               >
-                <ArrowLeft
-                  size={16}
-                  className="group-hover:-translate-x-1 transition-transform duration-300"
-                />
+                <ArrowLeft size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
                 {backLabel}
               </Link>
             </motion.div>
 
-            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 mb-6"
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
             >
-            <Sparkles size={16} className="text-blue-400" />
-            <span className="text-blue-200 text-sm font-medium">
-                Cumplimiento Normativo
-              </span>
+              <Sparkles size={16} className="text-white" />
+              <span className="text-sm font-medium text-white">Cumplimiento Normativo</span>
             </motion.div>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+            <h1 className="mb-6 text-4xl font-black leading-[1.1] tracking-tight text-white md:text-5xl lg:text-6xl">
               {title}{" "}
-              <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
-                {highlightWord}
-              </span>
+              <span className="bg-gradient-to-r from-blue-100 via-cyan-100 to-white bg-clip-text text-transparent">{highlightWord}</span>
             </h1>
 
-            {/* Description */}
-            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
-              {description}
-            </p>
+            <p className="mb-10 max-w-[540px] text-lg leading-relaxed text-white/88 md:text-xl">{description}</p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300"
+                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-[var(--hero-services-to)] shadow-xl shadow-blue-900/20 transition-all duration-300 hover:shadow-2xl"
                 >
                   {ctaLabel}
                   <ArrowRight size={20} />
@@ -118,7 +93,7 @@ export default function NomHero({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="#enfoque"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+                  className="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
                 >
                   Ver enfoque
                 </Link>
@@ -126,57 +101,48 @@ export default function NomHero({
             </div>
           </motion.div>
 
-          {/* Visual Element */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.3 }}
-            className="relative hidden lg:flex items-center justify-center"
+            className="relative hidden items-center justify-center lg:flex"
           >
-            <div className="relative w-full max-w-[450px] h-[380px]">
-              {/* Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-3xl blur-3xl" />
-
-              {/* Main Card */}
-              <div className="relative h-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl border border-white/20 p-8 flex flex-col justify-center">
-                {/* Decorative Lines */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-indigo-500 to-sky-400 rounded-t-3xl" />
+            <div className="relative h-[380px] w-full max-w-[450px]">
+              <div className="absolute inset-0 rounded-3xl bg-white/12 blur-3xl" />
+              <div className="relative flex h-full flex-col justify-center rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-sm">
+                <div className="absolute left-0 right-0 top-0 h-1 rounded-t-3xl bg-gradient-to-r from-blue-100 via-white to-cyan-100" />
 
                 <div className="text-center">
                   <motion.div
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl"
+                    className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-white shadow-xl"
                   >
-                    <ShieldCheck size={48} className="text-white" />
+                    <ShieldCheck size={48} className="text-[var(--hero-services-to)]" />
                   </motion.div>
-                  <h3 className="text-2xl font-black text-white mb-2">NOM-035-STPS</h3>
-                  <p className="text-blue-200/80 text-sm">
-                    Factores de riesgo psicosocial
-                  </p>
+                  <h3 className="mb-2 text-2xl font-black text-white">NOM-035-STPS</h3>
+                  <p className="text-sm text-white/80">Factores de riesgo psicosocial</p>
                 </div>
 
-                {/* Stats inside card */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                  <div className="bg-white/10 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-black text-blue-400">+120</div>
-                    <div className="text-xs text-white/70">Organizaciones</div>
+                  <div className="rounded-xl bg-white/12 p-4 text-center">
+                    <div className="text-2xl font-black text-white">+120</div>
+                    <div className="text-xs text-white/75">Organizaciones</div>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-black text-indigo-400">95%</div>
-                    <div className="text-xs text-white/70">Éxito</div>
+                  <div className="rounded-xl bg-white/12 p-4 text-center">
+                    <div className="text-2xl font-black text-white">95%</div>
+                    <div className="text-xs text-white/75">Exito</div>
                   </div>
                 </div>
               </div>
 
-              {/* Floating Badge */}
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute -bottom-4 -right-4 rounded-xl bg-white px-5 py-3 shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
                     <ShieldCheck size={18} className="text-white" />
                   </div>
                   <div>
@@ -190,9 +156,8 @@ export default function NomHero({
         </div>
       </div>
 
-      {/* Wave */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
+        <svg viewBox="0 0 1440 120" fill="none" className="h-auto w-full">
           <path
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
             className="fill-white dark:fill-slate-900"

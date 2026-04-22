@@ -166,7 +166,11 @@ export default function HeroSection() {
                   className="object-cover w-full h-auto scale-105 group-hover:scale-100 transition-transform duration-700"
                   priority
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-blue-900/40 via-transparent to-transparent dark:from-slate-950/80 dark:via-transparent dark:to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-blue-950/60 via-transparent to-transparent dark:from-slate-950/80 dark:via-transparent dark:to-transparent" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_28%)]" />
+                <div className="absolute left-6 top-6 rounded-full border border-white/20 bg-slate-950/35 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
+                  Estrategia y talento
+                </div>
               </div>
 
               {/* Advanced Floating Card */}
@@ -189,6 +193,17 @@ export default function HeroSection() {
                     </div>
                   </div>
                 </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.8 }}
+                className="absolute -right-6 top-10 rounded-[1.75rem] border border-white/20 bg-white/85 p-5 shadow-xl backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/85"
+              >
+                <div className="text-[10px] font-black uppercase tracking-[0.24em] text-blue-700 dark:text-blue-400">Impacto medible</div>
+                <div className="mt-2 text-2xl font-black text-slate-900 dark:text-white">98%</div>
+                <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Satisfaccion de clientes</div>
               </motion.div>
             </div>
           </motion.div>
