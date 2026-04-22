@@ -29,15 +29,15 @@ export default function CtaRedes() {
         </div>
 
         {/* Content */}
-        <div className="relative grid lg:grid-cols-2 gap-8 p-10 md:p-16 lg:p-20">
+        <div className="relative grid gap-8 p-8 md:p-12 lg:grid-cols-2 lg:gap-10 lg:p-16">
           {/* Left: CTA */}
-          <div className="space-y-6">
+          <div className="space-y-6 rounded-2xl border border-white/20 bg-slate-950/45 p-6 shadow-2xl backdrop-blur-md md:p-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] bg-[--brand-accent]/20 text-[--brand-accent]"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white"
             >
               <MessageCircle className="w-4 h-4" />
               <TranslateText text="Conecta con nosotros" />
@@ -48,11 +48,11 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter italic"
+              className="text-3xl font-black leading-tight tracking-tighter text-blue-300 sm:text-4xl md:text-5xl"
             >
               <TranslateText text="Juntos trazamos" />
               <br />
-              <span className="text-[--brand-accent] dark:text-white">
+              <span className="text-blue-300">
                 <TranslateText text="tu camino al éxito" />
               </span>
             </motion.h3>
@@ -62,7 +62,7 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="text-lg max-w-lg text-white/90 font-medium text-justify"
+              className="max-w-lg text-lg font-medium leading-relaxed text-white"
             >
               <TranslateText text="¿Listo para llevar tu negocio al siguiente nivel? Agenda una reunión con nuestros especialistas y descubre cómo podemos ayudarte." />
             </motion.p>
@@ -73,7 +73,7 @@ export default function CtaRedes() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
               href="#contacto"
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-[--brand-primary] text-white hover:bg-[--brand-accent] hover:text-[--brand-primary]"
+              className="group inline-flex items-center gap-3 rounded-2xl border border-white/80 bg-white px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-900 shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-cyan-300"
             >
               <TranslateText text="¡Agenda ahora!" />
               <ArrowRight className="w-4 h-4" />
