@@ -129,33 +129,14 @@ class ApiClient {
         defaultHeaders['Content-Type'] = 'application/json';
       }
 
-      // Agregar cabeceras de bypass en entorno de desarrollo cuando estemos
-      // en el navegador y useProxy esté activado. Tomar valores desde
-      // sessionStorage si están presentes para no forzar credenciales.
+      // ELIMINADAS CABECERAS DE BYPASS (Seguridad SCM)
+      // Ahora solo confiamos en la sesión segura del servidor vía cookies HttpOnly.
       const runtimeHeaders: Record<string, string> = {};
-      try {
-        if (typeof window !== 'undefined') {
-          const role = window.sessionStorage.getItem('role');
-          const user = window.sessionStorage.getItem('email') || window.sessionStorage.getItem('user') || window.sessionStorage.getItem('user_email') || window.sessionStorage.getItem('X-User');
-          const bypass = window.sessionStorage.getItem('X-Bypass-Login') || 'true';
-          if (bypass) runtimeHeaders['X-Bypass-Login'] = bypass;
-          if (role) runtimeHeaders['X-Role'] = role;
-          if (user) runtimeHeaders['X-User'] = user;
-          // Marcar admin si role indica admin/superadmin
-          if (role && (role === 'admin' || role === 'superadmin')) runtimeHeaders['X-Admin'] = 'true';
-          // También permitir flag explícita en sessionStorage
-          const adminFlag = window.sessionStorage.getItem('admin');
-          if (adminFlag) runtimeHeaders['X-Admin'] = adminFlag;
-        }
-      } catch (e) {
-        // No bloquear en caso de error de acceso a sessionStorage
-      }
 
       const response = await fetch(url, {
         ...options,
-        // ensure cookies (session) are sent to the Next.js proxy so backend
-        // can validate server-side session. Allow caller to override via options.
-        credentials: (options && (options as any).credentials) || 'include',
+        // SIEMPRE incluir credenciales (cookies de sesión)
+        credentials: 'include',
         headers: {
           ...defaultHeaders,
           ...runtimeHeaders,

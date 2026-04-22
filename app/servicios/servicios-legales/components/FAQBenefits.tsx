@@ -25,7 +25,7 @@ export default function FAQBenefits({ faqs, benefits }: FAQBenefitsProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900">
+    <section className="relative w-full py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

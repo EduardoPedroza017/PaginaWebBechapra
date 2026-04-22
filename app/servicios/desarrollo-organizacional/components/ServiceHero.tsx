@@ -57,7 +57,7 @@ export default function ServiceHero({
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:items-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             {subtitle && (
               <motion.div
@@ -77,14 +77,14 @@ export default function ServiceHero({
               <TranslateText text={title} />
             </h1>
 
-            <p className="mb-8 max-w-xl text-xl leading-relaxed text-white/85">
+            <p className="mb-8 max-w-xl text-lg leading-relaxed text-white/85 md:text-xl">
               <TranslateText text={description} />
             </p>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={ctaLink}
-                className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-[var(--hero-services-to)] shadow-xl shadow-black/20 transition-all duration-300 hover:shadow-2xl"
+                className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-(--hero-services-to) shadow-xl shadow-black/20 transition-all duration-300 hover:shadow-2xl"
               >
                 <TranslateText text={ctaLabel} />
                 <ArrowRight size={20} />
@@ -98,7 +98,7 @@ export default function ServiceHero({
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative hidden lg:block"
           >
-            <div className="relative aspect-4/3 w-full max-w-130 overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/30">
+            <div className="relative aspect-4/3 w-full max-w-140 overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/30">
               {imageSrc ? (
                 <Image src={imageSrc} alt={imageAlt} fill className="object-cover" priority unoptimized={String(imageSrc).startsWith("http")} />
               ) : (
@@ -116,7 +116,7 @@ export default function ServiceHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-6 -right-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br from-cyan-400 to-blue-500 shadow-xl"
+                className="absolute right-4 top-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br from-cyan-400 to-blue-500 shadow-xl"
               >
                 <IconComponent size={36} className="text-white" />
               </motion.div>
@@ -125,14 +125,6 @@ export default function ServiceHero({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full">
-          <path
-            d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            className="fill-white dark:fill-slate-900"
-          />
-        </svg>
-      </div>
     </AnimatedHeroBackground>
   );
 }

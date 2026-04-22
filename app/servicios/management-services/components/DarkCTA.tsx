@@ -27,7 +27,7 @@ export default function DarkCTA({
   secondaryLabel = "Ver servicios",
 }: DarkCTAProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
+    <section className="relative w-full py-20 px-6 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_520px] gap-12 items-center">
           {/* Content */}

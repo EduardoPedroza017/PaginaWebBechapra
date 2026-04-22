@@ -26,7 +26,7 @@ export default function PerformanceSection({
   imageAlt,
 }: PerformanceSectionProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
+    <section className="relative w-full py-24 px-6 bg-gradient-to-br from-blue-50 via-blue-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
       {/* Decorative */}
       <div className="absolute -top-20 -right-20 w-72 h-72 bg-gradient-to-br from-blue-200/30 to-blue-200/20 dark:from-blue-900/20 dark:to-blue-800/10 rounded-full blur-3xl" />
 

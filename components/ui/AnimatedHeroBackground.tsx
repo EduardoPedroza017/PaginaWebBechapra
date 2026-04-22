@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
+import { motion, type TargetAndTransition } from "framer-motion";
 import React from "react";
 
 interface AnimatedHeroBackgroundProps {
   gradientClass?: string;
   orbClass?: string;
-  orbAnimation?: any;
+  orbAnimation?: TargetAndTransition;
   gridOpacity?: string;
   children?: React.ReactNode;
   style?: React.CSSProperties;
@@ -20,7 +20,7 @@ export const AnimatedHeroBackground: React.FC<AnimatedHeroBackgroundProps> = ({
   style,
   overlayClassName = "",
 }) => (
-  <section className={`relative w-screen -ml-[calc(50vw-50%)] min-h-[600px] ${gradientClass} pt-20 pb-32 overflow-hidden`} style={style}>
+  <section className={`relative w-full min-h-170 md:min-h-180 ${gradientClass} pt-24 pb-36 md:pt-28 md:pb-40 lg:pt-32 lg:pb-44 overflow-hidden`} style={style}>
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div animate={orbAnimation} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className={orbClass} />
       <div className={`absolute inset-0 ${gridOpacity}`}>
@@ -34,7 +34,7 @@ export const AnimatedHeroBackground: React.FC<AnimatedHeroBackgroundProps> = ({
         />
       </div>
     </div>
-    {overlayClassName ? <div className={`absolute inset-0 pointer-events-none z-[1] ${overlayClassName}`} /> : null}
+    {overlayClassName ? <div className={`absolute inset-0 pointer-events-none z-1 ${overlayClassName}`} /> : null}
     <div className="relative z-10">{children}</div>
   </section>
 );

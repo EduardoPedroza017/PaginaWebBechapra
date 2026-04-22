@@ -11,7 +11,7 @@ interface ConsultingCTAProps {
 
 export default function ConsultingCTA({ title, subtitle }: ConsultingCTAProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
+    <section className="relative w-full py-24 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

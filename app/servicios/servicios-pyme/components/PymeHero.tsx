@@ -90,7 +90,7 @@ export default function PymeHero() {
             className="relative hidden lg:block"
           >
             <div className="absolute inset-0 bg-linear-to-r from-white/10 to-blue-400/10 rounded-3xl blur-2xl" />
-            <div className="relative h-100 bg-white/10 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-8">
+            <div className="relative min-h-100 bg-white/10 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-8">
               {/* Top accent */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-200 via-blue-400 to-blue-600 rounded-t-3xl" />
 

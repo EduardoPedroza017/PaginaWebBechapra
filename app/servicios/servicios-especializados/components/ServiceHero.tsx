@@ -29,7 +29,7 @@ export default function ServiceHero({
 }: ServiceHeroProps) {
   return (
     <section
-      className="relative w-screen -ml-[calc(50vw-50%)] overflow-hidden pt-16 pb-20"
+      className="relative w-full overflow-hidden pt-24 pb-32 md:pt-28 md:pb-36"
       style={{
         backgroundColor: "var(--hero-services-from)",
         backgroundImage:
@@ -68,7 +68,7 @@ export default function ServiceHero({
             </h1>
 
             {/* Description */}
-            <p className="text-lg text-white/85 leading-relaxed mb-8 max-w-[540px]">
+            <p className="mb-8 max-w-140 text-lg leading-relaxed text-white/85">
               <TranslateText text={description} />
             </p>
 
@@ -91,7 +91,7 @@ export default function ServiceHero({
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative hidden lg:flex justify-end items-center"
           >
-            <div className="relative h-[340px] w-full max-w-[580px] overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
+            <div className="relative aspect-16/10 w-full max-w-[580px] overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
                 {imageSrc ? (
                   <Image
                     src={imageSrc}

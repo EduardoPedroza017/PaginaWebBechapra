@@ -36,7 +36,7 @@ export default function SolutionsGrid({
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 overflow-hidden" style={{ background: "var(--surface-section-white)" }}>
+    <section className="relative w-full py-24 px-6 overflow-hidden" style={{ background: "var(--surface-section-white)" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

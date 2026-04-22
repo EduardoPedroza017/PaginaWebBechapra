@@ -20,7 +20,7 @@ export default function ContactSection({
   return (
     <section
       id="contacto"
-      className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-white dark:bg-slate-900 border-t border-blue-100 dark:border-slate-800 overflow-hidden"
+      className="relative w-full py-20 px-6 bg-white dark:bg-slate-900 border-t border-blue-100 dark:border-slate-800 overflow-hidden"
     >
       <div className="max-w-3xl mx-auto">
         {/* Header */}

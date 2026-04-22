@@ -136,7 +136,7 @@ export default function ServiceHero({
             <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-10 -left-10 rounded-[2rem] border border-slate-200/80 bg-white/92 p-8 shadow-2xl backdrop-blur-xl"
+              className="absolute bottom-4 left-4 rounded-[2rem] border border-slate-200/80 bg-white/92 p-8 shadow-2xl backdrop-blur-xl"
             >
               <div className="flex items-center gap-5">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl">

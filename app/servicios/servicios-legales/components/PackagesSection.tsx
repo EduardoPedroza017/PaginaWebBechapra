@@ -18,7 +18,7 @@ interface PackagesSectionProps {
 
 export default function PackagesSection({ packages }: PackagesSectionProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
+    <section className="relative w-full py-24 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-slate-900 overflow-hidden">
       {/* Decorative */}
       <div className="absolute -top-20 -right-20 w-56 h-56 bg-gradient-to-br from-blue-200 to-indigo-200 dark:from-blue-900/30 dark:to-indigo-900/20 rounded-full blur-3xl opacity-50" />
       <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tl from-blue-200 to-blue-200 dark:from-blue-900/25 dark:to-blue-800/15 rounded-full blur-3xl opacity-40" />

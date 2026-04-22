@@ -100,7 +100,7 @@ export default function ConsultingHero({
             </h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-[540px]">
+            <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-10 max-w-140">
               <TranslateText text={description} />
             </p>
 
@@ -133,7 +133,7 @@ export default function ConsultingHero({
             transition={{ duration: 0.9, delay: 0.3 }}
             className="relative hidden lg:flex items-center justify-center"
           >
-            <div className="relative w-full max-w-[450px] h-[380px]">
+            <div className="relative w-full max-w-[450px] aspect-11/9">
               {/* Glow Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-3xl blur-3xl" />
 
@@ -171,7 +171,7 @@ export default function ConsultingHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
+                className="absolute bottom-4 right-4 px-5 py-3 bg-white rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -188,15 +188,6 @@ export default function ConsultingHero({
         </div>
       </div>
 
-      {/* Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
-          <path
-            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            className="fill-white dark:fill-slate-900"
-          />
-        </svg>
-      </div>
     </AnimatedHeroBackground>
   );
 }

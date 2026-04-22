@@ -15,7 +15,7 @@ interface BenefitsSectionProps {
 
 export default function BenefitsSection({ benefits }: BenefitsSectionProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-20 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-slate-950/30 dark:to-slate-900">
+    <section className="relative w-full py-20 px-6 bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-950 dark:via-slate-950/30 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {benefits.map((benefit, i) => {

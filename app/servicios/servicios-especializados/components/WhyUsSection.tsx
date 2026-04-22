@@ -17,7 +17,7 @@ interface WhyUsProps {
 
 export default function WhyUsSection({ title, reasons }: WhyUsProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] py-24 px-6 overflow-hidden" style={{ background: "var(--surface-section-blue)" }}>
+    <section className="relative w-full py-24 px-6 overflow-hidden" style={{ background: "var(--surface-section-blue)" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

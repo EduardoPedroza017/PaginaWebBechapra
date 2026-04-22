@@ -78,13 +78,13 @@ export default function NomHero({
               <span className="bg-gradient-to-r from-blue-100 via-cyan-100 to-white bg-clip-text text-transparent">{highlightWord}</span>
             </h1>
 
-            <p className="mb-10 max-w-[540px] text-lg leading-relaxed text-white/88 md:text-xl">{description}</p>
+            <p className="mb-10 max-w-140 text-lg leading-relaxed text-white/88 md:text-xl">{description}</p>
 
             <div className="flex flex-wrap gap-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-[var(--hero-services-to)] shadow-xl shadow-blue-900/20 transition-all duration-300 hover:shadow-2xl"
+                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-(--hero-services-to) shadow-xl shadow-blue-900/20 transition-all duration-300 hover:shadow-2xl"
                 >
                   {ctaLabel}
                   <ArrowRight size={20} />
@@ -107,7 +107,7 @@ export default function NomHero({
             transition={{ duration: 0.9, delay: 0.3 }}
             className="relative hidden items-center justify-center lg:flex"
           >
-            <div className="relative h-[380px] w-full max-w-[450px]">
+            <div className="relative aspect-11/9 w-full max-w-[450px]">
               <div className="absolute inset-0 rounded-3xl bg-white/12 blur-3xl" />
               <div className="relative flex h-full flex-col justify-center rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-sm">
                 <div className="absolute left-0 right-0 top-0 h-1 rounded-t-3xl bg-gradient-to-r from-blue-100 via-white to-cyan-100" />
@@ -139,7 +139,7 @@ export default function NomHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -right-4 rounded-xl bg-white px-5 py-3 shadow-xl"
+                className="absolute bottom-4 right-4 rounded-xl bg-white px-5 py-3 shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
@@ -156,14 +156,6 @@ export default function NomHero({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="h-auto w-full">
-          <path
-            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            className="fill-white dark:fill-slate-900"
-          />
-        </svg>
-      </div>
     </AnimatedHeroBackground>
   );
 }

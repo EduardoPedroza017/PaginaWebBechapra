@@ -112,7 +112,7 @@ export default function TalentHero({
               </span>
             </h1>
 
-            <p className="mb-10 max-w-[540px] text-lg leading-relaxed text-white/88 md:text-xl">
+            <p className="mb-10 max-w-140 text-lg leading-relaxed text-white/88 md:text-xl">
               <TranslateText text={description} />
             </p>
 
@@ -146,7 +146,7 @@ export default function TalentHero({
             <div className="relative">
               <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-white/25 via-white/10 to-transparent blur-2xl" />
 
-              <div className="relative h-[380px] w-full max-w-[550px] overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
+              <div className="relative aspect-11/8 w-full max-w-140 overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
@@ -160,7 +160,7 @@ export default function TalentHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 rounded-xl bg-white px-5 py-3 shadow-xl"
+                className="absolute bottom-4 left-4 rounded-xl bg-white px-5 py-3 shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white">
@@ -180,7 +180,7 @@ export default function TalentHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                className="absolute -right-4 -top-4 rounded-xl bg-white px-5 py-3 shadow-xl"
+                className="absolute right-4 top-4 rounded-xl bg-white px-5 py-3 shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white">
@@ -201,14 +201,6 @@ export default function TalentHero({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="h-auto w-full">
-          <path
-            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            className="fill-white dark:fill-slate-900"
-          />
-        </svg>
-      </div>
     </AnimatedHeroBackground>
   );
 }

@@ -30,7 +30,7 @@ export default function TrainingHero({
   ctaLink = "#contacto",
 }: TrainingHeroProps) {
   return (
-    <section className="relative w-screen -ml-[calc(50vw-50%)] min-h-[620px] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-20 pb-32 overflow-hidden">
+    <section className="relative w-full min-h-175 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-24 pb-36 md:pt-28 md:pb-40 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -168,7 +168,7 @@ export default function TrainingHero({
               {/* Glow Effect */}
               <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/25 to-blue-500/25 rounded-3xl blur-2xl" />
 
-              <div className="relative w-full max-w-[550px] h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
+              <div className="relative aspect-11/8 w-full max-w-140 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/40">
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
@@ -184,7 +184,7 @@ export default function TrainingHero({
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
+                className="absolute bottom-4 left-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
@@ -200,7 +200,7 @@ export default function TrainingHero({
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                className="absolute -top-4 -right-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
+                className="absolute right-4 top-4 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
@@ -217,15 +217,6 @@ export default function TrainingHero({
         </div>
       </div>
 
-      {/* Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
-          <path
-            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            className="fill-white dark:fill-slate-900"
-          />
-        </svg>
-      </div>
     </section>
   );
 }
