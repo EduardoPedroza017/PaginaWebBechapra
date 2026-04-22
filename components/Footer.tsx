@@ -45,7 +45,7 @@ function FooterLinkSection({ title, links, delay }: { title: string; links: any[
       transition={{ duration: 0.8, delay }}
       className="flex flex-col gap-6"
     >
-      <h3 className="text-xs font-black uppercase tracking-[0.3em] text-blue-500/80 dark:text-blue-400/80">
+      <h3 className="text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-white leading-relaxed">
         <TranslateText text={title} />
       </h3>
       <ul className="flex flex-col gap-4">
@@ -104,14 +104,14 @@ export default function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-blue-700 hover:border-blue-600 transition-all duration-300 hover:-translate-y-1"
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/70 bg-transparent hover:border-white hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
                 >
                   <Image
                     src={social.iconPath}
                     alt={social.label}
                     width={20}
                     height={20}
-                    className="brightness-0 invert"
+                    className="object-contain"
                   />
                 </a>
               ))}
@@ -129,7 +129,7 @@ export default function Footer() {
 
           {/* Contact Details */}
           <div className="lg:col-span-3 space-y-8">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-blue-500/80">
+            <h3 className="text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-white leading-relaxed">
               <TranslateText text="Conecta" />
             </h3>
             <div className="space-y-6">
@@ -149,7 +149,7 @@ export default function Footer() {
 
               <div className="group cursor-default">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 group-hover:text-blue-500 transition-colors">Email</div>
-                <a href="mailto:contacto@bausen.com.mx" className="text-slate-300 font-bold hover:text-white transition-colors">
+                <a href="mailto:contacto@bausen.com.mx" className="text-slate-300 font-bold hover:text-white transition-colors break-all">
                   contacto@bausen.com.mx
                 </a>
               </div>
