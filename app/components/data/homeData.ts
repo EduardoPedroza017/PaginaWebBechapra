@@ -13,7 +13,7 @@ export const services: Service[] = [
     id: "capital-humano",
     title: "Capital humano",
     description: "Aumenta la eficiencia y resultados de tu negocio.",
-    image: "/web/image/servicios/Capital_Humano_FInal.jpg",
+    image: "/web/image/servicios/capital-humano.webp",
     icon: "/web/image/icon/Capital Humano_Icon_Color@2x.png",
     href: "/servicios/capital-humano",
   },
