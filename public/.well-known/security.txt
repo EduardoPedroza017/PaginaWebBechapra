@@ -1,0 +1,5 @@
+Contact: mailto:seguridad@bausen.com.mx
+Expires: 2027-04-23T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://bausen.mx/.well-known/security.txt
+Policy: https://bausen.mx/web/politica-de-privacidad/

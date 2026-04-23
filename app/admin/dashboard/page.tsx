@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { 
   LayoutDashboard, 
@@ -16,11 +17,15 @@ import AdminPageHeader from "../components/ui/AdminPageHeader";
 import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
 import AdminSection from "../components/ui/AdminSection";
 
-// Import new section components
-import { DashboardOverview } from "./sections/DashboardOverview";
+const DashboardOverview = dynamic(
+  () => import("./sections/DashboardOverview"),
+  { loading: () => <div className="h-96 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse" /> }
+);
 
-// Import existing components
-import CookieConsentAdmin from "../cookie/CookieConsentAdminNew";
+const CookieConsentAdmin = dynamic(
+  () => import("../cookie/CookieConsentAdminNew"),
+  { loading: () => <div className="h-96 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse" />, ssr: false }
+);
 
 // Type for tab IDs
 type TabId = "overview" | "cookies";
@@ -46,21 +51,21 @@ export default function AdminDashboard() {
     setRefreshKey((prev) => prev + 1);
   }, []);
 
-  const handleTabChange = async (tabId: TabId) => {
+  const handleTabChange = useCallback(async (tabId: TabId) => {
     setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
     await new Promise((r) => setTimeout(r, 150));
     setActiveTab(tabId);
     setLoadingTabs((prev) => ({ ...prev, [tabId]: false }));
-  };
+  }, []);
 
-  const getTabs = (): TabItem[] => {
+  const getTabs = useCallback((): TabItem[] => {
     const baseTabs: TabItem[] = [
       { id: "overview", label: "Resumen", icon: <LayoutDashboard size={18} /> },
       { id: "cookies", label: "Cookies", icon: <Shield size={18} /> },
     ];
 
     return baseTabs;
-  };
+  }, []);
 
   const tabs = getTabs();
 

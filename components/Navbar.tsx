@@ -56,7 +56,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          <nav className="hidden lg:flex items-center gap-1 lg:gap-2">
             {[
               { name: "Inicio", href: "/" },
               { name: "Eventos", href: "/eventos" },

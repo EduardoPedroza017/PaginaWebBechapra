@@ -163,6 +163,7 @@ export default function HeroSection() {
                   width={800}
                   height={1000}
                   alt="BAUSEN - Soluciones empresariales"
+                  sizes="(min-width: 1536px) 700px, (min-width: 1024px) 42vw, (min-width: 768px) 48vw, 100vw"
                   className="object-cover w-full h-auto scale-105 group-hover:scale-100 transition-transform duration-700"
                   priority
                 />

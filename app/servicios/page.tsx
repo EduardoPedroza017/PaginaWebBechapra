@@ -11,7 +11,7 @@ import Section from "@/app/components/Section";
 import SpotlightCTA from "@/app/components/SpotlightCTA";
 import { MouseEvent } from "react";
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ComponentType<any>> = {
   "Capital Humano": Users,
   "Desarrollo Organizacional": Building2,
   "Management Services": Briefcase,
@@ -88,7 +88,7 @@ export default function ServiciosIndex() {
 
         <div className="pointer-events-none absolute inset-0 z-10 bg-black/10 dark:hidden" />
 
-        <div className="gradient-dark relative z-30 mx-auto max-w-7xl px-6 lg:px-8 2xl:max-w-[1440px]">
+        <div className="gradient-dark relative z-30 mx-auto max-w-7xl px-6 lg:px-8 2xl:max-w-360">
           <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -126,7 +126,7 @@ export default function ServiciosIndex() {
       </section>
 
       <Section variant="blue" className="relative z-20 -mt-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-12 items-stretch">
           {defaultServices.map((service, index) => (
             <GroupCard key={service.id} group={service} index={index} />
           ))}
@@ -207,30 +207,30 @@ function GroupCard({ group, index }: { group: Service; index: number }) {
       className="group relative"
     >
       <div
-        onClick={() => router.push(`/servicios/${group.slug}`)}
-        className="relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[2.5rem] border border-slate-200/60 bg-white p-10 shadow-xl transition-all duration-500 hover:shadow-2xl dark:border-slate-800/50 dark:bg-slate-900/80"
+      onClick={() => router.push(`/servicios/${group.slug}`)}
+      className="relative flex h-full min-h-[600px] cursor-pointer flex-col rounded-[2.5rem] border border-slate-200/60 bg-white p-8 shadow-xl transition-all duration-500 hover:shadow-2xl dark:border-slate-800/50 dark:bg-slate-900/80"
       >
         <motion.div
-          className="pointer-events-none absolute -inset-px z-10 rounded-[2.5rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          className="pointer-events-none absolute -inset-px z-10 overflow-hidden rounded-[2.5rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
             background: useTransform([glowX, glowY], ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`),
           }}
         />
 
-        <div className="relative z-20 flex h-full flex-col">
-          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-            <Icon className="h-8 w-8" />
+        <div className="relative z-20 flex h-full min-w-0 flex-col overflow-hidden">
+          <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+            <Icon className="h-7 w-7" />
           </div>
 
-          <h2 className="mb-4 text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
+          <h2 className="mb-6 text-2xl font-black leading-snug text-slate-900 dark:text-white">
             <TranslateText text={group.name} />
           </h2>
 
-          <p className="mb-8 flex-1 font-medium leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="mb-10 flex-1 font-medium leading-relaxed text-slate-600 dark:text-slate-400 text-sm">
             <TranslateText text={group.description || ""} />
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {group.features.map((feature) => (
               <Link
                 key={feature.name}

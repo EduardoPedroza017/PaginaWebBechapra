@@ -9,7 +9,7 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "analyze": "yarn build",
-    "analyze:webpack": "ANALYZE=true yarn build",
+    "analyze:webpack": "cross-env ANALYZE=true cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
     "clean-logs": "node scripts/cleanup-console-logs.js",
     "migrate-urls": "node scripts/migrate-urls.js",
     "check:all": "yarn check --integrity && yarn audit && npx next info && echo ' Todo verificado correctamente'"
@@ -21,7 +21,6 @@
     "@headlessui/react": "^2.2.9",
     "@hello-pangea/dnd": "^18.0.1",
     "@heroicons/react": "^2.2.0",
-    "@lottiefiles/dotlottie-react": "^0.17.13",
     "@mui/material": "^7.3.5",
     "@radix-ui/react-dialog": "^1.1.15",
     "@react-three/drei": "^10.7.7",

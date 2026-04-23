@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronDown, MapPin, Phone, Mail, ExternalLink, ArrowUpRight } from 'lucide-react';
+import {  MapPin, Phone, Mail, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { CompanyLocation } from './CompanyLocation';
 import { TranslateText } from './TranslateText';
 
@@ -104,6 +104,7 @@ export default function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Visita nuestro perfil de ${social.label}`}
                   className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/70 bg-transparent hover:border-white hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
                 >
                   <Image

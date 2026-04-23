@@ -93,7 +93,13 @@ h1,h2,h3,h4,h5,h6 {
 p {
     line-height: 1.7;
     margin-bottom: 1.5rem;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
+}
+
+@media (min-width: 1024px) {
+    p {
+        text-align: justify;
+        text-justify: inter-word;
+    }
 }
 

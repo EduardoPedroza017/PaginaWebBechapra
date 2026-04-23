@@ -11,7 +11,7 @@ interface DashboardOverviewProps {
 }
 
 // Helper component for stat items
-function StatItem({ 
+const StatItem = React.memo(function StatItem({ 
   label, 
   value, 
   delta, 
@@ -45,7 +45,7 @@ function StatItem({
       )}
     </div>
   );
-}
+});
 
 export function DashboardOverview({ role, theme }: DashboardOverviewProps) {
   const isDark = theme === 'dark';
@@ -274,4 +274,4 @@ export function DashboardOverview({ role, theme }: DashboardOverviewProps) {
   );
 }
 
-export default DashboardOverview;
+export default React.memo(DashboardOverview);

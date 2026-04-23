@@ -23,9 +23,10 @@ export default function CtaRedes() {
             src="/web/image/agenda/ahenda.avif"
             alt="BAUSEN Business Services"
             fill
+            sizes="(min-width: 1280px) 1200px, 100vw"
             className="object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-slate-950/80 to-slate-950" />
+          <div className="absolute inset-0 bg-linear-to-br from-blue-900/40 via-slate-950/80 to-slate-950" />
         </div>
 
         {/* Content */}

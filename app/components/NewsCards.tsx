@@ -58,6 +58,16 @@ export default function NewsCards() {
           <div className="grid md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => <div key={i} className="h-96 rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse" />)}
           </div>
+        ) : news.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">📰</div>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+              <TranslateText text="No hay noticias disponibles" />
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400">
+              <TranslateText text="Por favor, intenta más tarde" />
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {news.map((item, index) => (

@@ -1,5 +1,3 @@
-"use client";
-
 import dynamic from 'next/dynamic';
 import Section from "./components/Section";
 import AnimatedSection from "./components/AnimatedSection";
@@ -26,7 +24,7 @@ const CtaRedes = dynamic(() => import('./components/CtaRedes'));
 const AwardsSection = dynamic(() => import('./components/AwardsSection'));
 
 const ContactSection = dynamic(() => import('./components/ContactSection'), {
-  loading: () => <div className="w-full h-[600px] bg-slate-100 animate-pulse rounded-lg" />,
+  loading: () => <div className="w-full h-150 bg-slate-100 animate-pulse rounded-lg" />,
 });
 
 export default function Home() {

@@ -24,7 +24,7 @@ export const SubServiceTable: React.FC<any> = ({ subservices, onEdit, onDelete, 
           <div key={s.id} className="p-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg transition-shadow duration-150 overflow-hidden">
             <div className="flex flex-col sm:flex-row">
               <div className="w-full sm:w-36 h-40 sm:h-28 bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                {s.heroImage ? <img src={s.heroImage} className="w-full h-full object-cover"/> : <div className="flex items-center gap-2 text-slate-400"><svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M3 12h18M3 17h18"/></svg></div>}
+                {s.heroImage ? <img src={s.heroImage} alt={s.title} className="w-full h-full object-cover"/> : <div className="flex items-center gap-2 text-slate-400"><svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M3 12h18M3 17h18"/></svg></div>}
               </div>
               <div className="flex-1 p-4">
                 <div className="flex items-start gap-3">

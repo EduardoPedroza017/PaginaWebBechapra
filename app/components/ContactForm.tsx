@@ -8,12 +8,12 @@ import { TranslateText } from "@/components/TranslateText";
 type Status = "idle" | "sending" | "success" | "error";
 
 const fields = [
-  { name: "name", type: "text", placeholder: "Tu nombre completo", icon: User },
-  { name: "email", type: "email", placeholder: "tu@email.com", icon: Mail },
+  { name: "name" as const, type: "text", placeholder: "Tu nombre completo", icon: User },
+  { name: "email" as const, type: "email", placeholder: "tu@email.com", icon: Mail },
 ] as const;
 
 export default function ContactForm() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", website: "", consent: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [focused, setFocused] = useState<string | null>(null);
@@ -22,8 +22,18 @@ export default function ContactForm() {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = "El nombre es requerido";
     if (!form.email.trim()) e.email = "El email es requerido";
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) e.email = "Email invalido";
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) e.email = "Email inválido";
     if (!form.message.trim()) e.message = "El mensaje es requerido";
+    if (form.message.trim().length < 10) e.message = "El mensaje debe tener al menos 10 caracteres";
+    if (!form.consent) e.consent = "Debes aceptar la política de privacidad";
+    
+    // Honeypot anti-spam: si el campo website está lleno, es un bot
+    if (form.website.trim()) {
+      setStatus("error");
+      setErrors({ spam: "Detectado intento de spam" });
+      return false;
+    }
+    
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -37,13 +47,21 @@ export default function ContactForm() {
       const res = await fetch("/api/backend/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          consent: form.consent,
+          timestamp: new Date().toISOString(),
+        }),
       });
 
       if (res.ok) {
         setStatus("success");
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", message: "", website: "", consent: false });
         setErrors({});
+        // Reset después de 3 segundos
+        setTimeout(() => setStatus("idle"), 3000);
       } else {
         setStatus("error");
       }
@@ -53,8 +71,10 @@ export default function ContactForm() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value, type } = e.target as HTMLInputElement;
+    const newValue = type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+    setForm({ ...form, [name]: newValue });
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
     if (status !== "idle") setStatus("idle");
   };
 
@@ -82,12 +102,12 @@ export default function ContactForm() {
               <input
                 name={field.name}
                 type={field.type}
-                value={form[field.name as keyof typeof form]}
+                value={form[field.name]}
                 onChange={handleChange}
                 onFocus={() => setFocused(field.name)}
                 onBlur={() => setFocused(null)}
                 placeholder={field.placeholder}
-                className="w-full pl-14 pr-4 py-[18px] rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base"
+                className="w-full pl-14 pr-4 py-4.5 rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base"
                 style={
                   errors[field.name]
                     ? {
@@ -152,7 +172,7 @@ export default function ContactForm() {
               onFocus={() => setFocused("message")}
               onBlur={() => setFocused(null)}
               placeholder="En que podemos ayudarte?"
-              className="w-full pl-14 pr-4 py-[18px] rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-40"
+              className="w-full pl-14 pr-4 py-4.5 rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-40"
               style={
                 errors.message
                   ? {
@@ -190,6 +210,49 @@ export default function ContactForm() {
             )}
           </AnimatePresence>
         </div>
+      </div>
+
+      {/* Honeypot field - invisible para bots */}
+      <input
+        type="text"
+        name="website"
+        value={form.website}
+        onChange={handleChange}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: 'absolute', left: '-9999px', opacity: 0 }}
+      />
+
+      {/* LFPDPPP Consent Checkbox */}
+      <div className="pt-2">
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="consent"
+            checked={form.consent}
+            onChange={handleChange}
+            className="mt-1.5 w-5 h-5 rounded border-2 transition-all cursor-pointer accent-blue-600"
+            required
+          />
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
+            He leído y acepto el{' '}
+            <a
+              href="/web/politica-de-privacidad/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 font-bold hover:underline"
+            >
+              Aviso de Privacidad
+            </a>
+            {' '}conforme a la LFPDPPP. *
+          </span>
+        </label>
+        {errors.consent && (
+          <p className="mt-2 pl-8 text-xs font-bold text-rose-500 uppercase tracking-wider">
+            {errors.consent}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">

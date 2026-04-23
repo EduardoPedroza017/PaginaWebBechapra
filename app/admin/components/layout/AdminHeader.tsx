@@ -33,7 +33,7 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
       </div>
 
       {/* Center - Search (optional, hidden on mobile) */}
-      <div className="hidden md:flex flex-1 max-w-md mx-8">
+      <div className="hidden lg:flex flex-1 max-w-md mx-8">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input

@@ -59,7 +59,7 @@ export default function HistorySection() {
                 className="relative text-center group"
               >
                 {/* Dot Connector */}
-                <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 border-blue-600 z-10 group-hover:scale-150 group-hover:bg-blue-600 transition-all duration-300" />
+                <div className="hidden lg:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 border-blue-600 z-10 group-hover:scale-150 group-hover:bg-blue-600 transition-all duration-300" />
 
                 <div className="bg-white dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500 relative z-20 group-hover:-translate-y-2">
                   <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">

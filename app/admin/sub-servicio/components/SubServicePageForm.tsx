@@ -163,7 +163,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
             <div>
               <label className="block text-sm font-medium mb-1">Hero Image</label>
               <input type="file" accept="image/*" onChange={async (e)=>{ const f = e.target.files?.[0]; if (!f) return; const url = await uploadFile(f); setHeroImage(url) }} />
-              {heroImage && <img src={heroImage} className="mt-2 w-full h-32 object-cover rounded" />}
+              {heroImage && <img src={heroImage} alt={heroTitle || 'Hero image'} className="mt-2 w-full h-32 object-cover rounded" />}
             </div>
 
             <div className="border-t pt-2">
@@ -186,7 +186,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
             <h4 className="font-semibold mb-2">Preview</h4>
             <div className="rounded-lg overflow-hidden border">
               <div className="h-40 bg-gray-100 relative">
-                {heroImage ? <img src={heroImage} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-400">Sin imagen</div>}
+                {heroImage ? <img src={heroImage} alt={heroTitle || 'Hero image'} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-400">Sin imagen</div>}
                 <div className="absolute bottom-4 left-4 text-white">
                   <h3 className="text-2xl font-bold">{heroTitle || 'Título de ejemplo'}</h3>
                   <p className="text-sm">{heroSubtitle || 'Subtítulo de ejemplo'}</p>
@@ -198,7 +198,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
                   {benefits.length === 0 && <div className="text-slate-400">No hay beneficios</div>}
                   {benefits.map((b,i)=> (
                     <div key={i} className="flex gap-2 items-start">
-                      {b.icon && <img src={b.icon} className="w-10 h-10 object-contain" />}
+                      {b.icon && <img src={b.icon} alt={b.title} className="w-10 h-10 object-contain" />}
                       <div>
                         <div className="font-semibold">{b.title}</div>
                         <div className="text-sm text-slate-600">{b.description}</div>

@@ -76,7 +76,7 @@ export const SubServiceForm: React.FC<Props> = ({ initialData, onSubmit, onCance
             const url = await handleFileUpload(f)
             setForm((p:any)=>({...p, icon: url}))
           }} />
-          {form.icon && <div className="mt-2"><img src={form.icon} className="w-10 h-10 object-contain"/></div>}
+          {form.icon && <div className="mt-2"><img src={form.icon} alt="Sub-service icon" className="w-10 h-10 object-contain"/></div>}
         </div>
 
         <div>
@@ -86,7 +86,7 @@ export const SubServiceForm: React.FC<Props> = ({ initialData, onSubmit, onCance
             const url = await handleFileUpload(f)
             setForm((p:any)=>({...p, heroImage: url}))
           }} />
-          {form.heroImage && <div className="mt-2"><img src={form.heroImage} className="w-48 h-24 object-cover"/></div>}
+          {form.heroImage && <div className="mt-2"><img src={form.heroImage} alt={form.title ? `${form.title} hero image` : 'Sub-service hero image'} className="w-48 h-24 object-cover"/></div>}
         </div>
 
         <div className="flex gap-2 justify-end">
