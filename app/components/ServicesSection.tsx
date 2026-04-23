@@ -44,9 +44,9 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         )}
         {/* Badge de Icono flotante entre imagen y texto */}
         <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-20">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-500 group-hover:bg-blue-600 group-hover:scale-110">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-500 group-hover:shadow-2xl group-hover:scale-110">
             {service.icon ? (
-              <Image src={service.icon} alt="" width={40} height={48} className="object-contain transition-all duration-500 group-hover:invert" />
+              <Image src={service.icon} alt="" width={40} height={48} className="object-contain transition-all duration-500" />
             ) : null}
           </div>
         </div>

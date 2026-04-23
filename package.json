@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development PORT=3200 next dev",
-    "build": "cross-env NODE_ENV=production next build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "cross-env NODE_ENV=production next start -p 3200",
     "lint": "eslint",
     "type-check": "tsc --noEmit",

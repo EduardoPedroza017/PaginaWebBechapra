@@ -43,9 +43,9 @@ function FooterLinkSection({ title, links, delay }: { title: string; links: any[
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay }}
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-8"
     >
-      <h3 className="text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-white leading-relaxed">
+      <h3 className="text-xs font-black uppercase tracking-[0.2em] !text-white leading-relaxed">
         <TranslateText text={title} />
       </h3>
       <ul className="flex flex-col gap-4">
@@ -79,10 +79,10 @@ export default function Footer() {
       <div className="absolute bottom-0 right-0 w-100 h-100 bg-blue-900/10 rounded-full blur-[100px] pointer-events-none dark:hidden" />
 
       <div className="relative z-10 max-w-7xl 2xl:max-w-360 3xl:max-w-400 mx-auto px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-x-24 lg:gap-y-16">
           
           {/* Brand & Mission */}
-          <div className="lg:col-span-5 space-y-10">
+          <div className="lg:col-span-4 space-y-10">
             <Link href="/" className="inline-block transition-transform hover:scale-105">
               <Image
                 src="/web/image/logo/bausen-logo.png"
@@ -93,7 +93,7 @@ export default function Footer() {
               />
             </Link>
             
-            <p className="text-xl lg:text-2xl font-bold leading-tight text-slate-400 max-w-md">
+            <p className="text-xl lg:text-2xl font-bold leading-tight text-white max-w-md">
               <TranslateText text="Transformamos organizaciones a través de soluciones estratégicas de talento y management." />
             </p>
 
@@ -128,27 +128,27 @@ export default function Footer() {
           </div>
 
           {/* Contact Details */}
-          <div className="lg:col-span-3 space-y-8">
-            <h3 className="text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-white leading-relaxed">
+          <div className="lg:col-span-4 space-y-8">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] !text-white leading-relaxed">
               <TranslateText text="Conecta" />
             </h3>
             <div className="space-y-6">
               <div className="group cursor-default">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 group-hover:text-blue-500 transition-colors">Oficina Central</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] !text-white mb-2 group-hover:text-blue-500 transition-colors">Oficina Central</div>
                 <div className="text-slate-300 font-bold leading-relaxed">
                   <CompanyLocation variant="footer" />
                 </div>
               </div>
 
               <div className="group cursor-default">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 group-hover:text-blue-500 transition-colors">Teléfono</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors">Teléfono</div>
                 <a href="tel:+5265655245678" className="text-slate-300 font-bold hover:text-white transition-colors">
                   +52 (656) 524 5678
                 </a>
               </div>
 
               <div className="group cursor-default">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 group-hover:text-blue-500 transition-colors">Email</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors">Email</div>
                 <a href="mailto:contacto@bausen.com.mx" className="text-slate-300 font-bold hover:text-white transition-colors break-all">
                   contacto@bausen.com.mx
                 </a>
@@ -159,7 +159,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-20 lg:mt-32 pt-10 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-slate-500 text-sm font-bold tracking-wide">
+          <div className="text-white/60 text-sm font-bold tracking-wide">
             © {currentYear} BAUSEN · <TranslateText text="Líderes en Capital Humano" />
           </div>
           
@@ -168,7 +168,7 @@ export default function Footer() {
               <Link
                 key={index}
                 href={link.href}
-                className="text-slate-500 hover:text-blue-500 text-xs font-black uppercase tracking-widest transition-colors"
+                className="text-white/60 hover:text-white text-xs font-black uppercase tracking-widest transition-colors"
               >
                 <TranslateText text={link.label} />
               </Link>

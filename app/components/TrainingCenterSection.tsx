@@ -64,8 +64,7 @@ export default function TrainingCenterSection() {
           <TranslateText text="Formacion de Talento" />
         </span>
         <h2
-          className="text-4xl lg:text-6xl font-black mb-6 tracking-tighter italic"
-          style={{ color: "var(--brand-accent)" }}
+          className="text-4xl lg:text-6xl font-black mb-6 tracking-tighter italic text-blue-700"
         >
           Bausen Training Center
         </h2>

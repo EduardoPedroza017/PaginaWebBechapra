@@ -11,7 +11,7 @@ export default function CtaRedes() {
     <div className="relative">
       {/* Main Card - Flat Colors */}
       <motion.div
-        className="relative rounded-3xl overflow-hidden bg-[--brand-primary] dark:bg-slate-950 border border-[--surface-border]"
+        className="relative rounded-3xl overflow-hidden bg-slate-950 border border-white/10"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -23,23 +23,23 @@ export default function CtaRedes() {
             src="/web/image/agenda/ahenda.avif"
             alt="BAUSEN Business Services"
             fill
-            className="object-cover opacity-60"
+            className="object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-slate-950/80 to-slate-950" />
         </div>
 
         {/* Content */}
         <div className="relative grid gap-8 p-8 md:p-12 lg:grid-cols-2 lg:gap-10 lg:p-16">
           {/* Left: CTA */}
-          <div className="space-y-6 rounded-2xl border border-white/20 bg-slate-950/45 p-6 shadow-2xl backdrop-blur-md md:p-8">
+          <div className="space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 text-blue-400" />
               <TranslateText text="Conecta con nosotros" />
             </motion.div>
 
@@ -48,11 +48,11 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="text-3xl font-black leading-tight tracking-tighter text-blue-300 sm:text-4xl md:text-5xl"
+              className="text-3xl font-black leading-tight tracking-tighter text-white sm:text-4xl md:text-5xl"
             >
               <TranslateText text="Juntos trazamos" />
               <br />
-              <span className="text-blue-300">
+              <span className="text-blue-500">
                 <TranslateText text="tu camino al éxito" />
               </span>
             </motion.h3>
@@ -62,7 +62,7 @@ export default function CtaRedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="max-w-lg text-lg font-medium leading-relaxed text-white"
+              className="max-w-lg text-lg font-medium leading-relaxed text-slate-300"
             >
               <TranslateText text="¿Listo para llevar tu negocio al siguiente nivel? Agenda una reunión con nuestros especialistas y descubre cómo podemos ayudarte." />
             </motion.p>
@@ -73,10 +73,10 @@ export default function CtaRedes() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
               href="#contacto"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-white/80 bg-white px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-900 shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-cyan-300"
+              className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-8 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-blue-500"
             >
               <TranslateText text="¡Agenda ahora!" />
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </motion.a>
           </div>
 

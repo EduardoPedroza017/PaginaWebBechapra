@@ -37,8 +37,8 @@ interface CompanyLocationProps {
   variant?: 'footer' | 'default';
 }
 
-const NoBranchesMessage = () => (
-  <div className="text-center text-blue-500">
+const NoBranchesMessage = ({ variant = 'default' }: { variant?: 'footer' | 'default' }) => (
+  <div className={`text-left ${variant === 'footer' ? 'text-white' : 'text-blue-500'}`}>
     <p>Próximamente. No se encontraron sucursales activas.</p>
   </div>
 );
@@ -82,9 +82,8 @@ export function CompanyLocation({ variant = 'default' }: CompanyLocationProps) {
   if (loading) {
     return (
       <div className="space-y-3 animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        <div className={`h-4 ${variant === 'footer' ? 'bg-white/20' : 'bg-gray-200'} rounded w-3/4`}></div>
+        <div className={`h-4 ${variant === 'footer' ? 'bg-white/20' : 'bg-gray-200'} rounded w-1/2`}></div>
       </div>
     );
   }
@@ -92,7 +91,7 @@ export function CompanyLocation({ variant = 'default' }: CompanyLocationProps) {
   return (
     <div className="relative">
       {branches.length === 0 ? (
-        <NoBranchesMessage />
+        <NoBranchesMessage variant={variant} />
       ) : (
         // Si no hay sucursales activas, mostrar ubicación por defecto
         branches.length === 0 ? (
