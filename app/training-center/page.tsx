@@ -106,7 +106,7 @@ export default function TrainingCenterPage() {
   const filteredCourses = activeTab === "todos" ? courses : courses.filter((course) => course.category === activeTab);
 
   return (
-    <div className="min-h-screen bg-[--background] dark:bg-slate-950">
+    <div className="min-h-screen bg-white dark:bg-slate-950">
       <SubpageHero
         badge="Centro de Capacitacion"
         title="Bausen Training Center"
@@ -114,12 +114,12 @@ export default function TrainingCenterPage() {
         subtitle="Formamos y conectamos el talento del futuro con las mejores oportunidades estrategicas."
       />
 
-      <Section variant="blue" className="-mt-20 relative z-20">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 rounded-[2.5rem] border border-[--surface-border] bg-[--background]/80 p-10 shadow-2xl backdrop-blur-xl dark:border-slate-800/50 dark:bg-slate-900/80 lg:grid-cols-4">
+      <Section variant="white" className="-mt-20 relative z-20">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 rounded-[2.5rem] border border-slate-200 bg-slate-50 p-10 shadow-lg lg:grid-cols-4">
           {stats.map((stat, i) => (
             <div key={i} className="space-y-2 text-center group">
-              <div className="text-4xl font-black text-[--brand-primary] transition-transform group-hover:-translate-y-1 dark:text-blue-500 lg:text-5xl">{stat.number}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[--foreground]">{stat.label}</div>
+              <div className="text-4xl font-black text-blue-600 lg:text-5xl">{stat.number}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -127,12 +127,12 @@ export default function TrainingCenterPage() {
 
       <Section variant="white" size="lg">
         <div className="mb-20 text-center">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-[--background] px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary] dark:border-blue-800/50 dark:bg-blue-900/20 dark:text-blue-400">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary]">
             <Shield size={14} />
             Avalados por el CCPM
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tighter text-[--brand-accent] dark:text-white lg:text-6xl">Educacion de Clase Mundial</h2>
-          <p className="mx-auto max-w-3xl text-lg font-medium text-[--foreground] dark:text-slate-400">
+          <h2 className="mb-6 text-4xl font-black tracking-tighter text-slate-900 lg:text-6xl">Educacion de Clase Mundial</h2>
+          <p className="mx-auto max-w-3xl text-lg font-medium text-slate-600">
             Nuestra plataforma de educacion en linea esta disenada para profesionales que buscan excelencia y crecimiento real.
           </p>
         </div>
@@ -262,16 +262,16 @@ export default function TrainingCenterPage() {
 function InfoCard({ item, index }: { item: any; index: number }) {
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.1 }} className="group relative">
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-[--surface-border] bg-[--surface-card] p-10 text-center shadow-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white p-10 text-center shadow-lg transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
         <div className="relative z-20">
-          <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-[--brand-primary] text-white shadow-xl shadow-[--brand-primary]/20 transition-transform group-hover:scale-110">
+          <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20 transition-transform group-hover:scale-110">
             <item.icon size={32} />
           </div>
-          <h3 className="mb-4 text-2xl font-black leading-tight tracking-tight text-[--brand-accent] dark:text-white">{item.title}</h3>
-          <p className="font-medium leading-relaxed text-[--foreground] dark:text-slate-400">{item.desc}</p>
+          <h3 className="mb-4 text-2xl font-black leading-tight tracking-tight text-slate-900">{item.title}</h3>
+          <p className="font-medium leading-relaxed text-slate-600">{item.desc}</p>
         </div>
       </div>
-      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-[--brand-primary]/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-blue-600/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
     </motion.div>
   );
 }
@@ -292,7 +292,7 @@ function CourseCard({ course, index }: { course: any; index: number }) {
       <div
         className={`flex h-full flex-col overflow-hidden rounded-[2.5rem] border transition-all duration-500 hover:shadow-2xl ${
           featured
-            ? "border-blue-200/80 bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900 dark:shadow-blue-950/30"
+            ? "border-blue-200/80 bg-linear-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900 dark:shadow-blue-950/30"
             : "border-[--surface-border] bg-[--surface-card] shadow-xl dark:border-slate-800 dark:bg-slate-900"
         }`}
       >

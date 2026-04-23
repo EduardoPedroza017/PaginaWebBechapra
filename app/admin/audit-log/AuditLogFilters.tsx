@@ -30,19 +30,10 @@ export function AuditLogFilters({
   totalCount
 }: AuditLogFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeFilters, setActiveFilters] = useState(0);
-  
   const isDark = theme === 'dark';
   
-  // Contar filtros activos
-  useEffect(() => {
-    let count = 0;
-    if (filters.user) count++;
-    if (filters.ip) count++;
-    if (filters.success) count++;
-    if (filters.dateFrom || filters.dateTo) count++;
-    setActiveFilters(count);
-  }, [filters]);
+  // Derivamos el estado directamente del prop filters para evitar sincronización manual
+  const activeFilters = Object.values(filters).filter((val) => val !== null && val !== undefined && val !== '').length;
 
   const baseInputClasses = `px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 transition-all ${
     isDark 

@@ -22,15 +22,9 @@ export default function ContactFilter({ messages, onFilter, theme }: Props) {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [filterCount, setFilterCount] = useState(0);
-
-  useEffect(() => {
-    let count = 0;
-    if (name.trim()) count++;
-    if (email.trim()) count++;
-    if (date) count++;
-    setFilterCount(count);
-  }, [name, email, date]);
+  
+  // Derivamos el estado directamente del renderizado
+  const filterCount = (name.trim() ? 1 : 0) + (email.trim() ? 1 : 0) + (date ? 1 : 0);
 
   function handleFilter() {
     let filtered = messages;
