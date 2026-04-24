@@ -33,24 +33,26 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         {service.image ? (
           <Image
             src={service.image}
-            alt={service.name || 'Servicio'}
+            alt={service.name ? `Imagen de servicio: ${service.name}` : 'Imagen de servicio'}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
+            sizes="(min-width: 1280px) 700px, 100vw"
+            priority={index < 2}
           />
         ) : (
           <div className="w-full h-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
-             <div className="w-12 h-12 rounded-full bg-blue-500/20" />
+             <div className="w-12 h-12 rounded-full bg-blue-500/20" aria-hidden="true" />
           </div>
         )}
         {/* Badge de Icono flotante entre imagen y texto */}
         <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-20">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-500 group-hover:shadow-2xl group-hover:scale-110">
+          <div className="flex h-20 w-20 min-h-[44px] min-w-[44px] items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-500 group-hover:shadow-2xl group-hover:scale-110">
             {service.icon ? (
-              <Image src={service.icon} alt="" width={40} height={48} className="object-contain transition-all duration-500" />
+              <Image src={service.icon} alt="Icono decorativo" width={40} height={48} className="object-contain transition-all duration-500" />
             ) : null}
           </div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" aria-hidden="true" />
       </div>
 
       {/* Contenido Inferior Centrado */}

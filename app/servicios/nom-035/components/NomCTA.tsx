@@ -91,10 +91,11 @@ export default function NomCTA({
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href={primaryLink}
-              className="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 rounded-2xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl hover:bg-blue-50 transition-all duration-300"
+              className="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 rounded-2xl font-bold text-lg shadow-xl shadow-black/15 hover:shadow-2xl hover:bg-blue-50 transition-all duration-300 min-h-[44px] min-w-[44px]"
+              aria-label={primaryLabel}
             >
               {primaryLabel}
-              <ArrowRight size={22} />
+              <ArrowRight size={24} aria-label="Flecha decorativa" />
             </Link>
           </motion.div>
 

@@ -116,13 +116,14 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
         <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-[0_18px_40px_rgba(15,23,42,0.06)] hover:shadow-[0_22px_50px_rgba(15,23,42,0.10)] transition-all duration-300 h-full flex flex-col">
           <div className={`relative overflow-hidden bg-slate-50 dark:bg-slate-800 ${isFeatured ? "h-72" : "h-56"}`}>
             {item.image_url && (
-              <Image
-                src={`${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                unoptimized
-              />
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${item.image_url}`}
+                  alt={`Imagen de noticia: ${item.title}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  unoptimized
+                  loading="lazy"
+                />
             )}
             {isFeatured && (
               <div className="absolute left-6 top-6 rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">

@@ -93,9 +93,10 @@ export default function DarkCTA({
               >
                 <Link
                   href={primaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-600/25 hover:bg-blue-500 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-600/25 hover:bg-blue-500 transition-all duration-300 min-h-[44px] min-w-[44px]"
+                  aria-label={primaryLabel}
                 >
-                  <Calendar size={20} />
+                  <Calendar size={24} aria-label="Calendario decorativo" />
                   {primaryLabel}
                 </Link>
               </motion.div>
@@ -105,9 +106,10 @@ export default function DarkCTA({
               >
                 <Link
                   href={secondaryLink}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white rounded-2xl font-bold text-lg border-2 border-blue-600 dark:border-blue-700 hover:bg-blue-600/10 dark:hover:bg-blue-700/10 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white rounded-2xl font-bold text-lg border-2 border-blue-600 dark:border-blue-700 hover:bg-blue-600/10 dark:hover:bg-blue-700/10 transition-all duration-300 min-h-[44px] min-w-[44px]"
+                  aria-label={secondaryLabel}
                 >
-                  <Trophy size={20} />
+                  <Trophy size={24} aria-label="Trofeo decorativo" />
                   <TranslateText text={secondaryLabel} />
                 </Link>
               </motion.div>

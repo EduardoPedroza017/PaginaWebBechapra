@@ -261,11 +261,12 @@ export default function ContactForm() {
           disabled={status === "sending"}
           whileHover={{ scale: status === "sending" ? 1 : 1.05 }}
           whileTap={{ scale: status === "sending" ? 1 : 0.95 }}
-          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden"
+          className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl disabled:opacity-60 disabled:cursor-not-allowed transition-all overflow-hidden min-h-[44px] min-w-[44px]"
           style={{
             backgroundColor: "var(--brand-primary)",
             boxShadow: "0 18px 40px rgba(35,70,221,0.28)",
           }}
+          aria-label="Enviar formulario de contacto"
         >
           <span className="relative flex items-center gap-3">
             {status === "sending" ? (

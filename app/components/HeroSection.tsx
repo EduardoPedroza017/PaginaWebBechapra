@@ -30,13 +30,15 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div 
           style={{ y: springY1 }}
-          className="absolute -top-40 -right-40 w-150 h-150 rounded-full blur-[120px] bg-blue-100/30 dark:bg-blue-600/10" 
+          className="absolute -top-40 -right-40 w-150 h-150 rounded-full blur-[120px] bg-blue-100/30 dark:bg-blue-600/10"
+          aria-hidden="true"
         />
         <motion.div 
           style={{ y: springY2 }}
-          className="absolute -bottom-40 -left-40 w-125 h-125 rounded-full blur-[100px] bg-blue-50/40 dark:bg-blue-500/10" 
+          className="absolute -bottom-40 -left-40 w-125 h-125 rounded-full blur-[100px] bg-blue-50/40 dark:bg-blue-500/10"
+          aria-hidden="true"
         />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-slate-900/12 dark:to-transparent" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 rounded-full bg-linear-to-r from-blue-100/20 to-transparent dark:from-slate-900/12 dark:to-transparent" aria-hidden="true" />
       </div>
 
       <motion.div 

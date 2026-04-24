@@ -97,27 +97,27 @@ export default function CookieTable({ data, theme = 'light' }: CookieTableProps)
     
     // Dispositivo
     let device = 'Desktop';
-    let deviceIcon: React.ReactElement = <Monitor className="w-5 h-5" />;
+    let deviceIcon: React.ReactElement = <Monitor className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Monitor decorativo" />;
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       device = 'Mobile';
-      deviceIcon = <Smartphone className="w-5 h-5" />;
+      deviceIcon = <Smartphone className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Smartphone decorativo" />;
     } else if (ua.includes('tablet') || ua.includes('ipad')) {
       device = 'Tablet';
-      deviceIcon = <Tablet className="w-5 h-5" />;
+      deviceIcon = <Tablet className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Tablet decorativo" />;
     }
     
     // Navegador
     let browser = 'Unknown';
-    let browserIcon: React.ReactElement = <Globe className="w-4 h-4" />;
+    let browserIcon: React.ReactElement = <Globe className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Globo decorativo" />;
     if (ua.includes('chrome') && !ua.includes('edge')) {
       browser = 'Chrome';
-      browserIcon = <Globe className="w-4 h-4" />;
+      browserIcon = <Globe className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Globo decorativo" />;
     } else if (ua.includes('firefox')) {
       browser = 'Firefox';
-      browserIcon = <Globe className="w-4 h-4" />;
+      browserIcon = <Globe className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Globo decorativo" />;
     } else if (ua.includes('safari') && !ua.includes('chrome')) {
       browser = 'Safari';
-      browserIcon = <Compass className="w-4 h-4" />;
+      browserIcon = <Compass className="w-11 h-11 min-w-[44px] min-h-[44px]" aria-label="Brújula decorativa" />;
     } else if (ua.includes('edge')) {
       browser = 'Edge';
       browserIcon = <Globe className="w-4 h-4" />;

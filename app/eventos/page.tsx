@@ -98,7 +98,7 @@ export default function EventosPage() {
                   >
                     <div className="flex flex-col overflow-hidden rounded-[3rem] border border-slate-100 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 md:flex-row">
                       <div className="relative h-[300px] w-full md:h-[500px] md:w-1/2">
-                        <img src={evento.imagen} alt={evento.titulo} className="h-full w-full object-cover" />
+                        <img src={evento.imagen} alt={`Imagen del evento: ${evento.titulo}`} className="h-full w-full object-cover" loading="lazy" />
                         <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
                       </div>
                       <div className="flex w-full flex-col justify-center p-10 md:w-1/2 md:p-16">
@@ -124,10 +124,11 @@ export default function EventosPage() {
                             setModalEvent(evento);
                             setModalOpen(true);
                           }}
-                          className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-1 hover:bg-blue-500"
+                          className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-1 hover:bg-blue-500 min-h-[44px] min-w-[44px]"
+                          aria-label={`Ver detalles del evento: ${evento.titulo}`}
                         >
                           Ver Detalles
-                          <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                          <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" aria-label="Flecha decorativa" />
                         </button>
                       </div>
                     </div>
@@ -173,7 +174,7 @@ export default function EventosPage() {
               }`}
             >
               <div className={`relative ${index === 0 ? 'h-80 lg:h-96' : 'h-64'}`}>
-                <img src={ev.imagen} alt={ev.titulo} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src={ev.imagen} alt={`Imagen del evento: ${ev.titulo}`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent" />
                 <div className="absolute left-6 top-6">
                   <span className="rounded-full border border-white/10 bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">

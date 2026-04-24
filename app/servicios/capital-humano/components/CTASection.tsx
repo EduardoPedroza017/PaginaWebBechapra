@@ -43,10 +43,11 @@ export default function CTASection({
             <div className="flex flex-col sm:flex-row gap-6 pt-6">
               <Link
                 href="#contacto"
-                className="px-10 py-5 bg-blue-700 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-600 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
+                className="px-10 py-5 bg-blue-700 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl hover:bg-blue-600 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 min-h-[44px] min-w-[44px]"
+                aria-label="Comenzar Ahora"
               >
                 <TranslateText text="Comenzar Ahora" />
-                <ArrowRight size={18} />
+                <ArrowRight size={22} aria-label="Flecha decorativa" />
               </Link>
               <Link
                 href="/acerca-de"

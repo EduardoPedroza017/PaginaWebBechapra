@@ -83,11 +83,12 @@ export default function NewsCards() {
                   <Link href={`/noticias/${slugify(item.title)}`} className="group h-full flex flex-col">
                     <div className={`relative overflow-hidden bg-slate-50 dark:bg-slate-800 ${index === 0 ? "h-72 lg:h-80" : "h-56"}`}>
                       {item.image_url && (
-                        <OptimizedImage
-                          src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
-                          alt={item.title}
-                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                        />
+                          <OptimizedImage
+                            src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
+                            alt={`Imagen de noticia: ${item.title}`}
+                            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                          />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent" />
                       {index === 0 && (
@@ -98,7 +99,7 @@ export default function NewsCards() {
                     </div>
                     <div className="p-8 flex flex-col flex-1">
                       <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4 font-black text-[10px] uppercase tracking-widest">
-                        <Calendar size={12} />
+                          <Calendar size={20} aria-label="Fecha de la noticia" />
                         {new Date(item.date).toLocaleDateString()}
                       </div>
                       <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-lg"} font-black text-slate-900 dark:text-white mb-4 leading-tight`}>
@@ -107,9 +108,9 @@ export default function NewsCards() {
                       <p className={`${index === 0 ? "max-w-2xl text-base" : "text-sm"} text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8 flex-1 text-justify`}>
                         {item.description}
                       </p>
-                      <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">
-                        Leer más <ArrowRight size={14} />
-                      </div>
+                        <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2 min-h-[44px] min-w-[44px]">
+                          Leer más <ArrowRight size={20} aria-label="Flecha decorativa" />
+                        </div>
                     </div>
                   </Link>
                 </CardFlat>

@@ -52,7 +52,8 @@ export default function DarkCTA({
               >
                 <Link
                   href={primaryLink}
-                  className="inline-block px-10 py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-xl font-bold text-base shadow-xl shadow-blue-600/30 dark:shadow-blue-700/20 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300 min-w-[220px] text-center"
+                  className="inline-block px-10 py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-xl font-bold text-base shadow-xl shadow-blue-600/30 dark:shadow-blue-700/20 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300 min-w-[220px] text-center min-h-[44px]"
+                  aria-label={primaryLabel}
                 >
                   <TranslateText text={primaryLabel} />
                 </Link>
@@ -63,7 +64,8 @@ export default function DarkCTA({
               >
                 <Link
                   href={secondaryLink}
-                  className="inline-block px-10 py-4 bg-transparent text-white rounded-xl font-bold text-base border-2 border-white/30 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/5 transition-all duration-300 min-w-[220px] text-center"
+                  className="inline-block px-10 py-4 bg-transparent text-white rounded-xl font-bold text-base border-2 border-white/30 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/5 transition-all duration-300 min-w-[220px] text-center min-h-[44px]"
+                  aria-label={secondaryLabel}
                 >
                   <TranslateText text={secondaryLabel} />
                 </Link>

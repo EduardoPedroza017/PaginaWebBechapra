@@ -52,9 +52,9 @@ export default function GaleriaPage() {
 
       <Section variant="white" size="lg">
         <div className="mb-14 space-y-5">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
-            <Sparkles size={14} />
-            Seleccion visual
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300 min-h-[44px] min-w-[44px]">
+            <Sparkles size={24} aria-label="Decorativo" />
+            Selección visual
           </span>
           <div>
             <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Momentos y presencia de marca</h2>

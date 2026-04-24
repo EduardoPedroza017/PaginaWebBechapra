@@ -21,10 +21,11 @@ export default function CtaRedes() {
         <div className="absolute inset-0">
           <Image
             src="/web/image/agenda/ahenda.avif"
-            alt="BAUSEN Business Services"
+            alt="Imagen de fondo agenda BAUSEN"
             fill
             sizes="(min-width: 1280px) 1200px, 100vw"
             className="object-cover opacity-40"
+            priority
           />
           <div className="absolute inset-0 bg-linear-to-br from-blue-900/40 via-slate-950/80 to-slate-950" />
         </div>

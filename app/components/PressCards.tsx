@@ -150,9 +150,9 @@ export default function PressCards() {
                     >
                       <div className={`relative overflow-hidden ${index === 0 ? "h-72 lg:h-80" : "h-48"}`}>
                         {item.image_url ? (
-                          <img src={String(item.image_url)} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                          <img src={String(item.image_url)} alt={`Imagen del evento: ${item.title}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                         ) : (
-                          <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+                          <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center" aria-hidden="true">
                             <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
                           </div>
                         )}

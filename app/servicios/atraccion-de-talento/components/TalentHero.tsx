@@ -123,7 +123,7 @@ export default function TalentHero({
                   className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-blue-700 shadow-xl shadow-blue-950/20 transition-all duration-300 hover:shadow-2xl"
                 >
                   <TranslateText text={ctaLabel} />
-                  <ArrowRight size={20} />
+                  <ArrowRight size={24} aria-label="Flecha decorativa" />
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -149,10 +149,11 @@ export default function TalentHero({
               <div className="relative aspect-11/8 w-full max-w-140 overflow-hidden rounded-2xl border border-white/18 shadow-2xl shadow-blue-950/30">
                 <Image
                   src={imageSrc}
-                  alt={imageAlt}
+                  alt={imageAlt || `Imagen de sección: ${title}`}
                   fill
                   className="object-cover"
                   priority
+                  loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 via-transparent to-transparent" />
               </div>
