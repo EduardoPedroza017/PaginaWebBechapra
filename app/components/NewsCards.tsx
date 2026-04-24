@@ -22,6 +22,10 @@ const slugify = (s: string) =>
     ? s.toString().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036F]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-")
     : "";
 
+import { apiClient } from '@/lib/api/api-client';
+
+// ... (NewsItem and slugify remain same)
+
 export default function NewsCards() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,9 +33,7 @@ export default function NewsCards() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
-        const response = await fetch(`${apiBase}/api/news`);
-        const data = await response.json();
+        const data = await apiClient.get('/api/news');
         const items = Array.isArray(data) ? data : (data.news || data.items || []);
         
         const sorted = items.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -44,6 +46,10 @@ export default function NewsCards() {
     };
     fetchNews();
   }, []);
+
+  // ... (rest of render method)
+  // Inside news.map, update OptimizedImage src:
+  // src={item.image_url}
 
   return (
     <div className="py-20">

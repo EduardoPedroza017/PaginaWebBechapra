@@ -56,25 +56,17 @@ export async function GET(
 ) {
   try {
     const { path } = await params;
-    if (!path || path.length === 0) {
+    // Filter out empty segments to handle trailing slashes correctly
+    const cleanPath = path.filter(segment => segment.length > 0);
+    if (cleanPath.length === 0) {
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
-    const incomingHeaders: Record<string, string> = {};
-    for (const [k, v] of request.headers.entries()) {
-      if (v) incomingHeaders[k] = v;
-    }
-
-    // Route is /api/backend/[...path], so path array does NOT include 'backend'
-    // Forward to Flask backend with correct prefix
     let pathStr: string;
-    if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /api/admin/... (Flask admin routes)
-      pathStr = `/api/${path.join('/')}`; 
+    if (cleanPath[0] === 'admin') {
+      pathStr = `/api/${cleanPath.join('/')}`; 
     } else {
-      // /api/backend/news -> /api/news (Flask public API)
-      pathStr = `/api/${path.join('/')}`; 
+      pathStr = `/api/${cleanPath.join('/')}`; 
     }
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
@@ -272,6 +264,18 @@ export async function DELETE(
 
     if (!BACKEND_URL) {
       return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+    }
+
+    const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);
+    const data = await response.json();
+
+    return NextResponse.json(data, { status: response.status });
+  } catch (error) {
+    console.error('Error forwarding DELETE request:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+ status: 500 });
     }
 
     const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);

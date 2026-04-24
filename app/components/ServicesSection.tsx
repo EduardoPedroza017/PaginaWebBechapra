@@ -80,36 +80,47 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   );
 }
 
+import { apiClient } from "@/lib/api/api-client";
+
+// ... (Service type and ServiceCard component remains same)
+
 export default function ServicesSection() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    const mappedStatic = staticServices.map(s => ({ id: s.id, slug: s.id, name: s.title, description: s.description, image: s.image, icon: s.icon }));
+    const mappedStatic = staticServices.map(s => ({ 
+      id: s.id, 
+      slug: s.id, 
+      name: s.title, 
+      description: s.description, 
+      image: s.image, 
+      icon: s.icon 
+    }));
     
     (async () => {
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${API}/api/services/cards?active=true`);
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        const data = await res.json();
+        const data = await apiClient.get('/api/services/cards?active=true');
         
-        if (mounted && Array.isArray(data)) {
+        // Si el backend devuelve datos y el arreglo NO está vacío
+        if (mounted && Array.isArray(data) && data.length > 0) {
           const fetched = data.map((s: any) => ({
             id: s.id || s._id,
             slug: s.slug,
             name: s.name,
             description: s.description,
-            icon: s.icon?.startsWith('/uploads/') ? `${API}${s.icon}` : s.icon,
-            image: s.image?.startsWith('/uploads/') ? `${API}${s.image}` : s.image,
+            icon: s.icon,
+            image: s.image,
           }));
           setServices(fetched);
         } else if (mounted) {
+          // Si el backend está vacío o no devuelve un arreglo válido, 
+          // usamos los 3 servicios estáticos por defecto
           setServices(mappedStatic);
         }
       } catch (err) {
-        console.error('Error fetching services', err);
+        console.error('Error fetching services, falling back to static data', err);
         if (mounted) setServices(mappedStatic);
       } finally {
         if (mounted) setLoading(false);

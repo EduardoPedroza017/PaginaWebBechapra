@@ -37,6 +37,10 @@ const PressSkeleton = () => {
   );
 };
 
+import { apiClient } from '@/lib/api/api-client';
+
+// ... (PressItem and PressSkeleton remain same)
+
 export default function PressCards() {
   const [press, setPress] = useState<PressItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,14 +48,12 @@ export default function PressCards() {
   useEffect(() => {
     const fetchPress = async () => {
       try {
-        const response = await fetch('/api/eventos');
-        const data = await response.json();
+        const data = await apiClient.get('/api/eventos');
         // Normalize response: accept array or paginated object { items, data, results }
         const items = Array.isArray(data)
           ? data
           : (data.items || data.data || data.results || []);
 
-        const API = process.env.NEXT_PUBLIC_API_URL || '';
         const normalized = (Array.isArray(items) ? items : []).map((p: Record<string, unknown>, index: number) => {
           const pickString = (...keys: string[]) => {
             for (const key of keys) {
@@ -63,7 +65,6 @@ export default function PressCards() {
 
           const rawImage = pickString('imagen', 'image', 'foto', 'file_url', 'image_url');
           const imageStr = rawImage ? String(rawImage) : '';
-          const resolvedImage = imageStr.startsWith('/uploads/') ? `${API}${imageStr}` : (imageStr || undefined);
           const status = p['status'] || p['active'] || p['estado'];
 
           return {
@@ -72,7 +73,7 @@ export default function PressCards() {
             date: pickString('fecha_hora', 'fecha', 'date'),
             excerpt: pickString('descripcion', 'description', 'summary', 'excerpt'),
             link: '/eventos',
-            image_url: resolvedImage,
+            image_url: imageStr,
             status,
           } as PressItem;
         });

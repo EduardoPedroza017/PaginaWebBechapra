@@ -43,19 +43,15 @@ const NoBranchesMessage = ({ variant = 'default' }: { variant?: 'footer' | 'defa
   </div>
 );
 
+import { apiClient } from "@/lib/api/api-client";
+
 const fetchBranches = async () => {
-  console.warn('Fetching branches via API proxy');
   try {
-    const response = await fetch('/api/branches?active=true');
-    if (!response.ok) {
-      console.warn('Branches API proxy not available, using default location');
-      throw new Error(`Failed to fetch branches: ${response.statusText}`);
-    }
-    const data = await response.json();
+    const data = await apiClient.get('/api/branches?active=true');
     const branches = Array.isArray(data) ? data : [];
     return branches;
   } catch (error) {
-    console.warn('Error fetching branches via API proxy, using default location:', error);
+    console.warn('Error fetching branches via API client:', error);
     return [];
   }
 };

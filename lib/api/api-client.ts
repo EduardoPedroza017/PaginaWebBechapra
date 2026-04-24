@@ -46,20 +46,16 @@ class ApiClient {
   private buildUrl(path: string): string {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     
-    // Para endpoints de logo, hacer requests directos al backend
-    if (normalizedPath.includes('/api/logo/')) {
-      return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
-    }
-    
     // Si estamos en navegador, usar proxy de Next.js
     if (this.useProxy) {
-      // Strip /api/ prefix and route through proxy: /api/news -> /api/backend/news
-      // But first remove /api/ so /api/news becomes /news, then add /api/backend/
+      // Importante: Next.js con basePath '/web' espera que las llamadas al proxy
+      // comiencen con /web/api/...
+      // Strip /api/ prefix and route through proxy: /api/news -> /web/api/backend/news
       const withoutApiPrefix = normalizedPath.replace(/^\/api\//, '/');
-      return `/api/backend${withoutApiPrefix}`;
+      return `/web/api/backend${withoutApiPrefix}`;
     }
     
-    // En servidor (SSR), usar la URL interna del API
+    // En servidor (SSR), usar la URL interna del API (localhost:5000)
     const normalizedBase = this.baseUrl.endsWith('/') 
       ? this.baseUrl.slice(0, -1) 
       : this.baseUrl;
