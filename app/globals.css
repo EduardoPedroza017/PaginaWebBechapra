@@ -32,6 +32,9 @@
     --hero-services-to: #2563eb;
     --hero-services-glow-primary: rgba(255, 255, 255, 0.12);
     --hero-services-glow-secondary: rgba(255, 255, 255, 0.08);
+    --cta-blue-from: #0f4fff;
+    --cta-blue-via: #2563eb;
+    --cta-blue-to: #2d5bff;
     --cta-spotlight-from: #111827;
     --cta-spotlight-via: #172033;
     --cta-spotlight-to: #1e1b4b;
@@ -55,6 +58,9 @@
     --hero-services-to: #0f172a;
     --hero-services-glow-primary: rgba(255, 255, 255, 0.12);
     --hero-services-glow-secondary: rgba(255, 255, 255, 0.08);
+    --cta-blue-from: #020617;
+    --cta-blue-via: #0f172a;
+    --cta-blue-to: #172554;
     --cta-spotlight-from: #020617;
     --cta-spotlight-via: #0f172a;
     --cta-spotlight-to: #172554;

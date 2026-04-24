@@ -33,10 +33,10 @@ export default function SpotlightCTA({
 }: SpotlightCTAProps) {
   const isBlue = theme === "blue";
   const sectionBackground = isBlue
-    ? "linear-gradient(135deg, rgba(15,79,255,0.96), rgba(37,99,235,0.94) 58%, rgba(45,91,255,0.94))"
+    ? "linear-gradient(135deg, var(--cta-blue-from), var(--cta-blue-via) 58%, var(--cta-blue-to))"
     : "linear-gradient(135deg, var(--cta-spotlight-from), var(--cta-spotlight-via) 58%, var(--cta-spotlight-to))";
-  const accentStripe = isBlue ? "rgba(255,255,255,0.12)" : "var(--cta-spotlight-accent)";
-  const secondaryStripe = isBlue ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.05)";
+  const accentStripe = isBlue ? "rgba(255,255,255,0.1)" : "var(--cta-spotlight-accent)";
+  const secondaryStripe = isBlue ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.05)";
 
   return (
     <section
