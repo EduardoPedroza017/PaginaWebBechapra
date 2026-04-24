@@ -83,17 +83,6 @@ export default function Navbar() {
                 <ThemeToggle />
                 <LanguageSwitcher />
               </div>
-              
-              <motion.a 
-                href="https://bausen.mx" 
-                target="_blank" 
-                rel="noreferrer" 
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-blue-700 hover:bg-blue-600 text-white font-black text-xs uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-blue-700/20 transition-all"
-              >
-                <TranslateText text="Colaboradores" />
-              </motion.a>
             </div>
           </nav>
 
@@ -162,13 +151,7 @@ export default function Navbar() {
                 transition={{ delay: 0.4 }}
                 className="pt-6"
               >
-                <a 
-                  href="https://bausen.mx" 
-                  className="flex items-center justify-center gap-3 w-full p-6 rounded-[2rem] bg-blue-700 text-white font-black text-lg shadow-2xl shadow-blue-700/30 active:scale-95 transition-all"
-                >
-                  <UserCheck size={24} />
-                  <TranslateText text="Acceso Colaboradores" />
-                </a>
+                {/* Botón de colaboradores eliminado */}
               </motion.div>
 
               <div className="flex justify-center gap-6 pt-10">
