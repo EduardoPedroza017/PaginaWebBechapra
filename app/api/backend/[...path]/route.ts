@@ -62,6 +62,12 @@ export async function GET(
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
+    // collect incoming headers to forward
+    const incomingHeaders: Record<string, string> = {};
+    for (const [k, v] of request.headers.entries()) {
+      if (v) incomingHeaders[k] = v;
+    }
+
     let pathStr: string;
     if (cleanPath[0] === 'admin') {
       pathStr = `/api/${cleanPath.join('/')}`; 
@@ -73,21 +79,19 @@ export async function GET(
     const fullPath = queryString ? `${pathStr}?${queryString}` : pathStr;
 
     if (!BACKEND_URL) {
-      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+      return NextResponse.json({ error: 'Backend URL not configured.' }, { status: 500 });
     }
 
     console.info('Proxy forwarding GET to:', `${BACKEND_URL}${fullPath}`);
     const response = await forwardRequest('GET', fullPath, undefined, incomingHeaders);
 
-    // Read text to handle both JSON and non-JSON responses (avoid throwing on invalid JSON)
     const text = await response.text();
     const contentType = response.headers.get('content-type') || '';
     try {
       const data = JSON.parse(text);
       return NextResponse.json(data, { status: response.status });
     } catch (e) {
-      // Return raw body inside JSON so frontend can inspect when backend returns HTML
-      console.warn('Proxy received non-JSON response for', fullPath, 'content-type:', contentType);
+      console.warn('Proxy received non-JSON response for', fullPath);
       return NextResponse.json({ _raw: text, contentType }, { status: response.status });
     }
   } catch (error) {
@@ -102,26 +106,23 @@ export async function POST(
 ) {
   try {
     const { path } = await params;
-    console.log('POST request to:', path);
-    if (!path || path.length === 0) {
+    // Filter out empty segments to handle trailing slashes
+    const cleanPath = path.filter(segment => segment.length > 0);
+    if (cleanPath.length === 0) {
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /api/admin/... for admin, /api/... for public API
     let pathStr: string;
-    if (path[0] === 'admin') {
-      // /api/backend/admin/check -> /api/admin/check
-      pathStr = `/api/${path.join('/')}`;
+    if (cleanPath[0] === 'admin') {
+      pathStr = `/api/${cleanPath.join('/')}`;
     } else {
-      // /api/backend/news -> /api/news
-      pathStr = `/api/${path.join('/')}`;
+      pathStr = `/api/${cleanPath.join('/')}`;
     }
-    console.log('Forwarding to:', `${BACKEND_URL}${pathStr}`);
+    
+    console.log('Forwarding POST to:', `${BACKEND_URL}${pathStr}`);
     const cookieHeader = request.headers.get('cookie');
-
-    // Check if this is a FormData request
     const contentType = request.headers.get('content-type') || '';
-    let body: any = undefined;
+    
     const options: RequestInit = {
       method: 'POST',
       headers: {
@@ -131,42 +132,25 @@ export async function POST(
     };
 
     if (contentType.includes('multipart/form-data')) {
-      // For FormData, pass the request body directly
-      body = await request.arrayBuffer();
-      options.body = body;
-      options.headers = {
-        ...options.headers,
-        'Content-Type': contentType,
-      };
-    } else if (contentType.includes('application/json')) {
-      // For JSON, get the raw text and pass it directly
-      const text = await request.text();
-      options.body = text;
-      options.headers = {
-        ...options.headers,
-        'Content-Type': 'application/json',
-      };
+      options.body = await request.arrayBuffer();
+      options.headers = { ...options.headers, 'Content-Type': contentType };
     } else {
-      // For other content types, try to get as text
-      const text = await request.text();
-      options.body = text;
-      if (contentType) {
-        options.headers = {
-          ...options.headers,
-          'Content-Type': contentType,
-        };
-      }
+      options.body = await request.text();
+      options.headers = { ...options.headers, 'Content-Type': contentType || 'application/json' };
     }
 
     if (!BACKEND_URL) {
-      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+      return NextResponse.json({ error: 'Backend URL not configured.' }, { status: 500 });
     }
 
     const response = await fetch(`${BACKEND_URL}${pathStr}`, options);
-    const data = await response.json();
-    console.log('Backend response:', response.status, data);
-
-    return NextResponse.json(data, { status: response.status });
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      return NextResponse.json(data, { status: response.status });
+    } catch (e) {
+      return NextResponse.json({ _raw: text }, { status: response.status });
+    }
   } catch (error) {
     console.error('Error forwarding POST request:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -179,24 +163,15 @@ export async function PUT(
 ) {
   try {
     const { path } = await params;
-    if (!path || path.length === 0) {
+    const cleanPath = path.filter(segment => segment.length > 0);
+    if (cleanPath.length === 0) {
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /api/admin/... for admin, /api/... for public API
-    let pathStr: string;
-    if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /api/admin/...
-      pathStr = `/api/${path.join('/')}`;
-    } else {
-      // /api/backend/news -> /api/news
-      pathStr = `/api/${path.join('/')}`;
-    }
+    let pathStr = `/api/${cleanPath.join('/')}`;
     const cookieHeader = request.headers.get('cookie');
-
-    // Check if this is a FormData request
     const contentType = request.headers.get('content-type') || '';
-    let body: any = undefined;
+    
     const options: RequestInit = {
       method: 'PUT',
       headers: {
@@ -206,30 +181,19 @@ export async function PUT(
     };
 
     if (contentType.includes('multipart/form-data')) {
-      // For FormData, pass the request body directly
-      body = await request.arrayBuffer();
-      options.body = body;
-      options.headers = {
-        ...options.headers,
-        'Content-Type': contentType,
-      };
+      options.body = await request.arrayBuffer();
+      options.headers = { ...options.headers, 'Content-Type': contentType };
     } else {
-      // For JSON, parse the body
-      body = await request.json();
-      options.headers = {
-        ...options.headers,
-        'Content-Type': 'application/json',
-      };
-      options.body = JSON.stringify(body);
+      options.body = await request.text();
+      options.headers = { ...options.headers, 'Content-Type': contentType || 'application/json' };
     }
 
     if (!BACKEND_URL) {
-      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+      return NextResponse.json({ error: 'Backend URL not configured.' }, { status: 500 });
     }
 
     const response = await fetch(`${BACKEND_URL}${pathStr}`, options);
     const data = await response.json();
-
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
     console.error('Error forwarding PUT request:', error);
@@ -243,45 +207,29 @@ export async function DELETE(
 ) {
   try {
     const { path } = await params;
-    if (!path || path.length === 0) {
+    const cleanPath = path.filter(segment => segment.length > 0);
+    if (cleanPath.length === 0) {
       return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
 
-    // Flask routes: /api/admin/... for admin, /api/... for public API
-    let pathStr: string;
-    if (path[0] === 'admin') {
-      // /api/backend/admin/... -> /api/admin/...
-      pathStr = `/${path.join('/')}`;
-    } else {
-      // /api/backend/news -> /api/news
-      pathStr = `/api/${path.join('/')}`;
-    }
-    // collect incoming headers to forward (preserve Authorization, X-Role, etc.)
+    let pathStr = `/api/${cleanPath.join('/')}`;
     const incomingHeaders: Record<string, string> = {};
     for (const [k, v] of request.headers.entries()) {
       if (v) incomingHeaders[k] = v;
     }
 
     if (!BACKEND_URL) {
-      return NextResponse.json({ error: 'Backend URL not configured (NEXT_PUBLIC_API_URL or BACKEND_URL).' }, { status: 500 });
+      return NextResponse.json({ error: 'Backend URL not configured.' }, { status: 500 });
     }
 
     const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);
-    const data = await response.json();
-
-    return NextResponse.json(data, { status: response.status });
-  } catch (error) {
-    console.error('Error forwarding DELETE request:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
- status: 500 });
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      return NextResponse.json(data, { status: response.status });
+    } catch (e) {
+      return NextResponse.json({ _raw: text }, { status: response.status });
     }
-
-    const response = await forwardRequest('DELETE', pathStr, undefined, incomingHeaders);
-    const data = await response.json();
-
-    return NextResponse.json(data, { status: response.status });
   } catch (error) {
     console.error('Error forwarding DELETE request:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
