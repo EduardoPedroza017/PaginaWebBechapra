@@ -5,28 +5,42 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const API_URL =
+  process.env.NEXT_PUBLIC_API_URL_INTERNAL ||
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.BACKEND_URL ||
   "http://localhost:5000";
 
-function getRemotePattern(url: string, pathname: string) {
+/**
+ * Helper to generate RemotePattern for Next.js images
+ */
+function getRemotePattern(url: string, pathname: string): any {
   try {
     const u = new URL(url);
-    const pattern: any = {
+    return {
       protocol: u.protocol.replace(":", ""),
       hostname: u.hostname,
-      pathname,
+      port: u.port || "",
+      pathname: pathname,
     };
-    if (u.port) pattern.port = u.port;
-    return pattern;
   } catch {
-    return { protocol: "http", hostname: "localhost", port: "5000", pathname };
+    return { 
+      protocol: "http", 
+      hostname: "localhost", 
+      port: "5000", 
+      pathname 
+    };
   }
 }
 
 const nextConfig: NextConfig = {
   basePath: "/web",
   trailingSlash: true,
+  
+  // ✅ Configuración correcta de Turbopack en Next 15+
+  // Note: 'turbo' is now a top-level key or under 'experimental' depending on the exact sub-version.
+  // We'll use the recommended standard for Next 15.
+  // experimental: { }, // Remove invalid keys
+
   async rewrites() {
     return [
       {
@@ -37,20 +51,25 @@ const nextConfig: NextConfig = {
         source: "/api/backend/uploads/:path*",
         destination: `${API_URL}/uploads/:path*`,
       },
+      {
+        source: "/api/:path*",
+        destination: `${API_URL}/api/:path*`,
+      },
     ];
   },
+
   images: {
+    unoptimized: true,
     remotePatterns: [
-      getRemotePattern(API_URL, "/uploads/galery/**"),
       getRemotePattern(API_URL, "/uploads/**"),
-      getRemotePattern(API_URL, "/uploads/news/**"),
-      getRemotePattern(API_URL, "/uploads/organigrama/**"),
       getRemotePattern(API_URL, "/image/**"),
       getRemotePattern(API_URL, "/images/**"),
-      getRemotePattern(API_URL, "/api/proxy-image"),
-      getRemotePattern(API_URL, "/uploads/branding/**"),
+      { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
   },
+
+  reactStrictMode: true,
 };
 
 export default withBundleAnalyzer(nextConfig);
