@@ -208,21 +208,21 @@ function GroupCard({ group, index }: { group: Service; index: number }) {
     >
       <div
       onClick={() => router.push(`/servicios/${group.slug}`)}
-      className="relative flex h-full min-h-[600px] cursor-pointer flex-col rounded-[2.5rem] border border-slate-200/60 bg-white p-8 shadow-xl transition-all duration-500 hover:shadow-2xl dark:border-slate-800/50 dark:bg-slate-900/80"
+      className="relative flex h-full min-h-[600px] cursor-pointer flex-col rounded-[2.5rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8 shadow-xl transition-all duration-500 hover:shadow-2xl"
       >
         <motion.div
           className="pointer-events-none absolute -inset-px z-10 overflow-hidden rounded-[2.5rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
-            background: useTransform([glowX, glowY], ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`),
+            background: useTransform([glowX, glowY], ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, var(--color-accent), transparent 40%)`),
           }}
         />
 
         <div className="relative z-20 flex h-full min-w-0 flex-col overflow-hidden">
-          <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+          <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-accent)] text-white shadow-xl shadow-[var(--color-accent)]/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
             <Icon className="h-7 w-7" />
           </div>
 
-          <h2 className="mb-6 text-2xl font-black leading-snug text-slate-900 dark:text-white">
+          <h2 className="mb-6 text-2xl font-black leading-snug text-[var(--color-accent)]">
             <TranslateText text={group.name} />
           </h2>
 

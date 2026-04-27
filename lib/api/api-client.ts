@@ -166,6 +166,10 @@ class ApiClient {
     const response = await this.fetchWithRetry(url, {
       ...options,
       method: 'GET',
+      headers: {
+        ...options.headers,
+        'Cache-Control': 'no-cache',
+      },
     }, options.retry);
 
     if (!response.ok) {

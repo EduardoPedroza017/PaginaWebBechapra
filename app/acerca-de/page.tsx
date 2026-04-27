@@ -24,18 +24,6 @@ export default function AcercaDePage() {
 
       <EssenceSection />
 
-      <SpotlightCTA
-        eyebrow="Liderazgo"
-        title="Conoce a nuestro consejo"
-        subtitle="Descubra a los lideres visionarios que guian nuestra organizacion hacia la excelencia y el exito sostenible."
-        imageSrc="/web/image/servicios/desarrollorganizacional.jpg"
-        imageAlt="Liderazgo BAUSEN"
-        primaryLink="/sobre-nosotros/consejo"
-        primaryLabel="Ver equipo directivo"
-        secondaryLink="/#contacto"
-        secondaryLabel="Hablar con BAUSEN"
-      />
-
       <HistorySection />
       <TestimonialsSection />
       <WhyUsSection />

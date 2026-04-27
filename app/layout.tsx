@@ -102,7 +102,7 @@ export default function RootLayout({
               {children}
             </main>
 
-            <ScrollRestorer />
+            {/* <ScrollRestorer /> */}
             <Analytics />
             <CookieConsent />
           </LanguageProvider>

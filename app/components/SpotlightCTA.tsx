@@ -32,14 +32,11 @@ export default function SpotlightCTA({
   theme = "dark",
 }: SpotlightCTAProps) {
   const isBlue = theme === "blue";
-  
-  // Usamos variables globales para unificar el comportamiento con el tema activo
   const sectionBackground = isBlue
-    ? "var(--color-accent)" // Azul corporativo
-    : "var(--color-bg-secondary)"; // Fondo secundario
-  
-  const accentStripe = "rgba(255,255,255,0.1)"; 
-  const secondaryStripe = "rgba(255,255,255,0.06)";
+    ? "linear-gradient(135deg, var(--cta-blue-from), var(--cta-blue-via) 58%, var(--cta-blue-to))"
+    : "linear-gradient(135deg, var(--cta-spotlight-from), var(--cta-spotlight-via) 58%, var(--cta-spotlight-to))";
+  const accentStripe = isBlue ? "rgba(255,255,255,0.1)" : "var(--cta-spotlight-accent)";
+  const secondaryStripe = isBlue ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.05)";
 
   return (
     <section
@@ -64,12 +61,12 @@ export default function SpotlightCTA({
         <motion.div
           animate={{ scale: [1, 1.08, 1], opacity: [0.16, 0.24, 0.16] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-24 -right-10 h-64 w-64 rounded-full blur-[110px] bg-[var(--color-accent)]/20"
+          className={`absolute -bottom-24 -right-10 h-64 w-64 rounded-full blur-[110px] ${isBlue ? "bg-white/20" : "bg-blue-600/20"}`}
         />
         <div
           className="absolute inset-0 opacity-[0.05]"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, var(--color-text) 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
             backgroundSize: "36px 36px",
           }}
         />
@@ -83,30 +80,30 @@ export default function SpotlightCTA({
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] backdrop-blur-md ${isBlue ? "border-white/20 bg-white/10 text-white" : "border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)]"}`}>
-              <span className="h-2 w-2 rounded-full bg-[var(--color-accent)]" />
+            <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] backdrop-blur-md ${isBlue ? "border-white/20 bg-white/10 text-white" : "border-white/10 bg-white/5 text-blue-200"}`}>
+              <span className="h-2 w-2 rounded-full bg-blue-400" />
               <TranslateText text={eyebrow} />
             </div>
 
-            <h2 className={`mt-6 max-w-xl text-4xl font-black leading-[0.95] tracking-tight md:text-6xl ${isBlue ? "text-white" : "text-[var(--color-text)]"}`}>
+            <h2 className="mt-6 max-w-xl text-4xl font-black leading-[0.95] tracking-tight text-white md:text-6xl">
               <TranslateText text={title} />
             </h2>
 
-            <p className={`mt-6 max-w-2xl text-lg leading-relaxed md:text-[1.35rem] ${isBlue ? "text-slate-200" : "text-[var(--color-text-muted)]"}`}>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-300 md:text-[1.35rem]">
               <TranslateText text={subtitle} />
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
                 href={primaryLink}
-                className={`inline-flex items-center justify-center gap-3 rounded-2xl px-8 py-4 font-black transition-all duration-300 hover:-translate-y-0.5 ${isBlue ? "bg-white text-[var(--color-accent)] hover:bg-slate-100" : "bg-[var(--color-accent)] text-white hover:opacity-90"}`}
+                className={`inline-flex items-center justify-center gap-3 rounded-2xl px-8 py-4 font-black text-white shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${isBlue ? "bg-slate-950/30 shadow-slate-950/30 hover:bg-slate-950/45" : "bg-blue-600 shadow-blue-950/30 hover:bg-blue-500"}`}
               >
                 <Calendar size={18} />
                 <TranslateText text={primaryLabel} />
               </Link>
               <Link
                 href={secondaryLink}
-                className={`inline-flex items-center justify-center gap-3 rounded-2xl border px-8 py-4 font-black transition-all duration-300 hover:-translate-y-0.5 ${isBlue ? "border-white/30 text-white hover:bg-white/10" : "border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white"}`}
+                className={`inline-flex items-center justify-center gap-3 rounded-2xl border px-8 py-4 font-black text-white transition-all duration-300 hover:-translate-y-0.5 ${isBlue ? "border-white/30 bg-white/10 hover:bg-white/15" : "border-blue-500/60 bg-white/5 hover:bg-white/10"}`}
               >
                 {secondaryLabel.toLowerCase().includes("caso") ? <Trophy size={18} /> : <ArrowRight size={18} />}
                 <TranslateText text={secondaryLabel} />
