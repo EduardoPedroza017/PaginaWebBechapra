@@ -20,7 +20,7 @@ export const AnimatedHeroBackground: React.FC<AnimatedHeroBackgroundProps> = ({
   style,
   overlayClassName = "",
 }) => (
-  <section className={`relative w-full min-h-170 md:min-h-180 ${gradientClass} pt-24 pb-36 md:pt-28 md:pb-40 lg:pt-32 lg:pb-44 overflow-hidden`} style={style}>
+  <section className={`site-hero relative w-full min-h-[60vh] md:min-h-[75vh] lg:min-h-[85vh] ${gradientClass} pt-24 pb-36 md:pt-28 md:pb-40 lg:pt-32 lg:pb-44 overflow-hidden`} style={style}>
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <motion.div animate={orbAnimation} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className={orbClass} />
       <div className={`absolute inset-0 ${gridOpacity}`}>
@@ -35,6 +35,6 @@ export const AnimatedHeroBackground: React.FC<AnimatedHeroBackgroundProps> = ({
       </div>
     </div>
     {overlayClassName ? <div className={`absolute inset-0 pointer-events-none z-1 ${overlayClassName}`} /> : null}
-    <div className="relative z-10">{children}</div>
+    <div className="site-hero-inner relative z-10">{children}</div>
   </section>
 );

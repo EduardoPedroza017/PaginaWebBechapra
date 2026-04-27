@@ -109,3 +109,28 @@ p {
     }
 }
 
+/* Adjust hero height for laptop/desktop mid-size screens
+   Targeting typical laptop widths where hero looked oversized at 100% zoom.
+   Keeps larger screens using the original taller height. */
+@media (min-width: 1024px) and (max-width: 1400px) {
+    .site-hero {
+        min-height: 70vh !important;
+        padding-top: 4.5rem; /* keep vertical spacing sensible */
+        padding-bottom: 4.5rem;
+    }
+    .site-hero-inner {
+        transform: scale(0.9);
+        transform-origin: left top;
+        transition: transform 180ms ease;
+        /* avoid clipping of shadows / absolute elements */
+        will-change: transform;
+    }
+}
+
+/* Slight tweak for very large displays to preserve original impression */
+@media (min-width: 1600px) {
+    .site-hero {
+        min-height: 85vh !important;
+    }
+}
+

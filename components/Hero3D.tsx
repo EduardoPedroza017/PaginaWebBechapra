@@ -12,7 +12,7 @@ export default function Hero3D() {
 	const prefersReduced = useReducedMotion();
 
 	return (
-		<AnimatedHeroBackground gradientClass="bg-gradient-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-slate-950/50 dark:to-slate-900 min-h-[85vh] flex items-center" gridOpacity="opacity-0">
+		<AnimatedHeroBackground gradientClass="bg-gradient-to-br from-slate-50 via-blue-50/50 to-white dark:from-slate-950 dark:via-slate-950/50 dark:to-slate-900 flex items-center" gridOpacity="opacity-0">
 			<section className="relative grid items-center gap-10 md:grid-cols-2">
 				{/* Copy */}
 				<div>

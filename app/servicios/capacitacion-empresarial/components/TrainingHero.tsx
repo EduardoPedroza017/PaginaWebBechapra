@@ -30,7 +30,7 @@ export default function TrainingHero({
   ctaLink = "#contacto",
 }: TrainingHeroProps) {
   return (
-    <section className="relative w-full min-h-175 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-24 pb-36 md:pt-28 md:pb-40 overflow-hidden">
+    <section className="relative w-full min-h-[60vh] md:min-h-[75vh] lg:min-h-[85vh] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 pt-24 pb-36 md:pt-28 md:pb-40 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
