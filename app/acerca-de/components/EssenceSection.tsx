@@ -100,26 +100,18 @@ function EssenceCard({ item, content, index }: { item: any; content: string; ind
   if (item.featured) {
     return (
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.1 }} className="relative group h-full">
-        <div className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-white/5 bg-slate-950 p-10 shadow-2xl shadow-blue-900/30 lg:p-12">
-          <div className="pointer-events-none absolute inset-0">
-            <motion.div
-              animate={{ opacity: [0.05, 0.1, 0.05], scale: [1, 1.1, 1] }}
-              transition={{ duration: 8, repeat: Infinity }}
-              className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600 blur-[100px]"
-            />
-          </div>
-
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-10 shadow-xl lg:p-12">
           <div className="relative z-10 flex h-full flex-col">
-            <div className="mb-6 inline-flex w-fit items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-blue-300">
+            <div className="mb-6 inline-flex w-fit items-center rounded-full border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[var(--color-accent)]">
               <TranslateText text={item.eyebrow} />
             </div>
-            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-xl">
-              <Icon size={32} className="text-blue-400" />
+            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/10 shadow-xl">
+              <Icon size={32} className="text-[var(--color-accent)]" />
             </div>
-            <h3 className="mb-6 text-3xl font-black tracking-tight text-white">
+            <h3 className="mb-6 text-3xl font-black tracking-tight text-[var(--color-accent)]">
               <TranslateText text={item.title} />
             </h3>
-            <p className="flex-1 text-lg font-medium leading-relaxed text-slate-300">
+            <p className="flex-1 text-lg font-medium leading-relaxed text-[var(--color-text)]">
               <TranslateText text={content} />
             </p>
           </div>

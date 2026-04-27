@@ -154,31 +154,31 @@ function MemberCard({ member, index }: { member: BoardMember; index: number }) {
       className={`group relative ${featured ? "md:col-span-2 lg:col-span-2" : ""}`}
     >
       <div
-        className={`relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border p-8 shadow-xl transition-all duration-500 hover:shadow-2xl ${
+        className={`relative flex h-full flex-col overflow-hidden rounded-[2.5rem] border p-8 shadow-xl transition-all duration-500 hover:shadow-2xl card ${
           featured
-            ? "border-blue-200/80 bg-gradient-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/70 dark:border-blue-800/40 dark:bg-slate-900"
-            : "border-slate-200/60 bg-white dark:border-slate-800/50 dark:bg-slate-900/80"
+            ? "border-[var(--color-accent)]/30 bg-linear-to-br from-[var(--color-bg-secondary)] via-[var(--color-accent)]/5 to-[var(--color-bg-secondary)] dark:border-[var(--color-border)] dark:bg-[var(--color-bg-secondary)]"
+            : "border-[var(--color-border)] bg-[var(--color-bg-secondary)]"
         }`}
       >
         <motion.div
           className="pointer-events-none absolute -inset-px z-10 rounded-[2.5rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
-            background: useTransform([glowX, glowY], ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(37, 99, 235, 0.08), transparent 40%)`),
+            background: useTransform([glowX, glowY], ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, var(--color-accent), transparent 40%)`),
           }}
         />
 
         <div className="relative z-20 flex h-full flex-col items-center text-center">
           <div className="relative mb-8">
             {featured && (
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-blue-200 bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white shadow-lg shadow-blue-600/20">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-[var(--color-accent)] bg-[var(--color-accent)] px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white shadow-lg">
                 Perfil destacado
               </div>
             )}
-            <div className={`relative overflow-hidden shadow-2xl ${featured ? "h-48 w-48 rounded-[2rem]" : "h-40 w-40 rounded-3xl"} ring-8 ring-slate-50 transition-all duration-500 group-hover:ring-blue-600/10 dark:ring-slate-800/50`}>
+            <div className={`relative overflow-hidden shadow-2xl ${featured ? "h-48 w-48 rounded-[2rem]" : "h-40 w-40 rounded-3xl"} ring-8 ring-[var(--color-bg)] transition-all duration-500 group-hover:ring-[var(--color-accent)]/10`}>
               {imageUrl ? (
                 <Image src={imageUrl} alt={fullName} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-600 to-indigo-700 text-4xl font-black text-white">
+                <div className="flex h-full w-full items-center justify-center bg-[var(--color-accent)] text-4xl font-black text-white">
                   {member.nombre?.charAt(0)}
                   {member.apellido_paterno?.charAt(0)}
                 </div>
@@ -186,35 +186,35 @@ function MemberCard({ member, index }: { member: BoardMember; index: number }) {
             </div>
           </div>
 
-          <h3 className={`${featured ? "text-3xl" : "text-2xl"} mb-2 font-black tracking-tight text-slate-900 dark:text-white`}>{fullName}</h3>
-          <p className="mb-6 rounded-xl bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+          <h3 className={`${featured ? "text-3xl" : "text-2xl"} mb-2 font-black tracking-tight text-[var(--color-text)]`}>{fullName}</h3>
+          <p className="mb-6 rounded-xl bg-[var(--color-accent)]/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-accent)]">
             {member.puesto}
           </p>
 
-          <p className={`mb-8 font-medium leading-relaxed text-slate-500 dark:text-slate-400 ${featured ? "max-w-2xl text-base" : "text-sm"}`}>
+          <p className={`mb-8 font-medium leading-relaxed text-[var(--color-text-muted)] ${featured ? "max-w-2xl text-base" : "text-sm"}`}>
             {member.descripcion || member.biografia || "Perfil estrategico comprometido con el crecimiento y la excelencia institucional."}
           </p>
 
-          <div className="mb-8 w-full flex-1 space-y-4 border-t border-slate-100 pt-6 text-left dark:border-slate-800">
+          <div className="mb-8 w-full flex-1 space-y-4 border-t border-[var(--color-border)] pt-6 text-left">
             {member.email && (
-              <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
-                <div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-800">
+              <div className="flex items-center gap-3 text-[var(--color-text-muted)]">
+                <div className="rounded-lg bg-[var(--color-bg)] p-2">
                   <Mail className="h-4 w-4" />
                 </div>
                 <span className="truncate text-sm font-bold">{member.email}</span>
               </div>
             )}
             {member.telefono && (
-              <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
-                <div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-800">
+              <div className="flex items-center gap-3 text-[var(--color-text-muted)]">
+                <div className="rounded-lg bg-[var(--color-bg)] p-2">
                   <Phone className="h-4 w-4" />
                 </div>
                 <span className="text-sm font-bold">{member.telefono}</span>
               </div>
             )}
             {member.linkedin && (
-              <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
-                <div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-800">
+              <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent)]">
+                <div className="rounded-lg bg-[var(--color-bg)] p-2">
                   <Linkedin className="h-4 w-4" />
                 </div>
                 <span className="text-sm font-bold">LinkedIn</span>
@@ -222,13 +222,13 @@ function MemberCard({ member, index }: { member: BoardMember; index: number }) {
             )}
           </div>
 
-          <Link href={`/sobre-nosotros/consejo/${buildSlug(member)}`} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-50 py-4 text-[10px] font-black uppercase tracking-widest text-slate-900 transition-all duration-300 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:text-white">
+          <Link href={`/sobre-nosotros/consejo/${buildSlug(member)}`} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--color-bg)] py-4 text-[10px] font-black uppercase tracking-widest text-[var(--color-text)] transition-all duration-300 hover:bg-[var(--color-accent)] hover:text-white">
             Ver perfil completo
             <ArrowRight size={14} />
           </Link>
         </div>
       </div>
-      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-blue-600/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-[var(--color-accent)]/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
     </motion.div>
   );
 }

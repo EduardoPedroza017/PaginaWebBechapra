@@ -45,7 +45,7 @@ export default function Navbar() {
             >
               <Image
                 src={logoUrl}
-                alt="BAUSEN"
+                alt="Bausen"
                 width={120}
                 height={32}
                 priority

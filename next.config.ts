@@ -40,20 +40,11 @@ const nextConfig: NextConfig = {
   // Note: 'turbo' is now a top-level key or under 'experimental' depending on the exact sub-version.
   // We'll use the recommended standard for Next 15.
   // experimental: { }, // Remove invalid keys
-
   async rewrites() {
     return [
       {
         source: "/api/backend/:path*",
-        destination: `${API_URL}/api/:path*`,
-      },
-      {
-        source: "/api/backend/uploads/:path*",
-        destination: `${API_URL}/uploads/:path*`,
-      },
-      {
-        source: "/api/:path*",
-        destination: `${API_URL}/api/:path*`,
+        destination: "http://localhost:5000/:path*",
       },
     ];
   },

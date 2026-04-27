@@ -48,11 +48,12 @@ class ApiClient {
     
     // Si estamos en navegador, usar proxy de Next.js
     if (this.useProxy) {
-      // Importante: Next.js con basePath '/web' espera que las llamadas al proxy
-      // comiencen con /web/api/...
-      // Strip /api/ prefix and route through proxy: /api/news -> /web/api/backend/news
-      const withoutApiPrefix = normalizedPath.replace(/^\/api\//, '/');
-      return `/web/api/backend${withoutApiPrefix}`;
+      // Si la ruta comienza con /api/, quitamos el prefijo /api para que 
+      // el proxy (/api/backend/:path*) lo reconstruya correctamente como /api/:path*
+      const cleanPath = normalizedPath.startsWith('/api/') 
+        ? normalizedPath.substring(4) 
+        : normalizedPath;
+      return `/api/backend${cleanPath}`;
     }
     
     // En servidor (SSR), usar la URL interna del API (localhost:5000)

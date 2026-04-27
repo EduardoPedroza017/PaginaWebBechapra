@@ -164,7 +164,7 @@ export default function HeroSection() {
                   src="/web/image/hero/Flayers_Home_01100.jpg"
                   width={800}
                   height={1000}
-                  alt="BAUSEN - Soluciones empresariales"
+                  alt="Bausen - Soluciones empresariales"
                   sizes="(min-width: 1536px) 700px, (min-width: 1024px) 42vw, (min-width: 768px) 48vw, 100vw"
                   className="object-cover w-full h-auto scale-105 group-hover:scale-100 transition-transform duration-700"
                   priority
@@ -188,7 +188,7 @@ export default function HeroSection() {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <div>
-                    <div className="text-xl font-black text-slate-900 dark:text-white leading-tight">
+                    <div className="text-xl font-black text-[var(--color-text)] leading-tight">
                       <TranslateText text="Líderes Certificados" />
                     </div>
                     <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1 uppercase tracking-widest">
