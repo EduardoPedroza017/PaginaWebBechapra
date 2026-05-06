@@ -45,14 +45,11 @@ export default function AdminContactPage() {
   const fetchMessages = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      const res = await fetch(`${apiUrl}/api/contact`);
+      const res = await fetch('/web/api/backend/admin/contact', {
+        credentials: 'include',
+      });
       const data = await res.json();
-      // Normalizar respuesta: algunos endpoints devuelven { success:true, data: [...] }
-      const arr = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+      const arr = Array.isArray(data) ? data : (data && Array.isArray(data.messages) ? data.messages : []);
       // Asegurarse de que cada item tenga los campos esperados
       const normalized: ContactMessage[] = arr.map((m: any) => ({
         name: m?.name || m?.fullName || '',
@@ -102,7 +99,7 @@ export default function AdminContactPage() {
   const handleLogout = () => {
     sessionStorage.removeItem("admin");
     sessionStorage.removeItem("role");
-    window.location.href = "/admin";
+    window.location.href = "/web/admin";
   };
 
   const handleToggleTheme = () => {

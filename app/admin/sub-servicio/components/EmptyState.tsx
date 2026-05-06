@@ -10,7 +10,7 @@ export const EmptyState: React.FC<Props> = ({ onCreate }) => {
       <p className="mb-4">Crea subservicios para organizar mejor tus páginas y contenido.</p>
       <div className="flex items-center justify-center gap-3">
         <Button onClick={onCreate}>Crear primer Subservicio</Button>
-        <a href="/admin/servicios" className="text-sm text-blue-600 underline">Ir a Servicios</a>
+        <a href="/web/admin/servicios" className="text-sm text-blue-600 underline">Ir a Servicios</a>
       </div>
     </div>
   )

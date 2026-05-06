@@ -39,7 +39,7 @@ export function useAuth(): UseAuthReturn {
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/backend/admin/logout', { method: 'POST', credentials: 'include' });
+      await fetch('/web/api/backend/admin/auth/logout', { method: 'POST', credentials: 'include' });
     } catch {
       // ignore
     }

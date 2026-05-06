@@ -49,17 +49,12 @@ export default function EssenceAdminPage() {
     setMounted(true);
   }, []);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-  }
-
   const fetchEssence = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     
     try {
-      const res = await fetch(`${apiUrl}/api/essence`);
+      const res = await fetch('/web/api/backend/admin/essence', { credentials: 'include' });
       if (!res.ok) throw new Error('No se pudo cargar la esencia');
       const data = await res.json();
       setEssence(data);
@@ -75,7 +70,7 @@ export default function EssenceAdminPage() {
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
-      const res = await fetch(`${apiUrl}/api/essence/history`);
+      const res = await fetch('/web/api/backend/admin/essence/history', { credentials: 'include' });
       if (!res.ok) throw new Error();
       const data = await res.json();
       setHistory(Array.isArray(data) ? data : []);
@@ -96,7 +91,7 @@ export default function EssenceAdminPage() {
 
   const handleRestore = async (id: string) => {
     try {
-      const res = await fetch(`${apiUrl}/api/essence/history/${id}/restore`, {
+      const res = await fetch(`/web/api/backend/admin/essence/history/${id}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -129,7 +124,7 @@ export default function EssenceAdminPage() {
     if (!restorePendingId) return;
     setConfirmLoading(true);
     try {
-      const res = await fetch(`${apiUrl}/api/essence/history/${restorePendingId}/restore`, {
+      const res = await fetch(`/web/api/backend/admin/essence/history/${restorePendingId}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -160,7 +155,7 @@ export default function EssenceAdminPage() {
   const undoRestore = async () => {
     if (!undoRestoreId) return;
     try {
-      const res = await fetch(`${apiUrl}/api/essence/history/${undoRestoreId}/restore`, {
+      const res = await fetch(`/web/api/backend/admin/essence/history/${undoRestoreId}/restore`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -190,9 +185,10 @@ export default function EssenceAdminPage() {
     setSuccess("");
     setError("");
     try {
-      const res = await fetch(`${apiUrl}/api/essence`, {
+      const res = await fetch('/web/api/backend/admin/essence', {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify({
           mision: newEssence.mision,
           vision: newEssence.vision,

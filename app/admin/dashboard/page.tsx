@@ -87,12 +87,22 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen pb-20">
-      <AdminPageHeader title="Panel de Administración" />
+      <AdminPageHeader
+        title="Panel de Administración"
+        subtitle="Supervisa el sistema, el contenido y la operación desde una vista más clara y ejecutiva."
+        icon={<LayoutDashboard className="w-6 h-6" />}
+        theme={themeStrict}
+        className="mb-5"
+      />
       
       <AdminTabs 
         tabs={tabs} 
         activeTab={activeTab} 
         onChange={(id) => handleTabChange(id as TabId)} 
+        loadingTabs={loadingTabs}
+        theme={themeStrict}
+        variant="pills"
+        className="mb-8"
       />
 
       <AnimatePresence mode="wait">

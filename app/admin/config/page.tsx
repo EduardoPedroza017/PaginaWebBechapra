@@ -109,16 +109,12 @@ export default function ConfiguracionDBPage() {
   };
 
   // Obtener métricas de Mongo (SWR)
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-  }
   const {
     data: metrics,
     error: metricsError,
     isLoading: loadingMetrics,
     mutate: refreshMetrics,
-  } = useSWR<Metrics>(`${apiUrl}/admin/db/metrics`, fetcher, {
+  } = useSWR<Metrics>('/web/api/backend/admin/db/metrics', fetcher, {
     refreshInterval: 10000,
     onSuccess: () => {
       setLastRefresh(new Date());

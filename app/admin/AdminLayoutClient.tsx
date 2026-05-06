@@ -108,7 +108,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   // If authenticated, show full layout with sidebar and header
   return (
-    <div className="admin-root">
+    <div className="admin-root min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 lg:flex">
       {/* Mobile Drawer Overlay */}
       <MobileDrawerOverlay
         isOpen={isMobileDrawerOpen}
@@ -128,12 +128,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main content area */}
-      <div className={`flex-1 flex flex-col admin-main-wrapper ${isExpanded && !isMobile ? 'expanded' : 'collapsed'}`}>
+      <div className={`admin-main-wrapper flex min-w-0 flex-1 flex-col ${isExpanded && !isMobile ? 'expanded' : 'collapsed'}`}>
         <header className="admin-header shrink-0">
           <AdminHeader onToggleSidebar={handleSidebarToggle} />
         </header>
         
-        <main className="admin-main flex-1 overflow-y-auto">
+        <main className="admin-main flex-1 overflow-y-auto py-6">
           <div className="max-w-[1600px] mx-auto w-full px-4 md:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-12">{children}</div>

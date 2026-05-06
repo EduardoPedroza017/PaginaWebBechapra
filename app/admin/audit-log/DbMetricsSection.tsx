@@ -38,9 +38,7 @@ export function DbMetricsSection({ theme, compact = false }: Props) {
     const fetchMetrics = async () => {
       setLoading(true);
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) throw new Error("NEXT_PUBLIC_API_URL no definido");
-        const res = await fetch(`${apiUrl}/admin/db/metrics`, { credentials: "include" });
+        const res = await fetch('/web/api/backend/admin/db/metrics', { credentials: "include" });
         if (!res.ok) throw new Error("Error fetching metrics");
         const json = await res.json();
         if (mounted) setData(json);

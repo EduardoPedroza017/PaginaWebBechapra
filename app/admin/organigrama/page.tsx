@@ -50,7 +50,7 @@ export default function AdminOrganigramaPage() {
 
             <div className="space-y-4">
               <a
-                href="/admin/ejecutivos"
+                href="/web/admin/ejecutivos"
                 className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium"
               >
                 <Users className="w-5 h-5" />

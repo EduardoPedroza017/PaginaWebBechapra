@@ -64,6 +64,7 @@ interface EjecutivosWizardFormProps {
     telefono?: string;
     biografia?: string;
     activo?: boolean;
+    descripcion?: string;
     foto?: string;
   };
   /** Current theme */
@@ -237,21 +238,21 @@ export function EjecutivosWizardForm({ isOpen, onClose, onSaved, initialData, th
   const handleSubmit = async () => {
     setLoading(true);
     
-    const form = new FormData();
-    form.append("nombre", data.nombre);
-    form.append("apellido_paterno", data.apellido_paterno);
-    form.append("apellido_materno", data.apellido_materno);
-    form.append("fecha_nacimiento", data.fecha_nacimiento);
-    form.append("puesto", data.puesto);
-    form.append("carrera_estudiada", data.carrera_estudiada);
-    form.append("email", data.email);
-    form.append("telefono", data.telefono);
-    form.append("biografia", data.biografia);
-    form.append("activo", String(data.activo));
-    if (data.photo) form.append("foto", data.photo);
-
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
+    const API = '/web/api/backend';
+    const payload = {
+      nombre: data.nombre,
+      apellido_paterno: data.apellido_paterno,
+      apellido_materno: data.apellido_materno,
+      fecha_nacimiento: data.fecha_nacimiento,
+      puesto: data.puesto,
+      carrera_estudiada: data.carrera_estudiada,
+      email: data.email,
+      telefono: data.telefono,
+      biografia: data.biografia,
+      activo: data.activo,
+      descripcion: initialData?.descripcion || '',
+    };
     const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
     const baseHeaders: Record<string, string> = {
       ...(userEmail ? { "X-User": userEmail } : {}),
@@ -263,25 +264,45 @@ export function EjecutivosWizardForm({ isOpen, onClose, onSaved, initialData, th
       bypassHeaders["X-Role"] = 'superadmin';
       bypassHeaders["X-Admin"] = 'true';
     }
+    const uploadHeaders = { ...baseHeaders, ...bypassHeaders };
 
     try {
       const method = isEditing ? "PUT" : "POST";
       const url = isEditing
-        ? `${API}/api/ejecutivos/${initialData?.id}`
-        : `${API}/api/ejecutivos`;
+        ? `${API}/admin/team/${initialData?.id}`
+        : `${API}/admin/team`;
 
       const res = await fetch(url, {
         method,
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", ...baseHeaders, ...bypassHeaders },
         credentials: 'include',
       });
 
       const body = await res.json();
 
       if (res.ok) {
+        let savedBody = body;
+        if (data.photo) {
+          const photoForm = new FormData();
+          photoForm.append('file', data.photo);
+          const uploadRes = await fetch(`${API}/admin/team/${body.id || body._id}/upload-foto`, {
+            method: 'POST',
+            body: photoForm,
+            headers: uploadHeaders,
+            credentials: 'include',
+          });
+          if (!uploadRes.ok) {
+            const uploadError = await uploadRes.json().catch(() => ({}));
+            const uploadErrorMsg = uploadError.error || uploadError.message || 'Error al subir foto';
+            showMessage('error', uploadErrorMsg);
+            return;
+          }
+          const uploadBody = await uploadRes.json();
+          savedBody = { ...body, ...uploadBody };
+        }
         showMessage('success', isEditing ? 'Ejecutivo actualizado exitosamente' : 'Ejecutivo creado exitosamente');
-        onSaved(body);
+        onSaved(savedBody);
         onClose();
       } else {
         const errorMsg = body.error || body.message || 'Error desconocido';

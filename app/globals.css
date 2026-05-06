@@ -109,6 +109,25 @@ p {
     }
 }
 
+/* Isolate the admin panel from the public-site editorial typography rules. */
+.admin-root :where(h1, h2, h3, h4, h5, h6),
+.admin-login-page :where(h1, h2, h3, h4, h5, h6) {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+}
+
+.admin-root :where(p),
+.admin-login-page :where(p) {
+    margin: 0;
+    line-height: inherit;
+    text-align: inherit;
+    text-justify: auto;
+}
+
 /* Adjust hero height for laptop/desktop mid-size screens
    Targeting typical laptop widths where hero looked oversized at 100% zoom.
    Keeps larger screens using the original taller height. */

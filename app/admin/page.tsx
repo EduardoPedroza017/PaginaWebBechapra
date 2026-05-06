@@ -86,7 +86,7 @@ export default function AdminLogin() {
     setErrors({});
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/login`, {
+      const res = await fetch(`/web/api/backend/admin/auth/login`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export default function AdminLogin() {
         // Redirect after showing success animation
         setTimeout(() => {
           // Force hard navigation to ensure proper auth state
-          window.location.href = '/admin/dashboard';
+          window.location.href = '/web/admin/dashboard';
         }, 1500);
       } else {
         const backendError = data.error || data.message || 'Credenciales incorrectas';

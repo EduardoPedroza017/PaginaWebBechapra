@@ -35,13 +35,10 @@ export default function SucursalesPage() {
     }
   }, []);
 
-  // Define the API URL with localhost fallback
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
   const fetchBranches = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     try {
-      const res = await fetch(`${apiUrl}/api/branches`, { credentials: 'include' });
+      const res = await fetch('/web/api/backend/admin/branches', { credentials: 'include' });
 
       if (!res.ok) {
         if (res.status === 404) {
@@ -69,7 +66,7 @@ export default function SucursalesPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     fetchBranches();
@@ -94,19 +91,9 @@ export default function SucursalesPage() {
   const handleToggleActive = async (branch: Branch) => {
     setToggleLoading(branch.id);
     try {
-      const adminHeaders: Record<string, string> = {};
-      try {
-        const userEmail = sessionStorage.getItem('user_email');
-        const adminFlag = sessionStorage.getItem('admin');
-        const role = sessionStorage.getItem('role');
-        if (userEmail) adminHeaders['X-User'] = userEmail;
-        if (adminFlag) adminHeaders['X-Admin'] = adminFlag;
-        if (role) adminHeaders['X-Role'] = role;
-      } catch (e) {}
-
-      const res = await fetch(`${apiUrl}/api/admin/branches/${branch.id}/activate`, {
+      const res = await fetch(`/web/api/backend/admin/branches/${branch.id}/activate`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', ...adminHeaders },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ isActive: !branch.isActive })
       });
@@ -130,19 +117,8 @@ export default function SucursalesPage() {
     if (!deleting) return;
     setDeleteLoading(true);
     try {
-      const adminHeaders: Record<string, string> = {};
-      try {
-        const userEmail = sessionStorage.getItem('user_email');
-        const adminFlag = sessionStorage.getItem('admin');
-        const role = sessionStorage.getItem('role');
-        if (userEmail) adminHeaders['X-User'] = userEmail;
-        if (adminFlag) adminHeaders['X-Admin'] = adminFlag;
-        if (role) adminHeaders['X-Role'] = role;
-      } catch (e) {}
-
-      const res = await fetch(`${apiUrl}/api/admin/branches/${deleting.id}`, {
+      const res = await fetch(`/web/api/backend/admin/branches/${deleting.id}`, {
         method: 'DELETE',
-        headers: { ...adminHeaders },
         credentials: 'include'
       });
       if (res.ok) {
@@ -170,7 +146,7 @@ export default function SucursalesPage() {
   const handleLogout = () => {
     sessionStorage.removeItem("admin");
     sessionStorage.removeItem("role");
-    window.location.href = "/admin";
+    window.location.href = "/web/admin";
   };
 
   const handleToggleTheme = () => {

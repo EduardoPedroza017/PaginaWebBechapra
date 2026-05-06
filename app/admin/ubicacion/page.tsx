@@ -11,7 +11,7 @@ export default function LocationAdminPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   const handleLogout = () => {
-    window.location.href = '/admin';
+    window.location.href = '/web/admin';
   };
 
   const handleToggleTheme = () => {

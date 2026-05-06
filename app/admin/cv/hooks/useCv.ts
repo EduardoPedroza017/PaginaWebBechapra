@@ -19,11 +19,7 @@ export const useCv = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-  }
-  const backendBase = apiUrl;
+  const backendBase = '/web/api/backend';
 
   const getAuthHeaders = (includeContentType = false): Record<string, string> => {
     const headers: Record<string, string> = {};
@@ -57,8 +53,9 @@ export const useCv = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${backendBase}/api/admin/formularios`, {
+      const res = await fetch(`${backendBase}/admin/formularios`, {
         headers: getAuthHeaders(),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -71,7 +68,7 @@ export const useCv = () => {
         fecha: it.fecha || it.created_at || '',
         cv_filename: it.cv_filename,
         cv_original_name: it.cv_original_name,
-        cv_download_url: it.cv_download_url || `${backendBase}/api/admin/formularios/${it.id || it._id}/cv`,
+        cv_download_url: it.cv_download_url || `${backendBase}/admin/formularios/${it.id || it._id}/cv`,
       }));
       setItems(normalized);
     } catch (err) {
@@ -83,8 +80,9 @@ export const useCv = () => {
 
   const downloadCv = useCallback(async (id: string, filename?: string) => {
     try {
-      const res = await fetch(`${backendBase}/api/admin/formularios/${id}/cv`, {
+      const res = await fetch(`${backendBase}/admin/formularios/${id}/cv`, {
         headers: getAuthHeaders(),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const blob = await res.blob();
@@ -106,8 +104,9 @@ export const useCv = () => {
 
   const exportFormularios = useCallback(async () => {
     try {
-      const res = await fetch(`${backendBase}/api/admin/formularios/export`, {
+      const res = await fetch(`${backendBase}/admin/formularios/export`, {
         headers: getAuthHeaders(),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const blob = await res.blob();

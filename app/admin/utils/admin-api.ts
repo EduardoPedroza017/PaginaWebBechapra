@@ -194,16 +194,6 @@ function getErrorMessage(err: unknown): string | undefined {
 }
 
 class AdminApiClient {
-  private baseUrl: string;
-
-  constructor() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) {
-      throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-    }
-    this.baseUrl = apiUrl;
-  }
-
   // DASHBOARD
   async getDashboardStats() {
     try {
@@ -486,19 +476,19 @@ class AdminApiClient {
 
   // CONTACTS
   async getContacts(): ApiResponse {
-    return apiClient.get('/api/contacts');
+    return apiClient.get('/api/admin/contact');
   }
 
   async createContact(data: DataParam): ApiResponse {
-    return apiClient.post('/api/contacts', data);
+    return apiClient.post('/api/admin/contact', data);
   }
 
   async updateContact(id: string, data: DataParam): ApiResponse {
-    return apiClient.put(`/api/contacts/${id}`, data);
+    return apiClient.put(`/api/admin/contact/${id}`, data);
   }
 
   async deleteContact(id: string): ApiResponse {
-    return apiClient.delete(`/api/contacts/${id}`);
+    return apiClient.delete(`/api/admin/contact/${id}`);
   }
 
   // TEAM
@@ -520,32 +510,26 @@ class AdminApiClient {
 
   // TRANSLATIONS
   async getTranslations(): ApiResponse {
-    return apiClient.get('/api/admin/translations');
+    return apiClient.get('/api/admin/translation');
   }
 
   async updateTranslation(key: string, data: DataParam): ApiResponse {
-    return apiClient.put(`/api/admin/translations/${key}`, data);
+    return apiClient.put(`/api/admin/translation/${key}`, data);
   }
 
   // TERMS
   async getTerms(): ApiResponse {
-    return apiClient.get('/api/admin/terms');
+    return apiClient.get('/api/admin/terminos');
   }
 
   async updateTerms(data: DataParam): ApiResponse {
-    return apiClient.put('/api/admin/terms', data);
+    return apiClient.put('/api/admin/terminos', data);
   }
 
   // AUTH
   async checkAuth(admin: boolean, role: string): ApiResponse {
     try {
-      const response = await apiClient.post('/api/backend/admin/check', { admin, role }, {
-        headers: {
-          'X-Role': role,
-          'X-Admin': admin.toString(),
-        },
-        credentials: 'include',
-      });
+      const response = await apiClient.post('/api/admin/auth/check', { admin, role });
       return response;
     } catch (error: unknown) {
       console.error('Error checking auth:', error);
@@ -556,14 +540,15 @@ class AdminApiClient {
   // GALLERY
   async listImages(): Promise<{ success: boolean; data?: string[]; error?: string }> {
     try {
-      const response = await apiClient.get('/admin/list-images', {
-        headers: {
-          'Cache-Control': 'no-cache',
-        },
-      });
+      const response = await apiClient.get('/api/admin/gallery');
+      const items = Array.isArray((response as { items?: GalleryItem[] })?.items)
+        ? (response as { items: GalleryItem[] }).items
+        : Array.isArray((response as { data?: { items?: GalleryItem[] } })?.data?.items)
+          ? (response as { data: { items: GalleryItem[] } }).data.items
+          : [];
       return {
         success: true,
-        data: Array.isArray(response.images) ? response.images : [],
+        data: items.map((item) => item.filename).filter(Boolean),
       };
     } catch (error: unknown) {
       const msg = getErrorMessage(error);
@@ -576,11 +561,7 @@ class AdminApiClient {
 
   async deleteImage(filename: string): Promise<{ success: boolean; data?: unknown; error?: string }> {
     try {
-      const response = await apiClient.post('/admin/delete-image', { filename }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await apiClient.delete(`/api/admin/gallery/${encodeURIComponent(filename)}`);
       return {
         success: true,
         data: response,

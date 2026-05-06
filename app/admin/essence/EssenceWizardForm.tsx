@@ -165,10 +165,18 @@ export function EssenceWizardForm({ isOpen, onClose, onSaved, initialData, theme
     }
 
     try {
-      const res = await fetch(`${API}/api/essence`, {
+      const res = await fetch('/web/api/backend/admin/essence', {
         method: "PUT",
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
+        body: JSON.stringify({
+          mision: data.mision,
+          vision: data.vision,
+          valores: data.valores,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          ...baseHeaders,
+          ...bypassHeaders,
+        },
         credentials: 'include',
       });
 

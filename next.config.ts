@@ -49,6 +49,23 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      {
+        source: "/admin",
+        destination: "/web/admin",
+        permanent: false,
+        basePath: false,
+      },
+      {
+        source: "/admin/:path*",
+        destination: "/web/admin/:path*",
+        permanent: false,
+        basePath: false,
+      },
+    ];
+  },
+
   images: {
     unoptimized: true,
     remotePatterns: [

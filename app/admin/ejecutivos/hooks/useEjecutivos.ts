@@ -93,22 +93,18 @@ export const useEjecutivos = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-
-      const response = await fetch(`${apiUrl}/api/ejecutivos?${queryParams}`, {
+      const response = await fetch(`/web/api/backend/admin/team?${queryParams}`, {
         headers,
+        credentials: 'include',
       });
 
       if (!response.ok) {
         throw new Error('Error al cargar ejecutivos');
       }
 
-      const data: EjecutivosResponse = await response.json();
-      // Normalize returned docs to ensure `_id` exists (backend serializes ObjectId -> `id`) and fix upload URLs
-      const normalized = data.items.map(item => {
+      const payload = await response.json();
+      const items = Array.isArray(payload?.items) ? payload.items : [];
+      const normalized = items.map((item: any) => {
         const it: any = { ...item, _id: (item as any)._id || (item as any).id };
         it.foto_url = fullUrl(it.foto_url);
         it.foto_thumbnail_url = fullUrl(it.foto_thumbnail_url);
@@ -116,10 +112,10 @@ export const useEjecutivos = () => {
       });
       setEjecutivos(normalized as Ejecutivo[]);
       setPagination({
-        total: data.total,
-        page: data.page,
-        per_page: data.per_page,
-        total_pages: data.total_pages,
+        total: normalized.length,
+        page: currentFilters.page || 1,
+        per_page: currentFilters.per_page || normalized.length || 12,
+        total_pages: 1,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -202,14 +198,11 @@ export const useEjecutivos = () => {
     console.log('[DEBUG createEjecutivo] Using headers:', headers);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      const response = await fetch(`${apiUrl}/api/ejecutivos`, {
+      const response = await fetch('/web/api/backend/admin/team', {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       console.log('[DEBUG createEjecutivo] Response status:', response.status, response.statusText);
@@ -248,14 +241,11 @@ export const useEjecutivos = () => {
     setError(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}`, {
+      const response = await fetch(`/web/api/backend/admin/team/${id}`, {
         method: 'PUT',
         headers: getAuthHeaders(true),
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -285,13 +275,10 @@ export const useEjecutivos = () => {
     setError(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}`, {
+      const response = await fetch(`/web/api/backend/admin/team/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(false),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -324,14 +311,11 @@ export const useEjecutivos = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      const response = await fetch(`${apiUrl}/api/ejecutivos/${id}/upload-foto`, {
+      const response = await fetch(`/web/api/backend/admin/team/${id}/upload-foto`, {
         method: 'POST',
         headers: getAuthHeaders(false),
         body: formData,
+        credentials: 'include',
       });
 
       if (!response.ok) {

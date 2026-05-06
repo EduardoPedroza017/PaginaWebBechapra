@@ -79,30 +79,15 @@ export default function AuditLogPage() {
     else setLoading(true);
 
     try {
-      const admin = sessionStorage.getItem("admin") === "true";
-      const role = sessionStorage.getItem("role") || "";
-      const apiBase = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiBase) {
-        throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-      }
-      
       const tryAdminAudit = async () => {
-        return fetch(`${apiBase}/admin/audit-admin`, {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Admin": String(admin),
-            "X-Role": role,
-          },
+        return fetch('/web/api/backend/admin/auth/audit-admin', {
+          credentials: 'include',
         });
       };
 
       const tryLoginAudit = async () => {
-        return fetch(`${apiBase}/admin/audit`, {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Admin": String(admin),
-            "X-Role": role,
-          },
+        return fetch('/web/api/backend/admin/auth/audit', {
+          credentials: 'include',
         });
       };
 

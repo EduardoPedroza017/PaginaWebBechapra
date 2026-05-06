@@ -72,22 +72,9 @@ export default function BranchEditModal({ open, branch, onClose, onUpdated, them
         isActive: formData.isActive
       };
 
-      const adminHeaders: Record<string, string> = {};
-      try {
-        const userEmail = sessionStorage.getItem('user_email');
-        const adminFlag = sessionStorage.getItem('admin');
-        const role = sessionStorage.getItem('role');
-        if (userEmail) adminHeaders['X-User'] = userEmail;
-        if (adminFlag) adminHeaders['X-Admin'] = adminFlag;
-        if (role) adminHeaders['X-Role'] = role;
-      } catch (e) {
-        // ignore
-      }
-
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiUrl}/api/admin/branches/${branch.id}`, {
+      const res = await fetch(`/web/api/backend/admin/branches/${branch.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...adminHeaders },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(payload)
       });

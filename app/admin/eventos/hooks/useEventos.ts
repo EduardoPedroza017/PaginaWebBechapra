@@ -14,11 +14,6 @@ interface Evento {
   imagen?: string;
 }
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-if (!apiBaseUrl) {
-  throw new Error('La variable de entorno NEXT_PUBLIC_API_URL no está definida. Configúrala en tu archivo .env');
-}
-
 const useEventos = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +23,7 @@ const useEventos = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${apiBaseUrl}/api/admin/eventos`);
+      const response = await axios.get('/web/api/backend/admin/eventos', { withCredentials: true });
       setEventos(response.data);
     } catch (err) {
       setError('Error al cargar los eventos.');
@@ -39,7 +34,7 @@ const useEventos = () => {
 
   const createEvento = async (data: FormData) => {
     try {
-      const response = await axios.post(`${apiBaseUrl}/api/admin/eventos`, data);
+      const response = await axios.post('/web/api/backend/admin/eventos', data, { withCredentials: true });
       setEventos((prev) => [...prev, response.data]);
     } catch (err) {
       setError('Error al crear el evento.');
@@ -48,7 +43,7 @@ const useEventos = () => {
 
   const updateEvento = async (id: string, data: FormData) => {
     try {
-      const response = await axios.put(`${apiBaseUrl}/api/admin/eventos/${id}`, data);
+      const response = await axios.put(`/web/api/backend/admin/eventos/${id}`, data, { withCredentials: true });
       setEventos((prev) => prev.map((evento) => (evento.id === id ? response.data : evento)));
     } catch (err) {
       setError('Error al actualizar el evento.');
@@ -57,7 +52,7 @@ const useEventos = () => {
 
   const deleteEvento = async (id: string) => {
     try {
-      await axios.delete(`${apiBaseUrl}/api/admin/eventos/${id}`);
+      await axios.delete(`/web/api/backend/admin/eventos/${id}`, { withCredentials: true });
       setEventos((prev) => prev.filter((evento) => evento.id !== id));
     } catch (err) {
       setError('Error al eliminar el evento.');

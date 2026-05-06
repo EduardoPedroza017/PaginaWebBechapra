@@ -234,7 +234,7 @@ export function Header({
               }
               // Call backend logout via proxy so server-side session is cleared
               try {
-                const resp = await fetch('/api/backend/admin/logout', {
+                const resp = await fetch('/web/api/backend/admin/auth/logout', {
                   method: 'POST',
                   credentials: 'include',
                   headers: { 'Content-Type': 'application/json' }
@@ -243,10 +243,10 @@ export function Header({
                 try { localStorage.removeItem('token'); } catch (e) {}
                 try { localStorage.removeItem('user'); } catch (e) {}
                 // Redirect to admin landing
-                window.location.href = '/admin';
+                window.location.href = '/web/admin';
               } catch (err) {
                 // Fallback: still redirect
-                window.location.href = '/admin';
+                window.location.href = '/web/admin';
               }
             }}
             className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm ${logoutButtonClasses} hover:shadow-lg transition-all`}
