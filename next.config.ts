@@ -5,9 +5,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const API_URL =
+  process.env.BACKEND_URL ||
   process.env.NEXT_PUBLIC_API_URL_INTERNAL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  process.env.BACKEND_URL ||
   "http://localhost:5000";
 
 /**
@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/backend/:path*",
-        destination: "http://localhost:5000/:path*",
+        destination: `${API_URL}/api/:path*`,
       },
     ];
   },

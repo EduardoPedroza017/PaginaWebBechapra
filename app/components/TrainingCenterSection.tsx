@@ -66,7 +66,7 @@ export default function TrainingCenterSection() {
         <h2
           className="text-4xl lg:text-6xl font-black mb-6 tracking-tighter italic text-blue-700"
         >
-          Bausen Training Center
+          <TranslateText text="Bausen Training Center" />
         </h2>
         <p
           className="text-lg font-medium leading-relaxed text-justify md:text-center max-w-2xl mx-auto"

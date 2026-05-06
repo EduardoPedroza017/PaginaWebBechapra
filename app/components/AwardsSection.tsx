@@ -77,7 +77,7 @@ export default function AwardsSection() {
                   />
                 ) : (
                   <div className="w-[160px] h-[80px] border-2 border-dashed rounded-xl flex items-center justify-center text-xs font-bold uppercase bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200 text-slate-400 dark:from-slate-700 dark:to-slate-800 dark:border-slate-600 dark:text-slate-400">
-                    {award.title || "LOGO"}
+                    <TranslateText text={award.title || "LOGO"} />
                   </div>
                 )}
               </motion.div>

@@ -31,9 +31,9 @@ export default function ServiceCards({ title, services }: ServiceCardsProps) {
           className="text-center mb-20"
         >
            <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-blue-100 dark:border-blue-800/50">
-            <Sparkles size={14} />
-            Especialización
-          </span>
+             <Sparkles size={14} />
+            <TranslateText text="Especialización" />
+           </span>
           <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-6">
             <TranslateText text={title} />
           </h2>
@@ -88,7 +88,7 @@ function ServiceDetailCard({ service, index }: { service: Service; index: number
           <div className="relative z-20 flex flex-col h-full">
             {featured && (
               <div className="mb-5 inline-flex w-fit rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">
-                Solucion principal
+                <TranslateText text="Solución principal" />
               </div>
             )}
             <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
@@ -104,7 +104,7 @@ function ServiceDetailCard({ service, index }: { service: Service; index: number
             </p>
 
             <div className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest pt-6 border-t border-slate-100 dark:border-slate-800">
-              Ver Detalles <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              <TranslateText text="Ver detalles" /> <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>

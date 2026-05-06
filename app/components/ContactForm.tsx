@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare, ArrowRight } from "lucide-react";
 import { TranslateText } from "@/components/TranslateText";
+import { useTranslatedString } from "@/lib/hooks/useTranslatedString";
 
 type Status = "idle" | "sending" | "success" | "error";
 
@@ -17,6 +18,13 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [focused, setFocused] = useState<string | null>(null);
+  const namePlaceholder = useTranslatedString("Tu nombre completo");
+  const emailPlaceholder = useTranslatedString("tu@email.com");
+  const messagePlaceholder = useTranslatedString("¿En qué podemos ayudarte?");
+  const privacyPrefix = useTranslatedString("He leído y acepto el");
+  const privacyLabel = useTranslatedString("Aviso de Privacidad");
+  const privacySuffix = useTranslatedString("conforme a la LFPDPPP. *");
+  const submitAriaLabel = useTranslatedString("Enviar formulario de contacto");
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -106,7 +114,7 @@ export default function ContactForm() {
                 onChange={handleChange}
                 onFocus={() => setFocused(field.name)}
                 onBlur={() => setFocused(null)}
-                placeholder={field.placeholder}
+                placeholder={field.name === "name" ? namePlaceholder : emailPlaceholder}
                 className="w-full pl-14 pr-4 py-4.5 rounded-2xl border-2 outline-none transition-all duration-300 font-medium text-base"
                 style={
                   errors[field.name]
@@ -140,7 +148,7 @@ export default function ContactForm() {
                   className="mt-2 pl-2 text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5"
                 >
                   <AlertCircle className="w-3.5 h-3.5" />
-                  {errors[field.name]}
+                  <TranslateText text={errors[field.name]} />
                 </motion.p>
               )}
             </AnimatePresence>
@@ -171,7 +179,7 @@ export default function ContactForm() {
               onChange={handleChange}
               onFocus={() => setFocused("message")}
               onBlur={() => setFocused(null)}
-              placeholder="En que podemos ayudarte?"
+              placeholder={messagePlaceholder}
               className="w-full pl-14 pr-4 py-4.5 rounded-3xl border-2 outline-none transition-all duration-300 font-medium text-base resize-none min-h-40"
               style={
                 errors.message
@@ -205,7 +213,7 @@ export default function ContactForm() {
                 className="mt-2 pl-2 text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5"
               >
                 <AlertCircle className="w-3.5 h-3.5" />
-                {errors.message}
+                <TranslateText text={errors.message} />
               </motion.p>
             )}
           </AnimatePresence>
@@ -236,21 +244,21 @@ export default function ContactForm() {
             required
           />
           <span className="text-sm font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
-            He leído y acepto el{' '}
+            {privacyPrefix}{' '}
             <a
               href="/web/politica-de-privacidad/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 font-bold hover:underline"
             >
-              Aviso de Privacidad
+              {privacyLabel}
             </a>
-            {' '}conforme a la LFPDPPP. *
+            {' '}{privacySuffix}
           </span>
         </label>
         {errors.consent && (
           <p className="mt-2 pl-8 text-xs font-bold text-rose-500 uppercase tracking-wider">
-            {errors.consent}
+            <TranslateText text={errors.consent} />
           </p>
         )}
       </div>
@@ -266,7 +274,7 @@ export default function ContactForm() {
             backgroundColor: "var(--brand-primary)",
             boxShadow: "0 18px 40px rgba(35,70,221,0.28)",
           }}
-          aria-label="Enviar formulario de contacto"
+          aria-label={submitAriaLabel}
         >
           <span className="relative flex items-center gap-3">
             {status === "sending" ? (

@@ -135,21 +135,21 @@ export default function Footer() {
             </h3>
             <div className="space-y-6">
               <div className="group cursor-default">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] !text-white mb-2 group-hover:text-blue-500 transition-colors">Oficina Central</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] !text-white mb-2 group-hover:text-blue-500 transition-colors"><TranslateText text="Oficina Central" /></div>
                 <div className="text-slate-300 font-bold leading-relaxed">
                   <CompanyLocation variant="footer" />
                 </div>
               </div>
 
               <div className="group cursor-default">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors">Teléfono</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors"><TranslateText text="Teléfono" /></div>
                 <a href="tel:+5265655245678" className="text-slate-300 font-bold hover:text-white transition-colors">
                   +52 (656) 524 5678
                 </a>
               </div>
 
               <div className="group cursor-default">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors">Email</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 group-hover:text-blue-500 transition-colors"><TranslateText text="Email" /></div>
                 <a href="mailto:contacto@bausen.com.mx" className="text-slate-300 font-bold hover:text-white transition-colors break-all">
                   contacto@bausen.com.mx
                 </a>

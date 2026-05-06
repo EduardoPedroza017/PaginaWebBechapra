@@ -180,8 +180,11 @@ export function validateConfig(): void {
     errors.push(`NEXT_PUBLIC_API_URL no es una URL válida: ${config.api.url}`);
   }
   
-  // En producción, validar que no se use localhost
-  if (config.env.isProduction && config.api.url.includes('localhost')) {
+  const localhostInProduction =
+    config.env.isProduction &&
+    (config.api.url.includes('localhost') || config.api.url.includes('127.0.0.1'));
+
+  if (localhostInProduction) {
     errors.push('ADVERTENCIA: Usando localhost en producción');
   }
   
@@ -194,7 +197,7 @@ export function validateConfig(): void {
       });
     }
     
-    if (config.env.isProduction) {
+    if (config.env.isProduction && !localhostInProduction) {
       throw new Error('Configuración inválida en producción');
     }
   }

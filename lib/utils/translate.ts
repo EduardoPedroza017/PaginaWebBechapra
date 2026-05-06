@@ -39,8 +39,7 @@ loadCacheFromStorage();
 // Cola de solicitudes pendientes
 const pendingRequests = new Map<string, Promise<string>>();
 
-// Update the API endpoint to match the backend proxy (use /web/api/backend/public to forward to /api/public)
-const API_TRANSLATE_ENDPOINT = '/api/backend/translate';
+const API_TRANSLATE_ENDPOINT = '/web/api/translate';
 
 export async function translateText(text: string, dest: string): Promise<string> {
   // Si es español, devolver el texto original
@@ -79,7 +78,10 @@ export async function translateText(text: string, dest: string): Promise<string>
       }
       
       const data = await res.json();
-      const translated = data.translated as string;
+      const translated =
+        (data?.translated as string | undefined) ||
+        (data?.data?.translated as string | undefined) ||
+        text;
       
       // Guardar en caché
       translationCache.set(cacheKey, translated);

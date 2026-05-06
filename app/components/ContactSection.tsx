@@ -84,10 +84,10 @@ export default function ContactSection() {
                     className="text-[10px] font-black uppercase tracking-widest mb-1"
                     style={{ color: "var(--foreground)" }}
                   >
-                    {item.label}
+                    <TranslateText text={item.label} />
                   </div>
                   <div className="text-sm font-bold" style={{ color: "var(--brand-accent)" }}>
-                    {item.value}
+                    {item.value.includes("@") || item.value.includes("+52") ? item.value : <TranslateText text={item.value} />}
                   </div>
                 </div>
               </div>

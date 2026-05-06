@@ -8,6 +8,8 @@ import { Calendar, ArrowRight, Search } from "lucide-react";
 import Footer from "@/components/Footer";
 import Section from "@/app/components/Section";
 import SubpageHero from "@/components/SubpageHero";
+import { TranslateText } from "@/components/TranslateText";
+import { useTranslatedString } from "@/lib/hooks/useTranslatedString";
 
 interface NewsItem {
   title: string;
@@ -32,6 +34,7 @@ const slugify = (s: string) =>
 export default function NoticiasPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const searchPlaceholder = useTranslatedString("Buscar noticias...");
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news`)
@@ -64,10 +67,10 @@ export default function NoticiasPage() {
                 backgroundColor: "var(--background)",
               }}
             >
-              Radar editorial
+              <TranslateText text="Radar editorial" />
             </span>
             <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter italic">
-              Articulos <span className="text-blue-700">Destacados</span>
+              <TranslateText text="Artículos" /> <span className="text-blue-700"><TranslateText text="Destacados" /></span>
             </h2>
           </div>
 
@@ -75,7 +78,7 @@ export default function NoticiasPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar noticias..."
+              placeholder={searchPlaceholder}
               className="w-full pl-12 pr-4 py-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-sm font-bold outline-none focus:border-blue-700 transition-all"
             />
           </div>
@@ -126,10 +129,10 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
                 />
             )}
             {isFeatured && (
-              <div className="absolute left-6 top-6 rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">
-                Nota principal
-              </div>
-            )}
+                <div className="absolute left-6 top-6 rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white">
+                  <TranslateText text="Nota principal" />
+                </div>
+              )}
           </div>
 
           <div className="p-8 flex flex-col flex-1">
@@ -138,13 +141,13 @@ function NewsCard({ item, index }: { item: NewsItem; index: number }) {
               {new Date(item.date).toLocaleDateString()}
             </div>
             <h3 className={`${isFeatured ? "text-2xl md:text-3xl" : "text-lg"} font-black text-slate-900 dark:text-white mb-4 leading-tight`}>
-              {item.title}
+              <TranslateText text={item.title} />
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-8 flex-1 text-justify">
-              {item.description}
+              <TranslateText text={item.description} />
             </p>
             <div className="pt-6 border-t border-slate-50 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-blue-700 flex items-center gap-2">
-              Leer mas <ArrowRight size={14} />
+              <TranslateText text="Leer más" /> <ArrowRight size={14} />
             </div>
           </div>
         </div>

@@ -59,14 +59,14 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       {/* Contenido Inferior Centrado */}
       <div className="relative pt-16 pb-10 px-8 text-center flex flex-col items-center">
         <div className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
-          Excelencia Operativa
+          <TranslateText text="Excelencia Operativa" />
         </div>
         <h3 className="mb-4 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-          {service.name}
+          <TranslateText text={service.name || ""} />
         </h3>
         
         <p className="mb-8 text-slate-500 dark:text-slate-400 leading-relaxed text-sm max-w-sm">
-          {service.description}
+          <TranslateText text={service.description || ""} />
         </p>
 
         <div className="inline-flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400 group-hover:gap-4 transition-all">
@@ -147,7 +147,7 @@ export default function ServicesSection() {
           <TranslateText text="Nuestros Servicios" />
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-lg">
-           Soluciones de ingeniería y logística para el mercado internacional.
+          <TranslateText text="Soluciones de ingeniería y logística para el mercado internacional." />
         </p>
       </motion.div>
 
@@ -158,7 +158,7 @@ export default function ServicesSection() {
         ))}
         {loading && (
           <div className="col-span-full text-center py-12 text-slate-400 italic">
-            Preparando servicios...
+            <TranslateText text="Preparando servicios..." />
           </div>
         )}
       </div>

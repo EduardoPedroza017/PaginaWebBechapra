@@ -139,8 +139,8 @@ export default function ServiceHero({
                   <Users size={28} />
                 </div>
                 <div>
-                  <div className="text-lg font-black leading-tight text-slate-900">Certificacion</div>
-                  <div className="mt-1 text-xs font-bold uppercase tracking-widest text-blue-600">Garantia Bausen</div>
+                  <div className="text-lg font-black leading-tight text-slate-900"><TranslateText text="Certificación" /></div>
+                  <div className="mt-1 text-xs font-bold uppercase tracking-widest text-blue-600"><TranslateText text="Garantía Bausen" /></div>
                 </div>
               </div>
             </motion.div>

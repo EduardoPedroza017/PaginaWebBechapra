@@ -91,7 +91,10 @@ function translateLocally(text: string, dest: string): string {
   return text; // Return original if no translation found
 }
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL =
+  process.env.BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  'http://localhost:5000';
 
 export async function POST(request: Request) {
   try {
@@ -105,19 +108,24 @@ export async function POST(request: Request) {
 
     // Try to call backend first
     try {
-      const response = await fetch(`${BACKEND_URL}/admin/translate`, {
+      const response = await fetch(`${BACKEND_URL}/api/translate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text, dest }),
-        credentials: 'include',
       });
 
       if (response.ok) {
         const data = await response.json();
         // Handle different response formats from backend
-        const translatedText = data.translated || data.translatedText || data.translation;
+        const translatedText =
+          data?.translated ||
+          data?.translatedText ||
+          data?.translation ||
+          data?.data?.translated ||
+          data?.data?.translatedText ||
+          data?.data?.translation;
         if (translatedText) {
           return Response.json({ translated: translatedText });
         }

@@ -65,7 +65,7 @@ export default function BenefitsSection({
             <div>
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-800/50">
                 <Sparkles size={14} />
-                Ventajas Competitivas
+                <TranslateText text="Ventajas competitivas" />
               </span>
 
               <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.95]">

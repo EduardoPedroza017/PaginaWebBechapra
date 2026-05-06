@@ -13,17 +13,12 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState("es");
-  const [mounted, setMounted] = useState(false);
 
-  // Cargar idioma guardado al montar
   useEffect(() => {
     const savedLang = localStorage.getItem("language");
     if (savedLang) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLang(savedLang);
     }
-     
-    setMounted(true);
   }, []);
 
   // Guardar idioma cuando cambie
@@ -31,11 +26,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     setLang(newLang);
     localStorage.setItem("language", newLang);
   };
-
-  // Prevenir flash de contenido sin traducir
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <LanguageContext.Provider value={{ lang, setLang: handleSetLang }}>

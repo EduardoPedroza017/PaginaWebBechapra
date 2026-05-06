@@ -109,7 +109,7 @@ export default function CtaRedes() {
                   <div className="w-10 h-10 flex items-center justify-center">
                     <Image src={link.icon} alt="" width={32} height={32} className="object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
                   </div>
-                  <span className="text-[10px] text-white/70 font-black uppercase tracking-widest">{link.label}</span>
+                  <span className="text-[10px] text-white/70 font-black uppercase tracking-widest"><TranslateText text={link.label} /></span>
                 </motion.a>
               ))}
             </div>
