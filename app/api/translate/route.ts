@@ -125,8 +125,11 @@ export async function POST(request: Request) {
           data?.data?.translated ||
           data?.data?.translatedText ||
           data?.data?.translation;
+        const isFallback = Boolean(data?.is_fallback || data?.data?.is_fallback);
         if (translatedText) {
-          return Response.json({ translated: translatedText });
+          if (!isFallback && translatedText !== text) {
+            return Response.json({ translated: translatedText });
+          }
         }
       }
       
