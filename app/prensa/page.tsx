@@ -10,6 +10,7 @@ import SubpageHero from "@/components/SubpageHero";
 import PressFilter from "./components/PressFilter";
 import SpotlightCTA from "@/app/components/SpotlightCTA";
 import { OptimizedImage } from "@/lib/images/image-utils";
+import { TranslateText } from "@/components/TranslateText";
 
 interface PressItem {
   title: string;
@@ -109,17 +110,21 @@ export default function PrensaPage() {
 
       <Section variant="white" size="lg">
         <div className="mb-16 space-y-5">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
-            <Sparkles size={14} />
-            Radar editorial
-          </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
+              <Sparkles size={14} />
+              <TranslateText text="Radar editorial" />
+            </span>
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/30">
               <Newspaper size={24} />
             </div>
             <div>
-              <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Ultimos Comunicados</h2>
-              <p className="font-medium text-slate-500">Informacion oficial actualizada para prensa y asociados.</p>
+              <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">
+                <TranslateText text="Ultimos Comunicados" />
+              </h2>
+              <p className="font-medium text-slate-500">
+                <TranslateText text="Informacion oficial actualizada para prensa y asociados." />
+              </p>
             </div>
           </div>
         </div>
@@ -133,8 +138,12 @@ export default function PrensaPage() {
         ) : visible.length === 0 ? (
           <div className="rounded-[3rem] bg-slate-50 py-20 text-center dark:bg-slate-900">
             <Search className="mx-auto mb-6 h-16 w-16 text-slate-300" />
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white">No se encontraron resultados</h3>
-            <p className="mt-2 text-slate-500">Intente ajustar los filtros de busqueda.</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+              <TranslateText text="No se encontraron resultados" />
+            </h3>
+            <p className="mt-2 text-slate-500">
+              <TranslateText text="Intente ajustar los filtros de busqueda." />
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
@@ -217,7 +226,7 @@ function PressCard({ item, index }: { item: PressItem; index: number }) {
               </div>
               {featured && (
                 <div className="absolute right-6 top-6 rounded-full border border-white/20 bg-slate-950/55 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
-                  Destacado
+                  <TranslateText text="Destacado" />
                 </div>
               )}
             </div>
@@ -233,21 +242,21 @@ function PressCard({ item, index }: { item: PressItem; index: number }) {
                 featured ? "line-clamp-3 text-3xl lg:text-4xl" : "line-clamp-2 text-2xl"
               }`}
             >
-              {item.title}
+              <TranslateText text={item.title} />
             </h3>
             <p
               className={`mb-8 flex-1 font-medium leading-relaxed text-slate-500 dark:text-slate-400 ${
                 featured ? "line-clamp-4 max-w-3xl text-base" : "line-clamp-3 text-sm"
               }`}
             >
-              {item.excerpt}
+              <TranslateText text={item.excerpt || ""} />
             </p>
             <div
               className={`flex items-center gap-2 border-t pt-6 text-[10px] font-black uppercase tracking-widest text-blue-600 ${
                 featured ? "border-blue-100 dark:border-blue-900/40" : "border-slate-100 dark:border-slate-800"
               }`}
             >
-              Leer Comunicado
+              <TranslateText text="Leer Comunicado" />
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </div>
           </div>

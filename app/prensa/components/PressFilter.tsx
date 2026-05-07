@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Search, Calendar, X, Filter, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TranslateText } from "@/components/TranslateText";
+import { useTranslatedString } from "@/lib/hooks/useTranslatedString";
 
 interface PressItem {
   id: string;
@@ -23,6 +24,8 @@ interface PressFilterProps {
 export default function PressFilter({ press, onFilter, totalCount, filteredCount }: PressFilterProps) {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("");
+  const searchPlaceholder = useTranslatedString("Buscar por título o contenido...");
+  const allYearsLabel = useTranslatedString("Todos los años");
 
   // Get unique years sorted descending
   const years = Array.from(
@@ -82,7 +85,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
             />
             <input
               type="text"
-              placeholder="Buscar por título o contenido..."
+              placeholder={searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-12 pr-12 py-3.5 rounded-xl border bg-white dark:bg-slate-900/50 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-slate-200 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-500/30 outline-none transition-all duration-300 placeholder:text-gray-400 dark:placeholder:text-slate-500"
@@ -113,7 +116,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
               onChange={(e) => setYear(e.target.value)}
               className="w-full pl-12 pr-10 py-3.5 rounded-xl border bg-white dark:bg-slate-900/50 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-slate-200 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-500/30 outline-none transition-all duration-300 appearance-none cursor-pointer font-medium"
             >
-              <option value="">Todos los años</option>
+              <option value="">{allYearsLabel}</option>
               {years.map((y) => (
                 <option key={y} value={y}>
                   {y}
@@ -171,7 +174,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
               >
                 <Zap size={18} className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
                 <span className="text-sm text-gray-600 dark:text-slate-300">
-                  Mostrando{" "}
+                  <TranslateText text="Mostrando" />{" "}
                   <motion.span 
                     className="font-bold text-blue-600 dark:text-blue-400"
                     key={filteredCount}
@@ -180,7 +183,7 @@ export default function PressFilter({ press, onFilter, totalCount, filteredCount
                   >
                     {filteredCount}
                   </motion.span>{" "}
-                  de{" "}
+                  <TranslateText text="de" />{" "}
                   <span className="font-bold text-gray-900 dark:text-white">
                     {totalCount}
                   </span>{" "}
