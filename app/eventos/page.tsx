@@ -7,6 +7,7 @@ import Section from '@/app/components/Section';
 import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
 import SpotlightCTA from '@/app/components/SpotlightCTA';
+import { apiClient } from '@/lib/api/api-client';
 
 interface Evento {
   id: number;
@@ -27,9 +28,7 @@ export default function EventosPage() {
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const res = await fetch(`/api/eventos`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await apiClient.get('/api/eventos');
         if (Array.isArray(data)) {
           const mapped = data.map((it: any, idx: number) => {
             const pickString = (...keys: string[]) => {

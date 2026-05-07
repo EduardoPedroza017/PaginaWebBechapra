@@ -19,7 +19,6 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
   const [benefits, setBenefits] = useState<Array<{title:string,description?:string,icon?:string}>>([])
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const API = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => setHandle(initialHandle || ''), [initialHandle])
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
         if (result.success && result.data) setGalleryImages(result.data);
       }).catch(()=>{});
     }).catch(()=>{});
-  }, [galleryOpen, API])
+  }, [galleryOpen])
 
   function addBenefit() { setBenefits(prev => [...prev, { title: 'Nuevo beneficio', description: '' }]) }
   function updateBenefit(i:number, k:keyof typeof benefits[0], v:any) { setBenefits(prev=> prev.map((b,idx)=> idx===i ? {...b,[k]:v} : b)) }
@@ -39,7 +38,7 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
     e.preventDefault()
     const payload = { handle, heroTitle, heroSubtitle, heroImage, benefits }
     try{
-      const res = await fetch(`${API}/api/service_pages`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload), credentials: 'include' })
+      const res = await fetch(`/web/api/backend/admin/service_pages`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload), credentials: 'include' })
       const data = await res.json()
       if (res.ok){
         onCreated?.(data)
@@ -109,7 +108,7 @@ export const ServicePageForm: React.FC<Props> = ({ open, initialHandle, onClose,
             <div className="grid grid-cols-4 gap-2">
               {galleryImages.length===0 && <div>No hay imágenes</div>}
               {galleryImages.map(img=> (
-                <img key={img} src={`${API}/gallery/image/${encodeURIComponent(img)}`} className="w-full h-20 object-cover rounded cursor-pointer" onClick={()=>{ setHeroImage(`${API}/gallery/image/${encodeURIComponent(img)}`); setGalleryOpen(false)}} />
+                <img key={img} src={`/web/api/backend/gallery/image/${encodeURIComponent(img)}`} className="w-full h-20 object-cover rounded cursor-pointer" onClick={()=>{ setHeroImage(`/web/api/backend/gallery/image/${encodeURIComponent(img)}`); setGalleryOpen(false)}} />
               ))}
             </div>
             <div className="mt-2">

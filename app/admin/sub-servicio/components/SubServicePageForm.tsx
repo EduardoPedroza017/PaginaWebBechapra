@@ -123,7 +123,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
     const timer = window.setTimeout(async () => {
       setCheckingHandle(true)
       try {
-        const res = await fetch(`${API}/api/sub_service_pages/${encodeURIComponent(handle.trim())}`)
+        const res = await fetch(`/web/api/backend/admin/sub_service_pages/${encodeURIComponent(handle.trim())}`, { credentials: 'include' })
         if (res.ok) {
           setHandleAvailable(false)
         } else {
@@ -145,7 +145,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
     const payload = { handle: finalHandle, heroTitle, heroSubtitle, heroImage, benefits, subservice_id: subserviceId }
 
     try {
-      const check = await fetchWithErrorHandling(`${API}/api/sub_service_pages/${encodeURIComponent(finalHandle)}`)
+      const check = await fetchWithErrorHandling(`/web/api/backend/admin/sub_service_pages/${encodeURIComponent(finalHandle)}`, { credentials: 'include' })
       if (check.ok) {
         const existing = await check.json()
         const open = window.confirm('El handle "' + finalHandle + '" ya existe. ¿Quieres abrir la página existente?')
@@ -156,10 +156,11 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
         return
       }
 
-      const res = await fetchWithErrorHandling(`${API}/api/sub_service_pages`, {
+      const res = await fetchWithErrorHandling(`/web/api/backend/admin/sub_service_pages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
 
       if (res.ok) {
@@ -168,7 +169,7 @@ const SubServicePageForm: React.FC<Props> = ({ open, initialHandle, subserviceId
       } else {
         const err = await res.json()
         if (err.error && err.error.toLowerCase().includes('handle ya existe')) {
-          const listRes = await fetchWithErrorHandling(`${API}/api/sub_service_pages` + (subserviceId ? `?subservice_id=${encodeURIComponent(subserviceId)}` : ''))
+          const listRes = await fetchWithErrorHandling(`/web/api/backend/admin/sub_service_pages` + (subserviceId ? `?subservice_id=${encodeURIComponent(subserviceId)}` : ''), { credentials: 'include' })
           if (listRes.ok) {
             const pages = await listRes.json()
             const handles = pages.map((p: any) => p.handle)

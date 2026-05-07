@@ -48,13 +48,13 @@ export default function PressCards() {
   useEffect(() => {
     const fetchPress = async () => {
       try {
-        const data = await apiClient.get('/api/eventos');
-        // Normalize response: accept array or paginated object { items, data, results }
-        const items = Array.isArray(data)
-          ? data
-          : (data.items || data.data || data.results || []);
+        const data = await apiClient.get('/api/press');
+        const pressPayload = (data as { data?: { items?: unknown[] } })?.data;
+        const items: Record<string, unknown>[] = Array.isArray(pressPayload?.items)
+          ? (pressPayload.items as Record<string, unknown>[])
+          : [];
 
-        const normalized = (Array.isArray(items) ? items : []).map((p: Record<string, unknown>, index: number) => {
+        const normalized = items.map((p, index: number) => {
           const pickString = (...keys: string[]) => {
             for (const key of keys) {
               const value = p[key];
@@ -63,25 +63,22 @@ export default function PressCards() {
             return '';
           };
 
-          const rawImage = pickString('imagen', 'image', 'foto', 'file_url', 'image_url');
+          const rawImage = pickString('file_url', 'image_url', 'imagen', 'image', 'foto');
           const imageStr = rawImage ? String(rawImage) : '';
-          const status = p['status'] || p['active'] || p['estado'];
 
           return {
-            id: String(p['id'] || p['_id'] || `event-${index}`),
-            title: pickString('titulo', 'title', 'nombre'),
-            date: pickString('fecha_hora', 'fecha', 'date'),
-            excerpt: pickString('descripcion', 'description', 'summary', 'excerpt'),
-            link: '/eventos',
+            id: String(p['id'] || p['_id'] || `press-${index}`),
+            title: pickString('title', 'titulo', 'nombre'),
+            date: pickString('date', 'fecha_hora', 'fecha'),
+            excerpt: pickString('excerpt', 'description', 'descripcion', 'summary'),
+            link: pickString('link') || '/prensa',
             image_url: imageStr,
-            status,
           } as PressItem;
         });
 
-        const activeOnly = normalized.filter((item: any) => item.status === 'active' || item.status === true || String(item.status) === 'true');
-        setPress(activeOnly.slice(0, 3));
+        setPress(normalized.slice(0, 3));
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error('Error fetching press:', error);
       } finally {
         setLoading(false);
       }
@@ -110,10 +107,10 @@ export default function PressCards() {
             transition={{ duration: 0.5 }}
           >
             <span className="inline-block px-4 py-2 mb-4 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full">
-              <TranslateText text="Calendario" />
+              <TranslateText text="Comunicados" />
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-              <TranslateText text="Eventos Destacados" />
+              <TranslateText text="Prensa Destacada" />
             </h2>
           </motion.div>
         </div>
@@ -122,10 +119,10 @@ export default function PressCards() {
           <PressSkeleton />
         ) : press.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">📅</div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              <TranslateText text="No hay eventos disponibles" />
-            </h3>
+              <div className="text-6xl mb-4">📰</div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                <TranslateText text="No hay comunicados disponibles" />
+              </h3>
             <p className="text-slate-500 dark:text-slate-400 text-center">
               <TranslateText text="Por favor, intenta más tarde" />
             </p>
@@ -142,7 +139,7 @@ export default function PressCards() {
                     className={`group ${index === 0 ? "md:col-span-2 lg:col-span-2" : ""}`}
                   >
                     <a
-                      href={item.link || '/eventos'}
+                        href={item.link || '/prensa'}
                       className={`block overflow-hidden rounded-3xl transition-all duration-500 ${
                         index === 0
                           ? "bg-linear-to-br from-white via-blue-50/50 to-white shadow-2xl shadow-blue-100/80 dark:border dark:border-blue-800/40 dark:bg-slate-800/90"
@@ -151,7 +148,7 @@ export default function PressCards() {
                     >
                       <div className={`relative overflow-hidden ${index === 0 ? "h-72 lg:h-80" : "h-48"}`}>
                         {item.image_url ? (
-                          <img src={String(item.image_url)} alt={`Imagen del evento: ${item.title}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                           <img src={String(item.image_url)} alt={`Imagen del comunicado: ${item.title}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                         ) : (
                           <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center" aria-hidden="true">
                             <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
@@ -163,7 +160,7 @@ export default function PressCards() {
                         </div>
                         {index === 0 && (
                           <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-slate-950/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
-                            Evento clave
+                            Comunicado clave
                           </div>
                         )}
                       </div>
@@ -173,7 +170,7 @@ export default function PressCards() {
                         <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-xl"} font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors`}>{item.title}</h3>
                         <p className={`${index === 0 ? "max-w-2xl text-base line-clamp-4" : "line-clamp-3"} text-slate-600 dark:text-slate-300 mb-4 grow`}>{item.excerpt}</p>
                         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">Ver evento
+                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">Ver comunicado
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                           </span>
                         </div>
@@ -192,10 +189,10 @@ export default function PressCards() {
           className="text-center mt-12"
         >
           <Link
-            href="/eventos"
+            href="/prensa"
             className="inline-flex items-center px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-lg hover:shadow-xl"
           >
-            <TranslateText text="Ver todos los eventos" />
+            <TranslateText text="Ver todos los comunicados" />
             <svg
               className="w-5 h-5 ml-2"
               fill="none"

@@ -255,7 +255,7 @@ export function InternshipsWizardForm({ isOpen, onClose, onCreated, theme }: Int
     }
 
     try {
-      const res = await fetch(`${API}/api/internships`, {
+      const res = await fetch(`/web/api/backend/admin/internships`, {
         method: "POST",
         body: form,
         headers: { ...baseHeaders, ...bypassHeaders },

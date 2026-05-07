@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { 
   Calendar, 
   MapPin, 
@@ -141,11 +141,28 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [currentStepId, setCurrentStepId] = useState("basic");
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const isEditing = !!initialData?.id;
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setData({
+      titulo: initialData?.titulo || "",
+      descripcion: initialData?.descripcion || "",
+      fecha_hora: initialData?.fecha_hora || "",
+      ubicacion: initialData?.ubicacion || "",
+      categoria: initialData?.categoria || CATEGORIAS[0].value,
+      estado: initialData?.estado !== false,
+      imagen: null,
+      preview: initialData?.imagen || null,
+      capacidad: initialData?.capacidad || "",
+      precio: initialData?.precio || "",
+      organizador: initialData?.organizador || "",
+    });
+  }, [isOpen, initialData]);
 
   const showMessage = useCallback((type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
@@ -179,9 +196,8 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
     reader.readAsDataURL(file);
   };
 
-  // Validation by step
-  const validateStep = useCallback(async () => {
-    switch (currentStepId) {
+  const validateStepById = useCallback(async (stepId: string) => {
+    switch (stepId) {
       case "basic":
         if (!data.titulo.trim()) {
           return { valid: false, error: "El título es requerido" };
@@ -215,7 +231,15 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
       default:
         return { valid: true };
     }
-  }, [data, currentStepId]);
+  }, [data]);
+
+  const wizardSteps = useMemo(
+    () => EVENTOS_WIZARD_STEPS.map((step) => ({
+      ...step,
+      validation: () => validateStepById(step.id),
+    })),
+    [validateStepById]
+  );
 
   // Handle form submission
   const handleSubmit = async () => {
@@ -233,45 +257,30 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
     if (data.organizador) form.append("organizador", data.organizador);
     if (data.imagen) form.append("imagen", data.imagen);
 
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
-    const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
-    const baseHeaders: Record<string, string> = {
-      ...(userEmail ? { "X-User": userEmail } : {}),
-      "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
-    };
-    const bypassHeaders: Record<string, string> = {};
-    if (isLocal) {
-      bypassHeaders["X-Bypass-Login"] = 'true';
-      bypassHeaders["X-Role"] = 'superadmin';
-      bypassHeaders["X-Admin"] = 'true';
-    }
-
     try {
-      const method = isEditing ? "PUT" : "POST";
-      const url = isEditing
-        ? `${API}/api/events/${initialData?.id}`
-        : `${API}/api/events`;
+      const { adminApi } = await import('../utils/admin-api');
 
-      const res = await fetch(url, {
-        method,
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
-        credentials: 'include',
-      });
+      if (isEditing) {
+        if (!initialData?.id) {
+          throw new Error('Falta el identificador del evento.');
+        }
 
-      const body = await res.json();
-
-      if (res.ok) {
+        await adminApi.updateEvento(initialData.id, form);
         showMessage('success', isEditing ? 'Evento actualizado exitosamente' : 'Evento creado exitosamente');
-        onSaved(body);
+        onSaved({ id: initialData.id });
         onClose();
       } else {
-        const errorMsg = body.error || body.message || 'Error desconocido';
-        showMessage('error', `Error al guardar evento: ${errorMsg}`);
+        const created = await adminApi.createEvento(form);
+        showMessage('success', 'Evento creado exitosamente');
+        onSaved((created as Record<string, unknown>) || {});
+        onClose();
       }
-    } catch {
-      showMessage('error', 'Error al guardar el evento');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Error al guardar el evento';
+      showMessage('error', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -279,8 +288,6 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
 
   // Render step content
   const renderStep = useCallback((step: WizardStep, _currentStep: number) => {
-    setCurrentStepId(step.id);
-    
     switch (step.id) {
       case "basic":
         return (
@@ -539,7 +546,7 @@ export function EventosWizardForm({ isOpen, onClose, onSaved, initialData, theme
         onClose={onClose}
         title={isEditing ? "Editar Evento" : "Crear Nuevo Evento"}
         subtitle="Completa los pasos para guardar el evento"
-        steps={EVENTOS_WIZARD_STEPS}
+        steps={wizardSteps}
         onSubmit={handleSubmit}
         renderStep={renderStep}
         loading={loading}

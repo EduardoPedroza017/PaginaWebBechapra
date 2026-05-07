@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useMemo } from "react";
 import { 
   FileText, 
   Calendar, 
@@ -102,7 +102,6 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [currentStepId, setCurrentStepId] = useState("basic");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -147,9 +146,8 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
     }
   };
 
-  // Validation by step
-  const validateStep = useCallback(async () => {
-    switch (currentStepId) {
+  const validateStepById = useCallback(async (stepId: string) => {
+    switch (stepId) {
       case "basic":
         if (!data.title.trim()) {
           return { valid: false, error: "El título es requerido" };
@@ -180,7 +178,15 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
       default:
         return { valid: true };
     }
-  }, [data, currentStepId]);
+  }, [data]);
+
+  const wizardSteps = useMemo(
+    () => PRESS_WIZARD_STEPS.map((step) => ({
+      ...step,
+      validation: () => validateStepById(step.id),
+    })),
+    [validateStepById]
+  );
 
   // Handle form submission
   const handleSubmit = async () => {
@@ -194,40 +200,17 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
     form.append("published", String(data.published));
     if (data.file) form.append("file", data.file);
 
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
-    const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
-    const baseHeaders: Record<string, string> = {
-      ...(userEmail ? { "X-User": userEmail } : {}),
-      "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
-    };
-    const bypassHeaders: Record<string, string> = {};
-    if (isLocal) {
-      bypassHeaders["X-Bypass-Login"] = 'true';
-      bypassHeaders["X-Role"] = 'superadmin';
-      bypassHeaders["X-Admin"] = 'true';
-    }
-
     try {
-      const res = await fetch(`${API}/api/press`, {
-        method: "POST",
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
-        credentials: 'include',
-      });
-
-      const body = await res.json();
-
-      if (res.ok) {
+      const { adminApi } = await import('../utils/admin-api');
+      const body = await adminApi.createPress(form);
+      if (body) {
         showMessage('success', 'Comunicado creado exitosamente');
-        onCreated(body);
+        onCreated((body as Record<string, unknown>) || {});
         onClose();
-      } else {
-        const errorMsg = body.error || body.message || 'Error desconocido';
-        showMessage('error', `Error al crear comunicado: ${errorMsg}`);
       }
-    } catch {
-      showMessage('error', 'Error al crear el comunicado');
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Error al crear el comunicado';
+      showMessage('error', `Error al crear comunicado: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -235,8 +218,6 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
 
   // Render step content
   const renderStep = useCallback((step: WizardStep, _currentStep: number) => {
-    setCurrentStepId(step.id);
-    
     switch (step.id) {
       case "basic":
         return (
@@ -437,7 +418,7 @@ export function PressWizardForm({ isOpen, onClose, onCreated, theme }: PressWiza
         onClose={onClose}
         title="Crear Nuevo Comunicado"
         subtitle="Completa los pasos para publicar el comunicado"
-        steps={PRESS_WIZARD_STEPS}
+        steps={wizardSteps}
         onSubmit={handleSubmit}
         renderStep={renderStep}
         loading={loading}

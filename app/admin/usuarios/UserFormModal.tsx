@@ -9,9 +9,18 @@ interface UserFormProps {
   onSubmit: (data: { email: string; password?: string; roles?: string[]; active?: boolean }) => void;
   onClose: () => void;
   isEdit?: boolean;
+  canManageRoles?: boolean;
+  canAssignSuperadmin?: boolean;
 }
 
-export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormProps) {
+export function UserFormModal({
+  initial,
+  onSubmit,
+  onClose,
+  isEdit,
+  canManageRoles = false,
+  canAssignSuperadmin = false,
+}: UserFormProps) {
   const [email, setEmail] = useState(initial?.email || "");
   const [password, setPassword] = useState("");
   const [roles, setRoles] = useState<string[]>(initial?.roles || (initial?.role ? [initial.role] : []));
@@ -22,9 +31,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
   const availableRoles = ["superadmin", "admin", "editor", "viewer", "moderator"];
 
   // Obtener rol del admin actual para limitar opciones
-  const currentAdminRole = typeof window !== 'undefined' ? (sessionStorage.getItem('role') || '') : '';
-  const isSuperAdmin = currentAdminRole === 'superadmin';
-  const filteredRoles = availableRoles.filter(r => isSuperAdmin ? true : r !== 'superadmin');
+  const filteredRoles = availableRoles.filter(r => canAssignSuperadmin ? true : r !== 'superadmin');
 
   const getRoleDisplay = (role: string) => {
     switch (role) {
@@ -54,7 +61,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
   const handleAddRole = (val: string) => {
     if (!val) return;
     if (!roles.includes(val)) {
-      if (val === 'superadmin' && !isSuperAdmin) return;
+      if (val === 'superadmin' && !canAssignSuperadmin) return;
       setRoles([...roles, val]);
     }
   };
@@ -164,7 +171,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
                   type="button" 
                   className="ml-1 text-blue-500 hover:text-blue-700 dark:hover:text-blue-300"
                   onClick={() => handleRemoveRole(r)}
-                  disabled={!isSuperAdmin}
+                  disabled={!canManageRoles}
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -180,7 +187,7 @@ export function UserFormModal({ initial, onSubmit, onClose, isEdit }: UserFormPr
               handleAddRole(e.target.value);
               e.target.value = "";
             }}
-            disabled={!isSuperAdmin}
+            disabled={!canManageRoles}
           >
             <option value="" disabled>
               <TranslateText text="Seleccionar rol" asOption={true} />

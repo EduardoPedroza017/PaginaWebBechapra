@@ -208,17 +208,6 @@ export function JobsWizardForm({ isOpen, onClose, onCreated, theme }: JobsWizard
   // Handle form submission
   const handleSubmit = async () => {
     setLoading(true);
-    
-    const form = new FormData();
-    form.append("title", data.title);
-    form.append("description", data.description);
-    form.append("requirements", data.requirements);
-    form.append("location", data.location);
-    form.append("modality", data.modality);
-    form.append("salary", data.salary);
-    form.append("isActive", String(data.isActive));
-    if (data.image_url) form.append("image_url", data.image_url);
-    if (data.imageFile) form.append("image", data.imageFile);
 
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
     const API = process.env.NEXT_PUBLIC_API_URL || '';
@@ -235,10 +224,21 @@ export function JobsWizardForm({ isOpen, onClose, onCreated, theme }: JobsWizard
     }
 
     try {
-      const res = await fetch(`${API}/api/jobs`, {
+      const payload = {
+        title: data.title,
+        description: data.description,
+        requirements: data.requirements,
+        location: data.location,
+        employment_type: data.modality,
+        posted_date: new Date().toISOString().split("T")[0],
+        is_active: data.isActive,
+        salary_range: data.salary ? { label: data.salary } : {},
+        image_url: data.image_url,
+      };
+      const res = await fetch(`/web/api/backend/admin/jobs`, {
         method: "POST",
-        body: form,
-        headers: { ...baseHeaders, ...bypassHeaders },
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", ...baseHeaders, ...bypassHeaders },
         credentials: 'include',
       });
 

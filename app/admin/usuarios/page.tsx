@@ -13,6 +13,7 @@ import { UserFormModal } from "./UserFormModal";
 import UserWizardForm from "./UserWizardForm";
 import { DeleteUserModal } from "./DeleteUserModal";
 import UserDetailsModal from "./UserDetailsModal";
+import { adminApi, AdminSessionUser } from "../utils/admin-api";
 
 import AdminPageHeader from "../components/ui/AdminPageHeader";
 import AdminTabs, { TabItem } from "../components/ui/AdminTabs";
@@ -23,6 +24,7 @@ export interface Usuario {
   email: string;
   role: string | string[];
   roles?: string[];
+  permissions?: string[];
   bloqueado?: boolean;
 }
 
@@ -38,6 +40,7 @@ export default function UsuariosPage() {
   const [users, setUsers] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentAdmin, setCurrentAdmin] = useState<AdminSessionUser | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState<Usuario | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -53,6 +56,13 @@ export default function UsuariosPage() {
     list: false,
     stats: false,
   });
+
+  const currentAdminRoles = currentAdmin?.roles || (currentAdmin?.role ? [currentAdmin.role] : []);
+  const currentAdminPermissions = currentAdmin?.permissions || [];
+  const isSuperAdmin = currentAdminRoles.includes('superadmin');
+  const canReadUsers = isSuperAdmin || currentAdminPermissions.includes('users:read');
+  const canManageUsers = isSuperAdmin || currentAdminPermissions.includes('users:manage');
+  const canBlockUsers = isSuperAdmin;
 
   const handleTabChange = async (tabId: TabId) => {
     setLoadingTabs((prev) => ({ ...prev, [tabId]: true }));
@@ -80,45 +90,17 @@ export default function UsuariosPage() {
     setError("");
     
     try {
-      const apiBase = "/api/admin";
-      const storedRole = sessionStorage.getItem("role") || "";
-      const storedAdmin = sessionStorage.getItem("admin") === "true";
-      
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
-      
-      const headers: Record<string, string> = { 
-        'X-Role': storedRole, 
-        'X-Admin': storedAdmin.toString(),
-        'Content-Type': 'application/json'
-      };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      const res = await fetch(`${apiBase}/users`, {
-        method: "GET",
-        headers,
-        credentials: 'include'
-      });
-      
-      const data = await res.json();
-      let userList = [];
-      
-      if (res.ok && data.items && Array.isArray(data.items)) {
-        userList = data.items;
-      } else if (res.ok && data.ok && Array.isArray(data.users)) {
-        userList = data.users;
-      } else if (res.ok && Array.isArray(data)) {
-        userList = data;
-      } else {
-        setError(data.message || data.error || "No se pudieron obtener los usuarios.");
-        return;
-      }
+      const data = await adminApi.getUsers();
+      const payload = data as { data?: { items?: Usuario[] }; items?: Usuario[]; users?: Usuario[] };
+      const userList = payload.data?.items || payload.items || payload.users || [];
       
       setUsers(userList.slice().reverse());
-    } catch {
-      setError("Error de conexión con el servidor.");
+    } catch (error) {
+      const message =
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message || "")
+          : "";
+      setError(message || "Error de conexión con el servidor.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -128,43 +110,34 @@ export default function UsuariosPage() {
   // Fetch users on mount
   useEffect(() => {
     async function validateAndFetch() {
-      const storedRoleRaw = sessionStorage.getItem("role") || "";
-      const storedAdminRaw = sessionStorage.getItem("admin") || "false";
-      const storedAdmin = String(storedAdminRaw).toLowerCase() === "true";
-      const roleLower = String(storedRoleRaw).toLowerCase();
-      const isSuperLocal = roleLower === 'superadmin' || roleLower.includes('superadmin');
-
-      if (isSuperLocal && storedAdmin) {
-        fetchUsers();
-        return;
-      }
-
       try {
-        const res = await fetch(`/api/admin/check`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ admin: storedAdmin, role: storedRoleRaw })
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          const backendAdmin = Boolean(data.admin);
-          const backendRole = data.role || '';
-          const backendIsSuper = String(backendRole).toLowerCase().includes('superadmin');
-          
-          if (backendAdmin && backendIsSuper) {
-            sessionStorage.setItem('admin', String(backendAdmin));
-            sessionStorage.setItem('role', backendRole);
-            fetchUsers();
-            return;
-          }
+        const response = await adminApi.getCurrentAdmin();
+
+        if (!response?.ok || !response.user) {
+          router.push('/admin');
+          return;
         }
+
+        const user = response.user;
+        const roles = user.roles || (user.role ? [user.role] : []);
+        const permissions = user.permissions || [];
+        const superadmin = roles.includes('superadmin');
+        const canRead = superadmin || permissions.includes('users:read');
+        const adminFlag = superadmin || roles.includes('admin');
+
+        if (!canRead) {
+          router.push('/admin');
+          return;
+        }
+
+        setCurrentAdmin(user);
+        sessionStorage.setItem('admin', String(adminFlag));
+        sessionStorage.setItem('role', roles[0] || user.role || '');
+        fetchUsers();
       } catch (err) {
         console.warn('Error verificando sesión en backend', err);
+        router.push('/admin');
       }
-
-      router.push('/admin');
     }
 
     validateAndFetch();
@@ -190,12 +163,14 @@ export default function UsuariosPage() {
   });
 
   const handleAdd = () => { 
+    if (!canManageUsers) return;
     setEditUser(null); 
     setEditingWizardUser(null);
     setShowForm(true); 
   };
 
   const handleEdit = (user: Usuario) => { 
+    if (!canManageUsers) return;
     setEditUser(user); 
     setEditingWizardUser(user);
     setShowForm(true); 
@@ -209,106 +184,88 @@ export default function UsuariosPage() {
   };
 
   const handleDelete = (user: Usuario) => { 
+    if (!canManageUsers) return;
     setDeleteUser(user); 
   };
 
   const confirmDeleteUser = async () => {
     if (!deleteUser) return;
+    if (!canManageUsers) {
+      alert("No tienes permisos para eliminar usuarios.");
+      return;
+    }
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiBase}/api/admin/users/${encodeURIComponent(deleteUser.email)}`, {
-        method: "DELETE",
-        headers: {
-          'X-Role': sessionStorage.getItem("role") || "",
-          'X-Admin': (sessionStorage.getItem("admin") === "true").toString(),
-          'X-User': sessionStorage.getItem("user_email") || ""
-        },
-        credentials: 'include',
-      });
-
-      const data = await res.json();
-      if (data.success || res.ok) {
-        setUsers((prev: Usuario[]) => prev.filter((u: Usuario) => u.email !== deleteUser.email));
-        setDeleteUser(null);
-      } else {
-        alert(data.message || data.error || "Error eliminando usuario");
-      }
-    } catch {
-      alert("Error eliminando usuario");
+      await adminApi.deleteUser(deleteUser.email);
+      setUsers((prev: Usuario[]) => prev.filter((u: Usuario) => u.email !== deleteUser.email));
+      setDeleteUser(null);
+    } catch (error) {
+      const message =
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message || "")
+          : "";
+      alert(message || "Error eliminando usuario");
     } finally {
       setProcessing(false);
     }
   };
 
   const handleFormSubmit = async (form: { email: string; password?: string; roles?: string[]; active?: boolean }) => {
+    if (!canManageUsers) {
+      alert("No tienes permisos para gestionar usuarios.");
+      return;
+    }
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL;
-      const method = editUser ? "PUT" : "POST";
-      const url = editUser
-        ? `${apiBase}/api/admin/users/${encodeURIComponent(form.email)}`
-        : `${apiBase}/api/admin/users/`;
-      
-      const payload = { ...form };
-      const isSuperLocal = (sessionStorage.getItem('role') === 'superadmin' && sessionStorage.getItem('admin') === 'true');
-      
-      if (!isSuperLocal) { 
+      const payload = {
+        ...form,
+        roles: form.roles?.filter((role) => canBlockUsers || role !== 'superadmin'),
+      };
+
+      if (!payload.roles?.length) { 
         delete payload.roles; 
       }
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Role': sessionStorage.getItem("role") || "",
-          'X-Admin': (sessionStorage.getItem("admin") === "true").toString()
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
-      if (res.ok && data.ok) { 
-        setShowForm(false); 
-        fetchUsers(); 
-      } else { 
-        alert(data.message || "No se pudo guardar el usuario."); 
+      if (editUser) {
+        await adminApi.updateUser(form.email, payload);
+      } else {
+        await adminApi.createUser(payload);
       }
-    } catch { 
-      alert("Error de conexión con el servidor."); 
+
+      setShowForm(false); 
+      fetchUsers(); 
+    } catch (error) { 
+      const message =
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message || "")
+          : "";
+      alert(message || "Error de conexión con el servidor."); 
     } finally { 
       setProcessing(false); 
     }
   };
 
   const handleBlock = async (user: Usuario, newState: boolean) => {
+    if (!canBlockUsers) {
+      alert("Solo un superadmin puede bloquear usuarios.");
+      return;
+    }
     setProcessing(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiBase}/api/admin/block_user`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Role': sessionStorage.getItem("role") || "",
-          'X-Admin': (sessionStorage.getItem("admin") === "true").toString()
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email: user.email, block: newState })
-      });
-      
-      const data = await res.json();
-      if (res.status === 403) {
-        alert(data.error || 'No autorizado. Se requiere superadmin para bloquear usuarios.');
-      } else if (res.ok && data.ok) {
+      const data = await adminApi.blockUser(user.email, newState);
+      if ((data as { ok?: boolean }).ok) {
         setUsers((users: Usuario[]) => users.map((u: Usuario) => 
           u.email === user.email ? { ...u, bloqueado: newState } : u
         ));
       } else {
-        alert(data.error || "No se pudo actualizar el estado de bloqueo.");
+        alert((data as { error?: string }).error || "No se pudo actualizar el estado de bloqueo.");
       }
-    } catch { 
-      alert("Error de conexión con el servidor."); 
+    } catch (error) { 
+      const message =
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message || "")
+          : "";
+      alert(message || "Error de conexión con el servidor."); 
     } finally { 
       setProcessing(false); 
     }
@@ -337,7 +294,7 @@ export default function UsuariosPage() {
         theme={themeStrict}
         actions={{
           refresh: { onClick: handleRefresh, loading: refreshing },
-          add: { onClick: handleAdd, label: 'Agregar Usuario', loading: processing }
+          ...(canManageUsers ? { add: { onClick: handleAdd, label: 'Agregar Usuario', loading: processing } } : {})
         }}
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Usuarios" }]}
       />
@@ -365,6 +322,16 @@ export default function UsuariosPage() {
               }`}>
                 <p className={themeStrict === 'dark' ? 'text-red-400' : 'text-red-600'}>
                   {error}
+                </p>
+              </div>
+            )}
+
+            {!error && canReadUsers && !canManageUsers && (
+              <div className={`rounded-lg border p-4 mb-6 ${
+                themeStrict === 'dark' ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-200'
+              }`}>
+                <p className={themeStrict === 'dark' ? 'text-blue-300' : 'text-blue-700'}>
+                  Solo tienes acceso de lectura a usuarios. Puedes consultar el listado, pero no crear, editar, eliminar ni bloquear.
                 </p>
               </div>
             )}
@@ -418,6 +385,8 @@ export default function UsuariosPage() {
                   onBlock={handleBlock}
                   onViewDetails={setDetailsUser}
                   theme={themeStrict}
+                  canManageUsers={canManageUsers}
+                  canBlockUsers={canBlockUsers}
                 />
               </>
             )}
@@ -474,6 +443,8 @@ export default function UsuariosPage() {
                 active: !editingWizardUser.bloqueado,
               } : undefined}
               theme={themeStrict}
+              canManageRoles={canManageUsers}
+              canAssignSuperadmin={canBlockUsers}
             />
           ) : (
             <UserFormModal
@@ -484,6 +455,8 @@ export default function UsuariosPage() {
               } : undefined}
               isEdit={!!editUser} 
               onSubmit={handleFormSubmit} 
+              canManageRoles={canManageUsers}
+              canAssignSuperadmin={canBlockUsers}
               onClose={() => setShowForm(false)} 
             />
           )}

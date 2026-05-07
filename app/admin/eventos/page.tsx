@@ -32,7 +32,7 @@ const EventosPage: React.FC = () => {
   const { theme: maybeTheme, resolvedTheme, themeReady } = useTheme();
   const themeStrict: 'light' | 'dark' = resolvedTheme === 'dark' ? 'dark' : 'light';
   
-  const { eventos, loading, error, createEvento, updateEvento, deleteEvento } = useEventos();
+  const { eventos, loading, error, createEvento, updateEvento, deleteEvento, fetchEventos } = useEventos();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("list");
@@ -55,7 +55,7 @@ const EventosPage: React.FC = () => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
+    fetchEventos().finally(() => setRefreshing(false));
   };
 
   useEffect(() => {
@@ -71,8 +71,9 @@ const EventosPage: React.FC = () => {
   };
 
   const handleEventoSaved = (savedEvento: Record<string, unknown>) => {
-    // Refresh will be handled by the useEventos hook
+    fetchEventos();
     setEditingWizardEvento(null);
+    setActiveTab("list");
   };
 
   const handleCloseWizard = () => {

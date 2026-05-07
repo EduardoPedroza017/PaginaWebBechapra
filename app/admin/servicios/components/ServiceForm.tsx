@@ -67,8 +67,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
 
   // Cargar service_pages para permitir asociación por handle
   useEffect(() => {
-    const API = (process.env.NEXT_PUBLIC_API_URL as string);
-    fetch(`${API}/api/service_pages`)
+    fetch(`/web/api/backend/admin/service_pages`, { credentials: 'include' })
       .then(res => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

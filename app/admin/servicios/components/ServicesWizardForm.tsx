@@ -134,8 +134,6 @@ export function ServicesWizardForm({
   const iconInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const API = process.env.NEXT_PUBLIC_API_URL || '';
-
   const showMessage = useCallback((type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 4000);
@@ -147,7 +145,7 @@ export function ServicesWizardForm({
 
   // Load service pages for handle selection
   useEffect(() => {
-    fetch(`${API}/api/service_pages`)
+    fetch(`/web/api/backend/admin/service_pages`, { credentials: 'include' })
       .then(res => res.json())
       .then((data: unknown) => {
         if (Array.isArray(data)) {
@@ -158,7 +156,7 @@ export function ServicesWizardForm({
         }
       })
       .catch(() => {});
-  }, [API]);
+  }, []);
 
   // Load gallery images
   useEffect(() => {
@@ -169,7 +167,7 @@ export function ServicesWizardForm({
         }).catch(() => {});
       }).catch(() => {});
     }
-  }, [data.galleryOpen, API]);
+  }, [data.galleryOpen]);
 
   // Initialize with existing data
   useEffect(() => {
@@ -287,24 +285,17 @@ export function ServicesWizardForm({
     };
 
     const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
     const baseHeaders: Record<string, string> = {
       ...(userEmail ? { "X-User": userEmail } : {}),
       "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
     };
-    const bypassHeaders: Record<string, string> = {};
-    if (isLocal) {
-      bypassHeaders["X-Bypass-Login"] = 'true';
-      bypassHeaders["X-Role"] = 'superadmin';
-      bypassHeaders["X-Admin"] = 'true';
-    }
 
     try {
       if (initialData?.id) {
         // Update existing service
-        const res = await fetch(`${API}/api/services/cards/${initialData.id}`, {
+        const res = await fetch(`/web/api/backend/admin/services/${initialData.id}`, {
           method: "PUT",
-          headers: { ...baseHeaders, ...bypassHeaders, "Content-Type": "application/json" },
+          headers: { ...baseHeaders, "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify(payload),
         });
@@ -320,9 +311,9 @@ export function ServicesWizardForm({
         }
       } else {
         // Create new service
-        const res = await fetch(`${API}/api/services/cards`, {
+        const res = await fetch(`/web/api/backend/admin/services`, {
           method: "POST",
-          headers: { ...baseHeaders, ...bypassHeaders, "Content-Type": "application/json" },
+          headers: { ...baseHeaders, "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify(payload),
         });
@@ -696,14 +687,14 @@ export function ServicesWizardForm({
                   key={img}
                   onClick={() => {
                     updateData({ 
-                      image: `${API}/gallery/image/${encodeURIComponent(img)}`,
+                      image: `/web/api/backend/gallery/image/${encodeURIComponent(img)}`,
                       galleryOpen: false 
                     });
                   }}
                   className="relative group"
                 >
                   <img
-                    src={`${API}/gallery/image/${encodeURIComponent(img)}`}
+                    src={`/web/api/backend/gallery/image/${encodeURIComponent(img)}`}
                     alt={img}
                     className={`
                       w-full h-20 object-cover rounded-lg border-2 transition-all

@@ -9,11 +9,10 @@ if (!BACKEND_URL) {
 export async function GET() {
   try {
     if (!BACKEND_URL) {
-      // Return an empty list when backend is not available
-      return NextResponse.json({ items: [] }, { status: 200 });
+      return NextResponse.json({ accepted: null }, { status: 200 });
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/cookies/list?limit=200`, {
+    const response = await fetch(`${BACKEND_URL}/api/cookies`, {
       headers: { 'Content-Type': 'application/json' },
     });
 

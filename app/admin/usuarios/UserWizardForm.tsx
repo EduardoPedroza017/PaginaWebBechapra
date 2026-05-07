@@ -22,6 +22,7 @@ import {
 } from "@/components/modals/WizardStep";
 import type { WizardStep } from "@/components/modals/FormWizardModal";
 import { TranslateText } from "@/components/TranslateText";
+import { adminApi } from "../utils/admin-api";
 
 // ============================================================================
 // Types
@@ -49,6 +50,8 @@ interface UserWizardFormProps {
   };
   /** Current theme */
   theme: "light" | "dark";
+  canManageRoles?: boolean;
+  canAssignSuperadmin?: boolean;
 }
 
 // ============================================================================
@@ -101,7 +104,15 @@ const USER_WIZARD_STEPS: WizardStep[] = [
 // UserWizardForm Component
 // ============================================================================
 
-export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }: UserWizardFormProps) {
+export function UserWizardForm({
+  isOpen,
+  onClose,
+  onSaved,
+  initialData,
+  theme,
+  canManageRoles = false,
+  canAssignSuperadmin = false,
+}: UserWizardFormProps) {
   const [data, setData] = useState<UserWizardData>({
     email: initialData?.email || "",
     password: "",
@@ -114,9 +125,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
   const [currentStepId, setCurrentStepId] = useState("account");
 
   // Obtener rol del admin actual para limitar opciones
-  const currentAdminRole = typeof window !== 'undefined' ? (sessionStorage.getItem("role") || '') : '';
-  const isSuperAdmin = currentAdminRole === 'superadmin';
-  const filteredRoles = AVAILABLE_ROLES.filter(r => isSuperAdmin ? true : r.value !== 'superadmin');
+  const filteredRoles = AVAILABLE_ROLES.filter((r) => canAssignSuperadmin ? true : r.value !== 'superadmin');
 
   const showMessage = useCallback((type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
@@ -185,49 +194,25 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
       payload.password = data.password;
     }
 
-    const userEmail = typeof window !== "undefined" ? sessionStorage.getItem("user_email") : null;
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
-    const isLocal = API.includes('localhost') || API.includes('127.0.0.1');
-    const baseHeaders: Record<string, string> = {
-      ...(userEmail ? { "X-User": userEmail } : {}),
-      "Authorization": `Bearer ${sessionStorage.getItem("auth_token") || ""}`
-    };
-    const bypassHeaders: Record<string, string> = {};
-    if (isLocal) {
-      bypassHeaders["X-Bypass-Login"] = 'true';
-      bypassHeaders["X-Role"] = 'superadmin';
-      bypassHeaders["X-Admin"] = 'true';
-    }
-
     try {
-      const method = isEditing ? "PUT" : "POST";
-      const url = isEditing
-        ? `${API}/api/admin/users/${encodeURIComponent(data.email)}`
-        : `${API}/api/admin/users/`;
+      const response = isEditing
+        ? await adminApi.updateUser(data.email, payload)
+        : await adminApi.createUser(payload);
 
-      const res = await fetch(url, {
-        method,
-        headers: { ...baseHeaders, ...bypassHeaders, "Content-Type": "application/json" },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      });
+      showMessage('success', isEditing ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
+      onSaved((response as { data?: Record<string, unknown> }).data || payload);
+      onClose();
+    } catch (error) {
+      const errorMsg =
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message || 'Error desconocido')
+          : 'Error desconocido';
 
-      const body = await res.json();
-
-      if (res.ok) {
-        showMessage('success', isEditing ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
-        onSaved(body);
-        onClose();
+      if (errorMsg.includes('permiso') || errorMsg.includes('autorizaci')) {
+        showMessage('error', 'No tienes permisos para esta acción.');
       } else {
-        const errorMsg = body.message || body.error || 'Error desconocido';
-        if (errorMsg.includes('permiso') || errorMsg.includes('autorizaci')) {
-          showMessage('error', 'No tienes permisos para esta acción.');
-        } else {
-          showMessage('error', `Error al guardar usuario: ${errorMsg}`);
-        }
+        showMessage('error', `Error al guardar usuario: ${errorMsg}`);
       }
-    } catch {
-      showMessage('error', 'Error al guardar el usuario');
     } finally {
       setLoading(false);
     }
@@ -236,7 +221,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
   // Role management
   const addRole = (role: string) => {
     if (role && !data.roles.includes(role)) {
-      if (role === 'superadmin' && !isSuperAdmin) return;
+      if (role === 'superadmin' && !canAssignSuperadmin) return;
       updateData({ roles: [...data.roles, role] });
     }
   };
@@ -247,8 +232,6 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
 
   // Render step content
   const renderStep = useCallback((step: WizardStep, _currentStep: number) => {
-    setCurrentStepId(step.id);
-    
     switch (step.id) {
       case "account":
         return (
@@ -312,7 +295,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
                           type="button"
                           onClick={() => removeRole(r)}
                           className="hover:opacity-70"
-                          disabled={!isSuperAdmin}
+                           disabled={!canManageRoles}
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -335,7 +318,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
                   addRole(e.target.value);
                   e.target.value = "";
                 }}
-                disabled={!isSuperAdmin}
+                disabled={!canManageRoles}
               >
                 <option value="" disabled>
                   <TranslateText text="Seleccionar rol" asOption={true} />
@@ -357,8 +340,8 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
             </StepSection>
             
             {/* Role Info */}
-            {isSuperAdmin && (
-              <div className={`p-3 rounded-lg border ${
+             {canAssignSuperadmin && (
+               <div className={`p-3 rounded-lg border ${
                 theme === "dark" ? "bg-slate-800/30 border-slate-700" : "bg-slate-50 border-slate-200"
               }`}>
                 <p className={`text-sm ${theme === "dark" ? "text-slate-400" : "text-slate-600"}`}>
@@ -451,7 +434,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
       default:
         return null;
     }
-  }, [data, theme, isEditing, isSuperAdmin]);
+   }, [data, theme, isEditing, canManageRoles, canAssignSuperadmin]);
 
   // Show toast message
   const ToastMessage = () => {
@@ -481,6 +464,7 @@ export function UserWizardForm({ isOpen, onClose, onSaved, initialData, theme }:
         steps={USER_WIZARD_STEPS}
         onSubmit={handleSubmit}
         renderStep={renderStep}
+        onStepChange={(stepIndex) => setCurrentStepId(USER_WIZARD_STEPS[stepIndex]?.id || "account")}
         loading={loading}
         submitLabel={isEditing ? "Guardar Cambios" : "Crear Usuario"}
         size="lg"

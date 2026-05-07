@@ -21,6 +21,8 @@ interface UserCardListProps {
   onBlock: (user: Usuario, newState: boolean) => void;
   onViewDetails: (user: Usuario) => void;
   theme?: 'light' | 'dark';
+  canManageUsers?: boolean;
+  canBlockUsers?: boolean;
 }
 
 const roleLabels: Record<string, string> = {
@@ -40,7 +42,9 @@ export default function UserCardList({
   onDelete,
   onBlock,
   onViewDetails,
-  theme = 'light'
+  theme = 'light',
+  canManageUsers = false,
+  canBlockUsers = false,
 }: UserCardListProps) {
   const isDark = theme === 'dark';
   
@@ -119,33 +123,39 @@ export default function UserCardList({
 
               {/* Actions */}
               <div className="flex gap-2 mt-2">
-                <button 
-                  onClick={() => onEdit(user)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
-                    isDark 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
-                  }`}
-                >
-                  <Edit2 className="w-4 h-4" />
-                  <span><TranslateText text="Editar" /></span>
-                </button>
-                
-                <button 
-                  onClick={() => onDelete(user)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
-                    isDark 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'bg-red-600 hover:bg-red-700 text-white'
-                  }`}
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span><TranslateText text="Eliminar" /></span>
-                </button>
-                
+                {canManageUsers && (
+                  <>
+                    <button 
+                      onClick={() => onEdit(user)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                        isDark 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      <span><TranslateText text="Editar" /></span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => onDelete(user)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                        isDark 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-red-600 hover:bg-red-700 text-white'
+                      }`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span><TranslateText text="Eliminar" /></span>
+                    </button>
+                  </>
+                )}
+
                 <button 
                   onClick={() => onViewDetails(user)}
                   className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ${
+                    canManageUsers ? '' : 'flex-1'
+                  } ${
                     isDark 
                       ? 'bg-slate-700 hover:bg-slate-600 text-slate-300' 
                       : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
@@ -156,8 +166,9 @@ export default function UserCardList({
               </div>
 
               {/* Block Toggle */}
-              <div className="mt-3 pt-3 border-t border-slate-700/30">
-                <label className="flex items-center justify-between cursor-pointer select-none">
+               {canBlockUsers && (
+               <div className="mt-3 pt-3 border-t border-slate-700/30">
+                 <label className="flex items-center justify-between cursor-pointer select-none">
                   <span className={`text-sm ${
                     isDark ? 'text-slate-300' : 'text-slate-700'
                   }`}>
@@ -180,9 +191,10 @@ export default function UserCardList({
                       }`} />
                     </div>
                   </div>
-                </label>
-              </div>
-            </div>
+                 </label>
+               </div>
+               )}
+             </div>
           );
         })
       )}

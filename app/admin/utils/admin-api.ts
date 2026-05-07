@@ -37,6 +37,15 @@ export interface PaginatedResponse<T> {
   total_pages?: number;
 }
 
+export interface AdminSessionUser {
+  email: string;
+  roles?: string[];
+  permissions?: string[];
+  active?: boolean;
+  bloqueado?: boolean;
+  role?: string;
+}
+
 // Press
 export interface PressItem {
   _id: string;
@@ -179,6 +188,21 @@ export interface TeamItem {
   updatedAt: string;
 }
 
+// Eventos
+export interface EventoItem {
+  _id?: string;
+  id?: string;
+  titulo: string;
+  descripcion: string;
+  fecha_hora: string;
+  ubicacion: string;
+  categoria: string;
+  estado: boolean | string;
+  imagen?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 // Tipos auxiliares
 type ApiResponse<T = unknown> = Promise<T>;
 type DataParam = Record<string, unknown> | FormData;
@@ -257,6 +281,23 @@ class AdminApiClient {
     return apiClient.patch(`/api/admin/press/${id}/toggle-status`, { status });
   }
 
+  // EVENTOS - Using admin endpoints (no cache, with auth)
+  async getEventos(): ApiResponse<EventoItem[]> {
+    return apiClient.get('/api/admin/eventos');
+  }
+
+  async createEvento(data: DataParam): ApiResponse {
+    return apiClient.post('/api/admin/eventos', data);
+  }
+
+  async updateEvento(id: string, data: DataParam): ApiResponse {
+    return apiClient.put(`/api/admin/eventos/${id}`, data);
+  }
+
+  async deleteEvento(id: string): ApiResponse {
+    return apiClient.delete(`/api/admin/eventos/${id}`);
+  }
+
   // GALLERY - Using admin endpoints (no cache, with auth)
   async getGallery(): Promise<PaginatedResponse<GalleryItem>> {
     return apiClient.get('/api/admin/gallery');
@@ -276,7 +317,7 @@ class AdminApiClient {
 
   // SERVICES - Using admin endpoints (no cache, with auth)
   async getServices(): ApiResponse {
-    return apiClient.get('/api/admin/services');
+    return apiClient.get('/api/admin/services/cards');
   }
 
   async createService(data: DataParam): ApiResponse {
@@ -302,12 +343,11 @@ class AdminApiClient {
       params.append('limit', String(options.limit));
     }
     const query = params.toString();
-    // Backend exposes the list at /api/cookies/list
-    return apiClient.get(`/api/cookies/list${query ? `?${query}` : ''}`);
+    return apiClient.get(`/api/admin/cookies/list${query ? `?${query}` : ''}`);
   }
 
   async getCookieStats(): ApiResponse {
-    return apiClient.get('/api/cookies/stats');
+    return apiClient.get('/api/admin/cookies/stats');
   }
 
   async updateCookieConsent(id: string, data: DataParam): ApiResponse {
@@ -339,19 +379,19 @@ class AdminApiClient {
 
   // LOGO
   async getLogo(): ApiResponse {
-    return apiClient.get('/api/logo');
+    return apiClient.get('/api/admin/logo');
   }
 
   async updateLogo(data: DataParam): ApiResponse {
-    return apiClient.put('/api/logo', data);
+    return apiClient.put('/api/admin/logo', data);
   }
 
   async getLogoHistory(): ApiResponse {
-    return apiClient.get('/api/logo/history');
+    return apiClient.get('/api/admin/logo/history');
   }
 
   async getCurrentLogo() {
-    return apiClient.get('/api/logo');
+    return apiClient.get('/api/admin/logo');
   }
 
   async getBrandingStats() {
@@ -374,7 +414,7 @@ class AdminApiClient {
       formData.append('files', file);
     });
 
-    return apiClient.post('/api/logo/upload-multiple', formData, {
+    return apiClient.post('/api/admin/logo/upload-multiple', formData, {
       headers: {
         // No establecer Content-Type para que el navegador lo maneje automáticamente con FormData
       },
@@ -382,15 +422,15 @@ class AdminApiClient {
   }
 
   async setActiveLogo(filename: string): ApiResponse {
-    return apiClient.put('/api/logo', { filename });
+    return apiClient.put('/api/admin/logo', { filename });
   }
 
   async updateLogoMeta(data: { filename: string; alt: string }): ApiResponse {
-    return apiClient.put('/api/logo/meta', data);
+    return apiClient.put('/api/admin/logo/meta', data);
   }
 
   async optimizeAllLogos(): ApiResponse {
-    return apiClient.post('/api/logo/optimize-all');
+    return apiClient.post('/api/admin/logo/optimize-all');
   }
 
   // SYSTEM STATUS
@@ -535,6 +575,14 @@ class AdminApiClient {
       console.error('Error checking auth:', error);
       throw error;
     }
+  }
+
+  async getCurrentAdmin(): Promise<{ ok: boolean; user: AdminSessionUser }> {
+    return apiClient.get('/api/admin/auth/me');
+  }
+
+  async blockUser(email: string, block: boolean): ApiResponse {
+    return apiClient.post('/api/admin/auth/block_user', { email, block });
   }
 
   // GALLERY

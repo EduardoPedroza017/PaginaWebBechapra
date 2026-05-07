@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useCallback } from 'react';
+import { adminApi, type EventoItem } from '../../utils/admin-api';
 
 interface Evento {
   id: string;
@@ -19,23 +19,42 @@ const useEventos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEventos = async () => {
+  const fetchEventos = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('/web/api/backend/admin/eventos', { withCredentials: true });
-      setEventos(response.data);
+      const response = await adminApi.getEventos();
+      const items = Array.isArray(response) ? response : [];
+      setEventos(items.map((evento: EventoItem) => {
+        const rawImage = evento.imagen || '';
+        const normalizedImage = rawImage && rawImage.startsWith('/uploads/')
+          ? `${process.env.NEXT_PUBLIC_API_URL || ''}${rawImage}`
+          : rawImage || undefined;
+
+        return {
+          id: evento.id || evento._id || '',
+          titulo: evento.titulo || '',
+          fecha_hora: evento.fecha_hora || '',
+          ubicacion: evento.ubicacion || '',
+          descripcion: evento.descripcion || '',
+          categoria: evento.categoria || '',
+          estado: typeof evento.estado === 'string'
+            ? evento.estado.toLowerCase() === 'true'
+            : Boolean(evento.estado),
+          imagen: normalizedImage,
+        };
+      }));
     } catch (err) {
       setError('Error al cargar los eventos.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const createEvento = async (data: FormData) => {
     try {
-      const response = await axios.post('/web/api/backend/admin/eventos', data, { withCredentials: true });
-      setEventos((prev) => [...prev, response.data]);
+      await adminApi.createEvento(data);
+      await fetchEventos();
     } catch (err) {
       setError('Error al crear el evento.');
     }
@@ -43,8 +62,8 @@ const useEventos = () => {
 
   const updateEvento = async (id: string, data: FormData) => {
     try {
-      const response = await axios.put(`/web/api/backend/admin/eventos/${id}`, data, { withCredentials: true });
-      setEventos((prev) => prev.map((evento) => (evento.id === id ? response.data : evento)));
+      await adminApi.updateEvento(id, data);
+      await fetchEventos();
     } catch (err) {
       setError('Error al actualizar el evento.');
     }
@@ -52,7 +71,7 @@ const useEventos = () => {
 
   const deleteEvento = async (id: string) => {
     try {
-      await axios.delete(`/web/api/backend/admin/eventos/${id}`, { withCredentials: true });
+      await adminApi.deleteEvento(id);
       setEventos((prev) => prev.filter((evento) => evento.id !== id));
     } catch (err) {
       setError('Error al eliminar el evento.');
@@ -61,7 +80,7 @@ const useEventos = () => {
 
   useEffect(() => {
     fetchEventos();
-  }, []);
+  }, [fetchEventos]);
 
   return { eventos, loading, error, fetchEventos, createEvento, updateEvento, deleteEvento };
 };

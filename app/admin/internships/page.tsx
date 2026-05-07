@@ -47,21 +47,30 @@ interface Internship {
 // Interface for API response
 interface ApiInternship {
   _id?: string;
-  titulo: string;
-  descripcion: string;
-  fecha_publicacion: string;
-  fecha_cierre: string;
-  is_active: boolean;
-  area: string;
-  requisitos: string;
-  modalidad: string;
-  ubicacion: string;
-  duracion: string;
-  horario: string;
-  beneficios: string;
-  what_you_will_do: string;
-  what_you_will_learn: string;
-  what_we_are_looking_for: string;
+  title?: string;
+  titulo?: string;
+  description?: string;
+  descripcion?: string;
+  posted_date?: string;
+  fecha_publicacion?: string;
+  closing_date?: string;
+  fecha_cierre?: string;
+  is_active?: boolean;
+  department?: string;
+  area?: string;
+  requirements?: string;
+  requisitos?: string;
+  modality?: string;
+  modalidad?: string;
+  location?: string;
+  ubicacion?: string;
+  duration_months?: number | string;
+  duracion?: string;
+  horario?: string;
+  beneficios?: string;
+  what_you_will_do?: string;
+  what_you_will_learn?: string;
+  what_we_are_looking_for?: string;
 }
 
 // Interface for API response structure
@@ -74,8 +83,6 @@ interface ApiResponse {
   page?: number;
   totalPages?: number;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const InternshipsPage = () => {
   const [internships, setInternships] = useState<Internship[]>([]);
@@ -120,13 +127,9 @@ const InternshipsPage = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`${API_URL}/api/internships`, {
+      const res = await fetch(`/web/api/backend/admin/internships`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-User": sessionStorage.getItem('user_email') || '', // Enviar email del usuario logueado
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN || ''}` // Agregar token si es necesario
-        },
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -143,16 +146,16 @@ const InternshipsPage = () => {
 
       const mappedInternships: Internship[] = internshipsData.map((internship: ApiInternship) => ({
         _id: internship._id || "",
-        title: internship.titulo || "",
-        description: internship.descripcion || "",
-        startDate: internship.fecha_publicacion || "",
-        endDate: internship.fecha_cierre || "",
+        title: internship.title || internship.titulo || "",
+        description: internship.description || internship.descripcion || "",
+        startDate: internship.posted_date || internship.fecha_publicacion || "",
+        endDate: internship.closing_date || internship.fecha_cierre || "",
         isActive: internship.is_active || false,
-        area: internship.area || "",
-        requisitos: internship.requisitos || "",
-        modalidad: internship.modalidad || "",
-        ubicacion: internship.ubicacion || "",
-        duracion: internship.duracion || "",
+        area: internship.department || internship.area || "",
+        requisitos: internship.requirements || internship.requisitos || "",
+        modalidad: internship.modality || internship.modalidad || "",
+        ubicacion: internship.location || internship.ubicacion || "",
+        duracion: String(internship.duration_months || internship.duracion || ""),
         horario: internship.horario || "",
         beneficios: internship.beneficios || "",
         whatYouWillDo: internship.what_you_will_do || "",
@@ -291,13 +294,12 @@ const InternshipsPage = () => {
         what_we_are_looking_for: internshipData.whatWeAreLookingFor,
       };
 
-      const res = await fetch(`${API_URL}/api/internships`, {
+      const res = await fetch(`/web/api/backend/admin/internships`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-User": sessionStorage.getItem('user_email') || '', // Enviar email del usuario logueado
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN || ''}` // Agregar token si es necesario
         },
+        credentials: "include",
         body: JSON.stringify(internshipsData),
       });
 
@@ -308,9 +310,9 @@ const InternshipsPage = () => {
 
       const data = await res.json();
 
-      if (data.data) {
+      if (data) {
         const newInternship: Internship = {
-          _id: data.data._id || Date.now().toString(),
+          _id: data._id || Date.now().toString(),
           ...internshipData
         };
         setInternships(prev => [...prev, newInternship]);
@@ -323,7 +325,7 @@ const InternshipsPage = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [API_URL, calculateStats, internships]);
+  }, [calculateStats, internships]);
 
   const handlePreview = useCallback((internship: Internship) => {
     setSelectedInternship(internship);
@@ -344,9 +346,10 @@ const InternshipsPage = () => {
     async (updatedInternship: Internship) => {
       try {
         setIsSubmitting(true);
-        const res = await fetch(`${API_URL}/api/internships/${selectedInternship?._id}`, {
+        const res = await fetch(`/web/api/backend/admin/internships/${selectedInternship?._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({
             ...updatedInternship,
             area: updatedInternship.area || "",
@@ -359,7 +362,7 @@ const InternshipsPage = () => {
 
         const data = await res.json();
 
-        if (data.success) {
+        if (data && !data.error) {
           setInternships((prev) =>
             prev.map((internship) =>
               internship._id === selectedInternship?._id ? updatedInternship : internship
@@ -380,8 +383,9 @@ const InternshipsPage = () => {
   const handleConfirmDelete = useCallback(async () => {
     try {
       setIsSubmitting(true);
-      const res = await fetch(`${API_URL}/api/internships/${selectedInternship?._id}`, {
+      const res = await fetch(`/web/api/backend/admin/internships/${selectedInternship?._id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -389,8 +393,8 @@ const InternshipsPage = () => {
       }
 
       const data = await res.json();
-      
-      if (data.success) {
+
+      if (data && !data.error) {
         const updatedInternships = internships.filter(
           internship => internship._id !== selectedInternship?._id
         );
@@ -412,18 +416,19 @@ const InternshipsPage = () => {
       console.log("Toggling active status for internship ID:", internship._id); // Debugging the ID
       const updatedInternship = { ...internship, isActive: !internship.isActive };
       
-      const res = await fetch(`${API_URL}/api/internships/${internship._id}`, {
-        method: "PUT",
+      const res = await fetch(`/web/api/backend/admin/internships/${internship._id}/toggle-active`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           is_active: !internship.isActive,
         }),
       });
 
-      if (res.ok) {
-        const updatedInternships = internships.map(item =>
-          item._id === internship._id ? updatedInternship : item
-        );
+        if (res.ok) {
+          const updatedInternships = internships.map(item =>
+            item._id === internship._id ? updatedInternship : item
+          );
         setInternships(updatedInternships);
         calculateStats(updatedInternships);
       }
