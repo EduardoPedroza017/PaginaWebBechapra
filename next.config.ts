@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { SERVER_BACKEND_URL } from "./lib/config/backend-url";
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
@@ -8,7 +9,7 @@ const API_URL =
   process.env.BACKEND_URL ||
   process.env.NEXT_PUBLIC_API_URL_INTERNAL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:5000";
+  SERVER_BACKEND_URL;
 
 /**
  * Helper to generate RemotePattern for Next.js images

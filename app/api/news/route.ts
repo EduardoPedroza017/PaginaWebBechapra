@@ -1,22 +1,13 @@
 import { NextResponse } from 'next/server';
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
 
 // Cache por 1 hora (3600 segundos)
 export const revalidate = 3600;
 
-const BACKEND_URL = process.env.BACKEND_URL ?? process.env.NEXT_PUBLIC_API_URL ?? '';
-
-if (!BACKEND_URL) {
-  // Don't throw at module load — return a friendly JSON error at request time instead.
-  console.warn('Warning: BACKEND_URL and NEXT_PUBLIC_API_URL are not defined. /api/news proxy will return an error response.');
-}
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 export async function GET() {
   try {
-    if (!BACKEND_URL) {
-      // Backend not configured — return empty list to allow static generation without backend.
-      return NextResponse.json([], { status: 200 });
-    }
-
     const response = await fetch(`${BACKEND_URL}/api/news`, {
       headers: {
         'Content-Type': 'application/json',

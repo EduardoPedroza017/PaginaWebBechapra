@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
 import { OptimizedImage } from '@/lib/images/image-utils';
+import { PUBLIC_BACKEND_URL } from '@/lib/config/backend-url';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { CardFlat } from '@/components/ui/CardFlat';
 
@@ -90,7 +91,7 @@ export default function NewsCards() {
                     <div className={`relative overflow-hidden bg-slate-50 dark:bg-slate-800 ${index === 0 ? "h-72 lg:h-80" : "h-56"}`}>
                       {item.image_url && (
                           <OptimizedImage
-                            src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
+                            src={item.image_url.startsWith('/uploads/') ? `${PUBLIC_BACKEND_URL}${item.image_url}` : item.image_url}
                             alt={`Imagen de noticia: ${item.title}`}
                             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"

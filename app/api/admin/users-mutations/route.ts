@@ -1,4 +1,6 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
+
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 export async function POST(request: Request) {
   try {

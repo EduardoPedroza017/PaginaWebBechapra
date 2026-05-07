@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 async function forwardRequest(
   method: string,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { PUBLIC_BACKEND_URL } from '@/lib/config/backend-url';
 
 /**
  * Hook centralizado para peticiones a la API de Bausen
@@ -14,8 +15,7 @@ export function useBausenApi<T>(endpoint: string, initialData: T[] = []) {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
-        const res = await fetch(`${baseUrl}/api/${endpoint}`);
+        const res = await fetch(`${PUBLIC_BACKEND_URL}/api/${endpoint}`);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         
         const json = await res.json();

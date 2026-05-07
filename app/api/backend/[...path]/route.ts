@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
 
-// Prefer explicit public env var; fall back to server-side BACKEND_URL
-// If none configured and we're in development, default to localhost backend for convenience
-const envPublic = process.env.NEXT_PUBLIC_API_URL ?? '';
-const envServer = process.env.BACKEND_URL ?? '';
-let BACKEND_URL = envPublic || envServer || '';
-if (!BACKEND_URL && process.env.NODE_ENV !== 'production') {
-  BACKEND_URL = 'http://localhost:5000';
-  console.info(`Proxy: no BACKEND_URL configured — falling back to ${BACKEND_URL} for local development.`);
-}
-
-if (!BACKEND_URL) {
-  console.warn('Warning: NEXT_PUBLIC_API_URL and BACKEND_URL are not defined and not in development. API backend proxy will return an error.');
-}
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 async function forwardRequest(
   method: string,

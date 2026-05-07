@@ -1,3 +1,5 @@
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
+
 // Simple translation dictionary for common phrases (fallback when backend is unavailable)
 const translations: Record<string, Record<string, string>> = {
   en: {
@@ -91,10 +93,7 @@ function translateLocally(text: string, dest: string): string {
   return text; // Return original if no translation found
 }
 
-const BACKEND_URL =
-  process.env.BACKEND_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  'http://localhost:5000';
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 export async function POST(request: Request) {
   try {

@@ -1,3 +1,5 @@
+import { isAllowedBackendAssetUrl } from '@/lib/config/backend-url';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,8 +12,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // Only allow images from localhost:5000
-    if (!imageUrl.includes('localhost:5000')) {
+    if (!isAllowedBackendAssetUrl(imageUrl)) {
       return Response.json(
         { error: 'Invalid image source' },
         { status: 403 }

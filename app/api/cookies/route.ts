@@ -1,17 +1,10 @@
 import { NextResponse } from 'next/server';
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
 
-const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '';
-if (!BACKEND_URL) {
-  // Don't throw during build — return friendly fallbacks at request time.
-  console.warn('Warning: BACKEND_URL not configured — /api/cookies will return fallback responses.');
-}
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 export async function GET() {
   try {
-    if (!BACKEND_URL) {
-      return NextResponse.json({ accepted: null }, { status: 200 });
-    }
-
     const response = await fetch(`${BACKEND_URL}/api/cookies`, {
       headers: { 'Content-Type': 'application/json' },
     });

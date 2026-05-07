@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TranslateText } from '@/components/TranslateText';
 import { OptimizedImage } from '@/lib/images/image-utils';
+import { PUBLIC_BACKEND_URL } from '@/lib/config/backend-url';
 import { FileText, ArrowRight, Calendar } from 'lucide-react';
 import { CardFlat } from '@/components/ui/CardFlat';
 
@@ -32,9 +33,9 @@ export default function PressCards() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPress = async () => {
+      const fetchPress = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/press`);
+        const response = await fetch(`${PUBLIC_BACKEND_URL}/api/press`);
         const data = await response.json();
         const items = Array.isArray(data) ? data : (data.items || data.data || []);
 
@@ -91,9 +92,9 @@ export default function PressCards() {
                 <CardFlat>
                   <Link href={item.link || '/prensa'} className="h-full flex flex-col">
                     <div className="relative h-48 overflow-hidden bg-slate-50 dark:bg-slate-800">
-                      {item.image_url && (
+                        {item.image_url && (
                         <OptimizedImage
-                            src={item.image_url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL}${item.image_url}` : item.image_url}
+                            src={item.image_url.startsWith('/uploads/') ? `${PUBLIC_BACKEND_URL}${item.image_url}` : item.image_url}
                             alt={item.title}
                             className="object-cover w-full h-full"
                         />

@@ -1,3 +1,5 @@
+import { PUBLIC_BACKEND_URL } from './backend-url';
+
 /**
  * ==============================================================================
  * CONFIGURACIÓN CENTRALIZADA DE VARIABLES DE ENTORNO
@@ -63,9 +65,7 @@ interface Config {
 function getRequiredEnv(key: string): string {
   const value = process.env[key];
   if (!value) {
-    // No lanzar: devolver un fallback a localhost para entornos locales
-    // Esto evita errores en tiempo de ejecución cuando se solicita no usar .env
-    return 'http://localhost:5000';
+    return PUBLIC_BACKEND_URL;
   }
   return value;
 }

@@ -1,20 +1,14 @@
 import { NextResponse } from 'next/server';
+import { SERVER_BACKEND_URL } from '@/lib/config/backend-url';
 
 // Cache por 1 hora (3600 segundos)
 export const revalidate = 3600;
 
 
-const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '';
-if (!BACKEND_URL) {
-  console.warn('Warning: BACKEND_URL not configured — /api/press will return fallback responses.');
-}
+const BACKEND_URL = SERVER_BACKEND_URL;
 
 export async function GET() {
   try {
-    if (!BACKEND_URL) {
-      return NextResponse.json([], { status: 200 });
-    }
-
     const response = await fetch(`${BACKEND_URL}/api/press`, {
       headers: { 'Content-Type': 'application/json' },
       next: { revalidate: 3600 }, // ISR: regenerar cada hora
