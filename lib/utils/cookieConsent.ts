@@ -3,6 +3,7 @@
  */
 
 export type CookieConsentStatus = 'accepted' | 'rejected' | 'pending';
+const COOKIE_API_ENDPOINT = '/web/api/cookies';
 
 export interface CookiePreferences {
 	analytics: boolean;
@@ -123,7 +124,7 @@ export const needsConsentRenewal = (): boolean => {
  */
 export async function setCookieConsentBackend(accepted: boolean): Promise<boolean> {
   try {
-    const res = await fetch("/api/cookies", {
+    const res = await fetch(COOKIE_API_ENDPOINT, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -143,9 +144,10 @@ export async function setCookieConsentBackend(accepted: boolean): Promise<boolea
  */
 export async function getCookieConsentBackend(): Promise<null | boolean> {
   try {
-    const res = await fetch("/api/cookies", {
+    const res = await fetch(COOKIE_API_ENDPOINT, {
       method: "GET",
-      credentials: "include"
+      credentials: "include",
+      cache: "no-store"
     });
     if (!res.ok) return null;
     const data = await res.json();

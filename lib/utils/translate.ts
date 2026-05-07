@@ -1,5 +1,7 @@
 // Cache para traducciones
 const translationCache = new Map<string, string>();
+const TRANSLATION_CACHE_VERSION = 'v2';
+const TRANSLATION_CACHE_STORAGE_KEY = `translationCache:${TRANSLATION_CACHE_VERSION}`;
 
 // Función para obtener la clave de caché
 function getCacheKey(text: string, dest: string): string {
@@ -10,7 +12,10 @@ function getCacheKey(text: string, dest: string): string {
 function loadCacheFromStorage() {
   if (typeof window === 'undefined') return;
   try {
-    const stored = localStorage.getItem('translationCache');
+    const legacyKeys = ['translationCache'];
+    legacyKeys.forEach((key) => localStorage.removeItem(key));
+
+    const stored = localStorage.getItem(TRANSLATION_CACHE_STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
       Object.entries(parsed).forEach(([key, value]) => {
@@ -27,7 +32,7 @@ function saveCacheToStorage() {
   if (typeof window === 'undefined') return;
   try {
     const cacheObject = Object.fromEntries(translationCache.entries());
-    localStorage.setItem('translationCache', JSON.stringify(cacheObject));
+    localStorage.setItem(TRANSLATION_CACHE_STORAGE_KEY, JSON.stringify(cacheObject));
   } catch (error) {
     console.error('Error saving translation cache:', error);
   }
@@ -66,6 +71,7 @@ export async function translateText(text: string, dest: string): Promise<string>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, dest }),
+        cache: 'no-store',
       });
       
       if (!res.ok) {
