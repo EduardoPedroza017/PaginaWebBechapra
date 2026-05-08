@@ -62,7 +62,8 @@ async function requestSingleTranslation(text: string, dest: string): Promise<str
   }
 
   const data = await res.json();
-  return typeof data?.translated === 'string' ? data.translated : text;
+  const translated = typeof data?.translated === 'string' ? data.translated : text;
+  return translated || text;
 }
 
 async function flushBatch(dest: string) {
@@ -111,7 +112,7 @@ async function flushBatch(dest: string) {
     let hasNewTranslations = false;
 
     queuedTexts.forEach((text, index) => {
-      const translated = typeof results[index] === 'string' ? results[index] : text;
+      const translated = typeof results[index] === 'string' && results[index] ? results[index] : text;
       const cacheKey = getCacheKey(text, dest);
 
       if (translated !== text) {
