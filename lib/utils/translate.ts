@@ -1,6 +1,6 @@
 // Cache para traducciones
 const translationCache = new Map<string, string>();
-const TRANSLATION_CACHE_VERSION = 'v2';
+const TRANSLATION_CACHE_VERSION = 'v3';
 const TRANSLATION_CACHE_STORAGE_KEY = `translationCache:${TRANSLATION_CACHE_VERSION}`;
 
 // Función para obtener la clave de caché
@@ -12,7 +12,7 @@ function getCacheKey(text: string, dest: string): string {
 function loadCacheFromStorage() {
   if (typeof window === 'undefined') return;
   try {
-    const legacyKeys = ['translationCache'];
+    const legacyKeys = ['translationCache', 'translationCache:v2'];
     legacyKeys.forEach((key) => localStorage.removeItem(key));
 
     const stored = localStorage.getItem(TRANSLATION_CACHE_STORAGE_KEY);
@@ -49,6 +49,22 @@ const batchTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const API_TRANSLATE_ENDPOINT = '/web/api/translate';
 const BATCH_DELAY_MS = 25;
 
+async function requestSingleTranslation(text: string, dest: string): Promise<string> {
+  const res = await fetch(API_TRANSLATE_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, dest }),
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    throw new Error(`Translation API error (${res.status})`);
+  }
+
+  const data = await res.json();
+  return typeof data?.translated === 'string' ? data.translated : text;
+}
+
 async function flushBatch(dest: string) {
   const queuedTexts = Array.from(batchQueue.get(dest) ?? []);
   batchQueue.delete(dest);
@@ -64,6 +80,16 @@ async function flushBatch(dest: string) {
   }
 
   try {
+    if (queuedTexts.length === 1) {
+      const text = queuedTexts[0];
+      const translated = await requestSingleTranslation(text, dest);
+      if (translated !== text) {
+        translationCache.set(getCacheKey(text, dest), translated);
+        saveCacheToStorage();
+      }
+      return;
+    }
+
     const res = await fetch(API_TRANSLATE_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -78,19 +104,47 @@ async function flushBatch(dest: string) {
     const data = await res.json();
     const results = Array.isArray(data?.results) ? data.results : [];
 
+    if (results.length !== queuedTexts.length) {
+      throw new Error('Translation batch API returned an unexpected number of results');
+    }
+
+    let hasNewTranslations = false;
+
     queuedTexts.forEach((text, index) => {
       const translated = typeof results[index] === 'string' ? results[index] : text;
       const cacheKey = getCacheKey(text, dest);
-      translationCache.set(cacheKey, translated);
+
+      if (translated !== text) {
+        translationCache.set(cacheKey, translated);
+        hasNewTranslations = true;
+      }
     });
 
-    saveCacheToStorage();
+    if (hasNewTranslations) {
+      saveCacheToStorage();
+    }
   } catch (error) {
-    console.warn('Batch translation service unavailable, usando texto original:', error);
-    queuedTexts.forEach((text) => {
-      const cacheKey = getCacheKey(text, dest);
-      translationCache.set(cacheKey, text);
-    });
+    console.warn('Batch translation service unavailable, intentando solicitudes individuales:', error);
+
+    let hasNewTranslations = false;
+
+    await Promise.all(
+      queuedTexts.map(async (text) => {
+        try {
+          const translated = await requestSingleTranslation(text, dest);
+          if (translated !== text) {
+            translationCache.set(getCacheKey(text, dest), translated);
+            hasNewTranslations = true;
+          }
+        } catch (singleError) {
+          console.warn('Single translation fallback unavailable, usando texto original:', singleError);
+        }
+      })
+    );
+
+    if (hasNewTranslations) {
+      saveCacheToStorage();
+    }
   } finally {
     queuedTexts.forEach((text) => {
       const cacheKey = getCacheKey(text, dest);
