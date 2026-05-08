@@ -15,14 +15,9 @@ export function useTranslatedString(text: string): string {
       return;
     }
 
-    const delay = Math.random() * 300;
-    const timeoutId = setTimeout(() => {
-      translateText(text, lang)
-        .then((value) => setTranslated(value))
-        .catch(() => setTranslated(text));
-    }, delay);
-
-    return () => clearTimeout(timeoutId);
+    translateText(text, lang)
+      .then((value) => setTranslated(value))
+      .catch(() => setTranslated(text));
   }, [lang, text]);
 
   return translated;

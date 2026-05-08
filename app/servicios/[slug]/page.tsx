@@ -83,18 +83,22 @@ export default async function ServiceDetailPage({ params }: Props) {
                 <div className="relative mx-auto max-w-6xl">
                   <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-blue-200">
                     <Sparkles size={14} />
-                    Servicio personalizado
+                    <TranslateText text="Servicio personalizado" />
                   </div>
                   <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
                     <div>
-                      <h1 className="text-4xl font-black tracking-tight text-white lg:text-6xl">{match.name}</h1>
-                      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">{match.description}</p>
+                      <h1 className="text-4xl font-black tracking-tight text-white lg:text-6xl">
+                        <TranslateText text={match.name} />
+                      </h1>
+                      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">
+                        <TranslateText text={match.description} />
+                      </p>
                       <div className="mt-10 flex flex-wrap gap-4">
                         <Link href="/#contacto" className="rounded-2xl bg-blue-600 px-8 py-4 font-black text-white shadow-xl transition-all hover:-translate-y-0.5 hover:bg-blue-500">
-                          Solicitar informacion
+                          <TranslateText text="Solicitar informacion" />
                         </Link>
                         <Link href="/servicios" className="rounded-2xl border border-white/15 bg-white/5 px-8 py-4 font-black text-white transition-all hover:bg-white/10">
-                          Volver a servicios
+                          <TranslateText text="Volver a servicios" />
                         </Link>
                       </div>
                     </div>
@@ -106,7 +110,9 @@ export default async function ServiceDetailPage({ params }: Props) {
                             <Image src={imageSrc} alt={match.name} fill className="object-cover" unoptimized={String(imageSrc).startsWith("http")} />
                           ) : (
                             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
-                              <div className="text-white/50">Sin imagen</div>
+                              <div className="text-white/50">
+                                <TranslateText text="Sin imagen" />
+                              </div>
                             </div>
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
@@ -121,22 +127,28 @@ export default async function ServiceDetailPage({ params }: Props) {
                 <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
                   <div className="rounded-[2.5rem] border border-slate-200/70 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900/80">
                     <div className="mb-5 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-blue-700 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-300">
-                      Identidad del servicio
+                      <TranslateText text="Identidad del servicio" />
                     </div>
                     <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20">
                       {iconSrc ? <Image src={iconSrc} alt="icon" width={36} height={36} className="object-contain" unoptimized={String(iconSrc).startsWith("http")} /> : <Sparkles size={28} />}
                     </div>
-                    <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">{match.name}</h2>
-                    <p className="mt-4 font-medium leading-relaxed text-slate-500 dark:text-slate-400">{match.description}</p>
+                    <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                      <TranslateText text={match.name} />
+                    </h2>
+                    <p className="mt-4 font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                      <TranslateText text={match.description} />
+                    </p>
                   </div>
 
                   <div className="rounded-[2.5rem] border border-slate-200/70 bg-gradient-to-br from-white via-blue-50/40 to-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900/80">
                     <div className="mb-5 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-blue-700 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-300">
-                      Que aporta este servicio
+                      <TranslateText text="Que aporta este servicio" />
                     </div>
-                    <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Una presentacion mas clara, mas robusta y mejor jerarquizada</h3>
+                    <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                      <TranslateText text="Una presentacion mas clara, mas robusta y mejor jerarquizada" />
+                    </h3>
                     <p className="mt-5 max-w-2xl font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-                      Esta ruta dinamica ahora tambien conserva una narrativa visual mas consistente para que los servicios creados desde backend no se sientan aislados respecto al resto del sitio.
+                      <TranslateText text="Esta ruta dinamica ahora tambien conserva una narrativa visual mas consistente para que los servicios creados desde backend no se sientan aislados respecto al resto del sitio." />
                     </p>
                     <div className="mt-8 grid gap-4 sm:grid-cols-2">
                       {["Jerarquia visual mas fuerte", "Bloque de valor mas claro", "Cierre premium con CTA", "Mejor continuidad con la marca"].map((item) => (
@@ -144,7 +156,9 @@ export default async function ServiceDetailPage({ params }: Props) {
                           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white">
                             <CheckCircle2 size={18} />
                           </div>
-                          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{item}</span>
+                          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                            <TranslateText text={item} />
+                          </span>
                         </div>
                       ))}
                     </div>

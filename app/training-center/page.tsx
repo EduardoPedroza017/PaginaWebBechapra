@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import SpotlightCTA from "@/app/components/SpotlightCTA";
 import Section from "@/app/components/Section";
 import SubpageHero from "@/components/SubpageHero";
+import { TranslateText } from "@/components/TranslateText";
+import { useTranslatedString } from "@/lib/hooks/useTranslatedString";
 
 const courses = [
   {
@@ -104,6 +106,8 @@ const categoryAccent: Record<string, string> = {
 export default function TrainingCenterPage() {
   const [activeTab, setActiveTab] = useState("todos");
   const filteredCourses = activeTab === "todos" ? courses : courses.filter((course) => course.category === activeTab);
+  const fullNamePlaceholder = useTranslatedString("Nombre Completo");
+  const emailPlaceholder = useTranslatedString("Correo Electronico");
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
@@ -117,11 +121,13 @@ export default function TrainingCenterPage() {
       <Section variant="white" className="-mt-20 relative z-20">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 rounded-[2.5rem] border border-slate-200 bg-slate-50 p-10 shadow-lg lg:grid-cols-4">
           {stats.map((stat, i) => (
-            <div key={i} className="space-y-2 text-center group">
-              <div className="text-4xl font-black text-blue-600 lg:text-5xl">{stat.number}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">{stat.label}</div>
-            </div>
-          ))}
+              <div key={i} className="space-y-2 text-center group">
+                <div className="text-4xl font-black text-blue-600 lg:text-5xl">{stat.number}</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">
+                  <TranslateText text={stat.label} />
+                </div>
+              </div>
+            ))}
         </div>
       </Section>
 
@@ -129,11 +135,13 @@ export default function TrainingCenterPage() {
         <div className="mb-20 text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary]">
             <Shield size={14} />
-            Avalados por el CCPM
+            <TranslateText text="Avalados por el CCPM" />
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tighter text-slate-900 lg:text-6xl">Educacion de Clase Mundial</h2>
+          <h2 className="mb-6 text-4xl font-black tracking-tighter text-slate-900 lg:text-6xl">
+            <TranslateText text="Educacion de Clase Mundial" />
+          </h2>
           <p className="mx-auto max-w-3xl text-lg font-medium text-slate-600">
-            Nuestra plataforma de educacion en linea esta disenada para profesionales que buscan excelencia y crecimiento real.
+            <TranslateText text="Nuestra plataforma de educacion en linea esta disenada para profesionales que buscan excelencia y crecimiento real." />
           </p>
         </div>
 
@@ -152,9 +160,11 @@ export default function TrainingCenterPage() {
         <div className="mb-16 text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
             <Zap size={14} />
-            Programas en foco
+            <TranslateText text="Programas en foco" />
           </span>
-          <h2 className="mb-8 text-4xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Catalogo de Programas</h2>
+          <h2 className="mb-8 text-4xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">
+            <TranslateText text="Catalogo de Programas" />
+          </h2>
 
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((cat) => (
@@ -168,7 +178,7 @@ export default function TrainingCenterPage() {
                 }`}
                 style={activeTab === cat.id ? { backgroundImage: "linear-gradient(135deg, var(--hero-services-from), var(--hero-services-to))" } : undefined}
               >
-                {cat.label} <span className="ml-2 opacity-50">{cat.count}</span>
+                <TranslateText text={cat.label} /> <span className="ml-2 opacity-50">{cat.count}</span>
               </button>
             ))}
           </div>
@@ -200,11 +210,13 @@ export default function TrainingCenterPage() {
           <div>
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[--surface-border] bg-[--background] px-4 py-2 text-xs font-black uppercase tracking-widest text-[--brand-primary] dark:border-blue-800/50 dark:bg-blue-900/20 dark:text-blue-400">
               <Zap size={14} />
-              Career Boost
+              <TranslateText text="Career Boost" />
             </span>
-            <h2 className="mb-8 text-4xl font-black leading-tight tracking-tighter text-[--brand-accent] dark:text-white lg:text-6xl">Practicas Profesionales y Talento</h2>
+            <h2 className="mb-8 text-4xl font-black leading-tight tracking-tighter text-[--brand-accent] dark:text-white lg:text-6xl">
+              <TranslateText text="Practicas Profesionales y Talento" />
+            </h2>
             <p className="mb-10 text-lg font-medium leading-relaxed text-[--foreground] dark:text-slate-400">
-              Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial lider. Unase a nuestra red de talentos certificados.
+              <TranslateText text="Desarrolle su carrera en proyectos reales con impacto en el mundo empresarial lider. Unase a nuestra red de talentos certificados." />
             </p>
 
             <div className="space-y-6">
@@ -218,8 +230,12 @@ export default function TrainingCenterPage() {
                     <CheckCircle size={20} />
                   </div>
                   <div>
-                    <h4 className="text-lg font-black text-[--brand-accent] dark:text-white">{benefit.title}</h4>
-                    <p className="text-sm font-medium text-[--foreground] dark:text-slate-400">{benefit.desc}</p>
+                    <h4 className="text-lg font-black text-[--brand-accent] dark:text-white">
+                      <TranslateText text={benefit.title} />
+                    </h4>
+                    <p className="text-sm font-medium text-[--foreground] dark:text-slate-400">
+                      <TranslateText text={benefit.desc} />
+                    </p>
                   </div>
                 </div>
               ))}
@@ -229,24 +245,28 @@ export default function TrainingCenterPage() {
           <div className="relative overflow-hidden rounded-[3rem] bg-slate-950 p-10 shadow-2xl shadow-[--brand-primary]/40 lg:p-12">
             <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[--brand-primary]/10 blur-[80px]" />
             <div className="relative z-10">
-              <h3 className="mb-8 text-3xl font-black text-white">Postule su Talento</h3>
+              <h3 className="mb-8 text-3xl font-black text-white">
+                <TranslateText text="Postule su Talento" />
+              </h3>
               <form className="space-y-5">
-                <input type="text" placeholder="Nombre Completo" className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
-                <input type="email" placeholder="Correo Electronico" className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
+                <input type="text" placeholder={fullNamePlaceholder} className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
+                <input type="email" placeholder={emailPlaceholder} className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white outline-none transition-all placeholder:text-slate-400 focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10" />
                 <select className="w-full appearance-none rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-slate-300 outline-none transition-all focus:border-[--brand-primary] focus:ring-4 focus:ring-[--brand-primary]/10">
-                  <option value="">Area de Interes</option>
-                  <option>Estrategia</option>
-                  <option>Nomina y Finanzas</option>
-                  <option>Recursos Humanos</option>
+                  <option value=""><TranslateText text="Area de Interes" /></option>
+                  <option><TranslateText text="Estrategia" /></option>
+                  <option><TranslateText text="Nomina y Finanzas" /></option>
+                  <option><TranslateText text="Recursos Humanos" /></option>
                 </select>
                 <div className="group relative cursor-pointer rounded-2xl border-2 border-dashed border-white/10 p-8 text-center transition-all hover:border-[--brand-primary]/50">
                   <input type="file" className="absolute inset-0 cursor-pointer opacity-0" />
                   <FileText className="mx-auto mb-2 h-8 w-8 text-slate-400 transition-colors group-hover:text-[--brand-accent]" />
-                  <p className="text-sm font-bold text-slate-300">Subir CV (PDF, DOCX)</p>
+                  <p className="text-sm font-bold text-slate-300">
+                    <TranslateText text="Subir CV (PDF, DOCX)" />
+                  </p>
                 </div>
                 <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[--brand-primary] py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-[--brand-primary]/20 transition-all hover:-translate-y-1 hover:bg-[--brand-accent]">
                   <Send size={16} />
-                  Enviar Aplicacion
+                  <TranslateText text="Enviar Aplicacion" />
                 </button>
               </form>
             </div>
@@ -267,8 +287,12 @@ function InfoCard({ item, index }: { item: any; index: number }) {
           <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/20 transition-transform group-hover:scale-110">
             <item.icon size={32} />
           </div>
-          <h3 className="mb-4 text-2xl font-black leading-tight tracking-tight text-slate-900">{item.title}</h3>
-          <p className="font-medium leading-relaxed text-slate-600">{item.desc}</p>
+          <h3 className="mb-4 text-2xl font-black leading-tight tracking-tight text-slate-900">
+            <TranslateText text={item.title} />
+          </h3>
+          <p className="font-medium leading-relaxed text-slate-600">
+            <TranslateText text={item.desc} />
+          </p>
         </div>
       </div>
       <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-blue-600/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
@@ -298,13 +322,13 @@ function CourseCard({ course, index }: { course: any; index: number }) {
       >
         <div className={`relative overflow-hidden p-10 ${featured ? "" : "bg-slate-950"}`} style={featured ? { backgroundImage: accent } : undefined}>
           <div className="absolute right-6 top-6">
-            <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${featured ? "border border-white/20 bg-slate-950/30 text-white backdrop-blur-md" : "border border-white/5 bg-white/10 text-[--brand-accent] backdrop-blur-md"}`}>
-              {course.level}
-            </span>
-          </div>
+              <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${featured ? "border border-white/20 bg-slate-950/30 text-white backdrop-blur-md" : "border border-white/5 bg-white/10 text-[--brand-accent] backdrop-blur-md"}`}>
+                <TranslateText text={course.level} />
+              </span>
+            </div>
           {featured && (
             <div className="mb-6 inline-flex w-fit items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white">
-              Programa destacado
+              <TranslateText text="Programa destacado" />
             </div>
           )}
           <div className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl shadow-xl ${featured ? "bg-white/15" : "bg-white/10"}`}>
@@ -313,16 +337,20 @@ function CourseCard({ course, index }: { course: any; index: number }) {
           <div className="mb-2 flex items-center gap-2">
             <Star className={`h-4 w-4 ${featured ? "fill-white text-white" : "fill-[--brand-primary] text-[--brand-primary]"}`} />
             <span className="font-black text-white">{course.rating}</span>
-            <span className={`ml-2 text-xs font-bold uppercase tracking-widest ${featured ? "text-white/75" : "text-slate-400"}`}>({course.students} Alumnos)</span>
+            <span className={`ml-2 text-xs font-bold uppercase tracking-widest ${featured ? "text-white/75" : "text-slate-400"}`}>
+              ({course.students} <TranslateText text="Alumnos" />)
+            </span>
           </div>
           <div className={`absolute -bottom-10 -right-10 h-40 w-40 rounded-full blur-3xl transition-all ${featured ? "bg-white/20 group-hover:bg-white/30" : "bg-[--brand-primary]/10 group-hover:bg-[--brand-primary]/20"}`} />
         </div>
 
         <div className="flex flex-1 flex-col p-10">
           <h3 className={`mb-4 font-black transition-colors group-hover:text-[--brand-primary] dark:text-white dark:group-hover:text-blue-400 ${featured ? "text-3xl text-[--brand-accent] lg:text-4xl" : "text-2xl text-[--brand-accent]"}`}>
-            {course.title}
+            <TranslateText text={course.title} />
           </h3>
-          <p className={`mb-8 flex-1 font-medium leading-relaxed text-[--foreground] dark:text-slate-400 ${featured ? "max-w-2xl text-base" : "text-sm"}`}>{course.description}</p>
+          <p className={`mb-8 flex-1 font-medium leading-relaxed text-[--foreground] dark:text-slate-400 ${featured ? "max-w-2xl text-base" : "text-sm"}`}>
+            <TranslateText text={course.description} />
+          </p>
 
           <div className="mb-8 flex items-center justify-between border-t border-[--surface-border] py-6 dark:border-slate-800">
             <div className="flex items-center gap-2">
@@ -331,12 +359,14 @@ function CourseCard({ course, index }: { course: any; index: number }) {
             </div>
             <div className="flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-[--brand-primary]" />
-              <span className="text-xs font-black uppercase tracking-widest text-[--brand-accent] dark:text-white">{course.modules} Modulos</span>
+              <span className="text-xs font-black uppercase tracking-widest text-[--brand-accent] dark:text-white">
+                {course.modules} <TranslateText text="Modulos" />
+              </span>
             </div>
           </div>
 
           <button className={`flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-[10px] font-black uppercase tracking-widest transition-all duration-300 group/btn ${featured ? "bg-[--brand-primary] text-white hover:bg-[--brand-accent]" : "bg-[--background] text-[--brand-primary] hover:bg-[--brand-primary] hover:text-white dark:bg-slate-800 dark:text-white"}`}>
-            Inscribirme Ahora
+            <TranslateText text="Inscribirme Ahora" />
             <ArrowRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
           </button>
         </div>

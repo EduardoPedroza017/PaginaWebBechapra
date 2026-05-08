@@ -43,8 +43,61 @@ loadCacheFromStorage();
 
 // Cola de solicitudes pendientes
 const pendingRequests = new Map<string, Promise<string>>();
+const batchQueue = new Map<string, Set<string>>();
+const batchTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 const API_TRANSLATE_ENDPOINT = '/web/api/translate';
+const BATCH_DELAY_MS = 25;
+
+async function flushBatch(dest: string) {
+  const queuedTexts = Array.from(batchQueue.get(dest) ?? []);
+  batchQueue.delete(dest);
+
+  const timer = batchTimers.get(dest);
+  if (timer) {
+    clearTimeout(timer);
+    batchTimers.delete(dest);
+  }
+
+  if (queuedTexts.length === 0) {
+    return;
+  }
+
+  try {
+    const res = await fetch(API_TRANSLATE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: queuedTexts, dest }),
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      throw new Error(`Translation batch API error (${res.status})`);
+    }
+
+    const data = await res.json();
+    const results = Array.isArray(data?.results) ? data.results : [];
+
+    queuedTexts.forEach((text, index) => {
+      const translated = typeof results[index] === 'string' ? results[index] : text;
+      const cacheKey = getCacheKey(text, dest);
+      translationCache.set(cacheKey, translated);
+    });
+
+    saveCacheToStorage();
+  } catch (error) {
+    console.warn('Batch translation service unavailable, usando texto original:', error);
+    queuedTexts.forEach((text) => {
+      const cacheKey = getCacheKey(text, dest);
+      translationCache.set(cacheKey, text);
+    });
+  } finally {
+    queuedTexts.forEach((text) => {
+      const cacheKey = getCacheKey(text, dest);
+      pendingRequests.delete(cacheKey);
+    });
+  }
+}
 
 export async function translateText(text: string, dest: string): Promise<string> {
   // Si es español, devolver el texto original
@@ -66,41 +119,36 @@ export async function translateText(text: string, dest: string): Promise<string>
 
   // Crear nueva solicitud
   const requestPromise = (async () => {
-    try {
-      const res = await fetch(API_TRANSLATE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, dest }),
-        cache: 'no-store',
-      });
-      
-      if (!res.ok) {
-        if (res.status === 429) {
-          console.warn('Rate limit exceeded, usando texto original');
-        } else {
-          console.warn(`Translation API error (${res.status}), usando texto original`);
-        }
-        return text;
-      }
-      
-      const data = await res.json();
-      const translated =
-        (data?.translated as string | undefined) ||
-        (data?.data?.translated as string | undefined) ||
-        text;
-      
-      // Guardar en caché
-      translationCache.set(cacheKey, translated);
-      saveCacheToStorage();
-      
-      return translated;
-    } catch (error) {
-      console.warn('Translation service unavailable, usando texto original:', error);
-      return text;
-    } finally {
-      // Limpiar solicitud pendiente
-      pendingRequests.delete(cacheKey);
+    const existingQueue = batchQueue.get(dest) ?? new Set<string>();
+    existingQueue.add(text);
+    batchQueue.set(dest, existingQueue);
+
+    if (!batchTimers.has(dest)) {
+      batchTimers.set(
+        dest,
+        setTimeout(() => {
+          void flushBatch(dest);
+        }, BATCH_DELAY_MS)
+      );
     }
+
+    return new Promise<string>((resolve) => {
+      const poll = () => {
+        if (translationCache.has(cacheKey)) {
+          resolve(translationCache.get(cacheKey)!);
+          return;
+        }
+
+        if (!pendingRequests.has(cacheKey)) {
+          resolve(text);
+          return;
+        }
+
+        setTimeout(poll, 10);
+      };
+
+      poll();
+    });
   })();
 
   // Guardar en solicitudes pendientes

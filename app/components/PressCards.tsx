@@ -151,7 +151,9 @@ export default function PressCards() {
                            <img src={String(item.image_url)} alt={`Imagen del comunicado: ${item.title}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                         ) : (
                           <div className="w-full h-full bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center" aria-hidden="true">
-                            <span className="text-sm text-slate-500 dark:text-slate-400">Sin imagen</span>
+                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                              <TranslateText text="Sin imagen" />
+                            </span>
                           </div>
                         )}
                         <div className="absolute inset-0 bg-linear-to-t from-slate-900/60 via-slate-900/20 to-transparent dark:from-slate-950/80 dark:via-slate-900/40 dark:to-transparent" />
@@ -160,17 +162,22 @@ export default function PressCards() {
                         </div>
                         {index === 0 && (
                           <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-slate-950/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
-                            Comunicado clave
+                            <TranslateText text="Comunicado clave" />
                           </div>
                         )}
                       </div>
 
                       <div className="p-6 flex flex-col">
                         <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{formatDate(item.date)}</p>
-                        <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-xl"} font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors`}>{item.title}</h3>
-                        <p className={`${index === 0 ? "max-w-2xl text-base line-clamp-4" : "line-clamp-3"} text-slate-600 dark:text-slate-300 mb-4 grow`}>{item.excerpt}</p>
+                        <h3 className={`${index === 0 ? "text-2xl lg:text-3xl" : "text-xl"} font-bold text-slate-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors`}>
+                          <TranslateText text={item.title} />
+                        </h3>
+                        <p className={`${index === 0 ? "max-w-2xl text-base line-clamp-4" : "line-clamp-3"} text-slate-600 dark:text-slate-300 mb-4 grow`}>
+                          <TranslateText text={item.excerpt} />
+                        </p>
                         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">Ver comunicado
+                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                          <TranslateText text="Ver comunicado" />
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                           </span>
                         </div>

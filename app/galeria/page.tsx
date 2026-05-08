@@ -7,6 +7,7 @@ import Section from "@/app/components/Section";
 import SubpageHero from "@/components/SubpageHero";
 import Footer from "@/components/Footer";
 import SpotlightCTA from "@/app/components/SpotlightCTA";
+import { TranslateText } from "@/components/TranslateText";
 
 interface GalleryImage {
   filename: string;
@@ -54,12 +55,14 @@ export default function GaleriaPage() {
         <div className="mb-14 space-y-5">
           <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300 min-h-[44px] min-w-[44px]">
             <Sparkles size={24} aria-label="Decorativo" />
-            Selección visual
+            <TranslateText text="Selección visual" />
           </span>
           <div>
-            <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Momentos y presencia de marca</h2>
+            <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">
+              <TranslateText text="Momentos y presencia de marca" />
+            </h2>
             <p className="mt-2 max-w-3xl font-medium text-slate-500">
-              Una galeria con mejor lectura visual para revisar escenas clave, materiales y ambientes que representan a Bausen.
+              <TranslateText text="Una galeria con mejor lectura visual para revisar escenas clave, materiales y ambientes que representan a Bausen." />
             </p>
           </div>
         </div>
@@ -73,8 +76,12 @@ export default function GaleriaPage() {
         ) : images.length === 0 ? (
           <div className="rounded-[3rem] bg-slate-50 py-20 text-center dark:bg-slate-900">
             <ImageIcon className="mx-auto mb-6 h-16 w-16 text-slate-300" />
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white">No hay imagenes disponibles</h3>
-            <p className="mt-2 text-slate-500">La galeria se esta actualizando con nuevo contenido.</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+              <TranslateText text="No hay imagenes disponibles" />
+            </h3>
+            <p className="mt-2 text-slate-500">
+              <TranslateText text="La galeria se esta actualizando con nuevo contenido." />
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
@@ -163,7 +170,7 @@ function ImageCard({ img, index, onSelect }: { img: GalleryImage; index: number;
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
         {featured && (
           <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-slate-950/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
-            Imagen destacada
+            <TranslateText text="Imagen destacada" />
           </div>
         )}
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/0 transition-colors duration-500 group-hover:bg-slate-950/40">

@@ -98,15 +98,43 @@ const BACKEND_URL = SERVER_BACKEND_URL;
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { text, dest } = body;
+    const { text, texts, dest } = body;
 
     // If target is Spanish, return original
     if (dest === 'es' || !dest) {
+      if (Array.isArray(texts)) {
+        return Response.json({ results: texts.map((value) => String(value ?? '')) });
+      }
       return Response.json({ translated: text || '' });
     }
 
     // Try to call backend first
     try {
+      if (Array.isArray(texts)) {
+        const response = await fetch(`${BACKEND_URL}/api/translate/batch`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ texts, dest }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const results =
+            data?.results ||
+            data?.data?.results;
+
+          if (Array.isArray(results) && results.length === texts.length) {
+            return Response.json({ results });
+          }
+        }
+
+        return Response.json({
+          results: texts.map((value) => translateLocally(String(value ?? ''), dest)),
+        });
+      }
+
       const response = await fetch(`${BACKEND_URL}/api/translate`, {
         method: 'POST',
         headers: {
@@ -137,6 +165,12 @@ export async function POST(request: Request) {
       const localTranslation = translateLocally(text, dest);
       return Response.json({ translated: localTranslation });
     } catch (fetchError) {
+      if (Array.isArray(texts)) {
+        return Response.json({
+          results: texts.map((value) => translateLocally(String(value ?? ''), dest)),
+        });
+      }
+
       // If fetch fails completely, use local translation
       const localTranslation = translateLocally(text, dest);
       return Response.json({ translated: localTranslation });

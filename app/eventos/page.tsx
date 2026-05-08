@@ -8,6 +8,7 @@ import SubpageHero from '@/components/SubpageHero';
 import Footer from '@/components/Footer';
 import SpotlightCTA from '@/app/components/SpotlightCTA';
 import { apiClient } from '@/lib/api/api-client';
+import { TranslateText } from '@/components/TranslateText';
 
 interface Evento {
   id: number;
@@ -126,7 +127,7 @@ export default function EventosPage() {
                           className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-xs font-black uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-1 hover:bg-blue-500 min-h-[44px] min-w-[44px]"
                           aria-label={`Ver detalles del evento: ${evento.titulo}`}
                         >
-                          Ver Detalles
+                          <TranslateText text="Ver Detalles" />
                           <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" aria-label="Flecha decorativa" />
                         </button>
                       </div>
@@ -152,9 +153,11 @@ export default function EventosPage() {
         <div className="mb-16 space-y-5">
           <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-blue-700 dark:border-blue-800/40 dark:bg-blue-950/30 dark:text-blue-300">
             <Sparkles size={14} />
-            Calendario activo
+            <TranslateText text="Calendario activo" />
           </span>
-          <h3 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">Proximos Encuentros</h3>
+          <h3 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white lg:text-5xl">
+            <TranslateText text="Proximos Encuentros" />
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
@@ -182,7 +185,7 @@ export default function EventosPage() {
                 </div>
                 {index === 0 && (
                   <div className="absolute right-6 top-6 rounded-full border border-white/20 bg-slate-950/55 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-white backdrop-blur-md">
-                    Evento principal
+                    <TranslateText text="Evento principal" />
                   </div>
                 )}
               </div>
@@ -193,13 +196,13 @@ export default function EventosPage() {
                   <span className="text-[10px] font-black uppercase tracking-[0.2em]">{new Date(ev.fecha).toLocaleDateString()}</span>
                 </div>
                 <h4 className={`mb-4 font-black leading-tight text-slate-900 transition-colors group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400 ${index === 0 ? 'text-3xl lg:text-4xl' : 'text-2xl'}`}>
-                  {ev.titulo}
+                  <TranslateText text={ev.titulo} />
                 </h4>
                 <p className={`mb-8 font-medium leading-relaxed text-slate-500 dark:text-slate-400 ${index === 0 ? 'line-clamp-3 max-w-2xl text-base' : 'line-clamp-2 text-sm'}`}>
-                  {ev.descripcion}
+                  <TranslateText text={ev.descripcion} />
                 </p>
                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600">
-                  Explorar Evento
+                  <TranslateText text="Explorar Evento" />
                   <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
@@ -252,7 +255,9 @@ export default function EventosPage() {
                         <Calendar size={24} />
                       </div>
                       <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha del Evento</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                          <TranslateText text="Fecha del Evento" />
+                        </div>
                         <div className="font-black text-slate-900 dark:text-white">{formatFecha(modalEvent.fecha)}</div>
                       </div>
                     </div>
@@ -261,19 +266,25 @@ export default function EventosPage() {
                         <MapPin size={24} />
                       </div>
                       <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Ubicacion</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                          <TranslateText text="Ubicacion" />
+                        </div>
                         <div className="font-black text-slate-900 dark:text-white">{modalEvent.ubicacion}</div>
                       </div>
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <h3 className="text-xl font-black uppercase tracking-widest text-slate-900 dark:text-white">Sobre el Evento</h3>
-                    <p className="text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-400">{modalEvent.descripcion}</p>
+                    <h3 className="text-xl font-black uppercase tracking-widest text-slate-900 dark:text-white">
+                      <TranslateText text="Sobre el Evento" />
+                    </h3>
+                    <p className="text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-400">
+                      <TranslateText text={modalEvent.descripcion} />
+                    </p>
                   </div>
                   <div className="border-t border-slate-100 pt-10 dark:border-slate-800">
                     <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-6 text-sm font-black uppercase tracking-widest text-white shadow-xl transition-all hover:bg-blue-500">
                       <Sparkles size={20} />
-                      Registrar mi Asistencia
+                      <TranslateText text="Registrar mi Asistencia" />
                     </button>
                   </div>
                 </div>
