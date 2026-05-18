@@ -1,0 +1,390 @@
+/* ============================================================
+   BAUSEN — EDITORIAL LAYER
+   Adapted from Reference_Rexample/pages/warm.css
+   Visuals, animations, cursor, marquee, reveals, magnetic, etc.
+   Tipografía: mantiene Montserrat / Geist del sitio actual.
+   Backend: NO se toca — solo capa visual.
+   ============================================================ */
+
+:root {
+  /* Editorial tokens reusing brand palette */
+  --ed-cobalt: #2346DD;
+  --ed-sapphire: #1B398E;
+  --ed-glacier: #DBE9FF;
+  --ed-cream: #F4F6FC;
+  --ed-cream-light: #FAFBFE;
+  --ed-cream-deep: #DBE9FF;
+  --ed-cream-line: rgba(27, 57, 142, 0.14);
+  --ed-ink: #1B398E;
+  --ed-ink-2: #2346DD;
+  --ed-ink-soft: rgba(27, 57, 142, 0.68);
+  --ed-ink-mute: rgba(27, 57, 142, 0.42);
+  --ed-clay: #2346DD;
+  --ed-clay-deep: #1B398E;
+  --ed-gold: #2346DD;
+  --ed-blue: #2346DD;
+  --ed-blue-soft: rgba(35, 70, 221, 0.12);
+
+  --ed-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ed-ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --ed-pad-x: clamp(20px, 4vw, 64px);
+  --ed-maxw: 1440px;
+}
+
+.dark {
+  --ed-cream: #0B1230;
+  --ed-cream-light: #0F1A3C;
+  --ed-cream-deep: #1B398E;
+  --ed-cream-line: rgba(219, 233, 255, 0.14);
+  --ed-ink: #DBE9FF;
+  --ed-ink-2: #FFFFFF;
+  --ed-ink-soft: rgba(219, 233, 255, 0.7);
+  --ed-ink-mute: rgba(219, 233, 255, 0.45);
+  --ed-clay: #6F8DFF;
+  --ed-clay-deep: #2346DD;
+}
+
+/* ============== CUSTOM CURSOR ============== */
+body.has-editorial-cursor { cursor: none; }
+body.has-editorial-cursor a,
+body.has-editorial-cursor button,
+body.has-editorial-cursor input,
+body.has-editorial-cursor textarea,
+body.has-editorial-cursor select,
+body.has-editorial-cursor label,
+body.has-editorial-cursor [data-cursor],
+body.has-editorial-cursor [data-magnetic] { cursor: none; }
+
+.ed-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 12px; height: 12px;
+  background: var(--ed-ink);
+  border-radius: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: width 0.35s var(--ed-ease-out), height 0.35s var(--ed-ease-out), background 0.25s ease;
+  display: grid; place-items: center;
+  color: var(--ed-cream);
+  font: 500 11px/1 "Montserrat", system-ui, sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  will-change: transform;
+}
+.ed-cursor.hover { width: 64px; height: 64px; }
+.ed-cursor.label-on { width: 96px; height: 96px; }
+.ed-cursor-label { opacity: 0; transition: opacity 0.2s; white-space: nowrap; padding: 0 6px; text-align: center; }
+.ed-cursor.label-on .ed-cursor-label { opacity: 1; }
+
+@media (hover: none), (pointer: coarse) {
+  .ed-cursor { display: none !important; }
+  body.has-editorial-cursor { cursor: auto; }
+  body.has-editorial-cursor * { cursor: auto !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-cursor { display: none !important; }
+  body.has-editorial-cursor { cursor: auto; }
+}
+
+/* ============== PAGE CURTAIN ============== */
+.ed-page-curtain {
+  position: fixed; inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+}
+.ed-curtain-panel {
+  background: var(--ed-ink);
+  transform: translateY(0);
+  animation: ed-curtain-out 1.2s var(--ed-ease-curtain) forwards;
+  animation-delay: calc(0.45s + var(--i, 0) * 0.08s);
+}
+.ed-curtain-mark {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  color: var(--ed-cream);
+  z-index: 1;
+  animation: ed-curtain-mark 1.2s ease forwards;
+  animation-delay: 0.05s;
+  text-align: center;
+  pointer-events: none;
+}
+.ed-curtain-mark .serif { font-size: clamp(72px, 12vw, 180px); line-height: 1; display: block; font-weight: 300; font-style: italic; letter-spacing: -0.02em; }
+.ed-curtain-tag { display: block; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; margin-top: 14px; opacity: 0.55; }
+
+@keyframes ed-curtain-out {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+@keyframes ed-curtain-mark {
+  0% { opacity: 1; transform: scale(1); }
+  60% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-page-curtain { display: none; }
+}
+
+/* ============== STATUS STRIP ============== */
+.ed-status-strip {
+  position: relative;
+  z-index: 30;
+  background: var(--ed-ink);
+  color: var(--ed-cream);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  overflow: hidden;
+  padding: 10px 0;
+}
+.ed-status-marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.ed-status-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  animation: ed-marquee 60s linear infinite;
+  padding-left: 28px;
+}
+.ed-status-track .dot { opacity: 0.4; font-size: 8px; }
+
+@keyframes ed-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============== WORD REVEAL / FADE / MASK REVEAL ============== */
+.reveal-words { overflow: visible; }
+.reveal-words .rw-wrap { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0.06em 0.04em; margin: -0.06em -0.04em; }
+.reveal-words .rw-word {
+  display: inline-block;
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 1s var(--ed-ease-out), opacity 0.6s ease;
+  transition-delay: calc(var(--w, 0) * 30ms);
+}
+.reveal-words.is-in .rw-word { transform: translateY(0); opacity: 1; }
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.9s ease, transform 1s var(--ed-ease-out);
+  transition-delay: calc(var(--delay, 0) * 1ms);
+}
+.reveal-up.is-in { opacity: 1; transform: translateY(0); }
+
+.mask-reveal { position: relative; overflow: hidden; }
+.mask-reveal > * {
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.15);
+  transition: clip-path 1.4s var(--ed-ease-out), transform 1.6s var(--ed-ease-out);
+  transition-delay: calc(var(--delay, 0) * 1ms);
+}
+.mask-reveal.is-in > * {
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-words .rw-word { transform: none; opacity: 1; transition: none; }
+  .reveal-up { opacity: 1; transform: none; transition: none; }
+  .mask-reveal > * { clip-path: inset(0); transform: none; transition: none; }
+}
+
+/* ============== MAGNETIC HOVER ============== */
+[data-magnetic] {
+  display: inline-flex;
+  transition: transform 0.5s var(--ed-ease-out);
+  will-change: transform;
+}
+
+/* ============== EDITORIAL TYPE HELPERS ============== */
+.ed-serif { font-family: "Montserrat", system-ui, sans-serif; font-weight: 300; letter-spacing: -0.01em; }
+.ed-italic { font-style: italic; }
+.ed-serif.ed-italic { font-weight: 300; font-style: italic; }
+
+.ed-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ed-ink-soft); font-weight: 500;
+}
+.ed-bullet {
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ed-clay);
+}
+
+/* ============== CTA PILL ============== */
+.ed-cta-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ed-ink);
+  color: var(--ed-cream);
+  padding: 12px 22px 12px 24px;
+  border-radius: 100px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.3s, transform 0.4s var(--ed-ease-out);
+  border: 0;
+}
+.ed-cta-pill:hover { background: var(--ed-clay-deep); }
+.ed-cta-arrow { display: inline-block; transition: transform 0.4s var(--ed-ease-out); }
+.ed-cta-pill:hover .ed-cta-arrow { transform: translate(2px, -2px); }
+
+/* ============== SCROLL CUE ============== */
+.ed-scroll-cue {
+  display: inline-flex; align-items: center; gap: 12px;
+  color: var(--ed-ink); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.ed-scroll-cue-circle {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 1px solid var(--ed-ink);
+  display: inline-grid; place-items: center;
+  position: relative;
+  transition: background 0.4s, color 0.4s;
+}
+.ed-scroll-cue-circle::after {
+  content: "↓";
+  font-size: 22px;
+  animation: ed-bob 2.4s ease-in-out infinite;
+}
+.ed-scroll-cue:hover .ed-scroll-cue-circle { background: var(--ed-ink); color: var(--ed-cream); }
+@keyframes ed-bob {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(3px); }
+}
+
+/* ============== MARQUEE ============== */
+.ed-marquee-section {
+  border-top: 1px solid var(--ed-cream-line);
+  border-bottom: 1px solid var(--ed-cream-line);
+  padding: 28px 0;
+  background: var(--ed-cream);
+}
+.ed-marquee { overflow: hidden; }
+.ed-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 56px;
+  white-space: nowrap;
+  animation: ed-marquee 80s linear infinite;
+  padding-left: 56px;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: clamp(40px, 6vw, 96px);
+  line-height: 1;
+  color: var(--ed-ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.ed-marquee-track .ed-italic { color: var(--ed-clay); font-style: italic; font-weight: 400; }
+.ed-marquee-dot { color: var(--ed-clay); font-size: 0.5em; }
+
+/* ============== UNDERLINE LINK ============== */
+.ed-link-under {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: 2px;
+}
+.ed-link-under::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.5s var(--ed-ease-out);
+}
+.ed-link-under:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* ============== CARD HOVER (sticky service card flavor) ============== */
+.ed-card-tag {
+  position: absolute;
+  bottom: 14px; left: 14px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ed-cream);
+  background: rgba(27, 57, 142, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 100px;
+  z-index: 2;
+}
+
+/* ============== EDITORIAL SECTION TITLES (auto applied via class) ============== */
+.ed-title {
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(40px, 5.4vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  color: var(--ed-ink);
+  margin: 0;
+  text-wrap: balance;
+}
+.ed-title em {
+  color: var(--ed-clay);
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ============== COUNTER ============== */
+.ed-counter { font-variant-numeric: tabular-nums; }
+
+/* ============== NAV SCROLLED HOOK (opt-in) ============== */
+.ed-nav-scrolled {
+  background: rgba(244, 246, 252, 0.96) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--ed-cream-line);
+}
+.dark .ed-nav-scrolled {
+  background: rgba(11, 18, 48, 0.92) !important;
+}
+
+/* ============== IMAGE EDITORIAL FRAMES ============== */
+.ed-frame {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ed-cream-deep);
+  box-shadow: 0 20px 60px -20px rgba(27, 57, 142, 0.25);
+}
+
+/* ============== SMOOTH PAGE FADE-IN ============== */
+@keyframes ed-fade-in-page {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.ed-page-fade {
+  animation: ed-fade-in-page 0.6s ease-out 1.5s both;
+}
+
+/* ============== HOVER LIFT (cards) ============== */
+.ed-hover-lift {
+  transition: transform 0.6s var(--ed-ease-out), box-shadow 0.6s var(--ed-ease-out);
+}
+.ed-hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 70px -20px rgba(27, 57, 142, 0.25);
+}
+
+/* ============== KEEP EXISTING BUTTONS USABLE WITH MAGNETIC ============== */
+[data-magnetic] > * { pointer-events: none; }
+[data-magnetic] { isolation: isolate; }
+
+/* Ensure cursor disabled on form fields keeps caret */
+body.has-editorial-cursor input,
+body.has-editorial-cursor textarea {
+  caret-color: var(--ed-ink);
+}

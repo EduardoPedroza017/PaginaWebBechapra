@@ -2,6 +2,7 @@ import React from "react";
 import { Montserrat } from 'next/font/google';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./editorial.css";
 
 // Context Providers
 import { LanguageProvider } from "@/lib/contexts/LanguageContext";
@@ -13,6 +14,7 @@ import CookieConsent from "@/components/CookieConsent";
 import Analytics from "@/components/Analytics";
 import ScrollRestorer from "@/components/ScrollRestorer";
 import LenisProvider from "@/app/components/LenisProvider";
+import { EditorialLayer } from "@/components/editorial";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,7 +96,8 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <LenisProvider />
-            <div className="fixed top-0 left-0 right-0 z-50">
+            <EditorialLayer />
+            <div className="fixed top-0 left-0 right-0 z-50" data-editorial-nav>
               <NavbarConditional />
             </div>
             

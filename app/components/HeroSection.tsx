@@ -89,6 +89,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-5 pt-4">
               <motion.a
                 href="#servicios"
+                data-cursor="Explorar"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="group inline-flex items-center justify-center gap-3 font-bold px-10 py-5 rounded-2xl shadow-2xl transition-all duration-300 bg-blue-700 text-white hover:bg-blue-600 shadow-blue-700/30 dark:shadow-blue-500/20"
@@ -99,6 +100,7 @@ export default function HeroSection() {
 
               <motion.a
                 href="#contacto"
+                data-cursor="Hablemos"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center justify-center gap-3 font-bold px-10 py-5 rounded-2xl transition-all duration-300 bg-white text-slate-900 border border-slate-200 hover:border-blue-400 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-800 dark:hover:border-blue-500 shadow-xl"
@@ -159,7 +161,7 @@ export default function HeroSection() {
                 className="absolute -bottom-16 -right-16 w-40 h-40 rounded-full -z-10 bg-indigo-500/10 dark:bg-indigo-500/20 blur-2xl" 
               />
 
-              <div className="relative rounded-[40px] overflow-hidden shadow-2xl shadow-blue-900/40 group-hover:shadow-blue-600/50 transition-shadow duration-500">
+              <div className="mask-reveal relative rounded-[40px] overflow-hidden shadow-2xl shadow-blue-900/40 group-hover:shadow-blue-600/50 transition-shadow duration-500">
                 <Image
                   src="/web/image/hero/Flayers_Home_01100.jpg"
                   width={800}

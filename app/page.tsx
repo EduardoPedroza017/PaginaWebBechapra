@@ -5,6 +5,7 @@ import HeroSection from "./components/HeroSection";
 import ServicesSection from "./components/ServicesSection";
 import SpotlightCTA from "./components/SpotlightCTA";
 import Footer from "@/components/Footer";
+import { Marquee } from "@/components/editorial";
 
 // Lazy load componentes debajo del fold
 const PressCards = dynamic(() => import('./components/PressCards'), {
@@ -33,6 +34,18 @@ export default function Home() {
       {/* Hero Section - Full width, no container */}
       <HeroSection />
       
+      {/* Editorial marquee band */}
+      <Marquee
+        speed={70}
+        items={[
+          "Capital Humano",
+          <span key="do" className="ed-italic">Desarrollo Organizacional</span>,
+          "Management Services",
+          <span key="nom" className="ed-italic">NOM 035</span>,
+          "Atraccion de Talento",
+        ]}
+      />
+
       {/* Services Section */}
       <Section>
         <ServicesSection />

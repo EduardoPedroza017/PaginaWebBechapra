@@ -22,11 +22,12 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   return (
     <motion.a
       href={`/web/servicios/${encodeURIComponent(slugOrName)}`}
+      data-cursor="Ver servicio"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative w-full max-w-lg mx-auto flex flex-col overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-900 shadow-xl border border-slate-100 dark:border-slate-800 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
+      className="group relative w-full max-w-lg mx-auto flex flex-col overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-900 shadow-xl border border-slate-100 dark:border-slate-800 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ed-hover-lift"
     >
       {/* Contenedor de Imagen Superior (Vertical) */}
       <div className="relative h-72 w-full overflow-hidden">
