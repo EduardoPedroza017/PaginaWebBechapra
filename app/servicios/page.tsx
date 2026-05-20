@@ -32,7 +32,7 @@ const defaultServices: Service[] = [
     id: "1",
     name: "Capital Humano",
     slug: "capital-humano",
-    description: "Soluciones estrategicas para la gestion, atraccion y optimizacion del talento humano en su organizacion.",
+    description: "Gestion de talento, reclutamiento y administracion de personal para fortalecer su operacion.",
     features: [
       { name: "Reclutamiento y Seleccion", slug: "atraccion-de-talento" },
       { name: "Administracion de Nomina", slug: "payroll" },
@@ -43,7 +43,7 @@ const defaultServices: Service[] = [
     id: "2",
     name: "Desarrollo Organizacional",
     slug: "desarrollo-organizacional",
-    description: "Impulsamos la cultura, estructura y eficiencia de su empresa a traves de diagnosticos y planes de mejora.",
+    description: "Acompanamos la integracion de equipos, procesos y cumplimiento para operar con mayor orden y productividad.",
     features: [
       { name: "Capacitacion Empresarial", slug: "capacitacion-empresarial" },
       { name: "NOM-035", slug: "nom-035" },
@@ -54,7 +54,7 @@ const defaultServices: Service[] = [
     id: "3",
     name: "Management Services",
     slug: "management-services",
-    description: "Servicios integrales de consultoria y gestion empresarial para la toma de decisiones estrategicas.",
+    description: "Soporte contable y administrativo para tomar decisiones con control financiero y cumplimiento.",
     features: [
       { name: "Servicios Legales", slug: "servicios-legales" },
       { name: "Servicios Contables", slug: "servicios-contables" },
@@ -119,7 +119,7 @@ export default function ServiciosIndex() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mb-10 text-xl font-medium leading-relaxed text-white/85"
             >
-              <TranslateText text="Soluciones estrategicas disenadas para cada etapa del ciclo de vida de su organizacion." />
+              <TranslateText text="Servicios de capital humano, payrolling, reclutamiento, servicios especializados y contabilidad para una operacion mas ordenada y eficiente." />
             </motion.p>
           </div>
         </div>
@@ -137,13 +137,13 @@ export default function ServiciosIndex() {
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div className="space-y-8">
             <h2 className="text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-white lg:text-5xl">
-              <TranslateText text="Enfoque en Resultados y Calidad Certificada" />
+              <TranslateText text="Talento, cumplimiento y operacion en una sola estrategia" />
             </h2>
             <p className="text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-400">
-              <TranslateText text="Nuestro modelo de servicio se basa en la integracion de tecnologia avanzada con un profundo conocimiento del mercado local e internacional. Garantizamos cumplimiento normativo y eficiencia operativa en cada proceso." />
+              <TranslateText text="Integramos capital humano, payrolling, reclutamiento y soporte contable en un modelo practico, con cumplimiento normativo y acompanamiento cercano en cada proceso." />
             </p>
             <div className="grid gap-6 sm:grid-cols-2">
-              {["Atencion personalizada 24/7", "Cumplimiento legal total", "Tecnologia de vanguardia", "Expertos certificados"].map((item, i) => (
+              {["Capital humano a la medida", "Payrolling con cumplimiento", "Reclutamiento con seguimiento", "Contabilidad clara y oportuna"].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 shadow-lg shadow-blue-600/30">
                     <CheckCircle className="h-4 w-4 text-white" />
@@ -167,7 +167,7 @@ export default function ServiciosIndex() {
       <SpotlightCTA
         eyebrow="Ruta de crecimiento"
         title="Impulsamos su empresa con una estrategia integral"
-        subtitle="Conecte capital humano, operacion y consultoria en una sola experiencia mas clara, ejecutiva y orientada a resultados."
+        subtitle="Conecte capital humano, payrolling, reclutamiento y contabilidad en una sola experiencia mas clara, ejecutiva y orientada a resultados."
         imageSrc="/web/image/servicios/service.png"
         imageAlt="Soluciones empresariales Bausen"
         primaryLink="/#contacto"

@@ -47,7 +47,7 @@ const kpis = [
 const positions = [
   "Contabilidad y Finanzas", "Tecnologias de la Informacion", "Comercial y Ventas",
   "Marketing Digital", "Recursos Humanos", "Operaciones y Logistica",
-  "Ingenieria Industrial", "Legal y Compliance", "Compras y Abastecimiento",
+  "Nomina y Compensaciones", "Legal y Compliance", "Compras y Abastecimiento",
   "Atencion a Clientes", "Administracion", "Calidad y Mejora Continua",
   "Manufactura", "Mantenimiento", "Seguridad e Higiene", "Direccion General",
 ];

@@ -82,7 +82,7 @@ export default function HeroSection() {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-lg sm:text-xl leading-relaxed max-w-xl text-slate-600 dark:text-slate-400"
             >
-              <TranslateText text="Capital Humano, Desarrollo Organizacional y Management Services para cada etapa de tu crecimiento." />
+              <TranslateText text="Capital Humano, payrolling, reclutamiento, servicios especializados y contabilidad para fortalecer cada etapa de tu operacion." />
             </motion.p>
 
             {/* CTAs with Advanced Magnetic Interaction */}

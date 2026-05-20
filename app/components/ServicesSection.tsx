@@ -147,7 +147,7 @@ export default function ServicesSection() {
           <TranslateText text="Nuestros Servicios" />
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-lg">
-          <TranslateText text="Soluciones de ingeniería y logística para el mercado internacional." />
+          <TranslateText text="Soluciones en capital humano, payrolling, reclutamiento, servicios especializados y contabilidad para una operacion mas eficiente y en cumplimiento." />
         </p>
       </motion.div>
 

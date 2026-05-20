@@ -38,11 +38,11 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   metadataBase: new URL('https://bausen.mx'),
   title: {
-    default: 'Bausen | Capital Humano y Management Services en México',
+    default: 'Bausen | Capital Humano, Payrolling y Contabilidad en Mexico',
     template: '%s | Bausen'
   },
-  description: 'Impulsamos tu talento. Capital Humano, Desarrollo Organizacional y Management Services. Líderes certificados REPSE, ISO, NOM.',
-  keywords: ['capital humano', 'REPSE', 'servicios especializados', 'management services', 'desarrollo organizacional', 'México'],
+  description: 'Impulsamos tu operacion con Capital Humano, payrolling, reclutamiento, servicios especializados y contabilidad. Lideres certificados REPSE, ISO, NOM.',
+  keywords: ['capital humano', 'payrolling', 'reclutamiento', 'servicios especializados', 'contabilidad', 'Mexico'],
   robots: { index: true, follow: true },
   alternates: { canonical: 'https://bausen.mx/web/' },
   openGraph: {
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     locale: 'es_MX',
     url: 'https://bausen.mx/web/',
     siteName: 'Bausen',
-    title: 'Bausen | Impulsamos tu talento',
-    description: 'Soluciones empresariales integrales de Capital Humano, Desarrollo Organizacional y Management Services.',
+    title: 'Bausen | Capital Humano, Payrolling y Reclutamiento',
+    description: 'Soluciones empresariales en Capital Humano, payrolling, reclutamiento, servicios especializados y contabilidad.',
     images: [{ url: '/web/og-image.jpg', width: 1200, height: 630, alt: 'Bausen - Soluciones empresariales integrales' }]
   },
   twitter: { card: 'summary_large_image' },
@@ -72,8 +72,8 @@ export default function RootLayout({
       className={`${fontVariables} scroll-smooth`}
     >
       <head>
-        <title>Bausen | Soluciones Estratégicas de Talento y Management</title>
-        <meta name="description" content="Transformamos organizaciones a través de soluciones estratégicas de talento, gestión operativa y desarrollo empresarial." />
+        <title>Bausen | Capital Humano, Payrolling y Contabilidad</title>
+        <meta name="description" content="Transformamos organizaciones con soluciones de capital humano, payrolling, reclutamiento, servicios especializados y contabilidad." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script dangerouslySetInnerHTML={{ __html: `

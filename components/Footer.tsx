@@ -94,7 +94,7 @@ export default function Footer() {
             </Link>
             
             <p className="text-xl lg:text-2xl font-bold leading-tight text-white max-w-md">
-              <TranslateText text="Transformamos organizaciones a través de soluciones estratégicas de talento y management." />
+              <TranslateText text="Transformamos organizaciones con soluciones estrategicas en talento, payrolling, reclutamiento, servicios especializados y contabilidad." />
             </p>
 
             <div className="flex gap-4">

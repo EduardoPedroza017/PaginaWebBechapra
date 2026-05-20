@@ -12,7 +12,7 @@ export const services: Service[] = [
   {
     id: "capital-humano",
     title: "Capital humano",
-    description: "Aumenta la eficiencia y resultados de tu negocio.",
+    description: "Gestion integral de talento para atraer, administrar y desarrollar equipos con enfoque en resultados.",
     image: "/web/image/servicios/capital-humano.webp",
     icon: "/web/image/icon/Capital Humano_Icon_Color@2x.png",
     href: "/servicios/capital-humano",
@@ -20,15 +20,15 @@ export const services: Service[] = [
   {
     id: "servicios-especializados",
     title: "Servicios especializados",
-    description: "Aumenta la eficiencia y resultados de tu negocio.",
+    description: "Esquemas especializados y reclutamiento para cubrir posiciones clave con cumplimiento y agilidad.",
     image: "/web/image/servicios/servicios-especializados.jpg",
     icon: "/web/image/icon/ServiciosEspecializados_Icon_Color@2x.png",
     href: "/servicios/desarrollo-organizacional",
   },
   {
     id: "servicios-impuestos",
-    title: "Servicios de Impuestos",
-    description: "Optimiza tu carga fiscal con expertos certificados.",
+    title: "Contabilidad",
+    description: "Control contable, cumplimiento fiscal y reportes claros para una operacion mas ordenada.",
     image: "/web/image/servicios/servicios-impuestos.jpg",
     icon: "/web/image/icon/ServiciosdeImpuestos_Icon_Color@2x.png",
     href: "/servicios/management-services",
